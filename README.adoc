@@ -1,0 +1,197 @@
+// SPDX-License-Identifier: MIT AND Palimpsest-0.8
+// SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+
+= Developer Ecosystem
+:author: hyperpolymath
+:revnumber: 0.1.0
+:revdate: 2025-12-26
+:toc: left
+:toclevels: 3
+:icons: font
+:source-highlighter: rouge
+
+image:https://img.shields.io/badge/RSR-Gold-ffd700[RSR Gold]
+image:https://img.shields.io/badge/CCCP-Certified-c41e3a[CCCP Certified]
+
+== What is Developer Ecosystem?
+
+*Developer Ecosystem* is the central hub for all development workflow tools—git operations, repository management, scaffolding, and developer experience.
+
+This primary brings together projects that improve how developers:
+
+* *Git Tools* — Forge management, branch workflows, repo unification
+* *Repo Management* — Automation, analysis, health monitoring
+* *Scaffolding* — Project templates, boilerplate generation
+* *Developer UX* — IDE extensions, documentation tools, reconciliation
+
+== Satellite Structure
+
+[source]
+----
+developer-ecosystem/
+├── satellites/
+│   ├── git-tools/              # Git forge & workflow tools
+│   │   ├── gitvisor/           # Unified git platform dashboard
+│   │   ├── gitloom/            # Branch management & weaving
+│   │   ├── git-reunify/        # Safe repo reunification
+│   │   ├── git-seo/            # Git repo discoverability
+│   │   ├── polysafe-gitfixer/  # Git backup merger
+│   │   └── vext/               # IRC commit notifications
+│   │
+│   ├── repo-management/        # Repository automation & analysis
+│   │   ├── oikos/              # Ecological code analysis
+│   │   ├── robot-repo-automaton/  # Automated repo management
+│   │   ├── grim-repo/          # Audit-grade repo tooling
+│   │   └── robot-vacuum-cleaner/  # Repo tidying bot
+│   │
+│   ├── scaffolding/            # Project generation
+│   │   └── scaffoldia/         # Community-driven scaffolding
+│   │
+│   └── developer-ux/           # Developer experience tools
+│       ├── rescript-evangeliser/  # ReScript teaching extension
+│       ├── recon-silly-ation/  # Doc reconciliation system
+│       └── nickel-config-reporter/ # Config auditing
+----
+
+== Git Tools
+
+Repositories focused on Git operations across multiple forges (GitHub, GitLab, Gitea, Bitbucket).
+
+=== gitvisor
+
+A hyper-customizable dashboard for unified Git platform management.
+Starting with GitHub and GitLab integration, expanding to become the definitive interface for developers who demand control.
+
+=== gitloom
+
+Git workflow weaving and branch management.
+Advanced branch operations with safety guarantees.
+
+=== git-reunify
+
+Safe repo reunification tool—merge diverged repos without losing work.
+Handles developer reconciliation scenarios where repos have drifted apart.
+
+=== git-seo
+
+Make your Git repositories discoverable with SEO optimization tools.
+Metadata, descriptions, and tagging for better findability.
+
+=== polysafe-gitfixer
+
+A polyglot implementation of a git backup merger tool.
+Each component written in the language providing the strongest safety guarantees for that concern.
+
+=== vext
+
+High-performance IRC notification daemon for version control systems.
+Real-time commit notifications from Git repos to IRC channels with connection pooling.
+
+== Repo Management
+
+Repositories focused on automated repository analysis, health monitoring, and maintenance.
+
+=== oikos
+
+*Ecological & Economic Code Analysis Platform*
+
+_οἶκος_ (oikos): the shared Greek root of ecology and economy.
+
+Features:
+* Carbon intensity scoring
+* Sustainability metrics
+* Pareto-optimal code health
+* GitHub/GitLab integration
+
+=== robot-repo-automaton
+
+Automated repository management bot.
+Handles routine maintenance, updates, and health checks.
+
+=== grim-repo
+
+Modular audit-grade tooling for narratable, scaffolded, and legible repositories.
+Ensures repos meet quality and documentation standards.
+
+=== robot-vacuum-cleaner
+
+A comprehensive, production-grade robot vacuum cleaner simulation system.
+Includes repository tidying capabilities.
+
+== Scaffolding
+
+Repositories focused on project template generation and structure.
+
+=== scaffoldia
+
+A developer-centred, modular, and community-driven repo scaffolding engine.
+
+* Generates idiomatic, validated, narratable project structures
+* Supports multiple languages, tools, and themes
+* Audience-aware stance configuration
+
+== Developer UX
+
+Repositories focused on improving the developer experience.
+
+=== rescript-evangeliser
+
+"Celebrate good, minimize bad, show better"
+
+A VS Code extension that teaches JavaScript developers ReScript through progressive code transformation, without shame.
+
+=== recon-silly-ation
+
+Documentation Reconciliation System.
+
+Automatically reconcile, deduplicate, and resolve conflicts in Git repository documentation using:
+* Content-addressable storage
+* Graph-based conflict resolution
+
+=== nickel-config-reporter
+
+Ingests config files, clones to Nickel format, emits AsciiDoc audit reports.
+
+== Relationship to Other Primaries
+
+[cols="1,2"]
+|===
+| Primary | Relationship
+
+| *rhodium-standard-repositories*
+| RSR compliance standards for developer-ecosystem satellites
+
+| *poly-mcps*
+| poly-git-mcp uses developer-ecosystem git tools
+
+| *neural-foundations*
+| oikos uses AI for code analysis (neurosymbolic potential)
+
+| *cccp*
+| Language policy governs all implementations
+|===
+
+== Notable Standalone Projects
+
+Some developer tools remain standalone due to their unique nature:
+
+* *valence-shell* — Reversible thermodynamic shell (fundamental paradigm shift)
+* *cicd-hyper-a* — Reusable CI/CD templates (infrastructure, not tooling)
+
+== Contributing
+
+Contributions should focus on *developer workflow improvements*:
+
+1. Git forge integrations
+2. Repository analysis algorithms
+3. Scaffolding templates
+4. Developer experience enhancements
+
+== License
+
+MIT + Palimpsest-0.8
+
+---
+
+_"Developer tools that respect developer autonomy. No lock-in, no shame, no anxiety."_
+

@@ -1,0 +1,42 @@
+[submodule "satellites/git-tools/gitvisor"]
+	path = satellites/git-tools/gitvisor
+	url = git@github.com:hyperpolymath/gitvisor.git
+[submodule "satellites/git-tools/gitloom"]
+	path = satellites/git-tools/gitloom
+	url = git@github.com:hyperpolymath/gitloom.git
+[submodule "satellites/git-tools/git-reunify"]
+	path = satellites/git-tools/git-reunify
+	url = git@github.com:hyperpolymath/git-reunify.git
+[submodule "satellites/git-tools/git-seo"]
+	path = satellites/git-tools/git-seo
+	url = git@github.com:hyperpolymath/git-seo.git
+[submodule "satellites/git-tools/polysafe-gitfixer"]
+	path = satellites/git-tools/polysafe-gitfixer
+	url = git@github.com:hyperpolymath/polysafe-gitfixer.git
+[submodule "satellites/git-tools/vext"]
+	path = satellites/git-tools/vext
+	url = git@github.com:hyperpolymath/vext.git
+[submodule "satellites/repo-management/oikos"]
+	path = satellites/repo-management/oikos
+	url = git@github.com:hyperpolymath/oikos.git
+[submodule "satellites/repo-management/robot-repo-automaton"]
+	path = satellites/repo-management/robot-repo-automaton
+	url = git@github.com:hyperpolymath/robot-repo-automaton.git
+[submodule "satellites/repo-management/grim-repo"]
+	path = satellites/repo-management/grim-repo
+	url = git@github.com:hyperpolymath/grim-repo.git
+[submodule "satellites/repo-management/robot-vacuum-cleaner"]
+	path = satellites/repo-management/robot-vacuum-cleaner
+	url = git@github.com:hyperpolymath/robot-vacuum-cleaner.git
+[submodule "satellites/scaffolding/scaffoldia"]
+	path = satellites/scaffolding/scaffoldia
+	url = git@github.com:hyperpolymath/scaffoldia.git
+[submodule "satellites/developer-ux/rescript-evangeliser"]
+	path = satellites/developer-ux/rescript-evangeliser
+	url = git@github.com:hyperpolymath/rescript-evangeliser.git
+[submodule "satellites/developer-ux/recon-silly-ation"]
+	path = satellites/developer-ux/recon-silly-ation
+	url = git@github.com:hyperpolymath/recon-silly-ation.git
+[submodule "satellites/developer-ux/nickel-config-reporter"]
+	path = satellites/developer-ux/nickel-config-reporter
+	url = git@github.com:hyperpolymath/nickel-config-reporter.git
