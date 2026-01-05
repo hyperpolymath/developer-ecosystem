@@ -27,7 +27,6 @@ The following files in `.machine_readable/` contain structured project metadata:
 | **Gleam** | Backend services | Runs on BEAM or compiles to JS |
 | **Bash/POSIX Shell** | Scripts, automation | Keep minimal |
 | **JavaScript** | Only where ReScript cannot | MCP protocol glue, Deno APIs |
-| **Python** | SaltStack only | No other Python permitted |
 | **Nickel** | Configuration language | For complex configs |
 | **Guile Scheme** | State/meta files | STATE.scm, META.scm, ECOSYSTEM.scm |
 | **Julia** | Batch scripts, data processing | Per RSR |
@@ -44,7 +43,7 @@ The following files in `.machine_readable/` contain structured project metadata:
 | Bun | Deno |
 | pnpm/yarn | Deno |
 | Go | Rust |
-| Python (general) | ReScript/Rust |
+| Python | Julia/Rust/ReScript |
 | Java/Kotlin | Rust/Tauri/Dioxus |
 | Swift | Tauri/Dioxus |
 | React Native | Tauri/Dioxus |
