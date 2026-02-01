@@ -1,8 +1,8 @@
-image:https://img.shields.io/badge/License-MPL_2.0-blue.svg[MPL-2.0,link="https://opensource.org/licenses/MPL-2.0"]
-image:https://img.shields.io/badge/Philosophy-Palimpsest-purple.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-licence"]
+image:https://img.shields.io/badge/License-MPL_2.0-blue.svg[MPL-2.0-or-later,link="https://opensource.org/licenses/MPL-2.0"]
+image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-license"]
 
 
-// SPDX-License-Identifier: MIT AND Palimpsest-0.8
+// SPDX-License-Identifier: MPL-2.0-or-later
 // SPDX-FileCopyrightText: 2024-2025 hyperpolymath
 
 = Developer Ecosystem
@@ -17,6 +17,12 @@ image:https://img.shields.io/badge/Philosophy-Palimpsest-purple.svg[Palimpsest,l
 
 image:https://img.shields.io/badge/RSR-Gold-ffd700[RSR Gold]
 image:https://img.shields.io/badge/CCCP-Certified-c41e3a[CCCP Certified]
+
+== License & Philosophy
+
+This project must declare **MPL-2.0-or-later** for platform/tooling compatibility.
+
+Philosophy: **Palimpsest**. The Palimpsest-MPL (PMPL) text is provided in `license/PMPL-1.0.txt`, and the canonical source is the palimpsest-license repository.
 
 == What is Developer Ecosystem?
 
@@ -36,7 +42,7 @@ This primary brings together projects that improve how developers:
 developer-ecosystem/
 ├── satellites/
 │   ├── git-tools/              # Git forge & workflow tools
-│   │   ├── gitvisor/           # Unified git platform dashboard
+│   │   ├── git-hud/           # Unified git platform dashboard
 │   │   ├── gitloom/            # Branch management & weaving
 │   │   ├── git-reunify/        # Safe repo reunification
 │   │   ├── git-seo/            # Git repo discoverability
@@ -62,7 +68,7 @@ developer-ecosystem/
 
 Repositories focused on Git operations across multiple forges (GitHub, GitLab, Gitea, Bitbucket).
 
-=== gitvisor
+=== git-hud
 
 A hyper-customizable dashboard for unified Git platform management.
 Starting with GitHub and GitLab integration, expanding to become the definitive interface for developers who demand control.
