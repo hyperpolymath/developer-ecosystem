@@ -1,0 +1,201 @@
+# Techstack Enforcer - GitHub Actions Workflow Template
+# Copy this file to .github/workflows/techstack.yml in your repository
+#
+# Note: While this project recommends GitLab CI, this template is provided
+# for teams that use GitHub Actions.
+#
+# SETUP REQUIRED:
+#   1. Copy this file to .github/workflows/techstack.yml
+#   2. Set repository variable TECHSTACK_REPO to the techstack-enforcer fork/location
+#      (Settings > Secrets and variables > Actions > Variables > New repository variable)
+#      Example: TECHSTACK_REPO = "hyperpolymath/techstack-enforcer"
+#   3. Or replace ${{ vars.TECHSTACK_REPO }} with your repository path directly
+#   4. Customize TECHSTACK_DEFSET and TECHSTACK_MODE as needed
+
+name: Techstack Enforcement
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+  schedule:
+    # Run learning mode weekly
+    - cron: '0 0 * * 0'
+
+env:
+  # Definition set: strict, moderate, permissive, enterprise, memory_safe
+  TECHSTACK_DEFSET: moderate
+
+  # Enforcement mode: learning, warn, enforce, lockdown
+  TECHSTACK_MODE: enforce
+
+  # Repository containing techstack-enforcer (set as GitHub variable or override here)
+  # To set: Settings > Secrets and variables > Actions > Variables > TECHSTACK_REPO
+  TECHSTACK_REPO: ${{ vars.TECHSTACK_REPO || 'hyperpolymath/techstack-enforcer' }}
+
+jobs:
+  # Quick check on every PR
+  techstack-check:
+    name: Techstack Check
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Checkout techstack-enforcer
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.TECHSTACK_REPO }}
+          path: techstack-enforcer
+
+      - name: Setup Ada/GNAT
+        uses: alire-project/setup-alire@v3
+
+      - name: Build techstack-enforcer
+        working-directory: techstack-enforcer
+        run: |
+          gprbuild -P techstack_enforcer.gpr -XMODE=release -j0
+
+      - name: Run techstack check
+        run: |
+          echo "Techstack Check"
+          echo "==============="
+          echo "Definition Set: $TECHSTACK_DEFSET"
+          echo "Mode: $TECHSTACK_MODE"
+          echo "Repo: $TECHSTACK_REPO"
+          echo ""
+
+          ./techstack-enforcer/bin/techstack_main audit . \
+            --defset=$TECHSTACK_DEFSET \
+            --mode=$TECHSTACK_MODE \
+            --fatal-exit
+
+  # Decide on changed files only
+  techstack-decide:
+    name: Techstack Decide (Changed Files)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout techstack-enforcer
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.TECHSTACK_REPO }}
+          path: techstack-enforcer
+
+      - name: Setup Ada/GNAT
+        uses: alire-project/setup-alire@v3
+
+      - name: Build techstack-enforcer
+        working-directory: techstack-enforcer
+        run: |
+          gprbuild -P techstack_enforcer.gpr -XMODE=release -j0
+
+      - name: Get changed files
+        id: changed-files
+        run: |
+          git diff --name-only ${{ github.event.pull_request.base.sha }}..${{ github.sha }} > changed_files.txt
+          echo "Changed files:"
+          cat changed_files.txt
+
+      - name: Run techstack decide
+        run: |
+          cat changed_files.txt | ./techstack-enforcer/bin/techstack_main decide \
+            --defset=$TECHSTACK_DEFSET \
+            --mode=$TECHSTACK_MODE
+
+      - name: Upload decision report
+        uses: actions/upload-artifact@v4
+        with:
+          name: techstack-decisions
+          path: changed_files.txt
+          retention-days: 7
+
+  # Full audit on main branch
+  techstack-audit:
+    name: Techstack Audit
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Checkout techstack-enforcer
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.TECHSTACK_REPO }}
+          path: techstack-enforcer
+
+      - name: Setup Ada/GNAT
+        uses: alire-project/setup-alire@v3
+
+      - name: Build techstack-enforcer
+        working-directory: techstack-enforcer
+        run: |
+          gprbuild -P techstack_enforcer.gpr -XMODE=release -j0
+
+      - name: Run full audit
+        run: |
+          ./techstack-enforcer/bin/techstack_main audit . \
+            --defset=$TECHSTACK_DEFSET \
+            --mode=$TECHSTACK_MODE \
+            --json > techstack-report.json || true
+
+          ./techstack-enforcer/bin/techstack_main audit . \
+            --defset=$TECHSTACK_DEFSET \
+            --mode=$TECHSTACK_MODE
+
+      - name: Upload audit report
+        uses: actions/upload-artifact@v4
+        with:
+          name: techstack-audit
+          path: |
+            techstack-report.json
+            techstack.log
+          retention-days: 30
+
+  # Learning mode - runs on schedule
+  techstack-learning:
+    name: Techstack Learning
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Checkout techstack-enforcer
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.TECHSTACK_REPO }}
+          path: techstack-enforcer
+
+      - name: Setup Ada/GNAT
+        uses: alire-project/setup-alire@v3
+
+      - name: Build techstack-enforcer
+        working-directory: techstack-enforcer
+        run: |
+          gprbuild -P techstack_enforcer.gpr -XMODE=release -j0
+
+      - name: Run learning mode
+        run: |
+          ./techstack-enforcer/bin/techstack_main audit . --mode=learning
+          echo "Learning complete - see techstack.log for patterns"
+          cat techstack.log || true
+
+      - name: Upload learning report
+        uses: actions/upload-artifact@v4
+        with:
+          name: techstack-learning
+          path: techstack.log
+          retention-days: 90

@@ -205,3 +205,8 @@ MIT + Palimpsest-0.8
 ---
 
 _"Developer tools that respect developer autonomy. No lock-in, no shame, no anxiety."_
+
+
+== Architecture
+
+See link:TOPOLOGY.md[TOPOLOGY.md] for a visual architecture map and completion dashboard.
