@@ -1,0 +1,165 @@
+# Techstack Enforcer - GitLab CI Template
+# Include this template in your project to enforce techstack compliance
+#
+# USAGE OPTION 1 - Include from remote:
+#
+#   include:
+#     - remote: 'https://raw.githubusercontent.com/${TECHSTACK_REPO}/main/ci-templates/gitlab-ci-techstack.yml'
+#
+#   variables:
+#     TECHSTACK_REPO: hyperpolymath/techstack-enforcer  # Your fork/source
+#     TECHSTACK_DEFSET: moderate    # or strict, enterprise, permissive
+#     TECHSTACK_MODE: enforce       # or learning, warn, lockdown
+#
+# USAGE OPTION 2 - Include from GitLab project:
+#
+#   include:
+#     - project: 'your-group/techstack-enforcer'
+#       file: '/ci-templates/gitlab-ci-techstack.yml'
+#       ref: main
+#
+# USAGE OPTION 3 - Copy this file directly into your project.
+
+# =============================================================================
+# VARIABLES - Override these in your project
+# =============================================================================
+
+variables:
+  # Definition set to use (strict, moderate, permissive, enterprise, memory_safe)
+  TECHSTACK_DEFSET: "moderate"
+
+  # Enforcement mode (learning, warn, enforce, lockdown)
+  TECHSTACK_MODE: "enforce"
+
+  # Exit with failure on any violation
+  TECHSTACK_FATAL_EXIT: "true"
+
+  # Output format (text, json)
+  TECHSTACK_OUTPUT: "text"
+
+  # Path to scan (default: entire repo)
+  TECHSTACK_PATH: "."
+
+# =============================================================================
+# HIDDEN JOBS - Extend these in your project
+# =============================================================================
+
+.techstack-base:
+  image: registry.gitlab.com/ada-lang/gnat:latest
+  before_script:
+    - |
+      echo "Installing techstack-enforcer..."
+      if [ ! -f bin/techstack_main ]; then
+        # Build from source if not cached
+        gprbuild -P techstack_enforcer.gpr -XMODE=release -j0 || true
+      fi
+  cache:
+    key: techstack-enforcer
+    paths:
+      - bin/
+      - obj/
+
+# Quick check - runs on every MR
+.techstack-check:
+  extends: .techstack-base
+  stage: validate
+  script:
+    - |
+      echo "Techstack Check"
+      echo "==============="
+      echo "Definition Set: $TECHSTACK_DEFSET"
+      echo "Mode: $TECHSTACK_MODE"
+      echo "Path: $TECHSTACK_PATH"
+      echo ""
+
+      ./bin/techstack_main audit "$TECHSTACK_PATH" \
+        --defset=$TECHSTACK_DEFSET \
+        --mode=$TECHSTACK_MODE \
+        ${TECHSTACK_FATAL_EXIT:+--fatal-exit}
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# Full audit with JSON output for processing
+.techstack-audit:
+  extends: .techstack-base
+  stage: validate
+  script:
+    - |
+      ./bin/techstack_main audit "$TECHSTACK_PATH" \
+        --defset=$TECHSTACK_DEFSET \
+        --mode=$TECHSTACK_MODE \
+        --json > techstack-report.json || true
+
+      ./bin/techstack_main audit "$TECHSTACK_PATH" \
+        --defset=$TECHSTACK_DEFSET \
+        --mode=$TECHSTACK_MODE
+  artifacts:
+    when: always
+    paths:
+      - techstack-report.json
+      - techstack.log
+    expire_in: 1 week
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# Decide command for specific files (useful in hooks)
+.techstack-decide:
+  extends: .techstack-base
+  stage: validate
+  script:
+    - |
+      # Get changed files
+      git diff --name-only $CI_MERGE_REQUEST_DIFF_BASE_SHA..$CI_COMMIT_SHA > changed_files.txt
+
+      # Run decide on changed files
+      cat changed_files.txt | ./bin/techstack_main decide \
+        --defset=$TECHSTACK_DEFSET \
+        --mode=$TECHSTACK_MODE
+  artifacts:
+    when: always
+    paths:
+      - changed_files.txt
+    expire_in: 1 day
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+# Learning mode - scheduled job to analyze patterns
+.techstack-learning:
+  extends: .techstack-base
+  stage: validate
+  script:
+    - |
+      ./bin/techstack_main audit "$TECHSTACK_PATH" \
+        --mode=learning
+
+      echo "Learning report generated"
+      cat techstack.log || true
+  artifacts:
+    paths:
+      - techstack.log
+    expire_in: 1 month
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+  allow_failure: true
+
+# =============================================================================
+# CONCRETE JOBS - Use these directly or as examples
+# =============================================================================
+
+techstack:check:
+  extends: .techstack-check
+  stage: validate
+
+techstack:audit:
+  extends: .techstack-audit
+  stage: validate
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+techstack:decide:
+  extends: .techstack-decide
+  stage: validate
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"

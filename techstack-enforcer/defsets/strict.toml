@@ -1,0 +1,322 @@
+# Techstack Definition Set: strict
+# Maximum memory safety - blocks all unsafe languages
+#
+# Use this set for safety-critical systems, security-sensitive applications,
+# or when you want to enforce the highest code quality standards.
+#
+# Usage:
+#   techstack-enforcer --defset=strict audit .
+#   techstack-enforcer --defset=strict decide src/
+#
+# Default mode: lockdown (blocks on warn or higher)
+
+[defset]
+name = "strict"
+description = "Maximum memory safety enforcement"
+default_mode = "lockdown"
+
+[mode]
+enforce = "lockdown"
+
+# =============================================================================
+# FATAL: Absolutely blocked - no exceptions
+# =============================================================================
+
+# Python ecosystem - Memory-unsafe, no static typing, GIL limitations
+[[block]]
+pattern = "*.py"
+level = "fatal"
+reason = "Python: No static typing, memory-unsafe runtime, GIL limitations"
+alternatives = ["Rust", "Haskell", "Elixir"]
+
+[[block]]
+pattern = "*.pyc"
+level = "fatal"
+reason = "Python bytecode detected"
+
+[[block]]
+pattern = "*.pyo"
+level = "fatal"
+reason = "Python optimized bytecode"
+
+[[block]]
+pattern = "requirements.txt"
+level = "fatal"
+reason = "Python dependency file"
+alternatives = ["Cargo.toml", "package.yaml", "mix.exs"]
+
+[[block]]
+pattern = "Pipfile"
+level = "fatal"
+reason = "Python Pipenv detected"
+
+[[block]]
+pattern = "pyproject.toml"
+level = "fatal"
+reason = "Python project configuration"
+
+# PHP - Memory-unsafe, injection-prone, inconsistent API
+[[block]]
+pattern = "*.php"
+level = "fatal"
+reason = "PHP: Memory-unsafe, injection-prone, inconsistent API"
+alternatives = ["Rust", "Go", "Elixir"]
+
+[[block]]
+pattern = "composer.json"
+level = "fatal"
+reason = "PHP Composer detected"
+
+# Ruby - Memory-unsafe runtime
+[[block]]
+pattern = "*.rb"
+level = "fatal"
+reason = "Ruby: Memory-unsafe runtime, metaprogramming abuse"
+alternatives = ["Elixir", "Rust", "Haskell"]
+
+[[block]]
+pattern = "Gemfile"
+level = "fatal"
+reason = "Ruby dependencies"
+
+# Perl - Legacy, memory-unsafe
+[[block]]
+pattern = "*.pl"
+level = "fatal"
+reason = "Perl: Legacy language, memory-unsafe"
+
+[[block]]
+pattern = "*.pm"
+level = "fatal"
+reason = "Perl module"
+
+# =============================================================================
+# BLOCK: Blocked in enforce/lockdown modes
+# =============================================================================
+
+# C/C++ - Manual memory management
+[[block]]
+pattern = "*.c"
+level = "block"
+reason = "C: Manual memory management, buffer overflows"
+alternatives = ["Rust", "Ada/SPARK", "Zig"]
+
+[[block]]
+pattern = "*.cpp"
+level = "block"
+reason = "C++: Manual memory management, complex UB"
+alternatives = ["Rust", "Ada/SPARK"]
+
+[[block]]
+pattern = "*.cc"
+level = "block"
+reason = "C++: Manual memory management"
+
+[[block]]
+pattern = "*.h"
+level = "block"
+reason = "C/C++ header file"
+
+[[block]]
+pattern = "*.hpp"
+level = "block"
+reason = "C++ header file"
+
+# Assembly - No safety guarantees
+[[block]]
+pattern = "*.asm"
+level = "block"
+reason = "Assembly: No safety guarantees"
+
+[[block]]
+pattern = "*.s"
+level = "block"
+reason = "Assembly source"
+
+# JavaScript - Use TypeScript
+[[block]]
+pattern = "*.js"
+level = "block"
+reason = "JavaScript: No static typing, use TypeScript"
+alternatives = ["TypeScript", "ReScript", "Elm"]
+
+[[block]]
+pattern = "*.jsx"
+level = "block"
+reason = "JSX: Use TSX with TypeScript"
+
+[[block]]
+pattern = "*.mjs"
+level = "block"
+reason = "ES modules: Use TypeScript"
+
+# Vendor lock-in
+[[block]]
+pattern = "Dockerfile"
+level = "block"
+reason = "Docker: Use Containerfile (Podman) for OCI compliance"
+alternatives = ["Containerfile"]
+
+[[block]]
+pattern = "docker-compose.yml"
+level = "block"
+reason = "docker-compose: Use podman-compose"
+
+[[block]]
+pattern = ".github/**"
+level = "block"
+reason = "GitHub Actions: Use GitLab CI for self-hosting"
+alternatives = [".gitlab-ci.yml"]
+
+# =============================================================================
+# WARN: Warnings, blocked in lockdown mode
+# =============================================================================
+
+[[block]]
+pattern = "*.sh"
+level = "warn"
+reason = "Shell script: Review for injection vulnerabilities"
+
+[[block]]
+pattern = "*.bash"
+level = "warn"
+reason = "Bash script: Review for injection vulnerabilities"
+
+# =============================================================================
+# ALLOW: Explicitly permitted (whitelist)
+# =============================================================================
+
+# Rust - Memory-safe with ownership
+[[block]]
+pattern = "*.rs"
+level = "allow"
+reason = "Rust: Memory-safe with ownership system"
+
+[[block]]
+pattern = "Cargo.toml"
+level = "allow"
+reason = "Rust project manifest"
+
+[[block]]
+pattern = "Cargo.lock"
+level = "allow"
+reason = "Rust dependency lock"
+
+# Ada/SPARK - Formally verifiable
+[[block]]
+pattern = "*.adb"
+level = "allow"
+reason = "Ada: Formally verifiable with SPARK"
+
+[[block]]
+pattern = "*.ads"
+level = "allow"
+reason = "Ada specification"
+
+[[block]]
+pattern = "*.gpr"
+level = "allow"
+reason = "GNAT project file"
+
+# Haskell - Pure functional, type-safe
+[[block]]
+pattern = "*.hs"
+level = "allow"
+reason = "Haskell: Pure functional, strong types"
+
+[[block]]
+pattern = "*.lhs"
+level = "allow"
+reason = "Literate Haskell"
+
+[[block]]
+pattern = "*.cabal"
+level = "allow"
+reason = "Haskell project file"
+
+[[block]]
+pattern = "stack.yaml"
+level = "allow"
+reason = "Haskell Stack config"
+
+# OCaml - Type-safe functional
+[[block]]
+pattern = "*.ml"
+level = "allow"
+reason = "OCaml: Type-safe functional"
+
+[[block]]
+pattern = "*.mli"
+level = "allow"
+reason = "OCaml interface"
+
+# Elm - No runtime exceptions
+[[block]]
+pattern = "*.elm"
+level = "allow"
+reason = "Elm: No runtime exceptions"
+
+# Elixir/Erlang - Fault-tolerant
+[[block]]
+pattern = "*.ex"
+level = "allow"
+reason = "Elixir: Fault-tolerant, immutable"
+
+[[block]]
+pattern = "*.exs"
+level = "allow"
+reason = "Elixir script"
+
+[[block]]
+pattern = "mix.exs"
+level = "allow"
+reason = "Elixir project"
+
+[[block]]
+pattern = "*.erl"
+level = "allow"
+reason = "Erlang: Fault-tolerant"
+
+[[block]]
+pattern = "*.hrl"
+level = "allow"
+reason = "Erlang header"
+
+# ReScript - Type-safe JS alternative
+[[block]]
+pattern = "*.res"
+level = "allow"
+reason = "ReScript: Type-safe JavaScript compilation"
+
+[[block]]
+pattern = "*.resi"
+level = "allow"
+reason = "ReScript interface"
+
+# Nix - Reproducible builds
+[[block]]
+pattern = "*.nix"
+level = "allow"
+reason = "Nix: Reproducible builds"
+
+[[block]]
+pattern = "flake.nix"
+level = "allow"
+reason = "Nix flake"
+
+[[block]]
+pattern = "flake.lock"
+level = "allow"
+reason = "Nix flake lock"
+
+# GitLab CI - Self-hostable
+[[block]]
+pattern = ".gitlab-ci.yml"
+level = "allow"
+reason = "GitLab CI: Self-hostable CI/CD"
+
+# Podman/OCI - Open container standard
+[[block]]
+pattern = "Containerfile"
+level = "allow"
+reason = "OCI Containerfile: Open standard"
