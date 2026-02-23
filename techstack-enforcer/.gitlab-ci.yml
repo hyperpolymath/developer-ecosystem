@@ -1,0 +1,148 @@
+# Techstack Enforcer - GitLab CI Configuration
+# Validates techstack compliance in CI/CD pipeline
+
+stages:
+  - validate
+  - build
+  - test
+  - deploy
+
+variables:
+  TECHSTACK_MODE: enforce
+  TECHSTACK_FATAL_EXIT: "true"
+
+# =============================================================================
+# TECHSTACK VALIDATION STAGE
+# =============================================================================
+
+techstack:audit:
+  stage: validate
+  image: registry.gitlab.com/ada-lang/gnat:latest
+  before_script:
+    - apt-get update && apt-get install -y notify-osd
+  script:
+    - echo "Building techstack enforcer..."
+    - gprbuild -P techstack_enforcer.gpr -XMODE=release -j0
+    - echo "Running techstack audit..."
+    - ./bin/techstack_main audit . --mode=$TECHSTACK_MODE --fatal-exit
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  artifacts:
+    when: on_failure
+    paths:
+      - techstack.log
+    expire_in: 1 week
+
+techstack:learning:
+  stage: validate
+  image: registry.gitlab.com/ada-lang/gnat:latest
+  script:
+    - gprbuild -P techstack_enforcer.gpr -XMODE=release -j0
+    - ./bin/techstack_main audit . --mode=learning
+    - cat techstack.log || true
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+  artifacts:
+    paths:
+      - techstack.log
+      - learning_report.md
+    expire_in: 1 month
+  allow_failure: true
+
+# =============================================================================
+# BUILD STAGE
+# =============================================================================
+
+build:ada:
+  stage: build
+  image: registry.gitlab.com/ada-lang/gnat:latest
+  script:
+    - gprbuild -P techstack_enforcer.gpr -XMODE=release -j0
+  artifacts:
+    paths:
+      - bin/
+    expire_in: 1 day
+
+build:spark-verify:
+  stage: build
+  image: registry.gitlab.com/spark/spark-community:latest
+  script:
+    - gnatprove -P techstack_enforcer.gpr --level=2 --mode=all
+  artifacts:
+    paths:
+      - gnatprove/
+    expire_in: 1 week
+  allow_failure: true
+
+# =============================================================================
+# TEST STAGE
+# =============================================================================
+
+test:unit:
+  stage: test
+  image: registry.gitlab.com/ada-lang/gnat:latest
+  needs:
+    - build:ada
+  script:
+    - ./bin/techstack_main version
+    - ./bin/techstack_main list
+    - ./bin/techstack_main audit . --mode=warn
+  artifacts:
+    reports:
+      junit: test_results.xml
+
+test:integration:
+  stage: test
+  image: registry.gitlab.com/ada-lang/gnat:latest
+  needs:
+    - build:ada
+  script:
+    - |
+      # Create test files
+      mkdir -p test_repo
+      echo "print('hello')" > test_repo/test.py
+      echo "fn main() {}" > test_repo/main.rs
+
+      # Run audit (should find Python violation)
+      if ./bin/techstack_main audit test_repo --mode=enforce --fatal-exit 2>&1; then
+        echo "ERROR: Should have failed on Python file"
+        exit 1
+      else
+        echo "PASS: Correctly blocked Python"
+      fi
+
+      # Remove Python, should pass now
+      rm test_repo/test.py
+      ./bin/techstack_main audit test_repo --mode=enforce --fatal-exit
+      echo "PASS: Rust-only repo passes"
+
+# =============================================================================
+# DEPLOY STAGE
+# =============================================================================
+
+deploy:release:
+  stage: deploy
+  image: registry.gitlab.com/ada-lang/gnat:latest
+  needs:
+    - build:ada
+    - test:unit
+  script:
+    - echo "Creating release package..."
+    - tar -czf techstack-enforcer-$CI_COMMIT_TAG.tar.gz bin/ config/ scripts/
+  artifacts:
+    paths:
+      - techstack-enforcer-*.tar.gz
+  rules:
+    - if: $CI_COMMIT_TAG
+
+# =============================================================================
+# TEMPLATES
+# =============================================================================
+
+.techstack-check:
+  stage: validate
+  script:
+    - techstack-enforcer audit . --mode=enforce --fatal-exit
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
