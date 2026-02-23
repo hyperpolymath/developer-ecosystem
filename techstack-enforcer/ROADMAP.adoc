@@ -1,0 +1,48 @@
+// SPDX-License-Identifier: MPL-2.0-or-later
+= Techstack Enforcer Roadmap
+
+== Current Status
+
+Active implementation. Core Ada/SPARK engine, definition sets, CI/CD templates, and documentation complete. TUI, learning mode, and notification system in progress.
+
+== Milestones
+
+=== v0.1.0 - Core Enforcement
+
+* [x] Ada/SPARK core engine structure (14 files)
+* [x] TOML definition set parsing (strict/moderate/enterprise)
+* [x] Pattern matching with glob syntax
+* [x] Severity levels (fatal/block/warn/allow)
+* [x] Four enforcement modes (learning/warn/enforce/lockdown)
+* [x] JSON API for structured decisions
+* [x] CI/CD templates (GitLab CI + GitHub Actions)
+* [x] Documentation (README.adoc, README.md, 8 doc files)
+* [ ] SPARK-verify all core/ packages
+* [ ] Git hooks working end-to-end
+* [ ] Desktop notification system (notify-send)
+* [ ] Install script for multi-repo deployment
+
+=== v0.2.0 - TUI + Learning
+
+* [ ] Complete Ada/SPARK TUI with all keybindings
+* [ ] Learning mode CVE API integration (NVD 2.0)
+* [ ] Pattern database persistence
+* [ ] Webhook notification channel
+* [ ] Syslog integration
+
+=== v1.0.0 - Production Ready
+
+* [ ] Idris2 ABI definitions (per hyperpolymath standard)
+* [ ] Zig FFI bridge
+* [ ] GitVisor file watcher integration (Layer 4)
+* [ ] Container build guard (Layer 5)
+* [ ] Published GitHub Action
+* [ ] Comprehensive test suite (SPARK proofs + integration)
+* [ ] Alire package (Ada package manager)
+
+== Future Directions
+
+* Ecosystem-wide audit across all ~290 hyperpolymath repos
+* Integration with reposystem for automated fleet enforcement
+* Scaffoldia template validation
+* Web dashboard for violation analytics (ReScript + Deno)

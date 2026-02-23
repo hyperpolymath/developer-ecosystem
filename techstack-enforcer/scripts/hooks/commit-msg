@@ -1,0 +1,26 @@
+#!/bin/bash
+# Techstack Enforcer - Commit Message Hook
+# Validates commit message format
+
+set -euo pipefail
+
+COMMIT_MSG_FILE="$1"
+COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
+
+CYAN='\033[0;36m'
+YELLOW='\033[0;33m'
+RESET='\033[0m'
+
+echo -e "${CYAN}[techstack]${RESET} Checking commit message..."
+
+# Check for minimum length
+if [ ${#COMMIT_MSG} -lt 10 ]; then
+    echo -e "${YELLOW}[techstack]${RESET} Warning: Commit message is very short"
+fi
+
+# Check for conventional commit format (optional)
+# if ! echo "$COMMIT_MSG" | grep -qE "^(feat|fix|docs|style|refactor|test|chore)(\(.+\))?: .+"; then
+#     echo -e "${YELLOW}[techstack]${RESET} Consider using conventional commits format"
+# fi
+
+exit 0

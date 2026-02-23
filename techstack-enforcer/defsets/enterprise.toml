@@ -1,0 +1,278 @@
+# Techstack Definition Set: enterprise
+# Corporate environments with legacy language support
+#
+# Use this set for enterprise environments where Java, Go, and other
+# established languages are the standard, but you still want to
+# enforce good practices and block high-risk patterns.
+#
+# Usage:
+#   techstack-enforcer --defset=enterprise audit .
+#   techstack-enforcer --defset=enterprise decide src/
+#
+# Default mode: enforce
+
+[defset]
+name = "enterprise"
+description = "Corporate environments with legacy language support"
+default_mode = "enforce"
+
+[mode]
+enforce = "enforce"
+
+# =============================================================================
+# BLOCK: Not approved for enterprise use
+# =============================================================================
+
+# Scripting languages - not approved for production
+[[block]]
+pattern = "*.py"
+level = "block"
+reason = "Python: Not in approved enterprise stack"
+alternatives = ["Java", "Go", "TypeScript"]
+
+[[block]]
+pattern = "*.php"
+level = "block"
+reason = "PHP: Not approved for enterprise"
+alternatives = ["Java", "Go"]
+
+[[block]]
+pattern = "*.rb"
+level = "block"
+reason = "Ruby: Not in enterprise stack"
+alternatives = ["Java", "Go"]
+
+[[block]]
+pattern = "*.pl"
+level = "block"
+reason = "Perl: Legacy, not maintained"
+alternatives = ["Go", "Rust"]
+
+# =============================================================================
+# WARN: Legacy but tolerated (migration planned)
+# =============================================================================
+
+# C/C++ - Legacy codebases
+[[block]]
+pattern = "*.c"
+level = "warn"
+reason = "C: Legacy codebase - migration to Rust planned"
+alternatives = ["Rust"]
+
+[[block]]
+pattern = "*.cpp"
+level = "warn"
+reason = "C++: Legacy codebase - migration planned"
+alternatives = ["Rust"]
+
+[[block]]
+pattern = "*.h"
+level = "warn"
+reason = "C header: Legacy code"
+
+[[block]]
+pattern = "*.hpp"
+level = "warn"
+reason = "C++ header: Legacy code"
+
+# JavaScript - Prefer TypeScript
+[[block]]
+pattern = "*.js"
+level = "warn"
+reason = "JavaScript: Prefer TypeScript"
+alternatives = ["TypeScript"]
+
+# Shell scripts - Review for secrets
+[[block]]
+pattern = "*.sh"
+level = "warn"
+reason = "Shell: Review for hardcoded secrets"
+
+[[block]]
+pattern = "*.bash"
+level = "warn"
+reason = "Bash: Review for hardcoded secrets"
+
+# Docker - Approved with review
+[[block]]
+pattern = "Dockerfile"
+level = "warn"
+reason = "Docker: Approved with security review"
+
+# GitHub - Prefer internal CI
+[[block]]
+pattern = ".github/**"
+level = "warn"
+reason = "GitHub: Prefer internal CI/CD systems"
+
+# =============================================================================
+# ALLOW: Enterprise-approved languages
+# =============================================================================
+
+# Java ecosystem
+[[block]]
+pattern = "*.java"
+level = "allow"
+reason = "Java: Enterprise approved"
+
+[[block]]
+pattern = "pom.xml"
+level = "allow"
+reason = "Maven project"
+
+[[block]]
+pattern = "build.gradle"
+level = "allow"
+reason = "Gradle build"
+
+[[block]]
+pattern = "build.gradle.kts"
+level = "allow"
+reason = "Gradle Kotlin DSL"
+
+# Kotlin
+[[block]]
+pattern = "*.kt"
+level = "allow"
+reason = "Kotlin: Enterprise approved (Android, backend)"
+
+[[block]]
+pattern = "*.kts"
+level = "allow"
+reason = "Kotlin script"
+
+# Go
+[[block]]
+pattern = "*.go"
+level = "allow"
+reason = "Go: Enterprise approved for services"
+
+[[block]]
+pattern = "go.mod"
+level = "allow"
+reason = "Go module"
+
+[[block]]
+pattern = "go.sum"
+level = "allow"
+reason = "Go checksums"
+
+# Rust
+[[block]]
+pattern = "*.rs"
+level = "allow"
+reason = "Rust: Enterprise approved for systems"
+
+[[block]]
+pattern = "Cargo.toml"
+level = "allow"
+reason = "Rust project"
+
+# TypeScript
+[[block]]
+pattern = "*.ts"
+level = "allow"
+reason = "TypeScript: Enterprise approved for frontend/backend"
+
+[[block]]
+pattern = "*.tsx"
+level = "allow"
+reason = "TSX: Enterprise approved for React"
+
+# C#/.NET
+[[block]]
+pattern = "*.cs"
+level = "allow"
+reason = "C#: Enterprise approved"
+
+[[block]]
+pattern = "*.csproj"
+level = "allow"
+reason = ".NET project"
+
+[[block]]
+pattern = "*.sln"
+level = "allow"
+reason = ".NET solution"
+
+# Scala
+[[block]]
+pattern = "*.scala"
+level = "allow"
+reason = "Scala: Enterprise approved for data"
+
+[[block]]
+pattern = "build.sbt"
+level = "allow"
+reason = "SBT build"
+
+# Haskell - Approved for specific use cases
+[[block]]
+pattern = "*.hs"
+level = "allow"
+reason = "Haskell: Approved for fintech/formal"
+
+# Ada - Safety-critical systems
+[[block]]
+pattern = "*.adb"
+level = "allow"
+reason = "Ada: Approved for safety-critical"
+
+[[block]]
+pattern = "*.ads"
+level = "allow"
+reason = "Ada specification"
+
+# SQL
+[[block]]
+pattern = "*.sql"
+level = "allow"
+reason = "SQL: Standard database language"
+
+# Configuration
+[[block]]
+pattern = "*.yaml"
+level = "allow"
+reason = "YAML configuration"
+
+[[block]]
+pattern = "*.yml"
+level = "allow"
+reason = "YAML configuration"
+
+[[block]]
+pattern = "*.json"
+level = "allow"
+reason = "JSON configuration"
+
+[[block]]
+pattern = "*.toml"
+level = "allow"
+reason = "TOML configuration"
+
+[[block]]
+pattern = "*.xml"
+level = "allow"
+reason = "XML configuration"
+
+# CI/CD
+[[block]]
+pattern = ".gitlab-ci.yml"
+level = "allow"
+reason = "GitLab CI: Self-hostable"
+
+[[block]]
+pattern = "Jenkinsfile"
+level = "allow"
+reason = "Jenkins: Enterprise CI standard"
+
+# Terraform/IaC
+[[block]]
+pattern = "*.tf"
+level = "allow"
+reason = "Terraform: Infrastructure as Code"
+
+[[block]]
+pattern = "*.tfvars"
+level = "allow"
+reason = "Terraform variables"
