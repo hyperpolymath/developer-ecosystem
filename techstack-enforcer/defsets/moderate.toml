@@ -1,0 +1,218 @@
+# Techstack Definition Set: moderate
+# Balanced safety with practical exceptions
+#
+# Use this set for most projects where you want good practices
+# without being overly restrictive.
+#
+# Usage:
+#   techstack-enforcer --defset=moderate audit .
+#   techstack-enforcer --defset=moderate decide src/
+#
+# Default mode: enforce (blocks on block/fatal)
+
+[defset]
+name = "moderate"
+description = "Balanced safety with practical exceptions"
+default_mode = "enforce"
+
+[mode]
+enforce = "enforce"
+
+# =============================================================================
+# FATAL: Absolutely blocked
+# =============================================================================
+
+[[block]]
+pattern = "*.py"
+level = "fatal"
+reason = "Python: Consider typed alternatives"
+alternatives = ["Rust", "Go", "TypeScript"]
+
+[[block]]
+pattern = "*.php"
+level = "fatal"
+reason = "PHP: Security and consistency concerns"
+alternatives = ["Go", "Rust", "TypeScript"]
+
+# =============================================================================
+# BLOCK: Blocked in enforce mode
+# =============================================================================
+
+# Memory-unsafe core languages
+[[block]]
+pattern = "*.c"
+level = "block"
+reason = "C: Prefer Rust or Zig for memory safety"
+alternatives = ["Rust", "Zig"]
+
+[[block]]
+pattern = "*.cpp"
+level = "block"
+reason = "C++: Prefer Rust for new code"
+alternatives = ["Rust"]
+
+[[block]]
+pattern = "*.cc"
+level = "block"
+reason = "C++: Prefer Rust for new code"
+
+# =============================================================================
+# WARN: Advisory warnings
+# =============================================================================
+
+# JavaScript - Prefer TypeScript
+[[block]]
+pattern = "*.js"
+level = "warn"
+reason = "JavaScript: Consider TypeScript for type safety"
+alternatives = ["TypeScript"]
+
+[[block]]
+pattern = "*.jsx"
+level = "warn"
+reason = "JSX: Consider TSX for type safety"
+alternatives = ["TSX"]
+
+# Headers - Review for safety
+[[block]]
+pattern = "*.h"
+level = "warn"
+reason = "C header: Review for memory safety"
+
+[[block]]
+pattern = "*.hpp"
+level = "warn"
+reason = "C++ header: Review for memory safety"
+
+# Ruby - Consider alternatives
+[[block]]
+pattern = "*.rb"
+level = "warn"
+reason = "Ruby: Consider typed alternative"
+alternatives = ["Crystal", "Elixir"]
+
+# Perl - Legacy
+[[block]]
+pattern = "*.pl"
+level = "warn"
+reason = "Perl: Legacy language"
+
+# Vendor lock-in - Advisory
+[[block]]
+pattern = "Dockerfile"
+level = "warn"
+reason = "Docker: Consider Containerfile for OCI compliance"
+
+[[block]]
+pattern = ".github/**"
+level = "warn"
+reason = "GitHub: Consider GitLab CI for self-hosting"
+
+# =============================================================================
+# ALLOW: Safe and practical languages
+# =============================================================================
+
+# Rust
+[[block]]
+pattern = "*.rs"
+level = "allow"
+reason = "Rust: Memory-safe, performant"
+
+[[block]]
+pattern = "Cargo.toml"
+level = "allow"
+reason = "Rust project"
+
+# Go
+[[block]]
+pattern = "*.go"
+level = "allow"
+reason = "Go: GC-safe, simple, fast"
+
+[[block]]
+pattern = "go.mod"
+level = "allow"
+reason = "Go module"
+
+[[block]]
+pattern = "go.sum"
+level = "allow"
+reason = "Go checksums"
+
+# TypeScript
+[[block]]
+pattern = "*.ts"
+level = "allow"
+reason = "TypeScript: Typed JavaScript"
+
+[[block]]
+pattern = "*.tsx"
+level = "allow"
+reason = "TSX: Typed React"
+
+# Ada/SPARK
+[[block]]
+pattern = "*.adb"
+level = "allow"
+reason = "Ada: Formally verifiable"
+
+[[block]]
+pattern = "*.ads"
+level = "allow"
+reason = "Ada specification"
+
+# Haskell
+[[block]]
+pattern = "*.hs"
+level = "allow"
+reason = "Haskell: Pure functional"
+
+# Elixir
+[[block]]
+pattern = "*.ex"
+level = "allow"
+reason = "Elixir: Fault-tolerant"
+
+[[block]]
+pattern = "*.exs"
+level = "allow"
+reason = "Elixir script"
+
+# Elm
+[[block]]
+pattern = "*.elm"
+level = "allow"
+reason = "Elm: No runtime exceptions"
+
+# Zig
+[[block]]
+pattern = "*.zig"
+level = "allow"
+reason = "Zig: Safe low-level programming"
+
+# Nix
+[[block]]
+pattern = "*.nix"
+level = "allow"
+reason = "Nix: Reproducible builds"
+
+# Configuration files
+[[block]]
+pattern = "*.toml"
+level = "allow"
+reason = "TOML configuration"
+
+[[block]]
+pattern = "*.yaml"
+level = "allow"
+reason = "YAML configuration"
+
+[[block]]
+pattern = "*.yml"
+level = "allow"
+reason = "YAML configuration"
+
+[[block]]
+pattern = "*.json"
+level = "allow"
+reason = "JSON configuration"

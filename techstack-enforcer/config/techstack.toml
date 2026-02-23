@@ -1,0 +1,496 @@
+# Techstack Enforcer Configuration
+# Formally verified technology stack enforcement engine
+# Edit with techstack-tui for interactive management
+
+[mode]
+# Options: learning, warn, enforce, lockdown
+enforce = "enforce"
+
+[notifications]
+desktop = true
+log = true
+log_path = "techstack.log"
+syslog = false
+webhook = false
+# webhook_url = "https://your-webhook-endpoint"
+
+[learning]
+enabled = true
+auto_suggest = true
+confidence_threshold = 80
+# CVE database integration - NVD 2.0 API
+# Documentation: https://nvd.nist.gov/developers/vulnerabilities
+# Note: API key recommended for production use (increases rate limits)
+cve_api = "https://services.nvd.nist.gov/rest/json/cves/2.0"
+# cve_api_key = ""  # Optional: Get from https://nvd.nist.gov/developers/request-an-api-key
+
+# Language recommendations based on vulnerability types
+[learning.recommendations]
+buffer_overflow = ["Rust", "Ada/SPARK", "Haskell", "OCaml"]
+null_dereference = ["Rust", "Haskell", "ReScript", "Elm"]
+race_condition = ["Elixir", "Erlang", "Rust", "Haskell"]
+injection_attack = ["Haskell", "Rust", "ReScript", "Elm"]
+use_after_free = ["Rust", "Ada/SPARK", "Haskell"]
+integer_overflow = ["Ada/SPARK", "Rust", "Haskell"]
+type_confusion = ["Haskell", "OCaml", "Rust", "ReScript"]
+memory_leak = ["Rust", "Ada/SPARK", "Haskell", "Elixir"]
+unvalidated_input = ["Haskell", "Rust", "ReScript"]
+
+# =============================================================================
+# FILTER DEFINITIONS
+# =============================================================================
+
+# FATAL: Absolutely blocked, no exceptions
+# BLOCK: Blocked in enforce/lockdown modes
+# WARN:  Warning only, blocked in lockdown mode
+# ALLOW: Explicitly allowed (whitelist override)
+
+# -----------------------------------------------------------------------------
+# Python ecosystem - Memory-unsafe, runtime errors, no static typing
+# -----------------------------------------------------------------------------
+
+[[block]]
+pattern = "*.py"
+level = "fatal"
+reason = "Python: No static typing, memory-unsafe runtime, GIL limitations"
+alternatives = ["Rust", "Haskell", "Elixir"]
+
+[[block]]
+pattern = "*.pyc"
+level = "fatal"
+reason = "Python bytecode detected"
+
+[[block]]
+pattern = "*.pyo"
+level = "fatal"
+reason = "Python optimized bytecode"
+
+[[block]]
+pattern = "requirements.txt"
+level = "fatal"
+reason = "Python dependency file - use memory-safe language instead"
+alternatives = ["Cargo.toml", "package.yaml", "mix.exs"]
+
+[[block]]
+pattern = "Pipfile"
+level = "fatal"
+reason = "Python Pipenv detected"
+
+[[block]]
+pattern = "Pipfile.lock"
+level = "fatal"
+reason = "Python Pipenv lock file"
+
+[[block]]
+pattern = "pyproject.toml"
+level = "fatal"
+reason = "Python project configuration"
+
+[[block]]
+pattern = "setup.py"
+level = "fatal"
+reason = "Python setup script"
+
+[[block]]
+pattern = "setup.cfg"
+level = "fatal"
+reason = "Python setup configuration"
+
+[[block]]
+pattern = "**/__pycache__/**"
+level = "fatal"
+reason = "Python cache directory"
+
+[[block]]
+pattern = ".python-version"
+level = "fatal"
+reason = "Python version file"
+
+[[block]]
+pattern = "poetry.lock"
+level = "fatal"
+reason = "Python Poetry lock file"
+
+[[block]]
+pattern = "*.pyi"
+level = "fatal"
+reason = "Python type stub files - still Python"
+
+# -----------------------------------------------------------------------------
+# Docker - Use Podman instead
+# -----------------------------------------------------------------------------
+
+[[block]]
+pattern = "Dockerfile"
+level = "block"
+reason = "Use Containerfile for Podman instead"
+alternatives = ["Containerfile"]
+
+[[block]]
+pattern = "Dockerfile.*"
+level = "block"
+reason = "Use Containerfile for Podman"
+
+[[block]]
+pattern = "docker-compose.yml"
+level = "block"
+reason = "Use podman-compose or Kubernetes manifests"
+alternatives = ["podman-compose.yml", "kube-*.yml"]
+
+[[block]]
+pattern = "docker-compose.yaml"
+level = "block"
+reason = "Use podman-compose or Kubernetes manifests"
+
+[[block]]
+pattern = ".dockerignore"
+level = "warn"
+reason = "Consider .containerignore for Podman"
+
+# -----------------------------------------------------------------------------
+# C/C++ - Memory-unsafe languages
+# -----------------------------------------------------------------------------
+
+[[block]]
+pattern = "*.c"
+level = "block"
+reason = "C: Memory-unsafe, use Rust or Ada/SPARK for safety"
+alternatives = ["Rust (.rs)", "Ada/SPARK (.adb/.ads)"]
+
+[[block]]
+pattern = "*.cpp"
+level = "block"
+reason = "C++: Memory-unsafe, use Rust or Ada/SPARK"
+
+[[block]]
+pattern = "*.cc"
+level = "block"
+reason = "C++: Memory-unsafe"
+
+[[block]]
+pattern = "*.cxx"
+level = "block"
+reason = "C++: Memory-unsafe"
+
+[[block]]
+pattern = "*.h"
+level = "warn"
+reason = "C header: Consider memory-safe alternatives"
+
+[[block]]
+pattern = "*.hpp"
+level = "warn"
+reason = "C++ header: Consider memory-safe alternatives"
+
+[[block]]
+pattern = "CMakeLists.txt"
+level = "warn"
+reason = "CMake typically indicates C/C++ project"
+
+[[block]]
+pattern = "Makefile"
+level = "warn"
+reason = "Makefile may indicate C/C++ - check project type"
+
+# -----------------------------------------------------------------------------
+# JavaScript (prefer TypeScript or ReScript)
+# -----------------------------------------------------------------------------
+
+[[block]]
+pattern = "*.js"
+level = "block"
+reason = "JavaScript: Use TypeScript or ReScript for type safety"
+alternatives = ["TypeScript (.ts)", "ReScript (.res)"]
+
+[[block]]
+pattern = "*.jsx"
+level = "block"
+reason = "JSX: Use TypeScript TSX or ReScript"
+
+[[block]]
+pattern = "*.mjs"
+level = "block"
+reason = "ES modules JS: Use TypeScript instead"
+
+[[block]]
+pattern = "*.cjs"
+level = "block"
+reason = "CommonJS: Use TypeScript instead"
+
+# TypeScript allowed but monitored
+[[block]]
+pattern = "*.ts"
+level = "allow"
+reason = "TypeScript: Acceptable with strict mode"
+
+[[block]]
+pattern = "*.tsx"
+level = "allow"
+reason = "TypeScript TSX: Acceptable"
+
+# -----------------------------------------------------------------------------
+# GitHub (prefer GitLab)
+# -----------------------------------------------------------------------------
+
+[[block]]
+pattern = ".github/**"
+level = "warn"
+reason = "GitHub configuration detected - consider GitLab CI"
+alternatives = [".gitlab-ci.yml"]
+
+[[block]]
+pattern = ".github/workflows/*.yml"
+level = "warn"
+reason = "GitHub Actions - consider GitLab CI pipelines"
+
+[[block]]
+pattern = ".github/workflows/*.yaml"
+level = "warn"
+reason = "GitHub Actions - consider GitLab CI pipelines"
+
+# -----------------------------------------------------------------------------
+# Ruby - Dynamic typing, memory issues
+# -----------------------------------------------------------------------------
+
+[[block]]
+pattern = "*.rb"
+level = "block"
+reason = "Ruby: Dynamic typing, consider static alternatives"
+alternatives = ["Crystal (.cr)", "Rust", "Elixir"]
+
+[[block]]
+pattern = "Gemfile"
+level = "block"
+reason = "Ruby Bundler detected"
+
+[[block]]
+pattern = "Gemfile.lock"
+level = "block"
+reason = "Ruby Bundler lock file"
+
+[[block]]
+pattern = "*.gemspec"
+level = "block"
+reason = "Ruby gem specification"
+
+# -----------------------------------------------------------------------------
+# PHP - Security concerns
+# -----------------------------------------------------------------------------
+
+[[block]]
+pattern = "*.php"
+level = "fatal"
+reason = "PHP: Historical security issues, use safer alternatives"
+alternatives = ["Elixir", "Rust", "Haskell"]
+
+[[block]]
+pattern = "composer.json"
+level = "fatal"
+reason = "PHP Composer detected"
+
+[[block]]
+pattern = "composer.lock"
+level = "fatal"
+reason = "PHP Composer lock file"
+
+# -----------------------------------------------------------------------------
+# Perl - Legacy, security concerns
+# -----------------------------------------------------------------------------
+
+[[block]]
+pattern = "*.pl"
+level = "block"
+reason = "Perl: Legacy language, consider modern alternatives"
+
+[[block]]
+pattern = "*.pm"
+level = "block"
+reason = "Perl module"
+
+# -----------------------------------------------------------------------------
+# Shell scripts - Security concerns with complex scripts
+# -----------------------------------------------------------------------------
+
+[[block]]
+pattern = "*.sh"
+level = "warn"
+reason = "Shell scripts: Be cautious with command injection"
+
+[[block]]
+pattern = "*.bash"
+level = "warn"
+reason = "Bash scripts: Be cautious with command injection"
+
+# -----------------------------------------------------------------------------
+# EXPLICITLY ALLOWED (Memory-safe/Formally verified)
+# -----------------------------------------------------------------------------
+
+[[block]]
+pattern = "*.rs"
+level = "allow"
+reason = "Rust: Memory-safe, encouraged"
+
+[[block]]
+pattern = "*.adb"
+level = "allow"
+reason = "Ada body: Formally verifiable, encouraged"
+
+[[block]]
+pattern = "*.ads"
+level = "allow"
+reason = "Ada spec: Formally verifiable, encouraged"
+
+[[block]]
+pattern = "*.gpr"
+level = "allow"
+reason = "GNAT project file"
+
+[[block]]
+pattern = "*.hs"
+level = "allow"
+reason = "Haskell: Pure functional, type-safe"
+
+[[block]]
+pattern = "*.lhs"
+level = "allow"
+reason = "Literate Haskell"
+
+[[block]]
+pattern = "*.ex"
+level = "allow"
+reason = "Elixir: Fault-tolerant, encouraged"
+
+[[block]]
+pattern = "*.exs"
+level = "allow"
+reason = "Elixir script"
+
+[[block]]
+pattern = "*.erl"
+level = "allow"
+reason = "Erlang: Fault-tolerant runtime"
+
+[[block]]
+pattern = "*.hrl"
+level = "allow"
+reason = "Erlang header"
+
+[[block]]
+pattern = "*.res"
+level = "allow"
+reason = "ReScript: Type-safe JS alternative"
+
+[[block]]
+pattern = "*.resi"
+level = "allow"
+reason = "ReScript interface"
+
+[[block]]
+pattern = "*.ml"
+level = "allow"
+reason = "OCaml: Type-safe, functional"
+
+[[block]]
+pattern = "*.mli"
+level = "allow"
+reason = "OCaml interface"
+
+[[block]]
+pattern = "*.elm"
+level = "allow"
+reason = "Elm: No runtime exceptions, type-safe"
+
+[[block]]
+pattern = "*.nix"
+level = "allow"
+reason = "Nix: Reproducible builds"
+
+[[block]]
+pattern = "*.toml"
+level = "allow"
+reason = "TOML configuration"
+
+[[block]]
+pattern = "*.yaml"
+level = "allow"
+reason = "YAML configuration"
+
+[[block]]
+pattern = "*.yml"
+level = "allow"
+reason = "YAML configuration"
+
+[[block]]
+pattern = "*.json"
+level = "allow"
+reason = "JSON data"
+
+[[block]]
+pattern = "*.md"
+level = "allow"
+reason = "Markdown documentation"
+
+[[block]]
+pattern = "*.txt"
+level = "allow"
+reason = "Text file"
+
+[[block]]
+pattern = "Cargo.toml"
+level = "allow"
+reason = "Rust Cargo manifest - encouraged"
+
+[[block]]
+pattern = "Cargo.lock"
+level = "allow"
+reason = "Rust Cargo lock file"
+
+[[block]]
+pattern = "mix.exs"
+level = "allow"
+reason = "Elixir Mix project"
+
+[[block]]
+pattern = "mix.lock"
+level = "allow"
+reason = "Elixir Mix lock file"
+
+[[block]]
+pattern = "stack.yaml"
+level = "allow"
+reason = "Haskell Stack project"
+
+[[block]]
+pattern = "package.yaml"
+level = "allow"
+reason = "Haskell package spec"
+
+[[block]]
+pattern = "*.cabal"
+level = "allow"
+reason = "Haskell Cabal project"
+
+[[block]]
+pattern = "bsconfig.json"
+level = "allow"
+reason = "ReScript configuration"
+
+[[block]]
+pattern = "Containerfile"
+level = "allow"
+reason = "Podman container definition - encouraged"
+
+[[block]]
+pattern = ".gitlab-ci.yml"
+level = "allow"
+reason = "GitLab CI configuration - encouraged"
+
+[[block]]
+pattern = "flake.nix"
+level = "allow"
+reason = "Nix flake - reproducible builds"
+
+[[block]]
+pattern = "flake.lock"
+level = "allow"
+reason = "Nix flake lock file"
