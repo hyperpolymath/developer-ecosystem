@@ -1,0 +1,36 @@
+= Techstack Enforcer - Citation Guide
+:toc:
+
+== BibTeX
+
+[source,bibtex]
+----
+@software{techstack-enforcer_2026,
+  author = {Jewell, Jonathan D.A.},
+  title = {Techstack Enforcer},
+  year = {2026},
+  url = {https://github.com/hyperpolymath/techstack-enforcer},
+  license = {PMPL-1.0-or-later}
+}
+----
+
+== Harvard Style
+
+Jewell, J.D.A. (2026) _Techstack Enforcer_ [Computer software]. Available at: https://github.com/hyperpolymath/techstack-enforcer
+
+== OSCOLA
+
+Jonathan D.A. Jewell, 'Techstack Enforcer' (2026) <https://github.com/hyperpolymath/techstack-enforcer>
+
+== MLA
+
+Jewell, Jonathan D.A. "Techstack Enforcer." 2026, github.com/hyperpolymath/techstack-enforcer.
+
+== APA 7
+
+Jewell, J.D.A. (2026). _Techstack Enforcer_ [Computer software]. GitHub. https://github.com/hyperpolymath/techstack-enforcer
+
+== See Also
+
+* link:../CITATION.cff[CITATION.cff]
+* link:../codemeta.json[codemeta.json]

@@ -53,7 +53,7 @@ The following files in `.machine_readable/` contain structured project metadata:
 
 For developer tools:
 - **Rust** preferred for CLI tools, git operations
-- **ReScript** for web dashboards (gitvisor)
+- **ReScript** for web dashboards (git-hud)
 - **Deno** for automation scripts
 - **Julia** for batch analysis (oikos metrics)
 

@@ -1,0 +1,309 @@
+// SPDX-License-Identifier: MPL-2.0-or-later
+// SPDX-FileCopyrightText: 2025-2026 Jonathan D.A. Jewell (hyperpolymath) <jonathan.jewell@open.ac.uk>
+
+= Techstack Enforcer
+:toc: macro
+:toclevels: 3
+:icons: font
+
+A formally verified technology stack enforcement system written in Ada/SPARK. Blocks unwanted technologies **by every possible means** — git hooks, CI/CD pipelines, file watchers, container build guards — and notifies when blocking occurs.
+
+image:https://img.shields.io/github/license/hyperpolymath/techstack-enforcer[License]
+image:https://img.shields.io/badge/SPARK-verified-green[SPARK Verified]
+
+== License & Philosophy
+
+This project uses **PMPL-1.0-or-later**. MPL-2.0 declared for platform/tooling compatibility.
+
+Philosophy: **Palimpsest**. The Palimpsest-MPL (PMPL) text is provided in `license/PMPL-1.0.txt`, and the canonical source is the palimpsest-license repository.
+
+toc::[]
+
+== Intent
+
+Techstack Enforcer exists to make language policy violations **impossible to ignore**. The enforcer itself is written in Ada/SPARK — a language with formal verification guarantees — so the enforcement engine cannot be compromised by the same class of memory-safety bugs it guards against. The core design principle is **absolute blocking at every layer**, not just advisory warnings.
+
+== Overview
+
+=== Multi-Layer Blocking Architecture
+
+Enforcement operates at every layer where code enters a repository:
+
+|===
+| Layer | Mechanism | When It Fires
+
+| *Layer 1* | Pre-commit hooks (`.git/hooks/pre-commit`) | Before any local commit
+| *Layer 2* | Pre-push hooks (`.git/hooks/pre-push`) | Before pushing to remote
+| *Layer 3* | CI/CD pipelines (GitLab CI / GitHub Actions) | On every MR/PR and push to main
+| *Layer 4* | File watchers (GitVisor integration) | Real-time, on file change
+| *Layer 5* | Container guards (Containerfile pre-build) | Before any container build
+| *Layer 6* | Commit-msg hooks (`.git/hooks/commit-msg`) | Validates commit metadata
+|===
+
+=== Features
+
+* **Formally Verified Core** — SPARK-proven enforcement engine
+* **Multi-Layer Enforcement** — Git hooks + CI/CD + file watchers + container guards
+* **Ada/SPARK TUI** — Keyboard-driven interface for managing filters in real time
+* **Learning Mode** — Analyses CVE patterns and security failures to recommend safer languages
+* **Definition Sets** — Pre-configured policies (strict, moderate, enterprise)
+* **JSON API** — Structured allow/deny decisions for automation
+* **Desktop Notifications** — `notify-send` alerts on every violation
+* **Composable Policies** — Layer multiple policies with inheritance and overrides
+
+== Quick Start
+
+[source,bash]
+----
+# Build with SPARK verification
+gprbuild -P techstack_enforcer.gpr -XMODE=release
+gnatprove -P techstack_enforcer.gpr --level=2
+
+# Audit a repository
+./bin/techstack_main audit .
+
+# Use a definition set
+./bin/techstack_main --defset=strict audit .
+
+# Get JSON decisions for automation
+./bin/techstack_main decide src/main.py
+
+# Launch the TUI
+./bin/techstack_tui_main
+
+# Install hooks across all repos
+./scripts/install-repo-hooks.sh /path/to/repo
+----
+
+== The TUI
+
+The Ada/SPARK TUI provides rapid, keyboard-centric filter management:
+
+[source]
+----
+==========================================
+     TECHSTACK ENFORCER v1.0
+     Ada/SPARK Filter Management TUI
+==========================================
+  Mode: [ENFORCE] - Blocking enabled
+
+  FILTER LIST (45 entries)
+  -----------------------------------------------
+ > [#] *.py                     | Python: No static typing...
+   [#] *.php                    | PHP: Memory-unsafe, injection...
+   [X] *.c                      | C: Manual memory management
+   [!] *.sh                     | Shell script - verify manually
+   [+] *.rs                     | Rust: Memory-safe with ownership
+
+  [a]dd [e]dit [d]elete [Space]toggle [1-4]mode [s]can [?]help [q]uit
+----
+
+|===
+| Key | Action
+
+| `a` | Add new filter
+| `d` | Delete filter
+| `e` | Edit filter
+| `l` | Toggle learning mode
+| `s` | Scan repository
+| `1`-`4` | Switch mode (Learning/Warn/Enforce/Lockdown)
+| `w` | Save configuration
+| `j`/`k` | Navigate up/down
+| `q` | Quit
+|===
+
+== Learning Mode
+
+The learning engine analyses security failures and recommends language changes that prevent entire vulnerability classes by design:
+
+|===
+| Vulnerability Type | Recommended Languages
+
+| Buffer overflow | Rust, Ada/SPARK, Haskell, OCaml
+| Null dereference | Rust, Haskell, ReScript, Elm
+| Race condition | Elixir, Erlang, Rust, Haskell
+| Injection attack | Haskell, Rust, ReScript, Elm
+| Use-after-free | Rust, Ada/SPARK, Haskell
+| Integer overflow | Ada/SPARK, Rust, Haskell
+| Type confusion | Haskell, OCaml, Rust, ReScript
+| Memory leak | Rust, Ada/SPARK, Haskell, Elixir
+|===
+
+Integrates with the NVD 2.0 CVE API to correlate real-world vulnerabilities with language design features.
+
+== Enforcement Levels
+
+|===
+| Level | Symbol | Behaviour
+
+| Fatal | `#` | **Always blocked** — no override, no exception
+| Block | `X` | Blocked in enforce and lockdown modes
+| Warn | `!` | Warning only (blocked in lockdown)
+| Allow | `+` | Explicitly permitted
+|===
+
+== Enforcement Modes
+
+|===
+| Mode | Behaviour
+
+| *Learning* | Observe and log only, never block
+| *Warn* | Show warnings, allow all operations
+| *Enforce* | Block on Block and Fatal violations
+| *Lockdown* | Block on **all** violations including Warn
+|===
+
+== Definition Sets
+
+|===
+| Set | Mode | Description
+
+| `strict` | lockdown | Maximum memory safety
+| `moderate` | enforce | Balanced with exceptions
+| `permissive` | warn | Advisory only
+| `enterprise` | enforce | Corporate/legacy support
+| `memory_safe` | enforce | Focus on memory safety
+|===
+
+== Policy Format
+
+=== Basic Structure
+
+[source,scheme]
+----
+(filterlist
+  (version "1.0")
+  (name "policy-name")
+
+  ;; Import presets (optional)
+  (import "preset-name")
+
+  ;; Block rules (deny by default when present)
+  (block
+    (language "go")
+    (file "package-lock.json")
+    (pattern "*.exe")
+    (dependency "lodash"))
+
+  ;; Allow rules (override blocks)
+  (allow
+    (language "rust")
+    (file "Cargo.lock")
+    (pattern "*.rs")))
+----
+
+=== Rule Types
+
+|===
+| Rule Type | Description | Example
+
+| `language` | Programming language by name | `(language "typescript")`
+| `file` | Exact filename match | `(file "yarn.lock")`
+| `pattern` | Glob pattern match | `(pattern "*.min.js")`
+| `dependency` | Package/crate/module name | `(dependency "left-pad")`
+| `tool` | Build tool or runtime | `(tool "webpack")`
+| `framework` | Framework detection | `(framework "react")`
+|===
+
+== Notification System
+
+Every violation triggers notifications through multiple channels:
+
+* **Desktop** — `notify-send` with urgency level matching violation severity
+* **Log** — Structured log file (`techstack.log`) with JSON entries
+* **Webhook** — Optional HTTP POST to external services
+* **Syslog** — Optional syslog integration for centralised monitoring
+
+== CI/CD Integration
+
+=== GitLab CI
+
+[source,yaml]
+----
+include:
+  - project: 'your-group/techstack-enforcer'
+    file: '/ci-templates/gitlab-ci-techstack.yml'
+
+variables:
+  TECHSTACK_DEFSET: moderate
+----
+
+=== GitHub Actions
+
+See link:ci-templates/github-action-techstack.yml[ci-templates/github-action-techstack.yml]
+
+=== Pre-commit Hook
+
+Add to `.pre-commit-config.yaml`:
+
+[source,yaml]
+----
+repos:
+  - repo: https://github.com/hyperpolymath/techstack-enforcer
+    rev: v1.0.0
+    hooks:
+      - id: techstack-check
+----
+
+== Philosophy
+
+The core insight: **the best security fix is a language that makes the vulnerability class impossible**. A buffer overflow cannot happen in Rust. A null pointer exception cannot happen in Haskell. A race condition is structurally prevented by the actor model in Elixir.
+
+This tool enforces preferences for:
+
+1. **Memory-safe languages** — Rust, Ada/SPARK, Haskell, Elixir, ReScript
+2. **Static typing** — type errors caught at compile time, not production
+3. **Formal verification** — the enforcer itself is SPARK-verified
+4. **Open infrastructure** — Podman over Docker, GitLab alongside GitHub
+5. **Absolute blocking** — violations are not suggestions, they are walls
+
+== Integration
+
+=== With RSR
+
+Techstack Enforcer is designed to work with link:https://github.com/hyperpolymath/rhodium-standard-repositories[Rhodium Standard Repositories]. The `hyperpolymath/standard` preset enforces RSR language policies automatically.
+
+=== With Rhodibot
+
+link:https://github.com/hyperpolymath/rhodibot[Rhodibot] uses Techstack Enforcer internally for CCCP (banned language) detection.
+
+=== With GitVisor
+
+Techstack Enforcer integrates with GitVisor as a file watcher module, providing real-time enforcement on file change events.
+
+== Commands
+
+[source,bash]
+----
+# Check current directory
+techstack-enforcer check
+
+# Check specific path
+techstack-enforcer check ./src
+
+# Use specific config
+techstack-enforcer check --config .techstack/strict.scm
+
+# Output as JSON (for CI parsing)
+techstack-enforcer check --format json
+----
+
+== Building
+
+Requirements: GNAT Ada compiler, GPRbuild
+
+[source,bash]
+----
+# Debug build
+gprbuild -P techstack_enforcer.gpr -XMODE=debug
+
+# Release build
+gprbuild -P techstack_enforcer.gpr -XMODE=release
+
+# SPARK formal verification
+gnatprove -P techstack_enforcer.gpr --level=2
+----
+
+== License
+
+PMPL-1.0-or-later. See link:license/PMPL-1.0.txt[license/PMPL-1.0.txt] for details.

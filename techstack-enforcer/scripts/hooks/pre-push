@@ -1,0 +1,35 @@
+#!/bin/bash
+# Techstack Enforcer - Pre-push Hook
+# Final check before pushing to remote
+# More strict than pre-commit
+
+set -euo pipefail
+
+TECHSTACK_BIN="${TECHSTACK_BIN:-techstack-enforcer}"
+TECHSTACK_MODE="${TECHSTACK_MODE:-enforce}"
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+RESET='\033[0m'
+
+echo -e "${CYAN}[techstack]${RESET} Pre-push check (strict mode)..."
+
+# In pre-push, we're more strict - block on any violations
+# Get commits being pushed
+remote="$1"
+url="$2"
+
+echo -e "${CYAN}[techstack]${RESET} Pushing to: $remote ($url)"
+
+# Check if techstack-enforcer is available
+if command -v "$TECHSTACK_BIN" &> /dev/null; then
+    # Use strict mode for pre-push
+    "$TECHSTACK_BIN" audit --mode=enforce --fatal-exit --notify
+    exit $?
+fi
+
+# Fallback: same as pre-commit but in enforce mode
+export TECHSTACK_MODE="enforce"
+exec "$(dirname "$0")/pre-commit"
