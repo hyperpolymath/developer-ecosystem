@@ -1,0 +1,31 @@
+{
+  "name": "@anthropics/cadre-tea-router",
+  "version": "0.1.0",
+  "description": "TEA-specialised routing integration for ReScript, built on cadre-router",
+  "main": "src/CadreTeaRouter.res.mjs",
+  "scripts": {
+    "build": "rescript",
+    "clean": "rescript clean",
+    "dev": "rescript -w"
+  },
+  "keywords": [
+    "rescript",
+    "tea",
+    "elm-architecture",
+    "router",
+    "routing"
+  ],
+  "author": "Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>",
+  "license": "MIT",
+  "dependencies": {
+    "@proven/rescript-bindings": "file:../proven/bindings/rescript"
+  },
+  "peerDependencies": {
+    "@anthropics/cadre-router": "^0.1.0",
+    "rescript": "^11.0.0",
+    "rescript-tea": "^0.1.0"
+  },
+  "devDependencies": {
+    "rescript": "^11.1.0"
+  }
+}

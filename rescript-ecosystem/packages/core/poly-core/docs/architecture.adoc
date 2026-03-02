@@ -1,0 +1,285 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= PolyCore Architecture
+:toc:
+:toc-placement: preamble
+:icons: font
+:source-highlighter: highlight.js
+
+This document describes the architecture and design principles of rescript-poly-core.
+
+== Overview
+
+PolyCore is a foundation library providing common utilities and MCP infrastructure for the Hyperpolymath ReScript ecosystem. It follows functional programming principles with a focus on type safety, composability, and explicit error handling.
+
+----
+┌─────────────────────────────────────────────────────────────┐
+│                        PolyCore                             │
+├─────────────────────────────────────────────────────────────┤
+│  ┌─────────────────────┐    ┌─────────────────────┐        │
+│  │     Core Module     │    │     MCP Module      │        │
+│  ├─────────────────────┤    ├─────────────────────┤        │
+│  │ • Result            │    │ • Protocol          │        │
+│  │ • Async             │    │ • Server            │        │
+│  │ • Logger            │    │                     │        │
+│  │ • Config            │    │                     │        │
+│  └─────────────────────┘    └─────────────────────┘        │
+├─────────────────────────────────────────────────────────────┤
+│                    @rescript/core                           │
+├─────────────────────────────────────────────────────────────┤
+│                      Deno Runtime                           │
+└─────────────────────────────────────────────────────────────┘
+----
+
+== Design Principles
+
+=== 1. Functional-First
+
+* Pure functions where possible
+* Explicit side effects through return types
+* Immutable data structures by default
+* Composition over inheritance
+
+=== 2. Type Safety
+
+* Full ReScript type inference
+* No `any` or `unknown` escape hatches
+* Compile-time guarantees
+* Self-documenting through types
+
+=== 3. Result-Centric Error Handling
+
+[source,rescript]
+----
+// Prefer Result types over exceptions
+let parseConfig = (json: string): result<config, string>
+
+// Chain operations without try/catch
+json
+->parseConfig
+->Result.flatMap(validate)
+->Result.map(normalize)
+----
+
+=== 4. Zero Dependencies
+
+* Only depends on @rescript/core
+* No npm packages at runtime
+* Deno-native design
+* Minimal attack surface
+
+=== 5. MCP-First Integration
+
+* Built for AI agent consumption
+* Structured schemas for tool calling
+* Type-safe argument parsing
+* Predictable error responses
+
+== Module Architecture
+
+=== Core.Result
+
+Extended utilities for the built-in `result` type.
+
+[source,rescript]
+----
+type result<'a, 'e> =
+  | Ok('a)
+  | Error('e)
+----
+
+Key functions:
+* `map`, `mapError` - Transform values
+* `flatMap` - Chain operations
+* `all` - Collect array of results
+* `tryCatch`, `tryCatchAsync` - Convert exceptions
+
+=== Core.Async
+
+Promise utilities for async operations.
+
+----
+┌──────────────────────────────────────────────────┐
+│                   Core.Async                     │
+├──────────────────────────────────────────────────┤
+│ Timing          │ sleep, timeout                 │
+│ Retry           │ retry with exponential backoff │
+│ Concurrency     │ parallelLimit, sequential      │
+│ Rate Limiting   │ debounce, throttle             │
+│ Iteration       │ mapAsync, filterAsync          │
+└──────────────────────────────────────────────────┘
+----
+
+=== Core.Logger
+
+Structured JSON logging with context propagation.
+
+----
+┌─────────────────────────────────────────────────────────────┐
+│                     Logger Instance                         │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────┐ │
+│  │   Config    │  │   Context   │  │   Log Function      │ │
+│  │ - minLevel  │  │ - service   │  │ - level filtering   │ │
+│  │ - json      │  │ - requestId │  │ - JSON formatting   │ │
+│  │ - timestamp │  │ - userId    │  │ - context merging   │ │
+│  └─────────────┘  └─────────────┘  └─────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+                         │
+                         ▼
+              ┌─────────────────────┐
+              │    Child Logger     │ (inherits + extends context)
+              └─────────────────────┘
+----
+
+=== Core.Config
+
+Configuration loading from multiple sources.
+
+[source,rescript]
+----
+// Priority: Object > Environment
+let config = Config.fromEnv(~prefix="APP_")
+  ->Config.merge(Config.fromObject(overrides))
+----
+
+=== MCP.Protocol
+
+Types and utilities for MCP (Model Context Protocol).
+
+----
+┌─────────────────────────────────────────────────────────────┐
+│                    MCP.Protocol                             │
+├─────────────────────────────────────────────────────────────┤
+│ Types                                                       │
+│ ├── tool, inputSchema                                       │
+│ ├── resource, prompt                                        │
+│ └── toolResult, content                                     │
+├─────────────────────────────────────────────────────────────┤
+│ Builders                                                    │
+│ ├── success, error, successJson                             │
+│ ├── objectSchema, stringProp, numberProp                    │
+│ └── text, image (content builders)                          │
+├─────────────────────────────────────────────────────────────┤
+│ Parsers                                                     │
+│ ├── getArg, requireArg                                      │
+│ ├── getIntArg, getBoolArg                                   │
+│ └── getArrayArg                                             │
+└─────────────────────────────────────────────────────────────┘
+----
+
+=== MCP.Server
+
+Server infrastructure for building MCP servers.
+
+----
+┌─────────────────────────────────────────────────────────────┐
+│                     MCP Server                              │
+├─────────────────────────────────────────────────────────────┤
+│ State                                                       │
+│ ├── serverInfo (name, version)                              │
+│ ├── capabilities                                            │
+│ ├── tools: Dict<registeredTool>                             │
+│ ├── resources: Dict<resource>                               │
+│ └── prompts: Dict<prompt>                                   │
+├─────────────────────────────────────────────────────────────┤
+│ Operations                                                  │
+│ ├── registerTool(definition, handler)                       │
+│ ├── registerResource(resource)                              │
+│ ├── registerPrompt(prompt)                                  │
+│ └── handleRequest(method, params) → JSON                    │
+├─────────────────────────────────────────────────────────────┤
+│ Protocol Methods                                            │
+│ ├── initialize                                              │
+│ ├── tools/list, tools/call                                  │
+│ ├── resources/list, resources/read                          │
+│ └── prompts/list, prompts/get                               │
+└─────────────────────────────────────────────────────────────┘
+----
+
+== Data Flow
+
+=== MCP Request Flow
+
+----
+Client Request (JSON-RPC)
+        │
+        ▼
+┌───────────────────┐
+│  handleRequest    │
+└───────────────────┘
+        │
+        ├── "initialize" ──────────▶ Return capabilities
+        │
+        ├── "tools/list" ──────────▶ Return tool definitions
+        │
+        ├── "tools/call" ─────┐
+        │                     ▼
+        │            ┌─────────────────┐
+        │            │ Parse arguments │
+        │            └─────────────────┘
+        │                     │
+        │                     ▼
+        │            ┌─────────────────┐
+        │            │ Call handler    │
+        │            └─────────────────┘
+        │                     │
+        │                     ▼
+        │            ┌─────────────────┐
+        │            │ Return result   │
+        │            └─────────────────┘
+        │
+        └── Unknown method ────────────▶ Error response
+----
+
+=== Error Handling Flow
+
+----
+Operation
+    │
+    ├── Success ──────────▶ Ok(value) ──────────▶ Continue
+    │
+    └── Failure
+            │
+            ├── Recoverable ──▶ Error(msg) ──────▶ Handle or propagate
+            │
+            └── Programmer error ──▶ Exception ──▶ Crash (by design)
+----
+
+== Extension Points
+
+=== Adding a New Core Module
+
+1. Create `src/Core/NewModule.res`
+2. Add to `src/PolyCore.res` exports
+3. Add tests in `tests/NewModule_test.res`
+4. Update documentation
+
+=== Adding a New MCP Feature
+
+1. Add types to `MCP.Protocol`
+2. Add handlers to `MCP.Server`
+3. Update capability declarations
+4. Add tests and documentation
+
+== Security Considerations
+
+* No external dependencies reduces supply chain risk
+* Type system prevents many classes of bugs
+* Result types force explicit error handling
+* Deno's permission model for runtime security
+* No dynamic code execution
+
+== Performance Considerations
+
+* ReScript compiles to efficient JavaScript
+* Minimal abstraction overhead
+* Lazy evaluation where appropriate
+* No unnecessary object allocations
+* Tail-call optimization for recursion
+
+== Related Documentation
+
+* link:api-reference.adoc[API Reference]
+* link:../README.adoc[README]
+* link:../CONTRIBUTING.adoc[Contributing Guide]

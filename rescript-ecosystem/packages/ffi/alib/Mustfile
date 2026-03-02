@@ -1,0 +1,62 @@
+# SPDX-License-Identifier: PLMP-1.0-or-later
+# Mustfile - Mandatory requirements for rescript-alib
+
+# This file declares what MUST be true for this repository
+# See: https://github.com/hyperpolymath/mustfile
+
+## Build & Test
+MUST build:rescript
+MUST test:deno
+MUST bench:zero-cost
+
+## Code Quality
+MUST format:rescript
+MUST lint:deno
+MUST namespace:Alib
+
+## Documentation
+MUST readme:adoc
+MUST contributing:no-tears-protocol
+MUST license:PLMP-1.0-or-later
+
+## SCM Files (6scm requirement)
+MUST scm:STATE
+MUST scm:ECOSYSTEM
+MUST scm:META
+MUST scm:AGENTIC
+MUST scm:NEUROSYM
+MUST scm:PLAYBOOK
+
+## Contractiles (5 levels)
+MUST contractile:must
+MUST contractile:trust
+MUST contractile:bust
+MUST contractile:lust
+MUST contractile:dust
+
+## Philosophy Adherence
+MUST philosophy:parse-dont-validate
+MUST philosophy:zero-cost-abstractions
+MUST philosophy:upstream-first
+MUST philosophy:per-file-adoption
+MUST philosophy:deletion-friendly
+
+## Performance Guarantees
+MUST overhead:parse <= 5%
+MUST overhead:usage == 0%
+MUST overhead:bundle == 0 bytes
+
+## Safety Guarantees
+MUST no-shadowing:stdlib
+MUST namespacing:explicit
+MUST validation:boundaries-only
+
+## Deprecation Policy
+MUST deprecation:upstream-wins
+MUST deprecation:migration-guide
+MUST deprecation:semver-major
+
+## Alpha Expectations
+MUST alpha:api-may-change
+MUST alpha:evidence-gathering
+MUST alpha:graduation-policy

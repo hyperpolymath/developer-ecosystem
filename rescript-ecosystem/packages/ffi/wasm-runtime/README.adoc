@@ -1,0 +1,116 @@
+= rescript-wasm-runtime
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
+
+:toc:
+:toclevels: 3
+:sectanchors:
+:source-highlighter: rouge
+
+ReScript WASM runtime and bindings.
+
+== What this is
+
+This repository aims to provide a *ReScript-first* WebAssembly runtime layer and bindings, with a focus on:
+
+* Running and interacting with WebAssembly modules from ReScript-compiled JavaScript
+* A clean, typed API surface suitable for browser and server-like JS runtimes
+* A structured repository with benchmarks, examples, tests, and automation scripts
+
+The repository contains implementation and support directories including `src/`, `tests/`, `examples/`, `benchmark/`, `scripts/`, and `docs/`. (If you’re reading this in GitHub’s UI: the code lives in `src/`.) :contentReference[oaicite:2]{index=2}
+
+== What this is not
+
+Non-goals (at least for the early stages):
+
+* Not a full WebAssembly engine competing with Wasmtime/WasmEdge
+* Not a JIT/AOT compiler project
+* Not a WASI “system” or container runtime (unless explicitly added later as a separate layer)
+* Not TypeScript-first: ReScript is the source of truth
+
+== Status
+
+*Current status:* stabilising the project narrative and ensuring the implementation matches the stated goal.
+
+See `ROADMAP.adoc` for staged deliverables.
+
+== Quick start
+
+=== Prerequisites
+
+You’ll typically need:
+
+* ReScript toolchain (via `rescript.json`)
+* A JS runtime (browser tooling, or a server runtime depending on your target)
+* Optional: `just` (if you use the included `justfile` tasks) :contentReference[oaicite:3]{index=3}
+
+=== Common tasks
+
+.Build
+----
+just build
+----
+
+.Test
+----
+just test
+----
+
+.Run examples
+----
+just examples
+----
+
+.Benchmark
+----
+just bench
+----
+
+NOTE: If your environment doesn’t use `just`, inspect `justfile` for the underlying commands and run them directly.
+
+== Repository layout
+
+* `src/` — core runtime + binding surface :contentReference[oaicite:4]{index=4}
+* `tests/` — correctness + regression tests :contentReference[oaicite:5]{index=5}
+* `examples/` — minimal demos showing intended usage :contentReference[oaicite:6]{index=6}
+* `benchmark/` — micro/meso benchmarks for hot paths :contentReference[oaicite:7]{index=7}
+* `docs/` — design notes, API notes, decisions :contentReference[oaicite:8]{index=8}
+* `scripts/` — build/release/verification helpers :contentReference[oaicite:9]{index=9}
+
+== API philosophy
+
+Design principles for the public API:
+
+* *Typed by default:* avoid “stringly-typed” host imports/exports where feasible
+* *Minimal surface:* prefer a small stable core with optional add-ons
+* *No hidden channels:* side effects and host interactions should be explicit in the API
+* *Portability:* target Web APIs where possible (e.g. WebCrypto/WebAssembly APIs)
+
+== Mirrors and canonical source
+
+*Canonical source of truth:* GitHub (`hyperpolymath/rescript-wasm-runtime`).
+
+Mirrors may exist on other forges for availability, but GitHub remains canonical unless explicitly stated otherwise.
+
+== Security
+
+* WebAssembly is not automatically “safe.” Threat models differ between browser and server runtimes.
+* Avoid treating “runs WASM” as a security claim; treat it as an execution format with constraints.
+
+If you discover a vulnerability, see `SECURITY.md`. :contentReference[oaicite:10]{index=10}
+
+== License
+
+See `LICENSE.txt`. :contentReference[oaicite:11]{index=11}
+
+== Contributing
+
+See `CONTRIBUTING.md` and `TPCF.md` for how contributions are structured and kept safe. :contentReference[oaicite:12]{index=12}
+
+Recommended contribution entry points:
+
+* Add/clean an example in `examples/`
+* Add a regression test in `tests/`
+* Improve benchmark coverage in `benchmark/`
+* Tighten docs in `docs/` (AsciiDoc preferred)

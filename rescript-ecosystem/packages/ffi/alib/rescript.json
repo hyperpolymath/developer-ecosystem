@@ -1,0 +1,24 @@
+{
+  "name": "@hyperpolymath/rescript-alib",
+  "version": "0.1.0-alpha.1",
+  "sources": [
+    { "dir": "src/Common", "subdirs": true },
+    { "dir": "src/Specific", "subdirs": true },
+    { "dir": "src/Compat", "subdirs": true },
+    { "dir": "test", "subdirs": true }
+  ],
+  "package-specs": [
+    {
+      "module": "es6",
+      "in-source": true
+    }
+  ],
+  "suffix": ".res.js",
+  "namespace": "Alib",
+  "bs-dependencies": [],
+  "warnings": {
+    "error": "+101+8"
+  },
+  "bsc-flags": ["-bs-super-errors"],
+  "refmt": 3
+}

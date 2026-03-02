@@ -1,0 +1,294 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+
+= Bridge: Web-ReScript - Development Roadmap
+:toc: macro
+:toc-title: Contents
+:toclevels: 2
+:icons: font
+
+This document outlines the development phases for Bridge: Web-ReScript, a TypeScript-free PWA framework with ReScript and WebAssembly.
+
+toc::[]
+
+== Current Status
+
+[cols="1,3"]
+|===
+|Phase |Status
+
+|**Phase 0: Foundation**
+|*IN PROGRESS* - Repository infrastructure complete
+
+|Phase 1: Core Framework
+|Not started
+
+|Phase 2: WebFrame & Loader
+|Not started
+
+|Phase 3: Accessibility Layer
+|Not started
+
+|Phase 4: Mobile & Distribution
+|Not started
+|===
+
+---
+
+== Phase 0: Foundation [CURRENT]
+
+=== Completed
+
+* [x] Repository structure and governance
+* [x] License selection (PMPL-1.0 OR PMPL-1.0+)
+* [x] Security policy (SECURITY.md)
+* [x] Contribution guidelines (CONTRIBUTING.md)
+* [x] Code of conduct
+* [x] GitHub infrastructure
+** [x] Issue templates (bug, feature, docs, question)
+** [x] CODEOWNERS with perimeter-based review
+** [x] Dependabot configuration
+** [x] CodeQL security scanning
+** [x] Instant-sync for multi-forge propagation
+* [x] Hyperpolymath language policy (CLAUDE.md)
+
+=== Remaining
+
+* [ ] Nix flake (`flake.nix`) for reproducible development environment
+* [ ] Guix package definition (`guix.scm`)
+* [ ] Deno configuration (`deno.json`)
+* [ ] Justfile for task running
+* [ ] Initial ADR (Architecture Decision Record) for framework design
+
+---
+
+== Phase 1: Core Framework
+
+Establish the foundational ReScript infrastructure.
+
+=== Milestones
+
+==== 1.1 Development Environment
+
+* [ ] Complete Nix flake with all dependencies
+* [ ] ReScript compiler configuration
+* [ ] Deno integration for tooling
+* [ ] Development server setup
+
+==== 1.2 ReScript Core Module
+
+* [ ] Project structure (`src/core/`)
+* [ ] Type definitions for framework primitives
+* [ ] Module system design
+* [ ] JavaScript/Deno interop layer
+
+==== 1.3 WASM Compilation Pipeline
+
+* [ ] Rust toolchain integration
+* [ ] ReScript → WASM compilation path
+* [ ] Build optimization pipeline
+* [ ] Source maps for debugging
+
+==== 1.4 Testing Infrastructure
+
+* [ ] Unit test framework selection
+* [ ] Integration test harness
+* [ ] CI pipeline for automated testing
+* [ ] Coverage reporting
+
+=== Deliverables
+
+* Working ReScript → WASM build pipeline
+* "Hello World" application compiling to WASM
+* Development environment documentation
+* ADRs for major decisions
+
+---
+
+== Phase 2: WebFrame & Loader
+
+Implement the security and asset loading systems.
+
+=== Milestones
+
+==== 2.1 Ephapax WebFrame
+
+* [ ] Resource integrity verification system
+* [ ] Hash-based asset validation
+* [ ] Security boundary implementation
+* [ ] Violation handling and reporting
+
+==== 2.2 Linear Loader
+
+* [ ] Resource loading sequence definition
+* [ ] Critical path identification
+* [ ] Progressive enhancement layers
+* [ ] Deferred loading system
+
+==== 2.3 Asset Pipeline
+
+* [ ] Asset manifest generation
+* [ ] Build-time integrity hash computation
+* [ ] Cache-busting strategy
+* [ ] Service worker integration
+
+==== 2.4 Developer Experience
+
+* [ ] Hot module replacement (HMR)
+* [ ] Development mode bypass (with warnings)
+* [ ] Asset debugging tools
+* [ ] Load sequence visualization
+
+=== Deliverables
+
+* Secure asset loading system
+* Deterministic load ordering
+* Developer tooling for asset management
+* Security documentation
+
+---
+
+== Phase 3: Accessibility Layer
+
+Implement first-class accessibility support.
+
+=== Milestones
+
+==== 3.1 WCAG 2.3 AAA Compliance
+
+* [ ] Semantic HTML generation
+* [ ] ARIA attribute system
+* [ ] Focus management
+* [ ] Keyboard navigation
+
+==== 3.2 Sign Language Support
+
+* [ ] BSL/GSL resource type definition
+* [ ] Video/text synchronization primitives
+* [ ] Preference detection and storage
+* [ ] Fallback chain system
+
+==== 3.3 Type-Level Accessibility
+
+* [ ] ReScript types enforcing a11y requirements
+* [ ] Compile-time accessibility validation
+* [ ] Accessible component library
+* [ ] Pattern documentation
+
+==== 3.4 Testing & Validation
+
+* [ ] Automated a11y testing integration
+* [ ] Screen reader testing protocol
+* [ ] User testing framework
+* [ ] Compliance reporting
+
+=== Deliverables
+
+* WCAG 2.3 AAA compliant component library
+* Sign language resource system
+* Accessibility testing suite
+* User documentation for a11y features
+
+---
+
+== Phase 4: Mobile & Distribution
+
+Extend to mobile platforms and production distribution.
+
+=== Milestones
+
+==== 4.1 Tauri 2.0 Integration
+
+* [ ] Tauri project structure
+* [ ] ReScript ↔ Rust bridge
+* [ ] iOS build configuration
+* [ ] Android build configuration
+
+==== 4.2 PWA Features
+
+* [ ] Service worker generation
+* [ ] Offline-first architecture
+* [ ] Push notification support
+* [ ] Install prompts
+
+==== 4.3 Distribution
+
+* [ ] App store build pipelines
+* [ ] Web deployment automation
+* [ ] CDN configuration
+* [ ] Analytics integration (privacy-respecting)
+
+==== 4.4 Documentation & Examples
+
+* [ ] Getting started guide
+* [ ] API documentation
+* [ ] Example applications
+* [ ] Migration guides (from other frameworks)
+
+=== Deliverables
+
+* Production-ready mobile deployment
+* PWA with full offline support
+* Distribution automation
+* Comprehensive documentation
+
+---
+
+== Future Considerations
+
+Items not currently scheduled but under consideration:
+
+=== Gleam Backend Integration
+
+* Server-side rendering with Gleam
+* API generation from ReScript types
+* BEAM deployment option
+
+=== Dioxus Alternative
+
+* Pure Rust UI option
+* Native performance path
+* Shared Rust/WASM components
+
+=== Ecosystem
+
+* Plugin system
+* Theme/styling framework
+* Form handling library
+* State management patterns
+
+=== Community
+
+* Contributor onboarding program
+* Example application showcase
+* Integration guides for common services
+
+---
+
+== Contributing to the Roadmap
+
+This roadmap is a living document. To propose changes:
+
+1. Open an issue with the `roadmap` label
+2. Describe the proposed addition or modification
+3. Explain the rationale and any dependencies
+4. Discuss with maintainers
+
+See link:CONTRIBUTING.md[CONTRIBUTING.md] for general contribution guidelines.
+
+---
+
+== Changelog
+
+[cols="1,1,3"]
+|===
+|Date |Version |Changes
+
+|2025-01
+|0.1.0
+|Initial roadmap creation
+|===
+
+---
+
+_Last updated: 2025-01_

@@ -1,0 +1,15 @@
+{
+  "name": "post-build",
+  "sources": {
+    "dir": "src",
+    "subdirs": true
+  },
+  "package-specs": {
+    "module": "commonjs",
+    "in-source": true
+  },
+  "js-post-build": { "cmd": "node ./log-path.js" },
+  "warnings": {
+    "error": "+101"
+  }
+}

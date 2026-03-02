@@ -1,0 +1,17 @@
+{
+  "$schema": "https://raw.githubusercontent.com/rescript-lang/rescript-compiler/master/docs/docson/rescript-schema.json",
+  "name": "@hyperpolymath/rescript-zig-ffi",
+  "version": "0.1.0",
+  "sources": [
+    {"dir": "src", "subdirs": true}
+  ],
+  "package-specs": [{
+    "module": "es6",
+    "in-source": true
+  }],
+  "suffix": ".res.js",
+  "bs-dependencies": [],
+  "warnings": {
+    "error": "+101"
+  }
+}

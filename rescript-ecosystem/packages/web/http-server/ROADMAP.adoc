@@ -1,0 +1,150 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+= ReScript HTTP Server Roadmap
+:toc:
+:toclevels: 2
+
+== Current Status
+
+*v0.1.0* - Initial release with core HTTP server functionality.
+
+== Version History
+
+=== v0.1.0 - Foundation (Current)
+
+[cols="1,3,1"]
+|===
+|Status |Feature |Notes
+
+|[x]
+|Deno.serve FFI bindings
+|Core server functionality
+
+|[x]
+|Request helpers (method, path, headers, body)
+|Type-safe request access
+
+|[x]
+|Response builders (text, JSON, HTML, redirects)
+|Fluent response API
+
+|[x]
+|Simple pattern-based routing
+|Exact and wildcard matching
+
+|[x]
+|Middleware infrastructure
+|Composable middleware chain
+
+|[x]
+|CORS middleware
+|Configurable origins/methods
+
+|[x]
+|Logging middleware
+|Request timing
+|===
+
+== Milestones
+
+=== v0.2.0 - Enhanced Routing
+
+* [ ] Path parameter extraction (`/users/:id`)
+* [ ] Query parameter parsing helpers
+* [ ] Route groups with shared middleware
+* [ ] Route prefixing
+* [ ] Method-agnostic route matching
+
+=== v0.3.0 - Advanced Middleware
+
+* [ ] Rate limiting middleware
+* [ ] Request validation middleware
+* [ ] Compression middleware (gzip, brotli)
+* [ ] ETag/caching middleware
+* [ ] Error boundary middleware
+* [ ] Timeout middleware
+
+=== v0.4.0 - Body Handling
+
+* [ ] Multipart form data parsing
+* [ ] File upload handling
+* [ ] Streaming request/response bodies
+* [ ] Body size limits
+* [ ] Content-Type negotiation
+
+=== v0.5.0 - Security
+
+* [ ] CSRF protection middleware
+* [ ] Helmet-style security headers
+* [ ] Request signing/verification
+* [ ] Basic auth middleware
+* [ ] JWT validation middleware
+
+=== v1.0.0 - Production Ready
+
+* [ ] Comprehensive test suite
+* [ ] Performance benchmarks
+* [ ] Full API documentation
+* [ ] Migration guide from Express/Oak
+* [ ] Production deployment guide
+
+== Future Directions
+
+=== HTTP/2 Support
+
+When Deno stabilizes HTTP/2 server APIs:
+
+* Server push
+* Stream multiplexing
+* Header compression
+
+=== WebSocket Integration
+
+Seamless upgrade from HTTP:
+
+* WebSocket route handlers
+* Shared middleware with HTTP routes
+* Integration with https://github.com/hyperpolymath/rescript-websocket[rescript-websocket]
+
+=== OpenAPI/Swagger
+
+Type-safe API documentation:
+
+* Route introspection
+* OpenAPI schema generation
+* Swagger UI integration
+
+=== Observability
+
+Production monitoring:
+
+* OpenTelemetry integration
+* Distributed tracing
+* Metrics collection
+* Health check endpoints
+
+== Non-Goals
+
+These are explicitly out of scope:
+
+* *Template engines* - Use rescript-tea for views
+* *ORM integration* - Use rescript-postgres directly
+* *Session management* - Stateless by design; use external stores
+* *Static file serving* - Deno's native `serveDir` is sufficient
+
+== Contributing
+
+See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc] for how to propose features.
+
+Priority is given to:
+
+1. Bug fixes
+2. Performance improvements
+3. Features aligned with rescript-full-stack ecosystem
+4. Community-requested features with clear use cases
+
+== Related Projects
+
+* https://github.com/hyperpolymath/rescript-full-stack[rescript-full-stack] - Ecosystem overview
+* https://github.com/hyperpolymath/rescript-websocket[rescript-websocket] - WebSocket support
+* https://github.com/hyperpolymath/rescript-postgres[rescript-postgres] - Database access

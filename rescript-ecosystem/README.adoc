@@ -1,0 +1,219 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= rescript-ecosystem
+Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>
+:toc: macro
+:toclevels: 3
+
+Consolidated monorepo for all hyperpolymath ReScript packages. 26 packages organized into 5 groups: core libraries, web frameworks, service bindings, FFI bridges, and developer tooling.
+
+toc::[]
+
+== Overview
+
+This monorepo consolidates 26 previously-separate ReScript repositories into a single, cohesive workspace. Each package retains its own `rescript.json` and can be built independently, but they share a common root for easier cross-package development.
+
+== Package Groups
+
+=== Core (`packages/core/`)
+
+Foundation libraries used across the ecosystem.
+
+[cols="1,2,1"]
+|===
+| Package | Description | Origin
+
+| `poly-core`
+| Core utilities and shared primitives for poly-rescript projects
+| rescript-poly-core
+
+| `env`
+| Environment variable handling and configuration
+| rescript-env
+
+| `runtime-tools`
+| Runtime debugging and development utilities
+| rescript-runtime-tools
+
+| `early-return`
+| Early return control flow for ReScript
+| rescript-early-return
+
+| `compiler-source`
+| ReScript compiler source analysis and tooling
+| rescript-compiler-source
+|===
+
+=== Web (`packages/web/`)
+
+Web frameworks, servers, and browser-side libraries.
+
+[cols="1,2,1"]
+|===
+| Package | Description | Origin
+
+| `tea`
+| The Elm Architecture (TEA) for ReScript
+| rescript-tea
+
+| `dom-mounter`
+| DOM mounting utilities for ReScript web apps
+| rescript-dom-mounter
+
+| `full-stack`
+| Full-stack ReScript application framework
+| rescript-full-stack
+
+| `http-server`
+| HTTP server bindings for ReScript
+| rescript-http-server
+
+| `websocket`
+| WebSocket client/server bindings
+| rescript-websocket
+
+| `bridge-web`
+| Web bridge for cross-platform ReScript apps
+| bridge-web-rescript
+|===
+
+=== Bindings (`packages/bindings/`)
+
+ReScript bindings to external services and libraries.
+
+[cols="1,2,1"]
+|===
+| Package | Description | Origin
+
+| `postgres`
+| PostgreSQL client bindings
+| rescript-postgres
+
+| `redis`
+| Redis client bindings
+| rescript-redis
+
+| `grpc`
+| gRPC client/server bindings
+| rescript-grpc
+
+| `openapi`
+| OpenAPI specification generation and consumption
+| rescript-openapi
+
+| `d3`
+| D3.js data visualization bindings
+| rescript-d3
+
+| `tauri`
+| Tauri 2.0 desktop/mobile app bindings
+| rescript-tauri
+|===
+
+=== FFI (`packages/ffi/`)
+
+Foreign Function Interface bridges for native code interop.
+
+[cols="1,2,1"]
+|===
+| Package | Description | Origin
+
+| `zig-ffi`
+| Zig FFI bridge for ReScript via WASM/native
+| rescript-zig-ffi
+
+| `wasm-runtime`
+| WebAssembly runtime for ReScript
+| rescript-wasm-runtime
+
+| `wasm-bridge`
+| WASM-ReScript bridge utilities
+| wasm-rescript-bridge
+
+| `alib`
+| Aggregate Library (ALib) FFI layer for ReScript
+| rescript-alib
+|===
+
+=== Tooling (`packages/tooling/`)
+
+Developer tools, code generators, and migration utilities.
+
+[cols="1,2,1"]
+|===
+| Package | Description | Origin
+
+| `evangeliser`
+| ReScript adoption and migration assistant
+| rescript-evangeliser
+
+| `create-poly`
+| Project scaffolding for poly-rescript apps
+| create-rescript-poly
+
+| `greasy-rescripter`
+| Bulk ReScript codemod and transformation tool
+| greasy-rescripter
+
+| `alib-codemods`
+| ALib-specific code transformations
+| alib-codemods
+
+| `alib-conformance`
+| ALib conformance test suite
+| alib-conformance-suite
+
+| `alib-interop`
+| ALib interoperability patterns and examples
+| alib-interop-patterns
+
+| `alib-for-rescript`
+| ALib integration layer for ReScript
+| alib-for-rescript
+|===
+
+== Excluded Repositories
+
+The following ReScript-related repos are intentionally kept separate:
+
+* **asdf-rescript-plugin** -- Must remain standalone due to asdf plugin registry constraints
+* **zotero-rescript-templater** -- Belongs to the Zotero tooling cluster
+
+== Usage
+
+=== Prerequisites
+
+* https://deno.com[Deno] (runtime and package management)
+* https://rescript-lang.org[ReScript] compiler
+* https://github.com/casey/just[just] (command runner)
+
+=== Commands
+
+[source,bash]
+----
+# List all available commands
+just
+
+# List all packages
+just list-packages
+
+# Show file statistics
+just stats
+
+# Build all packages
+just build-all
+
+# Build a specific package
+just build core/poly-core
+
+# Clean build artifacts
+just clean-all
+----
+
+== License
+
+SPDX-License-Identifier: PMPL-1.0-or-later
+
+Copyright (C) 2024-2026 Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>
+
+This project is licensed under the Palimpsest License (PMPL-1.0-or-later).
+See link:LICENSE[LICENSE] for the full text.

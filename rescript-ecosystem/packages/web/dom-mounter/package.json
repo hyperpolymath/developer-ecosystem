@@ -1,0 +1,47 @@
+{
+  "name": "rescript-dom-mounter",
+  "version": "1.0.0",
+  "description": "Formally verified DOM mounting with mathematical guarantees",
+  "author": "Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>",
+  "license": "PMPL-1.0-or-later",
+  "keywords": [
+    "rescript",
+    "dom",
+    "dom-mounter",
+    "formal-verification",
+    "idris2",
+    "proven",
+    "type-safety",
+    "dependent-types"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hyperpolymath/rescript-dom-mounter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hyperpolymath/rescript-dom-mounter/issues"
+  },
+  "homepage": "https://github.com/hyperpolymath/rescript-dom-mounter#readme",
+  "main": "src/SafeDOM.res.js",
+  "files": [
+    "src/**/*.res",
+    "src/**/*.res.js",
+    "src/**/*.idr",
+    "README.adoc",
+    "LICENSE"
+  ],
+  "peerDependencies": {
+    "rescript": "^12.1.0",
+    "@rescript/core": "^1.6.0"
+  },
+  "dependencies": {
+    "@rescript/core": "^1.6.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "build": "deno task build",
+    "clean": "deno task clean",
+    "watch": "deno task watch",
+    "test": "deno task test"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "name": "rescript-dom-mounter",
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    }
+  ],
+  "package-specs": [
+    {
+      "module": "esmodule",
+      "in-source": true
+    }
+  ],
+  "suffix": ".res.js",
+  "bs-dependencies": [
+    "@rescript/core"
+  ],
+  "bsc-flags": ["-open Belt", "-open RescriptCore"],
+  "warnings": {
+    "error": "+101"
+  }
+}

@@ -1,0 +1,17 @@
+/* TEAM */
+Maintainer: Hyperpolymath
+Contact: hyperpolymath [at] proton.me
+GitHub: https://github.com/hyperpolymath
+Location: Earth
+
+/* THANKS */
+ReScript Team - For the amazing language
+Deno Team - For the modern runtime
+The Open Source Community - For inspiration and contributions
+
+/* SITE */
+Last update: 2025-01-04
+Language: ReScript
+Doctype: ESM
+Standards: RSR (Rhodium Standard Repository)
+Components: ReScript, Deno, @rescript/core

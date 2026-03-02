@@ -1,0 +1,473 @@
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
+
+
+= rescript-websocket
+:toc: left
+:toclevels: 3
+:icons: font
+:source-highlighter: rouge
+
+image:https://img.shields.io/badge/ReScript-v11-blue[ReScript v11]
+image:https://img.shields.io/badge/Deno-2.x-black[Deno 2.x]
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+**Type-safe WebSocket client and server bindings for ReScript using Deno's native WebSocket API.**
+
+Part of the https://github.com/hyperpolymath/rescript-full-stack[ReScript Full Stack] ecosystem.
+
+== Overview
+
+`rescript-websocket` provides zero-cost FFI bindings to the standard WebSocket API, designed to work seamlessly with Deno's runtime. It offers:
+
+* **Type-safe Client API** - Connect to WebSocket servers with full type safety
+* **Server-side Support** - Upgrade HTTP connections to WebSocket using Deno.serve
+* **Broadcast Utilities** - Helper functions for multi-client messaging
+* **Promise-based Flow** - `waitForOpen` for clean async connection handling
+* **Zero Runtime Overhead** - Compiles to direct JavaScript WebSocket calls
+
+== Installation
+
+=== Using Deno (Recommended)
+
+Add to your `deno.json` imports:
+
+[source,json]
+----
+{
+  "imports": {
+    "@hyperpolymath/rescript-websocket": "jsr:@hyperpolymath/rescript-websocket@^0.1.0"
+  }
+}
+----
+
+=== Manual Installation
+
+Clone the repository and add to your ReScript project:
+
+[source,bash]
+----
+git clone https://github.com/hyperpolymath/rescript-websocket.git
+----
+
+Add to `rescript.json`:
+
+[source,json]
+----
+{
+  "bs-dependencies": [
+    "@hyperpolymath/rescript-websocket"
+  ]
+}
+----
+
+== Quick Start
+
+=== Client Example
+
+[source,rescript]
+----
+open WebSocket
+
+// Create a connection
+let ws = Client.make("wss://echo.websocket.org")
+
+// Set up event handlers
+ws->Client.onOpen(() => {
+  Console.log("Connected!")
+  ws->Client.send("Hello, WebSocket!")
+})
+
+ws->Client.onMessage(event => {
+  Console.log("Received: " ++ event.data)
+})
+
+ws->Client.onClose(event => {
+  Console.log(`Closed: ${event.code->Int.toString} - ${event.reason}`)
+})
+
+ws->Client.onError(error => {
+  Console.error("Error: " ++ error.message)
+})
+----
+
+=== Server Example (Deno)
+
+[source,rescript]
+----
+open WebSocket
+
+// Track connected clients
+let clients: ref<array<Client.t>> = ref([])
+
+// Create WebSocket handler
+let wsHandler = Server.makeHandler(
+  ~onConnect=socket => {
+    Console.log("Client connected")
+    clients := clients.contents->Array.concat([socket])
+  },
+  ~onMessage=(socket, data) => {
+    Console.log("Received: " ++ data)
+    // Echo back to sender
+    socket->Client.send("Echo: " ++ data)
+    // Or broadcast to all clients
+    broadcast(clients.contents, data)
+  },
+  ~onClose=(_socket, event) => {
+    Console.log(`Client disconnected: ${event.code->Int.toString}`)
+  },
+)
+
+// Start server
+let _ = Server.serve(
+  {
+    port: 8080,
+    onListen: info => Console.log(`Server running on ${info["hostname"]}:${info["port"]->Int.toString}`),
+  },
+  async request => {
+    switch wsHandler(request) {
+    | Some(response) => response
+    | None => Fetch.Response.make("Not a WebSocket request")
+    }
+  },
+)
+----
+
+== API Reference
+
+=== Client Module
+
+==== Types
+
+[source,rescript]
+----
+type readyState =
+  | Connecting  // 0 - Connection not yet open
+  | Open        // 1 - Connection is open
+  | Closing     // 2 - Connection is closing
+  | Closed      // 3 - Connection is closed
+
+type t  // WebSocket instance
+
+type closeEvent = {
+  code: int,
+  reason: string,
+  wasClean: bool,
+}
+
+type messageEvent = { data: string }
+type errorEvent = { message: string }
+----
+
+==== Functions
+
+[cols="1,2,1"]
+|===
+|Function |Description |Signature
+
+|`make`
+|Create a new WebSocket connection
+|`string => t`
+
+|`makeWithProtocols`
+|Create with subprotocol negotiation
+|`(string, array<string>) => t`
+
+|`readyState`
+|Get current connection state
+|`t => readyState`
+
+|`url`
+|Get the WebSocket URL
+|`t => string`
+
+|`protocol`
+|Get negotiated subprotocol
+|`t => string`
+
+|`bufferedAmount`
+|Get bytes queued for sending
+|`t => int`
+
+|`send`
+|Send a text message
+|`(t, string) => unit`
+
+|`sendArrayBuffer`
+|Send binary data
+|`(t, ArrayBuffer.t) => unit`
+
+|`sendJson`
+|Send JSON data (serialized)
+|`(t, JSON.t) => unit`
+
+|`close`
+|Close the connection
+|`t => unit`
+
+|`closeWithCode`
+|Close with code and reason
+|`(t, int, string) => unit`
+
+|`onOpen`
+|Set connection opened handler
+|`(t, unit => unit) => unit`
+
+|`onClose`
+|Set connection closed handler
+|`(t, closeEvent => unit) => unit`
+
+|`onMessage`
+|Set message received handler
+|`(t, messageEvent => unit) => unit`
+
+|`onError`
+|Set error handler
+|`(t, errorEvent => unit) => unit`
+
+|`isOpen`
+|Check if connection is open
+|`t => bool`
+
+|`isConnecting`
+|Check if still connecting
+|`t => bool`
+
+|`isClosed`
+|Check if connection is closed
+|`t => bool`
+
+|`waitForOpen`
+|Promise that resolves when open
+|`t => promise<unit>`
+|===
+
+=== Server Module
+
+==== Types
+
+[source,rescript]
+----
+type socket = Client.t  // Server-side WebSocket is same as client
+
+type server  // Deno HTTP server handle
+
+type request  // Incoming HTTP request
+
+type serveOptions = {
+  port?: int,
+  hostname?: string,
+  onListen?: {"port": int, "hostname": string} => unit,
+}
+
+type handler = request => promise<Fetch.Response.t>
+----
+
+==== Functions
+
+[cols="1,2"]
+|===
+|Function |Description
+
+|`upgradeWebSocket`
+|Upgrade HTTP request to WebSocket (returns socket + response)
+
+|`serve`
+|Start HTTP/WebSocket server with options
+
+|`serveHandler`
+|Start server with just a handler function
+
+|`shutdown`
+|Gracefully shutdown the server
+
+|`requestUrl`
+|Get URL from request object
+
+|`makeHandler`
+|Create a WebSocket handler with callbacks
+|===
+
+=== Broadcast Utilities
+
+[source,rescript]
+----
+// Send text message to multiple clients
+let broadcast: (array<Client.t>, string) => unit
+
+// Send JSON to multiple clients
+let broadcastJson: (array<Client.t>, JSON.t) => unit
+----
+
+== Close Codes
+
+Standard WebSocket close codes:
+
+[cols="1,2"]
+|===
+|Code |Meaning
+
+|1000
+|Normal closure
+
+|1001
+|Going away (e.g., page navigation)
+
+|1002
+|Protocol error
+
+|1003
+|Unsupported data type
+
+|1006
+|Abnormal closure (no close frame)
+
+|1007
+|Invalid frame payload data
+
+|1008
+|Policy violation
+
+|1009
+|Message too big
+
+|1010
+|Mandatory extension missing
+
+|1011
+|Internal server error
+
+|1015
+|TLS handshake failure
+|===
+
+== Patterns & Best Practices
+
+=== Reconnection with Exponential Backoff
+
+[source,rescript]
+----
+let rec connect = (url, attempt) => {
+  let ws = Client.make(url)
+
+  ws->Client.onClose(_ => {
+    let delay = Math.min(1000.0 *. Math.pow(2.0, attempt->Int.toFloat), 30000.0)
+    Console.log(`Reconnecting in ${delay->Float.toString}ms...`)
+    let _ = setTimeout(() => connect(url, attempt + 1), delay->Float.toInt)
+  })
+
+  ws->Client.onOpen(() => {
+    Console.log("Connected!")
+    // Reset attempt counter on successful connection
+  })
+
+  ws
+}
+
+let ws = connect("wss://example.com/ws", 0)
+----
+
+=== Type-Safe JSON Messages
+
+[source,rescript]
+----
+type message =
+  | Ping
+  | Pong
+  | Chat({user: string, text: string})
+  | Join({room: string})
+
+let encodeMessage = msg => {
+  switch msg {
+  | Ping => JSON.Encode.object([("type", JSON.Encode.string("ping"))])
+  | Pong => JSON.Encode.object([("type", JSON.Encode.string("pong"))])
+  | Chat({user, text}) =>
+    JSON.Encode.object([
+      ("type", JSON.Encode.string("chat")),
+      ("user", JSON.Encode.string(user)),
+      ("text", JSON.Encode.string(text)),
+    ])
+  | Join({room}) =>
+    JSON.Encode.object([
+      ("type", JSON.Encode.string("join")),
+      ("room", JSON.Encode.string(room)),
+    ])
+  }
+}
+
+ws->Client.sendJson(encodeMessage(Chat({user: "alice", text: "Hello!"})))
+----
+
+== Ecosystem Integration
+
+This library is part of the https://github.com/hyperpolymath/rescript-full-stack[ReScript Full Stack] ecosystem:
+
+* **rescript-websocket** - WebSocket client/server (this library)
+* **rescript-fetch** - HTTP client bindings
+* **rescript-deno** - Deno runtime bindings
+* **rescript-json-schema** - JSON Schema validation
+
+== Development
+
+=== Prerequisites
+
+* Deno 2.x
+* ReScript 11.x
+
+=== Build
+
+[source,bash]
+----
+# Install dependencies
+deno install
+
+# Build ReScript
+just build
+# or
+deno task build
+
+# Watch mode
+just dev
+# or
+deno task dev
+----
+
+=== Test
+
+[source,bash]
+----
+just test
+----
+
+=== Format & Lint
+
+[source,bash]
+----
+just fmt
+just lint
+----
+
+== Contributing
+
+See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc] for guidelines.
+
+* Sign all commits (DCO required)
+* Follow conventional commits
+* ReScript only - no TypeScript
+
+== Licence
+
+PMPL-1.0-or-later
+
+Copyright (C) 2025 Hyperpolymath
+
+This program is free software: you can redistribute it and/or modify it under the terms of the Palimpsest-MPL License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+See link:LICENSE.txt[LICENSE.txt] for full text.
+
+== See Also
+
+* https://developer.mozilla.org/en-US/docs/Web/API/WebSocket[MDN WebSocket API]
+* https://docs.deno.com/runtime/fundamentals/websockets/[Deno WebSocket Guide]
+* https://rescript-lang.org/[ReScript Documentation]

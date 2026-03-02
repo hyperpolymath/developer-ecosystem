@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+<https://github.com/hyperpolymath/rescript-tea> a void:Dataset ;
+    dcterms:title "rescript-tea" ;
+    dcterms:description "The Elm Architecture for ReScript with React integration" ;
+    dcterms:creator <https://github.com/hyperpolymath> ;
+    dcterms:license <https://www.gnu.org/licenses/agpl-3.0> ;
+    dcterms:subject <http://dbpedia.org/resource/Functional_programming> ;
+    dcterms:subject <http://dbpedia.org/resource/React_(JavaScript_library)> ;
+    void:feature <http://www.w3.org/ns/formats/Turtle> ;
+    foaf:homepage <https://github.com/hyperpolymath/rescript-tea> .

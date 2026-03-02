@@ -1,0 +1,40 @@
+{
+  "name": "rescript-tea",
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    },
+    {
+      "dir": "test",
+      "subdirs": true,
+      "type": "dev"
+    },
+    {
+      "dir": "examples",
+      "subdirs": true,
+      "type": "dev"
+    }
+  ],
+  "package-specs": [
+    {
+      "module": "esmodule",
+      "in-source": false
+    }
+  ],
+  "suffix": ".res.mjs",
+  "bs-dependencies": [
+    "@rescript/react",
+    "@rescript/core",
+    "@proven/rescript-bindings"
+  ],
+  "bsc-flags": ["-open Belt", "-open RescriptCore"],
+  "dev-dependencies": [],
+  "jsx": {
+    "version": 4,
+    "mode": "automatic"
+  },
+  "warnings": {
+    "number": "+A-48-42"
+  }
+}

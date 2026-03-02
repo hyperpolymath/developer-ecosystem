@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+[package]
+name = "rescript-grpc-codec"
+version = "0.1.0"
+edition = "2021"
+authors = ["Hyperpolymath"]
+description = "WASM-compiled protobuf codec for ReScript"
+license = "MPL-2.0"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# WASM bindgen for JS interop
+wasm-bindgen = "0.2"
+# Protobuf encoding/decoding
+prost = "0.13"
+# JSON for intermediate format
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+# Varint encoding
+integer-encoding = "4.0"
+
+[profile.release]
+opt-level = "z"      # Optimize for size
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"
+
+[profile.release.package."*"]
+opt-level = "z"

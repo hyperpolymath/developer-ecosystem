@@ -1,0 +1,25 @@
+# SPDX-License-Identifier: MPL-2.0
+cff-version: 1.2.0
+title: cadre-tea-router
+message: "If you use this software, please cite it as below."
+type: software
+authors:
+  - family-names: Jewell
+    given-names: Jonathan D.A.
+repository-code: "https://github.com/hyperpolymath/cadre-tea-router"
+url: "https://github.com/hyperpolymath/cadre-tea-router"
+abstract: >-
+  TEA-specialized routing integration for ReScript.
+  Provides Route-to-Msg patterns, URL subscriptions,
+  navigation commands (push/replace/back/forward),
+  and init-from-URL helpers.
+keywords:
+  - rescript
+  - routing
+  - elm-architecture
+  - tea
+  - url-parsing
+  - spa
+license: MPL-2.0
+version: "0.1.0"
+date-released: "2025-01-03"

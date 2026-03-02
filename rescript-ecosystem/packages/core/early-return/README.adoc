@@ -1,0 +1,425 @@
+= rescript-early-return
+:toc:
+:toc-placement!:
+
+*Status:* Alpha (v0.1.0-alpha.1) +
+*Current Implementation:* Macro-based transformer (PPX) +
+*Long-term Goal:* Validate demand for true syntactic sugar in ReScript compiler +
+*Related:* https://github.com/rescript-lang/rescript-compiler/issues/8191[ReScript #8191]
+
+toc::[]
+
+== What Is This?
+
+A **prototype macro system** for early-return patterns in ReScript. This lets teams experiment with early-return style **today** while we gather feedback for potential compiler integration.
+
+**Current state: Macro (extension nodes)**
+```rescript
+let validateUser = (input) => {
+  %return.if(input == "", Error("empty"))
+
+  let email = Email.parse(input)
+  %return.error(email)  // Early exit if Error
+
+  Ok(email)
+}
+```
+
+**Future vision: True sugar (if #8191 lands)**
+```rescript
+let validateUser = (input) => {
+  if input == "" { return Error("empty") }
+
+  let email = Email.parse(input)
+  if Result.isError(email) { return email }
+
+  Ok(email)
+}
+```
+
+== Why Build This?
+
+**Problem:** Issue #8191 proposes adding `return` keyword to ReScript, but there's no way to test demand without building something.
+
+**This library:**
+1. ✅ **Works today** - No compiler changes needed
+2. ✅ **Gathers feedback** - Real usage data for #8191 discussion
+3. ✅ **Backward compatible** - Optional, doesn't break existing code
+4. ✅ **Research tool** - Validates which patterns are most useful
+
+**If #8191 is accepted:** This library becomes a migration path from macro to true sugar.
+
+**If #8191 is rejected:** This library continues as standalone macro system.
+
+== Current Implementation: Macro
+
+We use **PPX (PreProcessor eXtension)** - a transformer that rewrites your code before compilation.
+
+**Architecture:**
+```
+Your .res file with %return.X
+        ↓
+PPX transformer (this library)
+        ↓
+Standard ReScript code
+        ↓
+ReScript compiler
+        ↓
+JavaScript
+```
+
+**Key insight:** ReScript compiler never sees `%return`. It's transformed BEFORE compilation.
+
+=== Macro Syntax
+
+Three extension nodes available:
+
+**1. Early return on condition:**
+```rescript
+%return.if(condition, value)
+```
+
+**2. Early return on Error:**
+```rescript
+%return.error(resultExpr)
+```
+
+**3. Early return on None:**
+```rescript
+%return.none(optionExpr)
+```
+
+See examples in `examples/` directory.
+
+== Installation
+
+```bash
+# Add to rescript.json
+{
+  "ppx-flags": ["rescript-early-return/ppx"],
+  "bs-dependencies": ["@hyperpolymath/rescript-early-return"]
+}
+```
+
+```bash
+# Install
+npm install @hyperpolymath/rescript-early-return
+```
+
+== Works With rescript-alib
+
+Perfect companion for type-safe validation:
+
+```rescript
+open Alib.String
+
+let validateAndSend = (input) => {
+  let email = Email.parse(input)
+  %return.error(email)  // Early exit if invalid
+
+  // email is now Email.t (branded type)
+  sendEmail(Email.reveal(email))
+  Ok()
+}
+```
+
+See https://github.com/hyperpolymath/rescript-alib
+
+== Macro vs True Sugar: Cost/Benefit Analysis
+
+[cols="2,3,3"]
+|===
+|**Aspect** |**Current Macro Approach** |**True Sugar (Future #8191)**
+
+3+^|**Costs**
+
+|*Syntax*
+|❌ Explicit markers (`%return.X`) - not invisible
+|❌ Backward compatibility concerns (if `return` used as variable)
+
+|*Scope*
+|❌ Limited scope (function bodies only, no loops/async)
+|❌ Requires compiler modification (parser + desugaring)
+
+|*Complexity*
+|❌ PPX dependency (build complexity) +
+❌ Two syntaxes to learn (standard + extension)
+|❌ More complex error messages (need to point to original code)
+
+|*Adoption*
+|❌ Editor support needs PPX awareness
+|❌ Long implementation cycle (core team review, testing) +
+❌ May not be accepted (community might reject)
+
+3+^|**Benefits**
+
+|*Availability*
+|✅ Available TODAY (no compiler changes)
+|✅ Single syntax (part of the language)
+
+|*Flexibility*
+|✅ Optional (per-project basis) +
+✅ Backward compatible (doesn't affect existing code)
+|✅ Works everywhere (loops, async, try/catch)
+
+|*User Experience*
+|✅ Safe (explicit transformation, easy to understand output)
+|✅ Real `return` keyword (no markers) +
+✅ Better editor support (built-in to language server) +
+✅ Optimal error messages (compiler-integrated)
+
+|*Strategic Value*
+|✅ Validates demand before proposing compiler changes
+|N/A (requires demand validation first)
+|===
+
+=== Decision Matrix
+
+[cols="1,2,2,1"]
+|===
+|Factor |Macro (Today) |True Sugar (Future) |Winner
+
+|Time to market
+|Immediate
+|6-12 months minimum
+|**Macro**
+
+|Implementation risk
+|Low (library only)
+|High (compiler core)
+|**Macro**
+
+|User experience
+|Good (explicit markers)
+|Excellent (invisible)
+|**Sugar**
+
+|Scope
+|Function bodies
+|Everywhere
+|**Sugar**
+
+|Adoption barrier
+|Add PPX to project
+|Upgrade ReScript
+|**Sugar**
+
+|Validation value
+|High (real usage data)
+|N/A (post-implementation)
+|**Macro**
+|===
+
+**Conclusion:** Build macro FIRST to validate demand, then propose sugar if successful.
+
+== Path to True Sugar
+
+This library is structured to inform #8191 implementation:
+
+=== Phase 1: Macro (Current)
+
+**Goal:** Validate demand and gather usage patterns
+
+**Deliverables:**
+- [x] Working PPX transformer
+- [ ] Alpha users providing feedback
+- [ ] Usage analytics (which patterns are most common)
+- [ ] Pain points documented
+
+**Success criteria:**
+- 10+ projects using in production
+- Clear patterns emerge (e.g., `%return.error` most common)
+- Community requests true sugar
+
+=== Phase 2: Proposal (If Phase 1 succeeds)
+
+**Goal:** Submit RFC to ReScript core team
+
+**Deliverables:**
+- [ ] Usage report (adoption, patterns, feedback)
+- [ ] Detailed desugaring specification (see `docs/DESUGARING-SPEC.adoc`)
+- [ ] Cost/benefit analysis with real data
+- [ ] Migration path from macro to sugar
+
+**Success criteria:**
+- Core team approves investigation
+- Community discussion consensus
+
+=== Phase 3: Implementation (If Phase 2 approved)
+
+**Goal:** Add true `return` sugar to ReScript compiler
+
+**Deliverables:**
+- [ ] Parser changes (recognize `return` keyword)
+- [ ] Desugaring logic (early return → if/else chains)
+- [ ] Type checker integration
+- [ ] Error message improvements
+- [ ] Compiler tests
+
+**Owner:** ReScript core team (with our support)
+
+=== Phase 4: Migration (If Phase 3 lands)
+
+**Goal:** Transition users from macro to sugar
+
+**Deliverables:**
+- [ ] Codemod: `%return.X(...)` → `return ...`
+- [ ] Migration guide
+- [ ] Deprecation timeline
+- [ ] Sunset macro library
+
+**Success criteria:**
+- Smooth migration path
+- No breaking changes
+- Clear communication
+
+== Research Questions
+
+This library helps answer:
+
+1. **Do teams actually want early returns?**
+   - Measure: Adoption rate, usage frequency
+
+2. **Which patterns are most valuable?**
+   - Measure: `%return.error` vs `%return.if` vs `%return.none` usage
+
+3. **What are the pain points?**
+   - Measure: GitHub issues, user feedback
+
+4. **Is the PPX overhead acceptable?**
+   - Measure: Build time impact, compilation issues
+
+5. **Would true sugar be worth the compiler complexity?**
+   - Measure: User satisfaction vs implementation cost
+
+**Data collection:** (Privacy-respecting, opt-in)
+- Anonymous usage metrics
+- Pattern frequency analysis
+- Build time benchmarks
+
+== Current Limitations (Macro)
+
+**By design (macro limitations):**
+
+1. **No loop support** - `%return` in while/for won't work
+2. **No async support** - Promises not yet handled
+3. **Explicit markers required** - Can't use plain `return`
+4. **Function bodies only** - Not in try/catch, nested scopes
+
+**These WOULD be fixed with true sugar (#8191).**
+
+== Examples
+
+=== Before (Standard ReScript)
+
+```rescript
+let validateUser = (emailStr, ageStr) => {
+  if String.length(emailStr) == 0 {
+    Error("Email required")
+  } else {
+    let email = Email.parse(emailStr)
+    switch email {
+    | Error(e) => Error(e)
+    | Ok(email) =>
+        let age = Int.fromString(ageStr)
+        switch age {
+        | None => Error("Invalid age")
+        | Some(age) =>
+            if age < 0 {
+              Error("Age must be positive")
+            } else {
+              Ok({email: email, age: age})
+            }
+        }
+    }
+  }
+}
+```
+
+=== After (With Macro)
+
+```rescript
+let validateUser = (emailStr, ageStr) => {
+  %return.if(String.length(emailStr) == 0, Error("Email required"))
+
+  let email = Email.parse(emailStr)
+  %return.error(email)
+
+  let age = Int.fromString(ageStr)
+  %return.none(age)
+
+  %return.if(age < 0, Error("Age must be positive"))
+
+  Ok({email: email, age: age})
+}
+```
+
+=== Future (With True Sugar)
+
+```rescript
+let validateUser = (emailStr, ageStr) => {
+  if String.length(emailStr) == 0 { return Error("Email required") }
+
+  let email = Email.parse(emailStr)
+  if Result.isError(email) { return email }
+
+  let age = Int.fromString(ageStr)
+  if Option.isNone(age) { return Error("Invalid age") }
+
+  if age < 0 { return Error("Age must be positive") }
+
+  Ok({email: email, age: age})
+}
+```
+
+== Documentation
+
+- **README.adoc** (this file) - Overview and positioning
+- **docs/TRANSFORMATION-RULES.adoc** - Exact AST transformations
+- **docs/DESUGARING-SPEC.adoc** - Full specification for true sugar
+- **docs/COST-BENEFIT.adoc** - Detailed cost/benefit analysis
+- **examples/** - Before/after code samples
+
+== Relationship to #8191
+
+This library is **explicitly designed** as research for https://github.com/rescript-lang/rescript-compiler/issues/8191[Issue #8191: Optional "return" as Syntactic Sugar].
+
+**Our role:**
+1. **Validate demand** - Does the community actually want this?
+2. **Test patterns** - Which early-return styles are most useful?
+3. **Gather data** - Real usage to inform compiler design
+4. **Reduce risk** - Prove value before expensive compiler work
+
+**If #8191 is accepted:**
+- We provide migration path from macro to sugar
+- This library becomes stepping stone
+- Eventually deprecated in favor of official syntax
+
+**If #8191 is rejected:**
+- This library continues as standalone tool
+- Macro approach remains available
+- No wasted effort (users still benefit)
+
+**Either way, we learn something valuable.**
+
+== Contributing
+
+**We need:**
+- Early adopters to test in real projects
+- Feedback on which patterns are most useful
+- Bug reports and edge cases
+- Performance benchmarks
+
+**See CONTRIBUTING.md**
+
+## License
+
+PMPL-1.0-or-later
+
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+## Links
+
+- **rescript-alib:** https://github.com/hyperpolymath/rescript-alib (type-safe utilities)
+- **Issue #8191:** https://github.com/rescript-lang/rescript-compiler/issues/8191 (upstream proposal)
+- **ReScript Docs:** https://rescript-lang.org/docs/manual/latest (language reference)

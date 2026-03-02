@@ -1,0 +1,38 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2024 Jonathan D.A. Jewell
+= rescript-tea - Citation Guide
+:toc:
+
+== BibTeX
+
+[source,bibtex]
+----
+@software{rescript-tea_2024,
+  author = {Jewell, Jonathan D.A.},
+  title = {rescript-tea},
+  year = {2024},
+  url = {https://github.com/hyperpolymath/rescript-tea},
+  license = {MIT}
+}
+----
+
+== Harvard Style
+
+Jewell, J.D.A. (2024) _rescript-tea_ [Computer software]. Available at: https://github.com/hyperpolymath/rescript-tea
+
+== OSCOLA
+
+Jonathan D.A. Jewell, 'rescript-tea' (2024) <https://github.com/hyperpolymath/rescript-tea>
+
+== MLA
+
+Jewell, Jonathan D.A. "rescript-tea." 2024, github.com/hyperpolymath/rescript-tea.
+
+== APA 7
+
+Jewell, J.D.A. (2024). _rescript-tea_ [Computer software]. GitHub. https://github.com/hyperpolymath/rescript-tea
+
+== Machine-Readable Metadata
+
+* link:../CITATION.cff[CITATION.cff] - Citation File Format (for GitHub)
+* link:../METADATA.dc.xml[METADATA.dc.xml] - Dublin Core metadata

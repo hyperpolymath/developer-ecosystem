@@ -1,0 +1,208 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= Contributing to rescript-websocket
+:toc:
+
+Thank you for your interest in contributing to rescript-websocket!
+
+== Getting Started
+
+=== Prerequisites
+
+* Deno 2.x
+* ReScript 11.x (installed via Deno)
+* Git with GPG signing configured
+
+=== Setup
+
+[source,bash]
+----
+# Clone the repository
+git clone https://github.com/hyperpolymath/rescript-websocket.git
+cd rescript-websocket
+
+# Install dependencies
+deno install
+
+# Build
+just build
+
+# Run tests
+just test
+----
+
+== Development Workflow
+
+=== Branch Naming
+
+* `feature/` - New features
+* `fix/` - Bug fixes
+* `docs/` - Documentation only
+* `refactor/` - Code refactoring
+* `test/` - Test additions/improvements
+
+=== Making Changes
+
+1. Fork the repository
+2. Create a feature branch from `main`
+3. Make your changes
+4. Run `just quality` to verify
+5. Sign off commits (`git commit -s`)
+6. Submit a pull request
+
+== Code Guidelines
+
+=== Language Policy
+
+**ReScript only** - This project follows the https://github.com/hyperpolymath[Hyperpolymath] language policy:
+
+* ✅ ReScript for all application code
+* ✅ Deno for runtime and package management
+* ❌ No TypeScript
+* ❌ No Node.js/npm/bun
+
+=== Code Style
+
+* Use `@@uncurried` for all ReScript files
+* Prefer pipe-first syntax (`->`)
+* Keep functions pure where possible
+* Use descriptive names, avoid abbreviations
+* Add doc comments for public API functions
+
+=== Example
+
+[source,rescript]
+----
+@@uncurried
+
+/** Send a message if the connection is open */
+let safeSend = (ws: Client.t, message: string): result<unit, string> => {
+  if Client.isOpen(ws) {
+    ws->Client.send(message)
+    Ok()
+  } else {
+    Error("Connection not open")
+  }
+}
+----
+
+== Commit Guidelines
+
+=== Format
+
+We use https://www.conventionalcommits.org/[Conventional Commits]:
+
+----
+type(scope): description
+
+[optional body]
+
+[optional footer]
+Signed-off-by: Your Name <your.email@example.com>
+----
+
+=== Types
+
+* `feat` - New feature
+* `fix` - Bug fix
+* `docs` - Documentation
+* `style` - Formatting, no code change
+* `refactor` - Code restructuring
+* `test` - Adding tests
+* `chore` - Maintenance tasks
+
+=== Examples
+
+----
+feat(client): add sendJson helper for JSON serialization
+
+fix(server): handle connection upgrade failure gracefully
+
+docs(readme): add reconnection pattern example
+----
+
+=== DCO Sign-off
+
+All commits must be signed off (Developer Certificate of Origin):
+
+[source,bash]
+----
+git commit -s -m "feat(client): add new feature"
+----
+
+== Testing
+
+=== Running Tests
+
+[source,bash]
+----
+# Run all tests
+just test
+
+# Run specific test file
+deno test tests/client_test.res.js
+
+# Watch mode
+just test-watch
+----
+
+=== Writing Tests
+
+Tests should be in the `tests/` directory with `_test.res` suffix:
+
+[source,rescript]
+----
+// tests/client_test.res
+open WebSocket
+
+let testClientCreation = () => {
+  let ws = Client.make("wss://example.com")
+  assert(Client.isConnecting(ws))
+}
+----
+
+== Pull Request Process
+
+1. Ensure all tests pass: `just quality`
+2. Update documentation if needed
+3. Add entry to CHANGELOG if significant
+4. Request review from maintainers
+5. Address review feedback
+6. Squash commits if requested
+
+== Issue Reporting
+
+=== Bug Reports
+
+Please include:
+
+* ReScript version
+* Deno version
+* Minimal reproduction code
+* Expected vs actual behavior
+* Error messages/stack traces
+
+=== Feature Requests
+
+Please include:
+
+* Use case description
+* Proposed API (if any)
+* Alternative solutions considered
+
+== Licence
+
+By contributing, you agree that your contributions will be licensed under AGPL-3.0-or-later.
+
+== Questions?
+
+* Open a GitHub Issue for questions
+* Check existing issues before creating new ones
+* Be respectful and constructive
+
+== Acknowledgements
+
+Contributors will be acknowledged in the project README.
+
+Thank you for helping make rescript-websocket better!

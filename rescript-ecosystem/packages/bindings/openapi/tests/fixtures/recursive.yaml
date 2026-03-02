@@ -1,0 +1,21 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Recursive API
+paths: {}
+components:
+  schemas:
+    Node:
+      type: object
+      properties:
+        value:
+          type: integer
+        next:
+          $ref: "#/components/schemas/Node"
+        parent:
+          $ref: "#/components/schemas/Node"
+    Tree:
+      type: object
+      properties:
+        root:
+          $ref: "#/components/schemas/Node"

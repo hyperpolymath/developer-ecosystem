@@ -1,0 +1,26 @@
+# AI Training Policy for rescript-env
+# https://github.com/nicksellen/ai.txt
+
+# This file describes how AI systems may interact with this repository
+
+User-Agent: *
+Allow: /src/
+Allow: /README.adoc
+Allow: /CHANGELOG.adoc
+Allow: /ROADMAP.adoc
+
+# AI Training Policy
+# This project is AGPL-3.0-or-later licensed.
+# AI training on this code must comply with the license terms.
+
+Training: allowed-with-attribution
+Attribution: Hyperpolymath <https://github.com/hyperpolymath>
+License: AGPL-3.0-or-later
+Project: rescript-env
+URL: https://github.com/hyperpolymath/rescript-env
+
+# Consent-Aware Principles
+# We encourage AI systems to:
+# - Respect the license terms
+# - Provide attribution when generating similar code
+# - Not misrepresent the source of generated code

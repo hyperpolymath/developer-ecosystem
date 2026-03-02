@@ -1,0 +1,677 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= ReScript Full Stack Roadmap
+:toc:
+:icons: font
+
+Priorities for completing the ReScript full-stack ecosystem.
+
+== Priority Tiers
+
+=== P0: Foundation (Done ✅)
+
+These components form the minimum viable full-stack:
+
+[cols="1,3,1"]
+|===
+| Component | Purpose | Status
+
+| @rescript/core
+| Standard library
+| ✅ Community
+
+| @rescript/react
+| React bindings
+| ✅ Community
+
+| rescript-tea
+| TEA architecture + Layout + Animation
+| ✅ Ours
+
+| cadre-tea-router
+| Routing + Query params + Guards
+| ✅ Ours
+
+| rescript-wasm-runtime
+| Server runtime + SharedMemory + DAG
+| ✅ Ours
+|===
+
+=== P1: Data Layer (Done ✅)
+
+Essential for any real application:
+
+[cols="1,3,1,2"]
+|===
+| Component | Purpose | Status | Notes
+
+| **rescript-postgres**
+| PostgreSQL client
+| ✅ Done
+| Type-safe queries, transactions, connection pooling
+
+| **rescript-schema**
+| Runtime validation
+| ✅ Community (Sury)
+| https://github.com/DZakh/rescript-schema[rescript-schema] - excellent
+
+| **rescript-env**
+| Environment config
+| ✅ Done
+| Type-safe env vars, runtime detection
+
+| **rescript-poly-core**
+| Shared foundation
+| ✅ Done
+| Result, Async, Logger, Config, MCP utilities
+|===
+
+=== P2: Real-Time & API (Done ✅)
+
+For interactive applications:
+
+[cols="1,3,1,2"]
+|===
+| Component | Purpose | Status | Notes
+
+| **rescript-websocket**
+| WebSocket client/server
+| ✅ Done
+| Client + Server with Deno native API
+
+| **rescript-http-server**
+| HTTP server
+| ✅ Done
+| Routing, middleware, response helpers
+
+| **rescript-graphql-client**
+| GraphQL client
+| ✅ Community
+| rescript-relay for Relay, rescript-webapi Fetch for simple
+
+| **rescript-sse**
+| Server-Sent Events
+| ⬜ Gap
+| Lower priority - WebSocket covers most use cases
+|===
+
+=== P3: Infrastructure (Partial ✅)
+
+For production deployments:
+
+[cols="1,3,1,2"]
+|===
+| Component | Purpose | Status | Notes
+
+| **rescript-redis**
+| Redis client
+| ✅ Done
+| Full API + Streams + Sentinel + Cluster
+
+| **rescript-s3**
+| Object storage
+| ⬜ Gap
+| S3-compatible (AWS, Minio, R2)
+
+| **rescript-queue**
+| Message queues
+| ⚡ Via MCP
+| poly-queue-mcp for LLM, direct use Redis Streams
+
+| **rescript-metrics**
+| Observability
+| ⬜ Gap
+| Prometheus, OpenTelemetry - via poly-observability-mcp
+|===
+
+=== P4: Mobile & Desktop (Expand)
+
+For native applications:
+
+[cols="1,3,1,2"]
+|===
+| Component | Purpose | Status | Notes
+
+| **rescript-tauri**
+| Tauri 2.0 bindings
+| ⬜ Needed
+| IPC, window, filesystem
+
+| **rescript-capacitor**
+| Capacitor bindings
+| ⬜ Needed
+| Alternative mobile path
+
+| **rescript-electron**
+| Electron bindings
+| ⬜ Needed
+| Desktop apps (heavier)
+|===
+
+=== P5: Advanced (Future)
+
+Nice to have:
+
+[cols="1,3,1,2"]
+|===
+| Component | Purpose | Status | Notes
+
+| **rescript-grpc**
+| gRPC client/server
+| ⬜ Needed
+| Binary protocol, streaming
+
+| **rescript-wasm-components**
+| WASM Component Model
+| ⬜ Research
+| Future WASM standard
+
+| **rescript-webgpu**
+| WebGPU bindings
+| ⬜ Research
+| GPU compute/graphics
+
+| **rescript-ml**
+| ML model inference
+| ⬜ Research
+| ONNX runtime bindings
+|===
+
+== Integration Matrix
+
+How components connect:
+
+[source,text]
+----
+                    ┌──────────────┐
+                    │   Browser    │
+                    └──────┬───────┘
+                           │
+              ┌────────────┼────────────┐
+              │            │            │
+        ┌─────▼─────┐ ┌────▼────┐ ┌─────▼─────┐
+        │rescript-  │ │ cadre-  │ │ rescript- │
+        │   tea     │ │tea-router│ │  webapi  │
+        └─────┬─────┘ └────┬────┘ └─────┬─────┘
+              │            │            │
+              └────────────┼────────────┘
+                           │
+                    ┌──────▼───────┐
+                    │   rescript-  │
+                    │ wasm-runtime │
+                    └──────┬───────┘
+                           │
+         ┌─────────────────┼─────────────────┐
+         │                 │                 │
+   ┌─────▼─────┐    ┌──────▼──────┐   ┌──────▼──────┐
+   │ SharedMem │    │DependencyGraph│   │   HTTP/WS   │
+   │(Zero-copy)│    │    (DAG)    │   │   Server    │
+   └─────┬─────┘    └──────┬──────┘   └──────┬──────┘
+         │                 │                 │
+         └─────────────────┼─────────────────┘
+                           │
+                    ┌──────▼───────┐
+                    │  WASM Module │
+                    │   (Rust)     │
+                    └──────────────┘
+----
+
+== FFI Coverage by Layer
+
+[cols="1,2,1,2"]
+|===
+| Layer | FFI Type | Coverage | Notes
+
+| Browser APIs
+| `@module` / `external`
+| 90%
+| rescript-webapi covers most
+
+| Node.js
+| `@module` / `external`
+| 70%
+| rescript-nodejs, prefer Deno
+
+| Deno
+| `@module` / `external`
+| 60%
+| rescript-wasm-runtime
+
+| Bun
+| `@module` / `external`
+| 40%
+| rescript-bun exists
+
+| WASM
+| SharedArrayBuffer
+| 30%
+| Our SharedMemory module
+
+| Native (Tauri)
+| IPC
+| 10%
+| Needs rescript-tauri
+
+| Native (FFI)
+| N-API / neon
+| 5%
+| Heavy lift, low priority
+|===
+
+== Contribution Priorities
+
+If you want to contribute, here's where effort is most valuable:
+
+=== Immediate Impact
+
+1. **rescript-tauri** - Unlocks mobile/desktop apps (ONLY remaining SHOULD priority)
+2. **rescript-s3** - Object storage for file-heavy applications
+3. **rescript-openapi** - Generate clients from OpenAPI specs
+
+=== Documentation
+
+1. Example applications showing full-stack patterns
+2. Integration guides between components
+3. Migration guides from TypeScript
+
+=== Testing
+
+1. Cross-browser testing for rescript-tea Layout
+2. Performance benchmarks for SharedMemory
+3. Integration tests for router + TEA
+
+== Versioning Strategy
+
+All hyperpolymath components follow:
+
+* **Semantic Versioning** for releases
+* **Main branch** always deployable
+* **Breaking changes** only in major versions
+* **Deprecation warnings** one minor version before removal
+
+== Decision Log
+
+=== Why Deno over Node?
+
+* Security-first (explicit permissions)
+* TypeScript native (better FFI story)
+* Web-standard APIs
+* Single executable distribution
+* No node_modules
+
+=== Why TEA over Redux/MobX?
+
+* Functional purity
+* Predictable state updates
+* Easy testing
+* Works with ReScript's type system
+* Proven (Elm has 8+ years of production use)
+
+=== Why SharedArrayBuffer over JSON?
+
+* Zero-copy between JS and WASM
+* 10-100x faster for large data
+* Required for concurrent WASM
+* Worth the cross-origin isolation requirement
+
+== Timeline
+
+No hard dates. Components are built demand-driven (see git-dispatcher/DEMAND-DRIVEN-DEVELOPMENT.adoc).
+
+**Status:**
+
+1. ✅ Q1 2025: Foundation (done)
+2. ✅ Q2 2025: Data layer (postgres, schema, env, poly-core)
+3. ✅ Q3 2025: Real-time (websocket, http-server)
+4. ✅ Q4 2025: Infrastructure (redis with Streams/Sentinel/Cluster)
+5. 📋 2026: Mobile/desktop (tauri) - NEXT PRIORITY
+
+== MoSCoW Prioritisation
+
+=== MUST (Critical for viability) ✅ COMPLETE
+
+[cols="1,3,2"]
+|===
+|Component |Rationale |Status
+
+|**rescript-postgres**
+|Database access for server-side applications.
+|✅ Done
+
+|**rescript-schema (Sury)**
+|Runtime validation for API boundaries.
+|✅ Community (DZakh)
+
+|**rescript-http-server**
+|Standalone Deno.serve wrapper for pure-ReScript servers.
+|✅ Done
+|===
+
+=== SHOULD (High value, clear use cases) ✅ MOSTLY COMPLETE
+
+[cols="1,3,2"]
+|===
+|Component |Rationale |Status
+
+|**rescript-websocket**
+|Real-time is table stakes for modern apps.
+|✅ Done
+
+|**rescript-redis**
+|Caching, sessions, pub/sub, Streams, Sentinel, Cluster.
+|✅ Done
+
+|**rescript-env**
+|Type-safe environment variables with validation.
+|✅ Done
+
+|**rescript-tauri**
+|Mobile/desktop via Tauri 2.0. The only viable path to native without leaving ReScript.
+|⬜ Next Priority
+|===
+
+=== COULD (Nice to have, future consideration)
+
+[cols="1,3,2"]
+|===
+|Component |Rationale |Effort
+
+|**rescript-s3**
+|Object storage. Important for file-heavy apps, but many apps don't need it.
+|Low
+
+|**rescript-grpc**
+|gRPC is powerful but niche. REST/GraphQL covers 90% of use cases.
+|Medium
+
+|**rescript-sqlite**
+|Embedded database. Useful for Tauri apps, less so for server-side.
+|Medium
+
+|**rescript-openapi**
+|Generate clients from specs. Nice for large API integrations.
+|High
+|===
+
+=== WON'T (Deprecated or not recommended)
+
+[cols="1,3,2"]
+|===
+|Component |Rationale |Alternative
+
+|**rescript-nodejs**
+|Node.js lacks Deno's security model and has inferior DX. Actively discouraged.
+|Migrate to Deno
+
+|**rescript-docker**
+|Docker API bindings are low value—shell out to docker CLI instead.
+|`Deno.Command`
+
+|**rescript-k8s**
+|Kubernetes client is too heavy for ReScript. Use kubectl/helm or Pulumi.
+|Pulumi TypeScript
+
+|**rescript-terraform**
+|Terraform CDK already has TypeScript. ReScript bindings add no value.
+|CDKTF TypeScript
+
+|**rescript-electron**
+|Electron is bloated. Tauri is lighter and Rust-backed.
+|rescript-tauri
+|===
+
+== Novel Approaches to Consider
+
+=== 1. Type-Safe SQL at Compile Time
+
+Rather than runtime query building, consider a ppx (preprocessor) that validates SQL at compile time:
+
+[source,rescript]
+----
+// Hypothetical: %sql ppx validates against schema at compile time
+let users = %sql("SELECT id, name FROM users WHERE age > $1")
+// Compiler error if 'users' table doesn't exist
+----
+
+Libraries like PgTyped (TypeScript) do this. A ReScript version would be groundbreaking.
+
+=== 2. Zero-Config Full-Stack Framework
+
+Instead of assembling components, a single "create-rescript-app" that:
+
+* Generates server + client with shared types
+* Auto-infers API types from function signatures
+* Single-command deployment to Deno Deploy / Fly.io
+
+Similar to Remix/Next.js but with TEA architecture.
+
+=== 3. WASM-First Architecture
+
+Flip the model: write core logic in Rust/Zig, expose via WASM, with ReScript as the glue layer:
+
+[source,text]
+----
+┌─────────────┐     ┌─────────────┐
+│  ReScript   │────▶│  WASM Core  │
+│   (Glue)    │◀────│  (Rust/Zig) │
+└─────────────┘     └─────────────┘
+       │
+       ▼
+┌─────────────┐
+│  DOM/Deno   │
+└─────────────┘
+----
+
+This inverts control: business logic in a type-safe, portable WASM core; ReScript handles IO.
+
+=== 4. Incremental Adoption Strategy
+
+For teams with existing TypeScript codebases, provide:
+
+* **rescript-ts-bridge**: Bi-directional type generation
+* **Gradual migration**: Mixed TS/ReScript compilation
+* **Interop-first FFI**: Seamless calling between languages
+
+=== 5. Unified Schema System
+
+One schema definition that generates:
+
+* ReScript types
+* PostgreSQL migrations
+* JSON Schema for API docs
+* Validation functions
+
+[source,rescript]
+----
+let userSchema = Schema.object({
+  id: Schema.uuid,
+  name: Schema.string->Schema.minLength(1),
+  email: Schema.email,
+  createdAt: Schema.timestamp,
+})
+
+// Generates:
+// - User.res type
+// - CREATE TABLE statement
+// - OpenAPI component
+// - Postgres.decode function
+----
+
+== MoSCoW Prioritisation
+
+=== MUST (Critical for viability)
+
+[cols="1,3,2"]
+|===
+|Component |Rationale |Effort
+
+|**rescript-postgres**
+|Without database access, no server-side application is possible. This is the single highest-impact gap in the ecosystem.
+|Low (FFI to postgres.js)
+
+|**rescript-schema**
+|Runtime validation is essential for API boundaries. DZakh's rescript-schema exists and is well-maintained—adopt rather than build.
+|None (use existing)
+
+|**rescript-http-server**
+|The rescript-wasm-runtime has HTTP, but a standalone Deno.serve wrapper would be cleaner for pure-ReScript servers.
+|Low (thin wrapper)
+|===
+
+=== SHOULD (High value, clear use cases)
+
+[cols="1,3,2"]
+|===
+|Component |Rationale |Effort
+
+|**rescript-websocket**
+|Real-time is table stakes for modern apps. Deno has native WebSocket—binding is straightforward.
+|Low
+
+|**rescript-redis**
+|Caching, sessions, pub/sub. Essential for horizontal scaling. Bind to Deno's redis client.
+|Low
+
+|**rescript-env**
+|Type-safe environment variables with validation. Small but prevents entire classes of deployment bugs.
+|Very Low
+
+|**rescript-tauri**
+|Mobile/desktop via Tauri 2.0. The only viable path to native without leaving ReScript.
+|Medium
+|===
+
+=== COULD (Nice to have, future consideration)
+
+[cols="1,3,2"]
+|===
+|Component |Rationale |Effort
+
+|**rescript-s3**
+|Object storage. Important for file-heavy apps, but many apps don't need it.
+|Low
+
+|**rescript-grpc**
+|gRPC is powerful but niche. REST/GraphQL covers 90% of use cases.
+|Medium
+
+|**rescript-sqlite**
+|Embedded database. Useful for Tauri apps, less so for server-side.
+|Medium
+
+|**rescript-openapi**
+|Generate clients from specs. Nice for large API integrations.
+|High
+|===
+
+=== WON'T (Deprecated or not recommended)
+
+[cols="1,3,2"]
+|===
+|Component |Rationale |Alternative
+
+|**rescript-nodejs**
+|Node.js lacks Deno's security model and has inferior DX. Actively discouraged.
+|Migrate to Deno
+
+|**rescript-docker**
+|Docker API bindings are low value—shell out to docker CLI instead.
+|`Deno.Command`
+
+|**rescript-k8s**
+|Kubernetes client is too heavy for ReScript. Use kubectl/helm or Pulumi.
+|Pulumi TypeScript
+
+|**rescript-terraform**
+|Terraform CDK already has TypeScript. ReScript bindings add no value.
+|CDKTF TypeScript
+
+|**rescript-electron**
+|Electron is bloated. Tauri is lighter and Rust-backed.
+|rescript-tauri
+|===
+
+== Novel Approaches to Consider
+
+=== 1. Type-Safe SQL at Compile Time
+
+Rather than runtime query building, consider a ppx (preprocessor) that validates SQL at compile time:
+
+[source,rescript]
+----
+// Hypothetical: %sql ppx validates against schema at compile time
+let users = %sql("SELECT id, name FROM users WHERE age > $1")
+// Compiler error if 'users' table doesn't exist
+----
+
+Libraries like PgTyped (TypeScript) do this. A ReScript version would be groundbreaking.
+
+=== 2. Zero-Config Full-Stack Framework
+
+Instead of assembling components, a single "create-rescript-app" that:
+
+* Generates server + client with shared types
+* Auto-infers API types from function signatures
+* Single-command deployment to Deno Deploy / Fly.io
+
+Similar to Remix/Next.js but with TEA architecture.
+
+=== 3. WASM-First Architecture
+
+Flip the model: write core logic in Rust/Zig, expose via WASM, with ReScript as the glue layer:
+
+[source,text]
+----
+┌─────────────┐     ┌─────────────┐
+│  ReScript   │────▶│  WASM Core  │
+│   (Glue)    │◀────│  (Rust/Zig) │
+└─────────────┘     └─────────────┘
+       │
+       ▼
+┌─────────────┐
+│  DOM/Deno   │
+└─────────────┘
+----
+
+This inverts control: business logic in a type-safe, portable WASM core; ReScript handles IO.
+
+=== 4. Incremental Adoption Strategy
+
+For teams with existing TypeScript codebases, provide:
+
+* **rescript-ts-bridge**: Bi-directional type generation
+* **Gradual migration**: Mixed TS/ReScript compilation
+* **Interop-first FFI**: Seamless calling between languages
+
+=== 5. Unified Schema System
+
+One schema definition that generates:
+
+* ReScript types
+* PostgreSQL migrations
+* JSON Schema for API docs
+* Validation functions
+
+[source,rescript]
+----
+let userSchema = Schema.object({
+  id: Schema.uuid,
+  name: Schema.string->Schema.minLength(1),
+  email: Schema.email,
+  createdAt: Schema.timestamp,
+})
+
+// Generates:
+// - User.res type
+// - CREATE TABLE statement
+// - OpenAPI component
+// - Postgres.decode function
+----
+
+== Links
+
+* https://rescript-lang.org[ReScript Official]
+* https://github.com/rescript-lang[ReScript GitHub Org]
+* https://forum.rescript-lang.org[ReScript Forum]
+* https://github.com/hyperpolymath[Hyperpolymath GitHub]

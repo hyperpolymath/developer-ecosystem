@@ -1,0 +1,31 @@
+# Mustfile
+# Contract of Physical State for Hyperpolymath Projects
+# Palimpsest-MPL 1.0
+
+# Required files (must_have)
+must_have:
+  - README.adoc
+  - LICENSE-PALIMPSEST-MPL
+  - Justfile
+  - Mustfile
+  - scripts/entrypoint.sh
+  - Containerfile
+
+# Forbidden files (must_not_have)
+must_not_have:
+  - Makefile
+  - *.pyc
+  - node_modules/
+
+# Required content in files
+requirements:
+  content:
+    - file: README.adoc
+      contains: "Palimpsest-MPL 1.0"
+    - file: justfile
+      contains: "update: update-coverage update-readme"
+
+# Artifacts (compiled binaries, container images)
+artifacts:
+  - bin/must
+  - must:latest

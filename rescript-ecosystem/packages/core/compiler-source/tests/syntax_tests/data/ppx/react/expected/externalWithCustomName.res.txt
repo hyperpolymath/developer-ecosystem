@@ -1,0 +1,14 @@
+@@jsxConfig({version: 4})
+
+module Foo = {
+  @res.jsxComponentProps @live
+  type props<'a, 'b> = {
+    a: 'a,
+    b: 'b,
+  }
+
+  @module("Foo")
+  external component: React.component<props<int, string>> = "component"
+}
+
+let t = React.jsx(Foo.component, {a: 1, b: {"1"}})

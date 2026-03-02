@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:dcterms="http://purl.org/dc/terms/">
+  <rdf:Description rdf:about="https://github.com/hyperpolymath/rescript-tea">
+    <dc:title>rescript-tea</dc:title>
+    <dc:creator>Jonathan D.A. Jewell</dc:creator>
+    <dc:subject>ReScript</dc:subject>
+    <dc:subject>Elm Architecture</dc:subject>
+    <dc:subject>Functional Programming</dc:subject>
+    <dc:subject>React</dc:subject>
+    <dc:description>The Elm Architecture (TEA) for ReScript with React integration, providing state management and side effect handling</dc:description>
+    <dc:publisher>Hyperpolymath</dc:publisher>
+    <dc:type>Software</dc:type>
+    <dc:format>application/x-rescript</dc:format>
+    <dc:identifier>https://github.com/hyperpolymath/rescript-tea</dc:identifier>
+    <dc:language>en</dc:language>
+    <dc:rights>AGPL-3.0-or-later</dc:rights>
+    <dcterms:license rdf:resource="https://www.gnu.org/licenses/agpl-3.0"/>
+    <dcterms:conformsTo rdf:resource="https://github.com/hyperpolymath/rhodium-standard-repositories"/>
+  </rdf:Description>
+</rdf:RDF>

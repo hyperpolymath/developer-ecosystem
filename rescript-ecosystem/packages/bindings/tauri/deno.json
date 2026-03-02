@@ -1,0 +1,25 @@
+{
+  "name": "@hyperpolymath/rescript-tauri",
+  "version": "0.1.0",
+  "exports": "./lib/es6/src/Tauri.res.mjs",
+  "imports": {
+    "@tauri-apps/api": "npm:@tauri-apps/api@^2.0.0",
+    "@rescript/core": "npm:@rescript/core@^1.0.0",
+    "rescript": "npm:rescript@^11.0.0"
+  },
+  "tasks": {
+    "build": "deno run -A npm:rescript build",
+    "watch": "deno run -A npm:rescript build -w",
+    "clean": "deno run -A npm:rescript clean",
+    "test": "deno test --allow-read --allow-env test/",
+    "check": "deno check src/**/*.res.mjs"
+  },
+  "fmt": {
+    "include": ["src/", "test/", "examples/"],
+    "exclude": ["lib/"]
+  },
+  "lint": {
+    "include": ["src/", "test/", "examples/"],
+    "exclude": ["lib/"]
+  }
+}

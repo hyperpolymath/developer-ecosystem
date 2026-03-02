@@ -1,0 +1,266 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= Component Index
+:icons: font
+
+Quick reference to all ReScript full-stack components.
+
+== Hyperpolymath (Ours)
+
+=== rescript-tea
+
+TEA (The Elm Architecture) for ReScript.
+
+[horizontal]
+Link:: https://github.com/hyperpolymath/rescript-tea
+Install:: `npm install rescript-tea`
+Features::
+* `Tea.App` - Application wiring
+* `Tea.Cmd` - Side effects
+* `Tea.Sub` - Subscriptions (Time, Keyboard, Mouse, Animation)
+* `Tea.Html` - Virtual DOM helpers
+* `Tea.Layout` - CSS Grid/Flexbox primitives
+* `Tea.Http` - HTTP requests
+* `Tea.Json` - JSON encoding/decoding
+
+=== cadre-tea-router
+
+TEA-integrated routing.
+
+[horizontal]
+Link:: https://github.com/hyperpolymath/cadre-tea-router
+Install:: `npm install cadre-tea-router`
+Features::
+* `Router` - URL change subscriptions
+* `Navigation` - Push/replace/back commands
+* `Url` - URL parsing
+* `QueryParams` - Query string handling, comparison state, SWOT persistence
+* `Guards` - Navigation blocking, sync protection
+
+=== rescript-wasm-runtime
+
+High-performance server runtime.
+
+[horizontal]
+Link:: https://github.com/hyperpolymath/rescript-wasm-runtime
+Features::
+* `Deno` - Deno runtime bindings
+* `Bun` - Bun runtime bindings
+* `Server` - HTTP server
+* `Router` - Server-side routing
+* `Middleware` - CORS, auth, logging, rate limiting
+* `SharedMemory` - Zero-copy JS/WASM transfer
+* `DependencyGraph` - DAG analysis, cycle detection
+* `Stream` - Streaming responses, SSE
+* `Session` - Session management
+* `Wasm` - WASM compilation utilities
+
+=== rescript-grpc
+
+Complete Protocol Buffers and gRPC stack for ReScript.
+
+[horizontal]
+Link:: https://github.com/hyperpolymath/rescript-grpc
+Install:: `protoc --rescript_out=. --rescript_opt=grpc *.proto`
+Features::
+* `protoc-gen-rescript` - Rust protoc plugin for ReScript codegen
+* Type-safe message types from .proto definitions
+* JSON encode/decode codecs (proto3 JSON mapping)
+* gRPC-web client stubs (opt-in via `--rescript_opt=grpc`)
+* Topological sorting for message dependencies
+* Proto3 field semantics (scalars required, messages optional)
+* Polymorphic variants for enum types
+* **OneOf fields** - Variant types with pattern matching
+* **Well-known types** - Timestamp, Duration, Struct, Value, Empty, wrappers
+* **Streaming RPC** - Server, client, and bidirectional streaming (NDJSON)
+* **Server handlers** - Type-safe service interfaces with grpcStatus, context, streamWriter
+* **WASM codec** - Rust-based binary protobuf encoder/decoder
+
+== Community (Third-Party)
+
+=== Official
+
+[cols="1,2,2"]
+|===
+| Package | Description | Link
+
+| @rescript/core
+| Standard library
+| https://github.com/rescript-lang/rescript-core
+
+| @rescript/react
+| React bindings
+| https://github.com/rescript-lang/rescript-react
+|===
+
+=== Data & Validation
+
+[cols="1,2,2"]
+|===
+| Package | Description | Link
+
+| rescript-json
+| JSON encoding/decoding
+| https://github.com/glennsl/rescript-json
+
+| rescript-schema
+| Runtime validation
+| https://github.com/DZakh/rescript-schema
+
+| rescript-struct
+| Structural types
+| https://github.com/DZakh/rescript-struct
+|===
+
+=== Network
+
+[cols="1,2,2"]
+|===
+| Package | Description | Link
+
+| rescript-fetch
+| Fetch API bindings
+| https://github.com/ryyppy/rescript-fetch
+
+| rescript-promise
+| Promise utilities
+| https://github.com/ryyppy/rescript-promise
+
+| rescript-relay
+| Relay GraphQL client
+| https://github.com/zth/rescript-relay
+
+| rescript-apollo-client
+| Apollo GraphQL client
+| https://github.com/jeddeloh/rescript-apollo-client
+|===
+
+=== Browser
+
+[cols="1,2,2"]
+|===
+| Package | Description | Link
+
+| rescript-webapi
+| Web API bindings
+| https://github.com/TheSpyder/rescript-webapi
+
+| rescript-dom
+| DOM bindings
+| (bundled with rescript)
+|===
+
+=== Runtime
+
+[cols="1,2,2"]
+|===
+| Package | Description | Link
+
+| rescript-nodejs
+| Node.js bindings
+| https://github.com/TheSpyder/rescript-nodejs
+
+| rescript-bun
+| Bun bindings
+| https://github.com/zth/rescript-bun
+|===
+
+=== Testing
+
+[cols="1,2,2"]
+|===
+| Package | Description | Link
+
+| rescript-test
+| Test framework
+| https://github.com/bloodyowl/rescript-test
+
+| rescript-vitest
+| Vitest bindings
+| https://github.com/cometkim/rescript-vitest
+|===
+
+=== UI Libraries
+
+[cols="1,2,2"]
+|===
+| Package | Description | Link
+
+| rescript-chakra
+| Chakra UI bindings
+| https://github.com/ri7nz/rescript-chakra
+
+| rescript-mantine
+| Mantine bindings
+| https://github.com/green-labs/rescript-mantine
+|===
+
+== Gaps (Needed)
+
+=== High Priority
+
+* **rescript-postgres** - PostgreSQL client with type-safe queries
+* **rescript-websocket** - WebSocket client/server
+* **rescript-env** - Environment variable handling
+
+=== Medium Priority
+
+* **rescript-redis** - Redis client
+* **rescript-sqlite** - SQLite bindings
+* **rescript-s3** - S3-compatible object storage
+* **rescript-jwt** - JWT handling
+
+=== Lower Priority
+
+* **rescript-tauri** - Tauri 2.0 bindings
+* **rescript-docker** - Docker API
+* **rescript-k8s** - Kubernetes client
+
+== Usage Patterns
+
+=== Minimal Frontend
+
+[source,rescript]
+----
+// Just Tea + Router
+open Tea
+open CadreTeaRouter
+
+type route = Home | About | NotFound
+
+let parseRoute = url =>
+  switch url.path {
+  | "/" => Home
+  | "/about" => About
+  | _ => NotFound
+  }
+----
+
+=== Full Stack
+
+[source,rescript]
+----
+// Frontend
+open Tea
+open CadreTeaRouter
+
+// Backend (in rescript-wasm-runtime)
+open Deno
+open Server
+open SharedMemory
+open DependencyGraph
+----
+
+=== WASM Heavy Compute
+
+[source,rescript]
+----
+// Use SharedMemory for large data
+let pool = SharedMemory.createPool()
+let offset = SharedMemory.writeCommitHistory(pool, commits)
+
+// Pass to WASM without serialization
+let wasmImports = SharedMemory.createWasmImports(pool)
+let instance = await Wasm.Module.instantiate(module_, wasmImports)
+----

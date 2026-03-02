@@ -1,0 +1,14 @@
+{
+  "name": "unboxed_bool_with_const",
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    }
+  ],
+  "package-specs": {
+    "module": "esmodule",
+    "in-source": true,
+    "suffix": ".res.js"
+  }
+}

@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: MPL-2.0
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+<https://github.com/hyperpolymath/cadre-tea-router> a void:Dataset ;
+    dcterms:title "cadre-tea-router" ;
+    dcterms:description "TEA-specialized routing for ReScript applications" ;
+    dcterms:creator <https://github.com/hyperpolymath> ;
+    dcterms:license <https://opensource.org/licenses/MPL-2.0> ;
+    dcterms:subject <http://dbpedia.org/resource/URL> ;
+    dcterms:subject <http://dbpedia.org/resource/Single-page_application> ;
+    void:feature <http://www.w3.org/ns/formats/Turtle> ;
+    foaf:homepage <https://github.com/hyperpolymath/cadre-tea-router> .

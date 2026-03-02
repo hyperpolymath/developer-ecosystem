@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+[package]
+name = "protoc-gen-rescript"
+version = "0.1.0"
+edition = "2021"
+authors = ["Hyperpolymath"]
+description = "Protocol Buffer compiler plugin for ReScript code generation"
+license = "MPL-2.0"
+repository = "https://github.com/hyperpolymath/rescript-grpc"
+keywords = ["protobuf", "rescript", "codegen", "grpc"]
+categories = ["development-tools", "compilers"]
+
+[[bin]]
+name = "protoc-gen-rescript"
+path = "src/main.rs"
+
+[dependencies]
+# Protobuf parsing and plugin protocol
+prost = "0.13"
+prost-types = "0.13"
+
+# For reading CodeGeneratorRequest from stdin
+bytes = "1.5"
+
+# Template rendering
+askama = "0.12"
+
+# Error handling
+thiserror = "2"
+anyhow = "1"
+
+[build-dependencies]
+prost-build = "0.13"
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true

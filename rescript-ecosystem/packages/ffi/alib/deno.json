@@ -1,0 +1,54 @@
+{
+  "name": "@hyperpolymath/rescript-alib",
+  "version": "0.1.0-alpha.1",
+  "exports": {
+    ".": "./src/Common/Alib_String.res.js",
+    "./Common/*": "./src/Common/*.res.js",
+    "./Specific/*": "./src/Specific/*.res.js",
+    "./Compat/*": "./src/Compat/*.res.js"
+  },
+  "imports": {
+    "@alib/common": "./src/Common/",
+    "@alib/specific": "./src/Specific/",
+    "@alib/compat": "./src/Compat/"
+  },
+  "tasks": {
+    "res:build": "rescript build -with-deps",
+    "res:watch": "rescript build -w",
+    "res:clean": "rescript clean",
+    "test": "deno test --allow-read --allow-env test/",
+    "test:unit": "deno test --allow-read test/unit/",
+    "test:integration": "deno test --allow-read test/integration/",
+    "bench": "deno bench --allow-read test/benchmark/",
+    "check": "deno task res:build && deno task test",
+    "check:full": "deno task res:clean && deno task res:build && deno task test && deno task bench",
+    "check:security": "deno task res:build && deno check src/**/*.res.js",
+    "bundle": "deno task res:build && deno bundle src/Common/Alib_String.res.js dist/alib-string.bundle.js",
+    "bundle:check": "deno task bundle && deno check dist/alib-string.bundle.js",
+    "compile:validate": "deno task res:build && deno check --remote src/**/*.res.js && deno cache --reload --lock=deno.lock --lock-write src/**/*.res.js",
+    "format": "deno fmt && rescript format -all",
+    "lint": "deno lint",
+    "docs": "deno task res:build && typedoc --out docs/api src/"
+  },
+  "fmt": {
+    "files": {
+      "include": ["test/", "docs/"],
+      "exclude": ["**/*.res.js", "node_modules/", "lib/"]
+    }
+  },
+  "lint": {
+    "files": {
+      "include": ["test/", "docs/"],
+      "exclude": ["**/*.res.js", "node_modules/", "lib/"]
+    }
+  },
+  "test": {
+    "files": {
+      "include": ["test/**/*_test.js", "test/**/*_test.ts"]
+    }
+  },
+  "compilerOptions": {
+    "lib": ["deno.window"],
+    "strict": true
+  }
+}

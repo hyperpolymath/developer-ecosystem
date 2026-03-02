@@ -1,0 +1,24 @@
+{
+  "name": "@hyperpolymath/rescript-tea",
+  "version": "0.1.0",
+  "exports": "./src/Tea.res",
+  "tasks": {
+    "build": "deno run -A npm:rescript",
+    "clean": "deno run -A npm:rescript clean",
+    "watch": "deno run -A npm:rescript -w",
+    "test": "deno test --allow-read lib/es6/test/"
+  },
+  "imports": {
+    "rescript": "npm:rescript@^12.1.0",
+    "@rescript/core": "npm:@rescript/core@^1.7.0",
+    "@rescript/react": "npm:@rescript/react@^0.14.0",
+    "react": "npm:react@^19.0.0",
+    "react-dom": "npm:react-dom@^19.0.0",
+    "proven/": "../proven/bindings/rescript/src/"
+  },
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false,
+    "jsx": "react-jsx"
+  }
+}

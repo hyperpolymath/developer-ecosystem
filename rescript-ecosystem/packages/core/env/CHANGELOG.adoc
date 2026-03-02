@@ -1,0 +1,54 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= Changelog
+:toc:
+:icons: font
+
+All notable changes to this project will be documented in this file.
+
+The format is based on https://keepachangelog.com/en/1.1.0/[Keep a Changelog],
+and this project adheres to https://semver.org/spec/v2.0.0.html[Semantic Versioning].
+
+== [Unreleased]
+
+=== Planned
+* Schema validation for environment variables
+* `.env` file loading support
+* Prefix namespacing
+
+== [0.1.0] - 2025-01-04
+
+=== Added
+* Initial release of `rescript-env`
+* Core API:
+** `get` - Get optional environment variable
+** `getOr` - Get with default value
+** `getExn` - Get required variable (throws on missing)
+** `set` - Set environment variable
+** `delete` - Delete environment variable
+** `has` - Check if variable exists
+** `all` - Get all variables as dictionary
+* Type coercion:
+** `getInt` - Parse as integer
+** `getFloat` - Parse as float
+** `getBool` - Parse as boolean (true/false/1/0/yes/no/on/off)
+* Environment detection:
+** `isDevelopment` - Check for development mode
+** `isProduction` - Check for production mode
+** `isTest` - Check for test mode
+* Runtime detection for Deno and Node.js
+* `MissingEnvVar` exception for required variables
+* ReScript 11 with `@rescript/core` integration
+* Deno-first with ESM output
+* Comprehensive documentation
+
+=== Technical
+* Uses `@@uncurried` for optimal JavaScript output
+* Zero runtime dependencies (only @rescript/core peer dep)
+* Automatic runtime detection via `globalThis.Deno` and `globalThis.process`
+
+== Links
+
+* https://github.com/hyperpolymath/rescript-env/compare/v0.1.0...HEAD[Unreleased]
+* https://github.com/hyperpolymath/rescript-env/releases/tag/v0.1.0[0.1.0]

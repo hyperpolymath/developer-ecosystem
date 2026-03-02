@@ -1,0 +1,32 @@
+// SPDX-License-Identifier: MPL-2.0
+syntax = "proto3";
+package example;
+
+// Event with oneof payload
+message Event {
+  string id = 1;
+  int64 timestamp = 2;
+
+  oneof payload {
+    UserCreated user_created = 10;
+    UserUpdated user_updated = 11;
+    UserDeleted user_deleted = 12;
+  }
+}
+
+message UserCreated {
+  string user_id = 1;
+  string name = 2;
+  string email = 3;
+}
+
+message UserUpdated {
+  string user_id = 1;
+  optional string name = 2;
+  optional string email = 3;
+}
+
+message UserDeleted {
+  string user_id = 1;
+  string reason = 2;
+}

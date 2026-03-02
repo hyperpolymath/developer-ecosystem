@@ -1,0 +1,356 @@
+= Cost/Benefit Analysis: Macro vs True Sugar
+:toc:
+:toc-placement!:
+
+**Purpose:** Inform decision on whether to pursue #8191 compiler integration +
+**Method:** Compare current macro implementation vs hypothetical true sugar +
+**Decision criteria:** If benefits > costs AND macro validates demand → pursue sugar
+
+toc::[]
+
+== Executive Summary
+
+**Macro approach (current):**
+- ✅ Available immediately
+- ✅ Proves demand with real usage
+- ⚠️ Requires explicit markers (`%return.X`)
+- ⚠️ Limited to function bodies
+
+**True sugar (future #8191):**
+- ✅ Better UX (real `return` keyword)
+- ✅ Works everywhere (loops, async)
+- ⚠️ Requires 2-4 weeks compiler work
+- ⚠️ Risk of rejection by core team
+
+**Recommendation:** Build macro FIRST, pursue sugar if validated.
+
+== Cost Analysis
+
+=== Macro Implementation (Current)
+
+**Development costs:**
+[cols="1,2,1"]
+|===
+|Item |Effort |Status
+
+|PPX transformer
+|3-5 days
+|✅ Done
+
+|Test suite
+|2-3 days
+|🚧 In progress
+
+|Documentation
+|2 days
+|✅ Done
+
+|Examples
+|1 day
+|✅ Done
+
+|Maintenance
+|Ongoing
+|📍 Current
+|===
+
+**Total:** ~2 weeks one-time + ongoing maintenance
+
+**User costs:**
+- Add `ppx-flags` to rescript.json
+- Learn `%return.X` syntax
+- Editor may not highlight markers
+
+**Technical debt:**
+- Separate transformation pass (not in compiler)
+- Two syntaxes (standard vs macro)
+- Need migration path if sugar lands
+
+=== True Sugar Implementation (Future)
+
+**Development costs:**
+[cols="1,2,1"]
+|===
+|Item |Effort |Owner
+
+|Parser changes
+|2-3 days
+|Core team
+
+|Desugaring logic
+|5-7 days
+|Core team
+
+|Type checker integration
+|2-3 days
+|Core team
+
+|Error message mapping
+|3-4 days
+|Core team
+
+|Compiler tests
+|3-4 days
+|Core team
+
+|Documentation
+|2-3 days
+|Core team + community
+
+|Migration tools
+|2-3 days
+|Community
+
+|Total
+|**4-6 weeks**
+|Core + community
+|===
+
+**Process costs:**
+- RFC discussion (2-4 weeks)
+- Code review cycles (1-2 weeks)
+- Beta testing (2-4 weeks)
+- Release coordination
+
+**Total calendar time:** 3-6 months from approval to release
+
+**User costs:**
+- ReScript version upgrade required
+- Possible breaking changes if `return` used as variable
+- Learning new syntax (though more familiar to JS devs)
+
+**Technical debt:**
+- Permanent compiler maintenance
+- Must support forever once released
+- Interacts with future language features
+
+== Benefit Analysis
+
+=== Macro Benefits
+
+**Immediate:**
+- ✅ Available today (no waiting)
+- ✅ Optional (per-project choice)
+- ✅ Validates demand (real usage data)
+- ✅ Informs design (what patterns are useful)
+
+**Strategic:**
+- ✅ Reduces risk (prove value before big investment)
+- ✅ Community engagement (early adopters test)
+- ✅ Faster iteration (library changes vs compiler)
+
+**Limitations:**
+- ⚠️ Function bodies only
+- ⚠️ No loop support
+- ⚠️ Explicit markers required
+- ⚠️ Worse editor integration
+
+**User satisfaction:** 6/10 (works but not ideal)
+
+=== True Sugar Benefits
+
+**User experience:**
+- ✅ Real `return` keyword (familiar to JS/TS devs)
+- ✅ Works everywhere (loops, async, try/catch)
+- ✅ Better editor support (language server aware)
+- ✅ Single syntax (no macro markers)
+
+**Technical:**
+- ✅ Optimal error messages (compiler-integrated)
+- ✅ Composable with future features
+- ✅ No PPX dependency
+- ✅ Faster compilation (one pass instead of two)
+
+**Strategic:**
+- ✅ Lowers ReScript barrier for JS developers
+- ✅ Enables more imperative style when needed
+- ✅ Community satisfaction
+
+**User satisfaction:** 9/10 (ideal experience)
+
+== Risk Analysis
+
+=== Macro Risks
+
+**Low risks:**
+- ✅ Can iterate quickly
+- ✅ Easy to deprecate if doesn't work out
+- ✅ No impact on ReScript core
+- ✅ Backward compatible
+
+**Medium risks:**
+- ⚠️ May confuse users (two ways to do same thing)
+- ⚠️ Editor support gaps
+- ⚠️ Maintenance burden
+
+**High risks:**
+- ❌ None (low-risk approach)
+
+**Overall risk:** **LOW**
+
+=== True Sugar Risks
+
+**Low risks:**
+- ✅ ReScript team experienced with compiler work
+- ✅ Desugaring patterns proven by macro
+- ✅ No performance impact (compile-time only)
+
+**Medium risks:**
+- ⚠️ Backward compatibility (existing code with `return` variable)
+- ⚠️ Implementation complexity (loops, async)
+- ⚠️ Error message quality (must point to source)
+
+**High risks:**
+- ❌ **Core team may reject** - wasted effort
+- ❌ **Community division** - some may oppose
+- ❌ **Permanent maintenance** - can't remove once added
+
+**Overall risk:** **MEDIUM-HIGH**
+
+== Decision Criteria
+
+**Should we pursue true sugar (#8191)?**
+
+Use this framework:
+
+=== Stage 1: Macro Validation (Current)
+
+**Metrics to collect:**
+1. Adoption rate (how many projects use it?)
+2. Pattern frequency (which `%return` variants most common?)
+3. User feedback (what pain points emerge?)
+4. Build impact (PPX overhead acceptable?)
+
+**Success criteria for Stage 2:**
+- ☐ 10+ production projects using macro
+- ☐ Positive community sentiment (>70% satisfaction)
+- ☐ Clear patterns emerged (`%return.error` most common?)
+- ☐ Demand for full `return` keyword (GitHub issues/discussions)
+
+**If criteria NOT met:** Stop at macro, don't pursue sugar
+
+=== Stage 2: Proposal (If validation succeeds)
+
+**Deliverables:**
+- Usage report with data
+- Detailed RFC for compiler integration
+- Cost/benefit with real numbers
+- Migration path from macro to sugar
+
+**Success criteria for Stage 3:**
+- ☐ Core team approves investigation
+- ☐ Community consensus (>60% support in discussion)
+- ☐ No major technical blockers identified
+
+**If criteria NOT met:** Keep macro as standalone, don't pursue sugar
+
+=== Stage 3: Implementation (If approved)
+
+**Delivered by:** ReScript core team (with community support)
+
+**Success criteria:**
+- ☐ Compiler implementation passes tests
+- ☐ Error messages point to source code
+- ☐ No performance regression
+- ☐ Migration codemod works
+
+**If criteria NOT met:** Reject implementation, keep macro
+
+== Recommendation
+
+**Current phase:** Macro validation (Stage 1)
+
+**Next steps:**
+1. ✅ Ship macro library
+2. 📍 Gather 3-6 months usage data
+3. ⏳ Analyze metrics against success criteria
+4. ⏳ Decide: Propose sugar OR keep macro
+
+**Do NOT propose #8191 implementation yet.** Wait for validation data.
+
+**Likely outcomes:**
+
+**Scenario A: High adoption (10+ projects)**
+→ Pursue true sugar with data-backed proposal
+
+**Scenario B: Low adoption (<5 projects)**
+→ Keep macro as niche tool, don't pursue sugar
+
+**Scenario C: Mixed feedback (5-10 projects, some complaints)**
+→ Iterate on macro, gather more data
+
+== Metrics Dashboard (TODO)
+
+Track these metrics over 6 months:
+
+[cols="1,2,1,1"]
+|===
+|Metric |Measurement |Target |Current
+
+|Projects using macro
+|GitHub search, npm downloads
+|10+
+|0 (alpha)
+
+|%return.error frequency
+|Usage telemetry (opt-in)
+|>50% of all returns
+|N/A
+
+|User satisfaction
+|Survey, GitHub issues
+|>70% positive
+|N/A
+
+|Build time impact
+|Benchmark on large projects
+|<5% overhead
+|N/A
+
+|Community sentiment
+|Discord, forum discussions
+|Mostly positive
+|N/A
+|===
+
+Update this table quarterly.
+
+== Cost Model
+
+**If we pursue sugar after validation:**
+
+**Total investment:**
+- Macro development: 2 weeks (✅ already spent)
+- Validation period: 6 months (⏳ minimal effort, gather data)
+- RFC + discussion: 1 month
+- Compiler implementation: 2-4 weeks (core team)
+- Beta + release: 1-2 months
+
+**Total calendar:** ~9-12 months from macro start to sugar release
+
+**Sunk cost if sugar rejected:**
+- Macro still useful (standalone tool)
+- Validated that demand wasn't there (good to know)
+- Minimal wasted effort
+
+**Opportunity cost:**
+- Core team time on sugar vs other features
+- Community attention on this vs other improvements
+
+**Return on investment:**
+- If successful: Lower barrier for JS developers, better DX
+- If unsuccessful: Minimal loss (macro still has value)
+
+**Risk-adjusted value:** **POSITIVE** (low downside, high upside)
+
+== Conclusion
+
+**Build macro → validate → decide on sugar.**
+
+**This is the correct approach because:**
+1. Low risk (macro is quick to build)
+2. Gathers real data (usage patterns, demand)
+3. Reduces waste (don't build sugar if not wanted)
+4. Faster feedback (library vs compiler iteration)
+
+**Don't pursue #8191 implementation until validation complete.**

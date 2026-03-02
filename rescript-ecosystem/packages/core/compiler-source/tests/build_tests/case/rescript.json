@@ -1,0 +1,5 @@
+{
+  "name": "case",
+  "sources": ["src"],
+  "dependencies": []
+}

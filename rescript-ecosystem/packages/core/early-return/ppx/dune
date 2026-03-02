@@ -1,0 +1,14 @@
+; SPDX-License-Identifier: PLMP-1.0-or-later
+; Dune build configuration for PPX transformer
+
+(library
+ (name ppx_return_sugar)
+ (kind ppx_rewriter)
+ (libraries ppxlib)
+ (preprocess
+  (pps ppxlib.metaquot)))
+
+(executable
+ (name ppx_return_sugar_standalone)
+ (modules ppx_return_sugar)
+ (libraries ppx_return_sugar))

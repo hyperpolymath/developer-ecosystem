@@ -1,0 +1,80 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= rescript-tea Priority List
+:toc:
+
+== MUST (Critical - Core Framework)
+
+[cols="1,3,1"]
+|===
+|ID |Task |Status
+
+|M1
+|Core TEA runtime (init, update, view, subscriptions)
+|✓ DONE
+
+|M2
+|Command and Subscription types
+|✓ DONE
+
+|M3
+|React hooks integration
+|✓ DONE
+
+|M4
+|Type-safe JSON decoding
+|✓ DONE
+|===
+
+== SHOULD (Important - Developer Experience)
+
+[cols="1,3,1"]
+|===
+|ID |Task |Status
+
+|S1
+|Time-travel debugging
+|PENDING
+
+|S2
+|Built-in subscriptions (Time, Keyboard, Mouse, Window)
+|IN PROGRESS
+
+|S3
+|HTTP request helpers with Result types
+|PENDING
+
+|S4
+|Form handling utilities
+|PENDING
+
+|S5
+|Router integration (cadre-tea-router)
+|PENDING
+
+|S6
+|Comprehensive examples
+|IN PROGRESS
+|===
+
+== COULD (Nice to Have - Future)
+
+[cols="1,3,1"]
+|===
+|ID |Task |Status
+
+|C1
+|Server-side rendering support
+|PENDING
+
+|C2
+|WebSocket subscription helpers
+|PENDING
+
+|C3
+|LocalStorage/SessionStorage helpers
+|PENDING
+
+|C4
+|Animation helpers (requestAnimationFrame)
+|PENDING
+|===

@@ -1,0 +1,540 @@
+= rescript-tauri Roadmap
+:toc: macro
+:toc-title: Contents
+:toclevels: 3
+:icons: font
+
+Prioritized development plan for rescript-tauri with seam-checklists.
+
+toc::[]
+
+== MoSCoW Prioritization
+
+=== MUST (Critical for MVP)
+
+These items are **required** for the library to be useful in production:
+
+[cols="1,3,1,1"]
+|===
+|ID |Item |Status |Effort
+
+|M1
+|Core invoke API with typed arguments
+|✅ Done
+|Low
+
+|M2
+|Event system (listen, emit, once)
+|✅ Done
+|Low
+
+|M3
+|Window management basics (get, title, size, position)
+|✅ Done
+|Medium
+
+|M4
+|Command bridge pattern with error handling
+|✅ Done
+|Medium
+
+|M5
+|Filesystem plugin bindings (read, write, watch)
+|✅ Done
+|Medium
+
+|M6
+|Dialog plugin bindings (open, save, message)
+|✅ Done
+|Medium
+
+|M7
+|Interface files (.resi) for all modules
+|⬜ Pending
+|Low
+
+|M8
+|Build verification on all platforms
+|⬜ Pending
+|Medium
+|===
+
+=== SHOULD (High Value)
+
+These items provide **significant value** and should be implemented soon:
+
+[cols="1,3,1,1"]
+|===
+|ID |Item |Status |Effort
+
+|S1
+|Shell plugin bindings (open URLs, spawn)
+|⬜ Pending
+|Low
+
+|S2
+|Notification plugin bindings
+|⬜ Pending
+|Low
+
+|S3
+|Clipboard plugin bindings
+|⬜ Pending
+|Low
+
+|S4
+|OS info plugin bindings
+|⬜ Pending
+|Low
+
+|S5
+|Path utilities plugin bindings
+|⬜ Pending
+|Low
+
+|S6
+|HTTP client plugin bindings
+|⬜ Pending
+|Medium
+
+|S7
+|Integration example with rescript-tea
+|✅ Done
+|Medium
+
+|S8
+|Test suite with vitest
+|⬜ Pending
+|Medium
+
+|S9
+|Mobile platform testing (iOS/Android)
+|⬜ Pending
+|High
+|===
+
+=== COULD (Nice to Have)
+
+These items would be **beneficial** but are not blocking:
+
+[cols="1,3,1,1"]
+|===
+|ID |Item |Status |Effort
+
+|C1
+|Updater plugin bindings
+|⬜ Pending
+|Medium
+
+|C2
+|Deep link plugin bindings
+|⬜ Pending
+|Low
+
+|C3
+|Global shortcut plugin bindings
+|⬜ Pending
+|Low
+
+|C4
+|System tray bindings
+|⬜ Pending
+|Medium
+
+|C5
+|Biometric authentication plugin
+|⬜ Pending
+|Medium
+
+|C6
+|rescript-sqlite integration example
+|⬜ Pending
+|High
+
+|C7
+|create-rescript-poly Tauri template
+|⬜ Pending
+|Medium
+
+|C8
+|Documentation site with mdbook/docusaurus
+|⬜ Pending
+|Medium
+
+|C9
+|Webview communication bindings
+|⬜ Pending
+|Medium
+|===
+
+=== WON'T (Out of Scope)
+
+These items are **explicitly excluded**:
+
+[cols="1,3"]
+|===
+|ID |Reason
+
+|W1
+|Tauri 1.x compatibility - Target 2.0 only
+
+|W2
+|Electron support - Different architecture entirely
+
+|W3
+|Native Rust bindings - This is JS/ReScript only
+
+|W4
+|Plugin development helpers - Use Rust directly
+
+|W5
+|Custom webview rendering - Use Tauri's built-in
+|===
+
+== Seam Checklists
+
+=== Seam 1: Tauri JS API Stability
+
+The Tauri 2.0 JS API is the foundation. Track API stability:
+
+[cols="1,2,1,1"]
+|===
+|API |Module |Stability |Notes
+
+|`@tauri-apps/api/core`
+|Tauri_Core
+|✅ Stable
+|Core invoke unlikely to change
+
+|`@tauri-apps/api/event`
+|Tauri_Event
+|✅ Stable
+|Event system is mature
+
+|`@tauri-apps/api/window`
+|Tauri_Window
+|✅ Stable
+|Window API well-established
+
+|`@tauri-apps/api/webview`
+|Not bound
+|🔄 Beta
+|May change before 2.0 final
+
+|`@tauri-apps/plugin-fs`
+|Tauri_Fs
+|✅ Stable
+|Filesystem plugin mature
+
+|`@tauri-apps/plugin-dialog`
+|Tauri_Dialog
+|✅ Stable
+|Dialog plugin mature
+
+|`@tauri-apps/plugin-shell`
+|Not bound
+|✅ Stable
+|Ready to bind
+
+|`@tauri-apps/plugin-notification`
+|Not bound
+|✅ Stable
+|Ready to bind
+
+|`@tauri-apps/plugin-http`
+|Not bound
+|🔄 Beta
+|API may change
+
+|`@tauri-apps/plugin-updater`
+|Not bound
+|🔄 Beta
+|API may change
+|===
+
+**Action Items:**
+
+* [ ] Subscribe to Tauri 2.0 release notes
+* [ ] Pin @tauri-apps/api version in package.json
+* [ ] Add API version checks in bindings
+* [ ] Document minimum Tauri version required
+
+=== Seam 2: Mobile Platform Support
+
+Tauri 2.0's mobile support is a key differentiator:
+
+[cols="1,2,1"]
+|===
+|Platform |Status |Testing Notes
+
+|macOS
+|🔄 Untested
+|Need macOS dev machine
+
+|Windows
+|🔄 Untested
+|Need Windows VM/machine
+
+|Linux
+|🔄 Untested
+|Primary dev platform
+
+|iOS
+|🔄 Untested
+|Need Xcode + iOS device/simulator
+
+|Android
+|🔄 Untested
+|Need Android Studio + device/emulator
+|===
+
+**Action Items:**
+
+* [ ] Set up CI for Linux builds
+* [ ] Set up CI for macOS builds
+* [ ] Set up CI for Windows builds
+* [ ] Test iOS build (requires macOS)
+* [ ] Test Android build
+* [ ] Document platform-specific quirks
+* [ ] Add platform detection helpers
+
+=== Seam 3: Command Schema Contract
+
+The command bridge pattern defines contracts between ReScript and Rust:
+
+[source]
+----
+ReScript                      Rust
+─────────────────────────────────────────────
+Command.defineCommand()  →   #[tauri::command]
+  ~name="my_command"     →   fn my_command()
+  ~encode=(args)         →   (args: MyArgs)
+  ~decode=(json)         ←   -> Result<T, E>
+----
+
+**Contract Checklist:**
+
+* [ ] Document JSON serialization format for common types
+* [ ] Create codegen tool for Rust → ReScript command definitions
+* [ ] Add runtime validation option (use rescript-schema)
+* [ ] Define error code conventions (match Rust error types)
+* [ ] Handle streaming responses (Channel API)
+* [ ] Support binary data (Uint8Array → Vec<u8>)
+
+**Type Mapping:**
+
+[cols="1,1,1"]
+|===
+|ReScript |JSON |Rust
+
+|`int`
+|`number`
+|`i32`
+
+|`float`
+|`number`
+|`f64`
+
+|`string`
+|`string`
+|`String`
+
+|`bool`
+|`boolean`
+|`bool`
+
+|`array<'a>`
+|`array`
+|`Vec<T>`
+
+|`option<'a>`
+|`null \| T`
+|`Option<T>`
+
+|`Uint8Array.t`
+|`base64 string`
+|`Vec<u8>`
+|===
+
+=== Seam 4: Plugin Dependency Management
+
+Each Tauri plugin is a separate npm package:
+
+[cols="1,2,1"]
+|===
+|Plugin |npm Package |rescript-tauri Module
+
+|Filesystem
+|`@tauri-apps/plugin-fs`
+|`Tauri.Fs`
+
+|Dialog
+|`@tauri-apps/plugin-dialog`
+|`Tauri.Dialog`
+
+|Shell
+|`@tauri-apps/plugin-shell`
+|`Tauri.Shell` (pending)
+
+|Notification
+|`@tauri-apps/plugin-notification`
+|`Tauri.Notification` (pending)
+
+|HTTP
+|`@tauri-apps/plugin-http`
+|`Tauri.Http` (pending)
+
+|Clipboard
+|`@tauri-apps/plugin-clipboard-manager`
+|`Tauri.Clipboard` (pending)
+|===
+
+**Action Items:**
+
+* [ ] Document required plugins in README
+* [ ] Add optional peer dependencies in package.json
+* [ ] Create plugin availability checks
+* [ ] Handle graceful degradation when plugin missing
+* [ ] Add TypeScript declaration files for IDE support
+
+=== Seam 5: rescript-full-stack Integration
+
+This library is part of the larger ecosystem:
+
+[cols="1,2,1"]
+|===
+|Integration Point |Status |Notes
+
+|rescript-tea
+|✅ Example done
+|Counter example shows TEA + Tauri
+
+|cadre-tea-router
+|⬜ Pending
+|Add routing example
+
+|rescript-sqlite
+|⬜ Pending
+|Critical for offline-first apps
+
+|rescript-wasm-runtime
+|⬜ Pending
+|WASM compute in Tauri context
+
+|create-rescript-poly
+|⬜ Pending
+|Tauri project template
+|===
+
+**Action Items:**
+
+* [ ] Update rescript-full-stack STATE.scm with rescript-tauri status
+* [ ] Add Tauri layer to rescript-full-stack ROADMAP
+* [ ] Create integration test with rescript-sqlite (mock first)
+* [ ] Design create-rescript-poly Tauri template
+
+== Development Phases
+
+=== Phase 1: Core Bindings (Current)
+
+* [x] Core invoke API
+* [x] Event system
+* [x] Window management
+* [x] Command bridge pattern
+* [x] Filesystem plugin
+* [x] Dialog plugin
+* [x] Counter example
+* [ ] Interface files for all modules
+* [ ] Build verification
+
+=== Phase 2: Essential Plugins
+
+* [ ] Shell plugin
+* [ ] Notification plugin
+* [ ] Clipboard plugin
+* [ ] OS info plugin
+* [ ] Path utilities
+* [ ] HTTP client plugin
+
+=== Phase 3: Production Ready
+
+* [ ] Test suite
+* [ ] CI/CD pipeline
+* [ ] Platform testing
+* [ ] npm/jsr publish
+* [ ] Documentation site
+
+=== Phase 4: Ecosystem Integration
+
+* [ ] rescript-sqlite integration
+* [ ] create-rescript-poly template
+* [ ] Updater plugin
+* [ ] Advanced examples (todoapp, notes app)
+
+== Risk Register
+
+[cols="1,2,2,1"]
+|===
+|Risk |Impact |Mitigation |Severity
+
+|Tauri 2.0 API changes
+|Bindings break
+|Pin versions, track releases
+|Medium
+
+|Mobile platform issues
+|Limited adoption
+|Community testing, CI
+|Medium
+
+|Plugin breaking changes
+|Module failures
+|Separate plugin versioning
+|Low
+
+|ReScript major version
+|Compilation errors
+|Support latest stable only
+|Low
+|===
+
+== Success Metrics
+
+* [ ] **Usability**: Counter example works on all 5 platforms
+* [ ] **Adoption**: 10+ stars on GitHub within 1 month
+* [ ] **Integration**: Used in 1+ real application
+* [ ] **Ecosystem**: Listed in rescript-full-stack as complete
+
+== Timeline (Estimated)
+
+[cols="1,2,1"]
+|===
+|Phase |Deliverables |Target
+
+|Phase 1
+|Core bindings complete
+|Week 1 (Now)
+
+|Phase 2
+|Essential plugins
+|Week 2-3
+
+|Phase 3
+|Production ready
+|Week 4-5
+
+|Phase 4
+|Ecosystem integration
+|Week 6+
+|===
+
+== OPSM Integration
+
+[source]
+----
+OPSM Core
+  |
+  v
+rescript-tauri (Tauri bridge for OPSM desktop/mobile shell)
+
+----

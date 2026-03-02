@@ -1,0 +1,28 @@
+# Rust
+target/
+Cargo.lock
+
+# ReScript
+lib/
+*.res.js
+*.mjs
+.bsb.lock
+.merlin
+
+# Node
+node_modules/
+package-lock.json
+
+# Build outputs
+dist/
+*.wasm
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db

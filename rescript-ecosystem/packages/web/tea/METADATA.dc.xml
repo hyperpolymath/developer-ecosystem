@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: MIT AND Palimpsest-0.8 -->
+<!-- SPDX-FileCopyrightText: 2024 Jonathan D.A. Jewell -->
+<metadata xmlns:dc="http://purl.org/dc/elements/1.1/"
+          xmlns:dcterms="http://purl.org/dc/terms/">
+
+  <!-- Core Dublin Core Elements -->
+  <dc:title>rescript-tea</dc:title>
+  <dc:creator>Jonathan D.A. Jewell</dc:creator>
+  <dc:subject>ReScript</dc:subject>
+  <dc:subject>Elm Architecture</dc:subject>
+  <dc:subject>TEA</dc:subject>
+  <dc:subject>React</dc:subject>
+  <dc:subject>Functional Programming</dc:subject>
+  <dc:subject>Web Development</dc:subject>
+  <dc:description>
+    The Elm Architecture (TEA) for ReScript, providing a principled way to
+    build web applications with guaranteed state consistency, exhaustive
+    event handling, and type-safe side effects.
+  </dc:description>
+  <dc:publisher>Hyperpolymath</dc:publisher>
+  <dc:contributor>Jonathan D.A. Jewell</dc:contributor>
+  <dc:date>2024-12-06</dc:date>
+  <dc:type>Software</dc:type>
+  <dc:format>application/javascript</dc:format>
+  <dc:identifier>https://github.com/hyperpolymath/rescript-tea</dc:identifier>
+  <dc:source>https://github.com/hyperpolymath/rescript-tea</dc:source>
+  <dc:language>en</dc:language>
+  <dc:rights>MIT License</dc:rights>
+
+  <!-- Dublin Core Terms (extended) -->
+  <dcterms:license>https://opensource.org/licenses/MIT</dcterms:license>
+  <dcterms:created>2024-12-06</dcterms:created>
+  <dcterms:modified>2024-12-27</dcterms:modified>
+  <dcterms:audience>Software Developers</dcterms:audience>
+  <dcterms:requires>ReScript 11+</dcterms:requires>
+  <dcterms:requires>React 19+</dcterms:requires>
+
+</metadata>

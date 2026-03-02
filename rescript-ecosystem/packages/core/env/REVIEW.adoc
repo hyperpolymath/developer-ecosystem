@@ -1,0 +1,225 @@
+= Repository Review: rsr-template-repo (rescript-env)
+:toc:
+:sectnums:
+:date: 2026-01-04
+
+== Executive Summary
+
+This repository is the **RSR (Rhodium Standard Repository) Template** - a canonical template for the hyperpolymath ecosystem's 139 repositories. It establishes standardized structure, configuration, and tooling for projects adhering to the RSR philosophy.
+
+*Overall Assessment*: The repository demonstrates strong architectural intent but is currently a **scaffolded template** rather than a functional ReScript environment. Several gaps exist between the stated purpose and implementation.
+
+== Strengths
+
+=== 1. Comprehensive Policy Enforcement
+
+The repository includes robust CI/CD workflows for enforcing coding standards:
+
+* **ts-blocker.yml** (`.github/workflows/ts-blocker.yml:1`) - Blocks TypeScript/JavaScript additions, enforcing ReScript adoption
+* **npm-bun-blocker.yml** (`.github/workflows/npm-bun-blocker.yml:1`) - Blocks npm/bun artifacts, requiring Deno
+* **rsr-antipattern.yml** (`.github/workflows/rsr-antipattern.yml:1`) - Comprehensive anti-pattern checks (no Go, no Python except SaltStack)
+* **guix-nix-policy.yml** (`.github/workflows/guix-nix-policy.yml:1`) - Enforces Guix-primary package management
+
+=== 2. Well-Structured Machine-Readable Metadata
+
+The `.machine_readable/` directory contains structured Scheme files:
+
+* **STATE.scm** - Project state tracking
+* **META.scm** - Architecture decisions and practices
+* **ECOSYSTEM.scm** - Ecosystem positioning
+* **AGENTIC.scm** - AI agent interaction patterns
+* **NEUROSYM.scm** - Neurosymbolic integration config
+* **PLAYBOOK.scm** - Operational runbook
+
+=== 3. Security-First Approach
+
+* Comprehensive SECURITY.md template
+* Secret scanning workflows
+* TruffleHog and Trivy integration in CI
+* Scorecard and CodeQL workflows
+
+=== 4. Dual Licensing Strategy
+
+MIT OR AGPL-3.0-or-later with Palimpsest philosophical overlay provides flexibility while encouraging consent-based practices.
+
+== Issues and Gaps
+
+=== Critical: Missing Core Files
+
+[cols="1,2,1"]
+|===
+|Missing File |Expected Per README.adoc |Impact
+
+|`.guix-channel`
+|Listed as included
+|Guix channel functionality broken
+
+|`guix.scm`
+|Listed as included
+|Cannot enter Guix dev environment
+
+|`.well-known/`
+|Listed as required for RSR compliance
+|RSR validation will fail
+
+|`RSR_COMPLIANCE.adoc`
+|Listed as required
+|Cannot track compliance status
+
+|`STATE.scm` (root)
+|Listed as included
+|Only exists in `.machine_readable/`
+|===
+
+=== High: Justfile Recipe Placeholders
+
+The justfile (`.justfile:1`) contains many TODO placeholders:
+
+[source,bash]
+----
+# Line 56-59: Build placeholder
+# TODO: Add build command for your language
+# Rust: cargo build {{args}}
+# ReScript: npm run build  # <-- Should use Deno, not npm!
+----
+
+*Problems*:
+1. References `npm run build` despite npm being banned
+2. No ReScript-specific toolchain setup
+3. No Deno configuration provided
+
+=== Medium: SECURITY.md Template Not Customized
+
+File still contains `{{PLACEHOLDER}}` values:
+
+* `{{PROJECT_NAME}}`
+* `{{OWNER}}`
+* `{{REPO}}`
+* `{{SECURITY_EMAIL}}`
+* `{{PGP_FINGERPRINT}}`
+
+=== Medium: CONTRIBUTING.md Template Not Customized
+
+Contains uncustomized placeholders:
+* `{{FORGE}}`
+* `{{OWNER}}`
+* `{{REPO}}`
+* `{{MAIN_BRANCH}}`
+
+=== Low: Empty STATE.adoc
+
+Root `STATE.adoc` file is empty (0 bytes) while `.machine_readable/STATE.scm` contains content.
+
+=== Low: Inconsistent Documentation
+
+README.adoc and CLAUDE.md have some inconsistencies:
+* README.adoc mentions "AGPL + Palimpsest dual license"
+* LICENSE.txt states "MIT OR AGPL-3.0-or-later"
+
+== Recommendations
+
+=== Immediate Actions
+
+1. **Create missing RSR-required files**:
++
+[source,bash]
+----
+# Create .well-known directory and files
+mkdir -p .well-known
+touch .well-known/security.txt .well-known/ai.txt .well-known/humans.txt
+
+# Create RSR_COMPLIANCE.adoc
+touch RSR_COMPLIANCE.adoc
+
+# Create guix.scm for dev environment
+touch guix.scm
+----
+
+2. **Update justfile for ReScript+Deno**:
++
+[source,just]
+----
+# Build the project (ReScript via Deno)
+build *args:
+    @echo "Building {{project}}..."
+    deno task build {{args}}
+
+# Run tests
+test *args:
+    @echo "Running tests..."
+    deno task test {{args}}
+----
+
+3. **Create deno.json configuration**:
++
+[source,json]
+----
+{
+  "tasks": {
+    "build": "rescript build",
+    "clean": "rescript clean",
+    "test": "deno test"
+  },
+  "imports": {
+    "@rescript/core": "npm:@rescript/core@^1.0.0"
+  }
+}
+----
+
+=== Template Customization Required
+
+Replace placeholders in:
+
+* [ ] SECURITY.md
+* [ ] CONTRIBUTING.md
+* [ ] docs/CITATIONS.adoc (if using)
+
+=== Recommended File Structure
+
+[source]
+----
+rescript-env/
+├── .claude/
+│   └── CLAUDE.md              ✅ Present
+├── .github/
+│   └── workflows/             ✅ Present (comprehensive)
+├── .machine_readable/         ✅ Present
+├── .well-known/               ❌ Missing
+│   ├── ai.txt
+│   ├── humans.txt
+│   └── security.txt
+├── docs/                      ✅ Present
+├── src/                       ❌ Missing (no ReScript source)
+│   └── Main.res               Example ReScript entry
+├── deno.json                  ❌ Missing
+├── rescript.json              ❌ Missing
+├── guix.scm                   ❌ Missing
+├── RSR_COMPLIANCE.adoc        ❌ Missing
+├── justfile                   ⚠️ Needs ReScript adaptation
+└── README.adoc                ⚠️ Minor inconsistencies
+----
+
+== Validation Results
+
+Running `just validate-rsr` would fail due to:
+
+1. Missing `.well-known/` directory
+2. Missing `.well-known/security.txt`
+3. Missing `.well-known/ai.txt`
+4. Missing `.well-known/humans.txt`
+5. Missing `RSR_COMPLIANCE.adoc`
+6. Missing `guix.scm` OR `flake.nix`
+
+== Conclusion
+
+This repository provides an excellent **policy framework** for RSR-compliant projects but lacks the actual implementation files to be a functional ReScript development environment. It should either:
+
+1. **As Template**: Add clear instructions for users to add missing files post-clone
+2. **As Working Environment**: Include minimal working ReScript+Deno setup
+
+The CI/CD workflows and machine-readable metadata are well-designed and demonstrate thoughtful architecture for the RSR ecosystem.
+
+---
+
+_Review generated: 2026-01-04_
+_Reviewer: Claude Code (claude-opus-4-5-20251101)_

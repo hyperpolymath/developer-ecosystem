@@ -1,0 +1,263 @@
+# GitLab CI/CD Pipeline for ReScript WASM Runtime
+
+stages:
+  - build
+  - test
+  - benchmark
+  - deploy
+
+variables:
+  DENO_VERSION: "1.40.0"
+  NODE_VERSION: "20"
+
+# Cache configuration
+.cache_template: &cache_template
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    paths:
+      - node_modules/
+      - .deno_cache/
+
+# Build stage
+build:
+  stage: build
+  image: node:${NODE_VERSION}-alpine
+  <<: *cache_template
+  before_script:
+    - npm install
+  script:
+    - npm run build
+    - echo "Build completed successfully"
+  artifacts:
+    paths:
+      - src/*.mjs
+      - examples/**/*.mjs
+    expire_in: 1 hour
+  only:
+    - branches
+    - tags
+
+# Type check
+typecheck:
+  stage: build
+  image: node:${NODE_VERSION}-alpine
+  <<: *cache_template
+  before_script:
+    - npm install
+  script:
+    - npx rescript build -with-deps
+    - echo "Type checking passed"
+  only:
+    - branches
+    - merge_requests
+
+# Format check
+format:
+  stage: build
+  image: node:${NODE_VERSION}-alpine
+  <<: *cache_template
+  before_script:
+    - npm install
+  script:
+    - npx rescript format -all -check
+    - echo "Format check passed"
+  allow_failure: true
+  only:
+    - merge_requests
+
+# Unit tests
+test:unit:
+  stage: test
+  image: denoland/deno:alpine-${DENO_VERSION}
+  dependencies:
+    - build
+  script:
+    - deno test --allow-net --allow-read tests/unit/
+  coverage: '/\d+\.\d+% coverage/'
+  only:
+    - branches
+    - merge_requests
+
+# Integration tests
+test:integration:
+  stage: test
+  image: denoland/deno:alpine-${DENO_VERSION}
+  dependencies:
+    - build
+  script:
+    - deno test --allow-net --allow-read tests/integration/
+  only:
+    - branches
+    - merge_requests
+
+# Test coverage
+test:coverage:
+  stage: test
+  image: denoland/deno:alpine-${DENO_VERSION}
+  dependencies:
+    - build
+  script:
+    - deno test --coverage=coverage --allow-net --allow-read tests/
+    - deno coverage coverage --lcov > coverage.lcov
+  artifacts:
+    paths:
+      - coverage/
+      - coverage.lcov
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.lcov
+  coverage: '/\d+\.\d+% coverage/'
+  only:
+    - main
+    - develop
+
+# Bundle size analysis
+analyze:size:
+  stage: test
+  image: node:${NODE_VERSION}-alpine
+  dependencies:
+    - build
+  script:
+    - |
+      echo "Bundle Size Analysis"
+      echo "===================="
+      for file in examples/*/main.mjs; do
+        if [ -f "$file" ]; then
+          size=$(wc -c < "$file")
+          echo "$(dirname $file): ${size} bytes"
+        fi
+      done
+    - |
+      # Verify bundle size targets
+      HELLO_SIZE=$(wc -c < examples/hello-world/main.mjs)
+      if [ $HELLO_SIZE -gt 2048 ]; then
+        echo "ERROR: hello-world bundle too large: ${HELLO_SIZE} bytes (target: <2KB)"
+        exit 1
+      fi
+      echo "✓ Bundle size targets met"
+  only:
+    - branches
+    - merge_requests
+
+# Startup benchmark
+benchmark:startup:
+  stage: benchmark
+  image: denoland/deno:alpine-${DENO_VERSION}
+  dependencies:
+    - build
+  script:
+    - deno run --allow-run --allow-read benchmark/startup.ts
+  artifacts:
+    paths:
+      - benchmark-results/
+    expire_in: 1 week
+  only:
+    - main
+    - develop
+  when: manual
+
+# Memory benchmark
+benchmark:memory:
+  stage: benchmark
+  image: denoland/deno:alpine-${DENO_VERSION}
+  dependencies:
+    - build
+  script:
+    - deno run --allow-run --allow-read benchmark/memory.ts
+  artifacts:
+    paths:
+      - benchmark-results/
+    expire_in: 1 week
+  only:
+    - main
+    - develop
+  when: manual
+
+# Throughput benchmark
+benchmark:throughput:
+  stage: benchmark
+  image: denoland/deno:alpine-${DENO_VERSION}
+  dependencies:
+    - build
+  script:
+    - deno run --allow-run --allow-read benchmark/throughput.ts
+  artifacts:
+    paths:
+      - benchmark-results/
+    expire_in: 1 week
+  only:
+    - main
+    - develop
+  when: manual
+
+# Build container image
+container:build:
+  stage: deploy
+  image: quay.io/podman/stable
+  script:
+    - podman build -t rescript-wasm-runtime:${CI_COMMIT_SHORT_SHA} -f Containerfile .
+    - podman tag rescript-wasm-runtime:${CI_COMMIT_SHORT_SHA} rescript-wasm-runtime:latest
+    - echo "Container built successfully"
+  only:
+    - main
+    - tags
+  when: manual
+
+# Deploy to Deno Deploy
+deploy:deno:
+  stage: deploy
+  image: denoland/deno:alpine-${DENO_VERSION}
+  dependencies:
+    - build
+  script:
+    - |
+      if [ -z "$DENO_DEPLOY_TOKEN" ]; then
+        echo "ERROR: DENO_DEPLOY_TOKEN not set"
+        exit 1
+      fi
+    - deno install -Arf jsr:@deno/deployctl
+    - deployctl deploy --project=rescript-wasm-runtime examples/api-server/main.mjs
+  environment:
+    name: production
+    url: https://rescript-wasm-runtime.deno.dev
+  only:
+    - main
+    - tags
+  when: manual
+
+# Deploy documentation
+pages:
+  stage: deploy
+  image: node:${NODE_VERSION}-alpine
+  script:
+    - npm install
+    - npx rescript doc
+    - mkdir -p public
+    - cp -r docs/* public/
+  artifacts:
+    paths:
+      - public
+  only:
+    - main
+
+# Security scanning
+security:scan:
+  stage: test
+  image: node:${NODE_VERSION}-alpine
+  script:
+    - npm audit --production
+  allow_failure: true
+  only:
+    - main
+    - merge_requests
+
+# Dependency update check
+dependency:check:
+  stage: test
+  image: node:${NODE_VERSION}-alpine
+  script:
+    - npm outdated || true
+  allow_failure: true
+  only:
+    - schedules

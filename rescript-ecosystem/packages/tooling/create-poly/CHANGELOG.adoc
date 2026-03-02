@@ -1,0 +1,91 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= rescript-poly-core Changelog
+:toc:
+:icons: font
+
+All notable changes to this project will be documented in this file.
+
+The format is based on https://keepachangelog.com/en/1.1.0/[Keep a Changelog],
+and this project adheres to https://semver.org/spec/v2.0.0.html[Semantic Versioning].
+
+== [Unreleased]
+
+=== Added
+- Placeholder for upcoming features
+
+=== Changed
+- Placeholder for changes
+
+=== Fixed
+- Placeholder for bug fixes
+
+== [0.1.0] - 2025-01-04
+
+Initial release of rescript-poly-core.
+
+=== Added
+
+==== Core Modules
+- **Core.Result** - Extended Result utilities
+  * `map`, `mapError`, `flatMap` for transformations
+  * `getOr`, `getOrElse` for extraction
+  * `both`, `all` for combining Results
+  * `tryCatch`, `tryCatchAsync` for error handling
+  * `tap`, `tapError` for side effects
+  * `fromOption`, `toOption` for conversions
+  * `isOk`, `isError` predicates
+
+- **Core.Async** - Promise utilities
+  * `sleep` for delays
+  * `timeout` with `Timeout` exception
+  * `retry` with exponential backoff
+  * `parallelLimit` for concurrent execution
+  * `sequential` for ordered execution
+  * `mapAsync`, `filterAsync` for async array operations
+  * `debounce`, `throttle` for rate limiting
+
+- **Core.Logger** - Structured JSON logging
+  * Log levels: Debug, Info, Warn, Error
+  * JSON and text output modes
+  * Timestamp support
+  * Hierarchical context with `child` loggers
+  * Extra fields on log entries
+
+- **Core.Config** - Configuration management
+  * `fromEnv` for environment variable loading
+  * `fromObject` for JSON configuration
+  * Type-safe accessors: `getString`, `getInt`, `getBool`, `getFloat`
+  * Optional variants: `getStringOpt`, etc.
+  * Default variants: `getStringOr`, etc.
+  * `merge` for combining configs
+  * `has`, `keys` for introspection
+
+==== MCP Modules
+- **MCP.Protocol** - MCP protocol types
+  * Content types: `text`, `image`
+  * Result builders: `success`, `successJson`, `error`, `multi`
+  * Schema builders: `objectSchema`, `stringProp`, `numberProp`, `boolProp`, `arrayProp`, `enumProp`
+  * Argument parsers: `getArg`, `requireArg`, `getIntArg`, `getBoolArg`, `getArrayArg`
+
+- **MCP.Server** - Server infrastructure
+  * `make` for creating servers
+  * `registerTool` for tool registration
+  * `registerResource` for resource registration
+  * `registerPrompt` for prompt registration
+  * `listTools`, `listResources`, `listPrompts` for introspection
+  * `callTool` for direct tool invocation
+  * `handleRequest` for JSON-RPC handling
+
+==== Project Structure
+- ReScript project setup with `rescript.json`
+- Deno project setup with `deno.json`
+- AGPL-3.0-or-later license
+- Comprehensive documentation in AsciiDoc
+- Machine-readable metadata in Scheme
+
+== Links
+
+* https://github.com/hyperpolymath/rescript-poly-core/compare/v0.1.0...HEAD[Unreleased]
+* https://github.com/hyperpolymath/rescript-poly-core/releases/tag/v0.1.0[0.1.0]

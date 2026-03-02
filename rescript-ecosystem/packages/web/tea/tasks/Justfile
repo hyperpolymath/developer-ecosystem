@@ -1,0 +1,139 @@
+# SPDX-License-Identifier: MIT AND Palimpsest-0.8
+# SPDX-FileCopyrightText: 2024 Jonathan D.A. Jewell
+#
+# justfile for rescript-tea
+# See: https://just.systems/
+
+# Default recipe - show help
+default:
+    @just --list
+
+# Install dependencies
+install:
+    npm install
+
+# Build the project
+build:
+    npm run build
+
+# Build in watch mode
+dev:
+    npm run dev
+
+# Clean build artifacts
+clean:
+    rm -rf lib
+    rm -rf node_modules/.cache
+
+# Run tests
+test:
+    deno test --no-check --allow-read lib/es6/test/Tea_Cmd_test.res.mjs lib/es6/test/Tea_Json_test.res.mjs
+
+# Format code
+fmt:
+    deno fmt
+
+# Lint code
+lint:
+    deno lint
+
+# Check types
+typecheck:
+    npm run build
+
+# Full CI check
+ci: clean install build test
+
+# Generate documentation
+docs:
+    asciidoctor README.adoc -o docs/index.html
+
+# Audit dependencies for security issues
+audit-deps:
+    npm audit
+
+# Update dependencies
+update:
+    npm update
+
+# ============================================================================
+# Superintendent Audit Recipes
+# ============================================================================
+
+# Full superintendent audit for SWOT dashboard requirements
+audit:
+    @echo "╔══════════════════════════════════════════════════════════════════╗"
+    @echo "║          Superintendent Audit: rescript-tea                      ║"
+    @echo "╚══════════════════════════════════════════════════════════════════╝"
+    @just audit-layout
+    @just audit-animation
+    @just audit-swot
+    @echo ""
+    @echo "Audit complete. See above for any missing components."
+
+# Audit for CSS Grid/Flexbox layout engine
+audit-layout:
+    @echo ""
+    @echo "── Layout Engine Audit ──────────────────────────────────────────────"
+    @test -f src/Tea_Layout.res && echo "✓ Tea_Layout.res exists" || echo "✗ MISSING: Tea_Layout.res"
+    @test -f src/Tea_Layout.resi && echo "✓ Tea_Layout.resi exists" || echo "✗ MISSING: Tea_Layout.resi"
+    @grep -q "gridContainerStyle" src/Tea_Layout.res 2>/dev/null && echo "✓ CSS Grid support" || echo "✗ MISSING: CSS Grid support"
+    @grep -q "flexContainerStyle" src/Tea_Layout.res 2>/dev/null && echo "✓ Flexbox support" || echo "✗ MISSING: Flexbox support"
+    @grep -q "quadrantContainerStyle" src/Tea_Layout.res 2>/dev/null && echo "✓ SWOT quadrant layout" || echo "✗ MISSING: SWOT quadrant layout"
+    @grep -q "dashboardContainerStyle" src/Tea_Layout.res 2>/dev/null && echo "✓ Dashboard layout" || echo "✗ MISSING: Dashboard layout"
+    @grep -q "module Layout = Tea_Layout" src/Tea.res 2>/dev/null && echo "✓ Layout module exported" || echo "✗ MISSING: Layout module export"
+
+# Audit for animation/requestAnimationFrame support
+audit-animation:
+    @echo ""
+    @echo "── Animation Subscription Audit ─────────────────────────────────────"
+    @grep -q "module Animation" src/Tea_Sub.res 2>/dev/null && echo "✓ Animation module exists" || echo "✗ MISSING: Animation module"
+    @grep -q "requestAnimationFrame" src/Tea_Sub.res 2>/dev/null && echo "✓ requestAnimationFrame binding" || echo "✗ MISSING: requestAnimationFrame"
+    @grep -q "throttledFrames" src/Tea_Sub.res 2>/dev/null && echo "✓ Throttled animation support" || echo "✗ MISSING: Throttled animation"
+    @grep -q "adaptiveFrames" src/Tea_Sub.res 2>/dev/null && echo "✓ Adaptive frame skipping" || echo "✗ MISSING: Adaptive frames"
+    @grep -q "tween" src/Tea_Sub.res 2>/dev/null && echo "✓ Tween/easing support" || echo "✗ MISSING: Tween support"
+
+# Audit for SWOT dashboard example
+audit-swot:
+    @echo ""
+    @echo "── SWOT Dashboard Example Audit ─────────────────────────────────────"
+    @test -d examples/03_swot_dashboard && echo "✓ SWOT example directory" || echo "✗ MISSING: examples/03_swot_dashboard/"
+    @test -f examples/03_swot_dashboard/SwotDashboard.res && echo "✓ SwotDashboard.res" || echo "✗ MISSING: SwotDashboard.res"
+    @test -f examples/03_swot_dashboard/index.html && echo "✓ index.html" || echo "✗ MISSING: index.html"
+    @grep -q "quadrantView" examples/03_swot_dashboard/SwotDashboard.res 2>/dev/null && echo "✓ Quadrant view component" || echo "✗ MISSING: Quadrant view"
+    @grep -q "Sub.Animation" examples/03_swot_dashboard/SwotDashboard.res 2>/dev/null && echo "✓ Animation subscription used" || echo "✗ MISSING: Animation subscription"
+
+# Generate status report for LLM agents
+report:
+    @echo "Generating status report..."
+    @mkdir -p docs
+    @test -f handover.adoc && asciidoctor -b html5 handover.adoc -o docs/status-report.html && echo "✓ Generated docs/status-report.html" || echo "No handover.adoc found"
+
+# Verify superintendent environment
+super-check:
+    @echo "Checking Superintendent Environment..."
+    @command -v rescript >/dev/null 2>&1 && echo "✓ ReScript available" || echo "✗ ReScript missing - run: npm install -g rescript"
+    @command -v deno >/dev/null 2>&1 && echo "✓ Deno available" || echo "✗ Deno missing"
+    @command -v just >/dev/null 2>&1 && echo "✓ Just available" || echo "✗ Just missing"
+    @command -v asciidoctor >/dev/null 2>&1 && echo "✓ Asciidoctor available" || echo "○ Asciidoctor optional (for reports)"
+    @echo "Environment check complete."
+
+# Create a new release (maintainers only)
+release version:
+    @echo "Creating release {{version}}"
+    npm version {{version}}
+    git push --follow-tags
+
+# Run RSR compliance audit
+rsr-audit:
+    @echo "RSR Compliance Check"
+    @echo "===================="
+    @test -f README.adoc && echo "✓ README.adoc" || echo "✗ README.adoc"
+    @test -f LICENSE.txt && echo "✓ LICENSE.txt" || echo "✗ LICENSE.txt"
+    @test -f SECURITY.md && echo "✓ SECURITY.md" || echo "✗ SECURITY.md"
+    @test -f CODE_OF_CONDUCT.adoc && echo "✓ CODE_OF_CONDUCT.adoc" || echo "✗ CODE_OF_CONDUCT.adoc"
+    @test -f CONTRIBUTING.adoc && echo "✓ CONTRIBUTING.adoc" || echo "✗ CONTRIBUTING.adoc"
+    @test -f GOVERNANCE.adoc && echo "✓ GOVERNANCE.adoc" || echo "✗ GOVERNANCE.adoc"
+    @test -f CHANGELOG.md && echo "✓ CHANGELOG.md" || echo "✗ CHANGELOG.md"
+    @test -f flake.nix && echo "✓ flake.nix" || echo "✗ flake.nix"
+    @test -d .well-known && echo "✓ .well-known/" || echo "✗ .well-known/"

@@ -1,0 +1,50 @@
+// SPDX-License-Identifier: MPL-2.0
+syntax = "proto3";
+
+package example;
+
+// Status enum for user account
+enum Status {
+  STATUS_UNKNOWN = 0;
+  STATUS_ACTIVE = 1;
+  STATUS_INACTIVE = 2;
+  STATUS_SUSPENDED = 3;
+}
+
+// User message
+message User {
+  string name = 1;
+  int32 id = 2;
+  optional string email = 3;
+  Status status = 4;
+  repeated string tags = 5;
+  optional Address address = 6;
+}
+
+// Nested address message
+message Address {
+  string street = 1;
+  string city = 2;
+  string country = 3;
+  optional string postal_code = 4;
+}
+
+// Example service (for future gRPC support)
+service UserService {
+  rpc GetUser(GetUserRequest) returns (User);
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+}
+
+message GetUserRequest {
+  int32 id = 1;
+}
+
+message ListUsersRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+message ListUsersResponse {
+  repeated User users = 1;
+  string next_page_token = 2;
+}

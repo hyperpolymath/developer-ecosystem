@@ -1,0 +1,50 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+[package]
+name = "rescript-openapi"
+version = "0.1.0"
+edition = "2021"
+authors = ["Hyperpolymath <hello@hyperpolymath.com>"]
+description = "Generate type-safe ReScript clients from OpenAPI specifications"
+readme = "README.adoc"
+license = "PMPL-1.0-or-later"
+repository = "https://github.com/hyperpolymath/rescript-openapi"
+keywords = ["rescript", "openapi", "codegen", "api", "client"]
+categories = ["development-tools", "web-programming"]
+
+[dependencies]
+# CLI
+clap = { version = "4", features = ["derive"] }
+
+# OpenAPI parsing
+openapiv3 = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_yaml = "0.9"
+
+# Code generation
+genco = "0.17"
+heck = "0.5"
+
+# Error handling
+thiserror = "2"
+anyhow = "1"
+
+# File system
+walkdir = "2"
+notify = { version = "6", default-features = false, features = ["macos_kqueue"] }
+toml = "0.8"
+
+[dev-dependencies]
+insta = { version = "1", features = ["redactions"] }
+tempfile = "3"
+pretty_assertions = "1"
+
+[[bin]]
+name = "rescript-openapi"
+path = "src/main.rs"
+
+[profile.release]
+lto = true
+strip = true

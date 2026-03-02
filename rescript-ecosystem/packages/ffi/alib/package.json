@@ -1,0 +1,49 @@
+{
+  "name": "@hyperpolymath/rescript-alib",
+  "version": "0.1.0-alpha.1",
+  "description": "Alpha aggregate library for ReScript: namespaced proving ground + adapter layer",
+  "type": "module",
+  "main": "./src/Common/Alib_String.res.js",
+  "exports": {
+    ".": "./src/Common/Alib_String.res.js",
+    "./Common/*": "./src/Common/*.res.js",
+    "./Specific/*": "./src/Specific/*.res.js",
+    "./Compat/*": "./src/Compat/*.res.js"
+  },
+  "scripts": {
+    "build": "rescript build -with-deps",
+    "watch": "rescript build -w",
+    "clean": "rescript clean",
+    "test": "deno task test",
+    "bench": "deno task bench",
+    "check": "deno task check"
+  },
+  "keywords": [
+    "rescript",
+    "alib",
+    "aggregate-library",
+    "branded-types",
+    "zero-cost",
+    "parse-dont-validate",
+    "alpha"
+  ],
+  "author": "Jonathan Jewell <hyperpolymath>",
+  "license": "PLMP-1.0.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hyperpolymath/rescript-alib"
+  },
+  "bugs": {
+    "url": "https://github.com/hyperpolymath/rescript-alib/issues"
+  },
+  "homepage": "https://github.com/hyperpolymath/rescript-alib#readme",
+  "devDependencies": {
+    "rescript": "^11.0.0"
+  },
+  "peerDependencies": {
+    "rescript": ">=10.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,400 @@
+= aLib-for-ReScript (Alpha)
+:toc: macro
+:toclevels: 3
+:sectanchors:
+:icons: font
+
+**Status:** 🔬 Experimental Alpha +
+**Version:** 0.1.0-alpha.1 +
+**Philosophy:** Parse, Don't Validate + Zero-Cost Abstractions + Upstream-First
+
+A namespaced proving ground + adapter layer for ReScript that demonstrates the aLib method without replacing the standard library.
+
+toc::[]
+
+== What This Is
+
+`rescript-alib` is an **incubator and safety harness** for ReScript library patterns, designed to:
+
+* Provide **safe boundary patterns** (externals, JSON, untyped inputs)
+* Demonstrate **zero-cost branded types** and refinement types
+* Offer **Common/Specific/Compat** layers for cross-target development
+* Enable **per-file adoption** with explicit namespacing
+* **Gather evidence** for what works before proposing upstream changes
+
+[IMPORTANT]
+====
+This is **NOT**:
+
+* ❌ A replacement standard library
+* ❌ A fork of ReScript's stdlib
+* ❌ A mandate for compiler direction
+* ❌ A mass migration plan
+
+This is:
+
+* ✅ An experiment space (namespaced, deletable, upstream-first)
+* ✅ A pattern library (adapters, codemods, safe boundaries)
+* ✅ An evidence-gathering tool (what helps? what doesn't?)
+====
+
+== The "No Tears" Contract
+
+[cols="1,3"]
+|===
+| Principle | What It Means
+
+| **Namespacing Only**
+| All exports under `Alib.*` — never shadows `Option`, `Result`, `Array`, etc.
+
+| **Per-File Adoption**
+| Try one module in one file, stop anytime. No lock-in.
+
+| **Upstream-First**
+| ReScript stdlib remains source of truth. When features land upstream, we delete them here.
+
+| **Zero Runtime Tax**
+| Heavy use of `@inline`, `%identity`, and phantom types. Zero cost at runtime.
+
+| **Deletion-Friendly**
+| Anything that lands upstream gets deprecated here. Adapters remain only where needed.
+
+| **Parse, Don't Validate**
+| Create types that make invalid states unrepresentable. Runtime checks at boundaries only.
+|===
+
+== Three Layers
+
+=== Common Layer
+
+**Purpose:** Utilities/patterns that work cleanly under both ReScript and Melange constraints.
+
+**Location:** `src/Common/`
+
+**Examples:**
+
+* `Alib.String` - Branded string types (email, slug, url, etc.)
+* `Alib.Result` - Extended result combinators
+* `Alib.Option` - Extended option utilities
+
+**Policy:** Must be implementable in both ReScript and Melange without platform-specific hacks.
+
+=== Specific Layer
+
+**Purpose:** ReScript-centric ergonomics that are intentionally not "common".
+
+**Location:** `src/Specific/`
+
+**Examples:**
+
+* `Alib_Rescript.Promise` - ReScript async/promise utilities
+* `Alib_Rescript.JSX` - JSX-specific helpers
+* `Alib_Rescript.External` - FFI boundary helpers
+
+**Policy:** ReScript-only. Does not need to work in Melange.
+
+=== Compat Layer
+
+**Purpose:** Explicit conversions and escape hatches between stdlib types and aLib types.
+
+**Location:** `src/Compat/`
+
+**Examples:**
+
+* `Alib_Compat.String` - Conversions: `string <-> Alib.String.t`
+* `Alib_Compat.Result` - Conversions: `result <-> Alib.Result.t`
+
+**Policy:** Adapters, codemods, pattern cookbooks. Helps migration in both directions.
+
+== Example: Branded String Types
+
+=== The Problem
+
+```rescript
+// Unsafe: No guarantee email is valid
+let sendEmail = (to: string, subject: string, body: string) => {
+  // What if 'to' is "not-an-email"?
+  externalEmailAPI(to, subject, body)
+}
+```
+
+=== The aLib Solution
+
+```rescript
+// 1. Define a branded type with validation
+module Email = Alib.String.Make({
+  let name = "Email"
+  let validate = (s) => %re("/^[^\s@]+@[^\s@]+\.[^\s@]+$/")->Js.Re.test_(s)
+})
+
+// 2. Use the brand for safety
+let sendEmail = (to: Email.t, subject: string, body: string) => {
+  // Compiler guarantees 'to' passed validation!
+  externalEmailAPI(Email.reveal(to), subject, body)
+}
+
+// 3. At boundaries, parse and handle errors
+switch Email.parse(userInput) {
+| Ok(validEmail) => sendEmail(validEmail, "Hello", "World")
+| Error(Email.InvalidFormat({input})) => Console.error("Invalid email: " ++ input)
+}
+```
+
+**Key Properties:**
+
+* ✅ **Zero runtime cost** - `Email.t` is just `string` at runtime (`%identity` cast)
+* ✅ **Type safety** - Can't pass unvalidated string to `sendEmail`
+* ✅ **Clear boundaries** - Validation happens once at parse site
+* ✅ **Inline-friendly** - `@inline` directive ensures no function call overhead
+
+== Installation & Usage
+
+=== Prerequisites
+
+* ReScript >=10.1.0
+* Deno >=1.40.0 (for testing and benchmarking)
+
+=== Install
+
+```bash
+# Via npm (if published)
+npm install @hyperpolymath/rescript-alib
+
+# Via GitHub (during alpha)
+npm install hyperpolymath/rescript-alib#main
+
+# Or add to rescript.json dependencies:
+"bs-dependencies": ["@hyperpolymath/rescript-alib"]
+```
+
+=== Per-File Usage
+
+```rescript
+// MyFile.res
+open Alib  // Only affects this file
+
+module Slug = String.Make({
+  let name = "Slug"
+  let validate = (s) => %re("/^[a-z0-9]+(?:-[a-z0-9]+)*$/")->Js.Re.test_(s)
+})
+
+let processSlug = (slug: Slug.t) => {
+  // Work with validated slug
+  Slug.reveal(slug)
+}
+```
+
+**No global impact** - Other files unaffected unless they also `open Alib`.
+
+== Architecture
+
+=== Module Structure
+
+```
+src/
+├── Common/              # Cross-platform (ReScript + Melange)
+│   ├── Alib_String.resi    # Interface (the contract)
+│   ├── Alib_String.res     # Implementation
+│   ├── Alib_Result.resi
+│   ├── Alib_Result.res
+│   └── Alib_Option.res
+├── Specific/            # ReScript-only
+│   ├── Alib_Rescript_Promise.res
+│   └── Alib_Rescript_External.res
+└── Compat/              # Adapters & conversions
+    ├── Alib_Compat_String.res
+    └── Alib_Compat_Result.res
+```
+
+=== Test Structure
+
+```
+test/
+├── unit/                # Fast, isolated tests
+│   ├── Alib_String_test.res
+│   └── Alib_String_test.js  # Deno runner
+├── integration/         # Cross-module tests
+│   └── boundaries_test.js
+└── benchmark/           # Performance validation
+    └── string_benchmark.js
+```
+
+== Performance Guarantees
+
+**Assertion:** aLib branded types have **zero runtime overhead** compared to raw types.
+
+**Proof Strategy:**
+
+1. **Benchmark suite** (`test/benchmark/`) compares:
+   - Raw regex validation
+   - aLib branded types
+   - Direct string usage
+
+2. **Expected results:**
+   - Parse time: +0-5% (one-time validation cost)
+   - Usage time: +0% (inlined identity functions)
+   - Bundle size: +0 bytes (types erased at compile time)
+
+3. **Verification:**
+   ```bash
+   deno task bench
+   ```
+
+**If overhead detected:** We fix it or remove the feature. No compromises on zero-cost.
+
+== Graduation & Retirement Policy
+
+Each module follows this lifecycle:
+
+[cols="1,2,3"]
+|===
+| Status | Description | Action
+
+| **Experiment**
+| Fast iteration, may break
+| Namespaced under `Alib.Exp.*`
+
+| **Stable**
+| Semver guarantees, tests
+| Promoted to `Alib.*`
+
+| **Propose Upstream**
+| Suitable for ReScript stdlib
+| Open RFC with evidence from usage
+
+| **Upstreamed**
+| Accepted into ReScript
+| Deprecated here, removed in next major
+
+| **Retained**
+| Ecosystem glue only
+| Kept as adapter/pattern cookbook
+|===
+
+**Examples:**
+
+* If ReScript adds branded types → We deprecate `Alib.String` and provide migration guide
+* If Melange diverges → We keep adapters in `Compat/` for interop
+* If pattern proves unpopular → We document failure and remove
+
+== Relationship to aggregate-library
+
+link:https://github.com/hyperpolymath/aggregate-library[`aggregate-library`] is the **methods lab**:
+
+* Demonstrates overlap identification under extreme diversity
+* Provides stress-test cases and conformance vectors
+* Shows the method, not a specific implementation
+
+`rescript-alib` is the **ecosystem implementation**:
+
+* Applies the aLib method to ReScript specifically
+* Provides practical Common/Specific/Compat split
+* Ships runnable code with tests
+
+**Not a dependency:** You can use `rescript-alib` without touching `aggregate-library`.
+
+== Contributing
+
+See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc] for the full "No Tears" protocol.
+
+=== What We Want
+
+* ✅ Boundary safety patterns (FFI, JSON, externals)
+* ✅ Zero-cost abstractions with benchmarks
+* ✅ Adapters for common libraries
+* ✅ Documentation of what works/doesn't work
+* ✅ Evidence for upstream proposals
+
+=== What We Don't Want
+
+* ❌ Reimplementing entire stdlib
+* ❌ Breaking changes without deprecation path
+* ❌ Patterns that add runtime cost
+* ❌ Shadowing stdlib names
+* ❌ Lock-in or "our way or the highway"
+
+== FAQ
+
+=== Why not just use ReScript's stdlib?
+
+We do! aLib is supplemental, not replacement. It exists for:
+
+* Patterns not yet in stdlib (branded types, extended result combinators)
+* Cross-target needs (ReScript + Melange)
+* Experimentation before upstream proposals
+
+=== Why "alpha"?
+
+This is a proving ground. We expect:
+
+* API changes as we learn what works
+* Modules to be added/removed based on evidence
+* Some experiments to fail (that's valuable data!)
+
+When patterns stabilize, they may be proposed upstream or stay here as stable adapters.
+
+=== Can I use this in production?
+
+**Alpha means:** API may change, semver not guaranteed yet.
+
+**Safe to try:** Yes, per-file adoption means low risk. +
+**Safe to bet on:** Wait for stable (or help us get there by testing alpha).
+
+=== What about Melange?
+
+**Common layer:** Designed to work in both ReScript and Melange. +
+**Specific layer:** ReScript-only features. +
+**Compat layer:** Provides adapters if you need cross-compilation.
+
+We test against both where applicable.
+
+=== Why Deno for testing?
+
+* **Deno-native policy:** Hyperpolymath language policy prefers Deno over Node/npm/bun
+* **Fast:** No node_modules install, instant startup
+* **Built-in:** Test runner, benchmarker, formatter, linter
+* **ReScript generates ES6:** Works natively with Deno
+
+== Roadmap
+
+=== Phase 1: Alpha (Current)
+
+* [x] Core `Alib.String` branded types
+* [x] Test infrastructure (unit + benchmark)
+* [ ] Extended `Alib.Result` combinators
+* [ ] Extended `Alib.Option` utilities
+* [ ] Basic `Compat` adapters
+
+=== Phase 2: Beta
+
+* [ ] Gather usage feedback from early adopters
+* [ ] Stabilize APIs based on evidence
+* [ ] Comprehensive documentation
+* [ ] Cross-target testing (ReScript + Melange)
+
+=== Phase 3: Stable
+
+* [ ] Semver guarantees
+* [ ] Full test coverage
+* [ ] Performance benchmarks published
+* [ ] Upstream proposals for proven patterns
+
+== License
+
+PLMP-1.0.0-or-later (Pragmatic Libre Multi-Paradigm License)
+
+== Links
+
+* **GitHub:** https://github.com/hyperpolymath/rescript-alib
+* **Issues:** https://github.com/hyperpolymath/rescript-alib/issues
+* **aggregate-library (methods lab):** https://github.com/hyperpolymath/aggregate-library
+* **ReScript:** https://rescript-lang.org/
+* **RFC Discussion:** https://github.com/rescript-lang/rescript-compiler/issues/8192
+
+== Acknowledgments
+
+* **ReScript team** for building an amazing language
+* **aggregate-library contributors** for methods development
+* **Early testers** who help us learn what works
+
+**Let's build better boundaries together!** 🚀

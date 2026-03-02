@@ -1,0 +1,27 @@
+{
+  "name": "cadre-router",
+  "version": "0.2.0",
+  "type": "module",
+  "description": "Type-safe URL routing for ReScript applications (framework-agnostic core + optional TEA integration)",
+  "author": "Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>",
+  "license": "PMPL-1.0-or-later",
+  "dependencies": {
+    "@rescript/react": "^0.13.0",
+    "@rescript/core": "^1.5.0",
+    "rescript-dom-mounter": "file:../rescript-ecosystem/packages/web/dom-mounter",
+    "rescript-wasm-runtime": "file:../rescript-ecosystem/packages/ffi/wasm-runtime",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "rescript-tea": "^0.16.0"
+  },
+  "peerDependencies": {
+    "rescript-tea": "^0.16.0"
+  },
+  "peerDependenciesMeta": {
+    "rescript-tea": {
+      "optional": true
+    }
+  }
+}

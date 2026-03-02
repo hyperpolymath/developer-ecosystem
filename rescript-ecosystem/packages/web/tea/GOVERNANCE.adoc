@@ -1,0 +1,121 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2024 Jonathan D.A. Jewell
+= Governance
+:toc:
+
+== Overview
+
+rescript-tea follows a benevolent dictator for life (BDFL) governance model with
+community input through the Tri-Perimeter Contribution Framework (TPCF).
+
+== Roles
+
+=== Project Lead (BDFL)
+
+* Final decision authority on project direction
+* Responsible for releases and security
+* Manages maintainer team
+* Resolves disputes
+
+=== Maintainers
+
+* Merge permissions for all perimeters
+* Code review responsibilities
+* Issue triage and labeling
+* Community support
+
+=== Contributors
+
+* Submit pull requests
+* Report issues
+* Participate in discussions
+* Improve documentation
+
+== Decision Making
+
+=== Consensus Seeking
+
+Most decisions are made through discussion and consensus:
+
+1. Proposal raised (issue, discussion, or PR)
+2. Community feedback period (typically 1 week)
+3. Maintainer review
+4. Decision documented
+
+=== Voting
+
+For significant changes without consensus:
+
+* Maintainers vote
+* Simple majority required
+* Project Lead has tie-breaking vote
+
+=== Fast-Track
+
+Security fixes and critical bugs may be merged without full consensus period.
+
+== Tri-Perimeter Framework
+
+=== Perimeter 1: Core
+
+*Who*: Maintainers only
+
+*What*:
+
+* Build system (flake.nix, justfile)
+* Core runtime (Tea_App)
+* Release process
+* Security fixes
+
+*Process*: Direct merge after maintainer review
+
+=== Perimeter 2: Expert
+
+*Who*: Maintainers + trusted contributors
+
+*What*:
+
+* New modules
+* API changes
+* Performance work
+* Complex features
+
+*Process*: PR + 2 maintainer approvals
+
+=== Perimeter 3: Community
+
+*Who*: Anyone
+
+*What*:
+
+* Documentation
+* Examples
+* Tests
+* Bug fixes
+
+*Process*: PR + 1 maintainer approval
+
+== Becoming a Maintainer
+
+1. Sustained, quality contributions over 6+ months
+2. Demonstrated understanding of project goals
+3. Nomination by existing maintainer
+4. Approval by Project Lead
+
+== Conflict Resolution
+
+1. Discussion in relevant issue/PR
+2. Escalation to maintainer team
+3. Final decision by Project Lead
+4. Appeals via community discussion
+
+== Changes to Governance
+
+This document may be amended through the standard decision-making process.
+Significant changes require community discussion period.
+
+== Communication
+
+* GitHub Issues: Bug reports, feature requests
+* GitHub Discussions: Questions, ideas, community chat
+* Pull Requests: Code contributions

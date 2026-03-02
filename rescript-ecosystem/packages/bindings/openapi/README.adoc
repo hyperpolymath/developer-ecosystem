@@ -1,0 +1,224 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= rescript-openapi
+:toc:
+:icons: font
+
+**Generate type-safe ReScript clients from OpenAPI specifications.**
+
+== Why
+
+OpenAPI is the de facto standard for describing REST APIs. This tool generates:
+
+* **Type definitions** - Records, variants, aliases from schemas
+* **Runtime validators** - Using `rescript-schema` for safe JSON parsing
+* **HTTP clients** - Pluggable HTTP layer (fetch by default, bring your own)
+* **Operation aliases** - Multiple ways to call the same endpoint
+
+== Installation
+
+[source,bash]
+----
+cargo install rescript-openapi
+----
+
+Or build from source:
+
+[source,bash]
+----
+git clone https://github.com/hyperpolymath/rescript-openapi
+cd rescript-openapi
+cargo build --release
+----
+
+== Usage
+
+=== Generate Client
+
+[source,bash]
+----
+rescript-openapi generate -i openapi.yaml -o src/api
+----
+
+This generates:
+
+* `ApiTypes.res` - All type definitions
+* `ApiSchema.res` - rescript-schema validators
+* `ApiClient.res` - HTTP client with fetch
+
+=== Options
+
+[cols="1,2,1"]
+|===
+| Flag | Description | Default
+
+| `-i, --input`
+| Path to OpenAPI spec (JSON/YAML)
+| Required
+
+| `-o, --output`
+| Output directory
+| `src/api`
+
+| `-m, --module`
+| Module name prefix
+| `Api`
+
+| `--with-schema`
+| Generate rescript-schema validators
+| `true`
+
+| `--with-client`
+| Generate HTTP client
+| `true`
+|===
+
+=== Validate Spec
+
+[source,bash]
+----
+rescript-openapi validate -i openapi.yaml
+----
+
+=== Show Info
+
+[source,bash]
+----
+rescript-openapi info -i openapi.yaml
+----
+
+== Generated Code
+
+=== Types (`ApiTypes.res`)
+
+[source,rescript]
+----
+/** A user in the system */
+type user = {
+  id: string,
+  @as("full_name") fullName: string,
+  email: string,
+  role: option<userRole>,
+}
+
+type userRole = [
+  | #Admin
+  | #User
+  | #Guest
+]
+----
+
+=== Schema Validators (`ApiSchema.res`)
+
+[source,rescript]
+----
+module S = RescriptSchema
+
+let userSchema: S.t<user> = S.object(s => ({
+  id: s.field("id", S.string),
+  fullName: s.field("full_name", S.string),
+  email: s.field("email", S.string),
+  role: s.fieldOr("role", S.option(userRoleSchema), None),
+}: user))
+
+let parseUser = (json: Js.Json.t): user => {
+  S.parseJsonOrThrow(json, userSchema)
+}
+
+let serializeUser = (value: user): Js.Json.t => {
+  S.reverseConvertToJsonOrThrow(value, userSchema)
+}
+----
+
+=== HTTP Client (`ApiClient.res`)
+
+[source,rescript]
+----
+// Default client using fetch
+module Client = Make(FetchClient)
+
+// Usage
+let config = makeConfig(~baseUrl="https://api.example.com", ())
+
+let result = await Client.getUser(config, ~id="123", ())
+switch result {
+| Ok(user) => Console.log(user.fullName)
+| Error(err) => Console.error(err.message)
+}
+----
+
+=== Custom HTTP Backend
+
+[source,rescript]
+----
+// Implement the HttpClient signature
+module AxiosClient: HttpClient = {
+  let request = async (req: httpRequest) => {
+    // Use axios, ky, got, or any HTTP library
+    let response = await Axios.request({
+      method: req.method->methodToString,
+      url: req.url,
+      headers: req.headers,
+      data: req.body,
+    })
+    Ok(response.data)
+  }
+}
+
+// Create client with custom HTTP
+module Api = Make(AxiosClient)
+----
+
+=== Mock for Testing
+
+[source,rescript]
+----
+module MockClient: HttpClient = {
+  let request = async (req) => {
+    // Return mock data
+    Ok(%raw(`{"id": "123", "full_name": "Test User"}`))
+  }
+}
+
+module TestApi = Make(MockClient)
+----
+
+== ReScript Dependencies
+
+Add to your `rescript.json`:
+
+[source,json]
+----
+{
+  "bs-dependencies": [
+    "@rescript/core",
+    "rescript-schema",
+    "@glennsl/rescript-fetch"
+  ]
+}
+----
+
+Install with npm:
+
+[source,bash]
+----
+npm install @rescript/core rescript-schema @glennsl/rescript-fetch
+----
+
+== Roadmap
+
+* [ ] OpenAPI 3.1 support
+* [ ] `oneOf`/`anyOf` discriminated unions
+* [ ] File upload/download
+* [ ] Streaming responses
+* [ ] WebSocket support
+* [ ] GraphQL schema generation
+
+== Part of rescript-full-stack
+
+This tool is part of the link:https://github.com/hyperpolymath/rescript-full-stack[ReScript Full Stack] ecosystem.
+
+== License
+
+PMPL-1.0-or-later

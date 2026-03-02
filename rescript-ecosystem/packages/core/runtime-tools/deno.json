@@ -1,0 +1,42 @@
+{
+  "$schema": "https://deno.land/x/deno/cli/schemas/config-file.v1.json",
+  "name": "@hyperpolymath/rescript-runtime-tools",
+  "version": "0.1.0",
+  "exports": "./src/mod.ts",
+  "tasks": {
+    "dev": "deno run --allow-all bin/rrt.ts dev",
+    "build": "deno run --allow-all bin/rrt.ts build",
+    "build:prod": "deno run --allow-all bin/rrt.ts build --prod",
+    "test": "deno run --allow-all bin/rrt.ts test",
+    "bench": "deno run --allow-all bin/rrt.ts bench",
+    "fmt": "deno run --allow-all bin/rrt.ts fmt",
+    "clean": "deno run --allow-all bin/rrt.ts clean",
+    "info": "deno run --allow-all bin/rrt.ts info",
+    "rescript": "deno run -A npm:rescript build",
+    "rescript:watch": "deno run -A npm:rescript build -w",
+    "rescript:clean": "deno run -A npm:rescript clean"
+  },
+  "nodeModulesDir": "none",
+  "compilerOptions": {
+    "strict": true,
+    "lib": ["deno.window", "deno.unstable"]
+  },
+  "fmt": {
+    "useTabs": false,
+    "lineWidth": 100,
+    "indentWidth": 2,
+    "singleQuote": false,
+    "proseWrap": "preserve"
+  },
+  "lint": {
+    "rules": {
+      "tags": ["recommended"]
+    }
+  },
+  "imports": {
+    "@std/assert": "jsr:@std/assert@1",
+    "@std/testing": "jsr:@std/testing@1",
+    "@std/fs": "jsr:@std/fs@1",
+    "@std/path": "jsr:@std/path@1"
+  }
+}

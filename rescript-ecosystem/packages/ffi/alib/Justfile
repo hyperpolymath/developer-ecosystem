@@ -1,0 +1,272 @@
+# SPDX-License-Identifier: PLMP-1.0-or-later
+# rescript-alib Justfile - aLib Alpha for ReScript
+# Philosophy: Parse, Don't Validate + Zero-Cost Abstractions + Upstream-First
+
+set shell := ["bash", "-uc"]
+set dotenv-load := true
+set positional-arguments := true
+
+# Project metadata
+project := "rescript-alib"
+version := "0.1.0-alpha.1"
+tier := "infrastructure"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# DEFAULT & HELP
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Show all available recipes
+default:
+    @just --list --unsorted
+
+# Show project info
+info:
+    @echo "Project: {{project}}"
+    @echo "Version: {{version}}"
+    @echo "RSR Tier: {{tier}}"
+    @echo "Philosophy: Parse, Don't Validate + Zero-Cost"
+    @[ -f .machine_readable/6scm/STATE.scm ] && grep -oP '\(status\s+\K[^)]+' .machine_readable/6scm/STATE.scm | head -1 | xargs -I{} echo "Status: {}" || true
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# BUILD & DEV
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Build ReScript sources
+build:
+    @echo "Building ReScript sources..."
+    rescript build -with-deps
+
+# Watch and rebuild on changes
+watch:
+    @echo "Watching ReScript sources..."
+    rescript build -w
+
+# Clean build artifacts
+clean:
+    @echo "Cleaning build artifacts..."
+    rescript clean
+    rm -rf lib/
+
+# Full clean (including generated JavaScript)
+clean-full:
+    @echo "Full clean..."
+    rescript clean
+    find src test -name "*.res.js" -type f -delete
+    rm -rf lib/
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TESTING & VERIFICATION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Run all tests (unit + integration)
+test: build
+    @echo "Running tests..."
+    deno task test
+
+# Run unit tests only
+test-unit: build
+    @echo "Running unit tests..."
+    deno task test:unit
+
+# Run integration tests only
+test-integration: build
+    @echo "Running integration tests..."
+    deno task test:integration
+
+# Run benchmarks to verify zero-cost abstractions
+bench: build
+    @echo "Running performance benchmarks..."
+    deno task bench
+
+# Full check: clean, build, test, bench
+check: clean build test bench
+    @echo "✅ All checks passed!"
+
+# Quick check: build and test only
+check-quick: build test
+    @echo "✅ Quick check passed!"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SECURITY & VALIDATION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Run Deno security checks on compiled output
+check-security: build
+    @echo "Running Deno security checks..."
+    deno check src/**/*.res.js
+    @echo "✅ Security validation passed!"
+
+# Create secure distributable bundle
+bundle: build
+    @echo "Creating bundle..."
+    mkdir -p dist
+    deno bundle src/Common/Alib_String.res.js dist/alib-string.bundle.js
+    @echo "✅ Bundle created at dist/alib-string.bundle.js"
+
+# Validate bundle integrity
+bundle-check: bundle
+    @echo "Validating bundle..."
+    deno check dist/alib-string.bundle.js
+    @echo "✅ Bundle validation passed!"
+
+# Validate all compiled JS output is well-formed
+validate-output: build
+    @echo "Validating compiled output..."
+    @find src -name "*.res.js" -type f | while read file; do \
+        echo "Checking $$file..."; \
+        deno check "$$file" || exit 1; \
+    done
+    @echo "✅ All compiled output validated!"
+
+# Full security audit: check output, bundle, and validate
+security-audit: validate-output bundle-check
+    @echo "🔒 Security audit complete!"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# FORMATTING & LINTING
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Format all code (ReScript + JS/TS test files)
+format:
+    @echo "Formatting ReScript..."
+    rescript format -all
+    @echo "Formatting Deno files..."
+    deno fmt test/ docs/
+
+# Lint Deno test files
+lint:
+    @echo "Linting..."
+    deno lint test/
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# DOCUMENTATION
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Generate API documentation (placeholder)
+docs:
+    @echo "Generating documentation..."
+    @echo "TODO: Add typedoc or similar"
+
+# Verify examples in README compile
+verify-examples:
+    @echo "Verifying README examples..."
+    @echo "TODO: Extract and compile examples from README.adoc"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# SCM FILES & CONTRACTILES
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Validate all 6 SCM files exist and are well-formed
+validate-scm:
+    @echo "Validating SCM files..."
+    @for file in STATE ECOSYSTEM META AGENTIC NEUROSYM PLAYBOOK; do \
+        path=".machine_readable/6scm/$$file.scm"; \
+        if [ -f "$$path" ]; then \
+            echo "✅ $$file.scm exists"; \
+        else \
+            echo "❌ $$file.scm missing" && exit 1; \
+        fi; \
+    done
+
+# Validate contractiles (must/trust/bust/lust/dust)
+validate-contractiles:
+    @echo "Validating contractiles..."
+    @for level in must trust bust lust dust; do \
+        path="contractiles/$$level"; \
+        if [ -d "$$path" ]; then \
+            echo "✅ $$level exists"; \
+        else \
+            echo "❌ $$level missing" && exit 1; \
+        fi; \
+    done
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# GIT & RELEASE
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Initialize git repo (if not already)
+git-init:
+    @if [ ! -d .git ]; then \
+        git init && \
+        git add . && \
+        git commit -m "chore: initialize rescript-alib alpha"; \
+    else \
+        echo "Git repo already initialized"; \
+    fi
+
+# Create GitHub repo (requires gh CLI)
+gh-create:
+    @echo "Creating GitHub repo..."
+    gh repo create hyperpolymath/rescript-alib \
+        --public \
+        --description "Alpha aLib for ReScript: namespaced proving ground + adapter layer" \
+        --homepage "https://github.com/hyperpolymath/rescript-alib"
+
+# Push to GitHub
+gh-push: git-init
+    @git remote add origin https://github.com/hyperpolymath/rescript-alib.git || true
+    @git branch -M main
+    @git push -u origin main
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# ALPHA RELEASE WORKFLOW
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Prepare alpha release (run all checks)
+release-prep: check validate-scm validate-contractiles
+    @echo "✅ Alpha release ready!"
+    @echo "Next steps:"
+    @echo "  1. Review CHANGELOG"
+    @echo "  2. just gh-push"
+    @echo "  3. Open issue #8192 in rescript-compiler for feedback"
+
+# Full alpha workflow: build, test, validate, commit, push
+alpha-release: clean check validate-scm validate-contractiles
+    @echo "Creating alpha release..."
+    @git add -A
+    @git commit -m "chore: alpha release {{version}}" || true
+    @git tag -a "v{{version}}" -m "Alpha release {{version}}"
+    @git push origin main --tags
+    @echo "✅ Alpha {{version}} released!"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# UTILITIES
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Show project tree (excluding build artifacts)
+tree:
+    @tree -I 'node_modules|lib|*.res.js' -L 3
+
+# Count lines of code
+loc:
+    @echo "ReScript (.res/.resi):"
+    @find src test -name "*.res" -o -name "*.resi" | xargs wc -l | tail -1
+    @echo "Test runners (.js):"
+    @find test -name "*.js" | xargs wc -l | tail -1
+
+# Show repo status
+status:
+    @echo "=== Project Status ==="
+    @just info
+    @echo ""
+    @echo "=== Git Status ==="
+    @git status -s || echo "Not a git repo"
+    @echo ""
+    @echo "=== Build Status ==="
+    @[ -f lib/js/src/Common/Alib_String.js ] && echo "✅ Build artifacts present" || echo "❌ Not built (run 'just build')"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# DEV WORKFLOW SHORTCUTS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# Quick dev loop: clean, build, test
+dev: clean build test
+    @echo "✅ Dev loop complete"
+
+# CI simulation: what CI will run
+ci: clean-full build test bench validate-scm validate-contractiles
+    @echo "✅ CI checks complete"
+
+# Pre-commit hook: format, build, test
+pre-commit: format build test-unit
+    @echo "✅ Pre-commit checks passed"

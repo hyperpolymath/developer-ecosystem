@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OPSM Shell</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-mode="wysiwyg">
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">OPSM</div>
+        <div class="brand-sub">Everywhere Package Manager</div>
+      </div>
+      <div class="mode-switch">
+        <label for="mode">Mode</label>
+        <select id="mode" aria-label="Mode selector">
+          <option value="wysiwyg">WYSIWYG (User)</option>
+          <option value="wysiwygm">WYSIWYGM (Maintainer)</option>
+          <option value="wymiwyg">WYMIWYG (Developer)</option>
+        </select>
+      </div>
+    </header>
+    <div class="capabilities" aria-live="polite">
+      <span class="cap-label">System capabilities:</span>
+      <span class="cap-list">Detecting…</span>
+    </div>
+
+    <div class="shell">
+      <nav class="sidebar" aria-label="Primary">
+        <button class="nav-item active">Home</button>
+        <button class="nav-item">Store / Search</button>
+        <button class="nav-item">Workspace</button>
+        <button class="nav-item">Policies</button>
+        <button class="nav-item">Audit</button>
+        <button class="nav-item">History</button>
+        <button class="nav-item">Settings</button>
+      </nav>
+
+      <main id="main" class="main">
+        <section class="hero">
+          <h1>Smart installs with guardrails</h1>
+          <p>
+            OPSM routes installs across native, toolbox, container, and source
+            with policy checks and reversible plans.
+          </p>
+          <div class="cta">
+            <button class="primary">New Install Plan</button>
+            <button class="ghost">Dry‑Run</button>
+          </div>
+        </section>
+
+        <section class="grid">
+          <article class="panel">
+            <header>Quick Install</header>
+            <div class="chip-row">
+              <span class="chip">rpm-ostree</span>
+              <span class="chip">toolbox</span>
+              <span class="chip">git</span>
+              <span class="chip">source</span>
+            </div>
+            <textarea class="input" rows="4" placeholder="opsm install rpm-ostree: gcc clang toolbox: zig ocaml ..."></textarea>
+            <div class="panel-footer">
+              <button>Plan</button>
+              <button class="ghost">Explain</button>
+            </div>
+          </article>
+
+          <article class="panel">
+            <header>Trust &amp; Policy</header>
+            <ul class="list">
+              <li>Allowed registries: npm, crates, hex</li>
+              <li>Blocked families: python</li>
+              <li>Approval required: rogue repos</li>
+            </ul>
+            <button class="ghost">Open Policy Editor</button>
+          </article>
+
+          <article class="panel">
+            <header>Plan Preview</header>
+            <div class="plan">
+              <div><strong>rpm-ostree:</strong> gcc, clang</div>
+              <div><strong>toolbox:</strong> zig, ocaml, ghc</div>
+              <div><strong>git:</strong> bitfuckit</div>
+            </div>
+            <pre class="cli-output" aria-label="CLI output"></pre>
+            <div class="panel-footer">
+              <button class="primary">Apply (Admin)</button>
+              <button class="ghost">Export</button>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

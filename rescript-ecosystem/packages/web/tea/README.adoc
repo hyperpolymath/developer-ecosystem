@@ -1,0 +1,407 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2024 Jonathan D.A. Jewell
+= rescript-tea
+
+image:https://img.shields.io/badge/License-PMPL--1.0-indigo.svg[Palimpsest-MPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/Idris-Inside-5E5086?style=flat&logo=idris&logoColor=white[Idris Inside,link="https://github.com/hyperpolymath/proven"]
+:toc: macro
+:toc-title: Contents
+:toclevels: 3
+:icons: font
+:source-highlighter: rouge
+:experimental:
+
+The Elm Architecture (TEA) for ReScript, providing a principled way to build web applications with guaranteed state consistency, exhaustive event handling, and time-travel debugging.
+
+toc::[]
+
+== Overview
+
+rescript-tea implements The Elm Architecture pattern for ReScript with React integration. It provides:
+
+* *Single source of truth* - One model, one update pathway
+* *Pure updates* - Easy to test, easy to reason about
+* *Type-safe* - Compiler catches missing message handlers
+* *React integration* - Uses React for rendering, compatible with existing components
+* *Commands & Subscriptions* - Declarative side effects
+
+== Installation
+
+[source,bash]
+----
+npm install rescript-tea
+----
+
+Add to your `rescript.json`:
+
+[source,json]
+----
+{
+  "dependencies": ["rescript-tea", "@rescript/react"]
+}
+----
+
+== Quick Start
+
+[source,rescript]
+----
+open Tea
+
+// 1. Define your model
+type model = {count: int}
+
+// 2. Define your messages
+type msg =
+  | Increment
+  | Decrement
+
+// 3. Initialize your app
+let init = () => ({count: 0}, Cmd.none)
+
+// 4. Handle updates
+let update = (msg, model) => {
+  switch msg {
+  | Increment => ({count: model.count + 1}, Cmd.none)
+  | Decrement => ({count: model.count - 1}, Cmd.none)
+  }
+}
+
+// 5. Render your view (with dispatch for event handling)
+let view = (model, dispatch) => {
+  <div>
+    <button onClick={_ => dispatch(Decrement)}> {React.string("-")} </button>
+    <span> {model.count->Belt.Int.toString->React.string} </span>
+    <button onClick={_ => dispatch(Increment)}> {React.string("+")} </button>
+  </div>
+}
+
+// 6. Declare subscriptions (none for this simple example)
+let subscriptions = _model => Sub.none
+
+// 7. Create the app component
+module App = MakeWithDispatch({
+  type model = model
+  type msg = msg
+  type flags = unit
+  let init = _ => init()
+  let update = update
+  let view = view
+  let subscriptions = subscriptions
+})
+
+// 8. Mount it
+switch ReactDOM.querySelector("#root") {
+| Some(root) => {
+    let rootElement = ReactDOM.Client.createRoot(root)
+    rootElement->ReactDOM.Client.Root.render(<App flags=() />)
+  }
+| None => ()
+}
+----
+
+== Core Concepts
+
+=== Model
+
+Your application state is a single value (typically a record):
+
+[source,rescript]
+----
+type model = {
+  user: option<user>,
+  posts: array<post>,
+  loading: bool,
+}
+----
+
+=== Messages
+
+All possible events are variants of a single type:
+
+[source,rescript]
+----
+type msg =
+  | FetchPosts
+  | GotPosts(result<array<post>, error>)
+  | SelectPost(int)
+  | Logout
+----
+
+=== Update
+
+A pure function that handles messages:
+
+[source,rescript]
+----
+let update = (msg, model) => {
+  switch msg {
+  | FetchPosts => (model, fetchPostsCmd)
+  | GotPosts(Ok(posts)) => ({...model, posts, loading: false}, Cmd.none)
+  | GotPosts(Error(_)) => ({...model, loading: false}, Cmd.none)
+  | SelectPost(id) => ({...model, selectedId: Some(id)}, Cmd.none)
+  | Logout => ({...model, user: None}, Cmd.none)
+  }
+}
+----
+
+=== Commands
+
+Descriptions of side effects to perform:
+
+[source,rescript]
+----
+// Do nothing
+Cmd.none
+
+// Batch multiple commands
+Cmd.batch([cmd1, cmd2, cmd3])
+
+// Perform an async operation
+Cmd.perform(() => fetchUser("alice"), user => GotUser(user))
+
+// Handle potential failures
+Cmd.attempt(() => fetchUser("alice"), result => GotUser(result))
+----
+
+=== Subscriptions
+
+Declarations of external event sources:
+
+[source,rescript]
+----
+let subscriptions = model => {
+  if model.timerRunning {
+    Sub.Time.every(1000, time => Tick(time))
+  } else {
+    Sub.none
+  }
+}
+----
+
+Built-in subscriptions:
+
+* `Sub.Time.every(ms, toMsg)` - Timer
+* `Sub.Keyboard.downs(toMsg)` - Key down events
+* `Sub.Keyboard.ups(toMsg)` - Key up events
+* `Sub.Mouse.clicks(toMsg)` - Mouse clicks
+* `Sub.Mouse.moves(toMsg)` - Mouse movement
+* `Sub.Window.resizes(toMsg)` - Window resize
+
+== Modules
+
+=== Tea.Cmd
+
+Commands for side effects.
+
+=== Tea.Sub
+
+Subscriptions for external events.
+
+=== Tea.Json
+
+Type-safe JSON decoding:
+
+[source,rescript]
+----
+open Tea.Json
+
+let userDecoder = map3(
+  (id, name, email) => {id, name, email},
+  field("id", int),
+  field("name", string),
+  field("email", string),
+)
+
+// Use it
+switch decodeString(userDecoder, jsonString) {
+| Ok(user) => // use user
+| Error(err) => Console.log(errorToString(err))
+}
+----
+
+=== Tea.Html
+
+Optional HTML helpers (you can also use JSX directly):
+
+[source,rescript]
+----
+open Tea.Html
+
+let view = model => {
+  div([className("container")], [
+    h1([], [text("Hello")]),
+    button([onClick(Increment)], [text("+")]),
+  ])
+}
+----
+
+=== Tea.Test
+
+Testing utilities:
+
+[source,rescript]
+----
+// Simulate a sequence of messages
+let finalModel = Tea.Test.simulate(
+  ~init,
+  ~update,
+  ~msgs=[Increment, Increment, Decrement],
+)
+
+// Collect commands for inspection
+let cmds = Tea.Test.collectCmds(
+  ~init,
+  ~update,
+  ~msgs=[FetchUser("alice")],
+)
+----
+
+== Examples
+
+See the `examples/` directory:
+
+* `01_counter/` - Basic counter
+
+== Architecture: React Hooks Integration
+
+rescript-tea uses React hooks internally to implement the TEA runtime:
+
+* *useState* - Stores the model state
+* *useRef* - Maintains cleanup functions for subscriptions
+* *useEffect* - Executes commands and manages subscription lifecycle
+* *useCallback* - Memoizes the dispatch function
+
+This provides a seamless integration with React while maintaining TEA's guarantees.
+
+== Why TEA?
+
+[cols="1,2"]
+|===
+|Bug Type |How TEA Prevents It
+
+|Stale UI
+|View is pure function of Model
+
+|Forgotten state updates
+|View recomputes entirely
+
+|Unhandled events
+|Variant types = compiler warnings
+
+|Race conditions
+|Single update pathway
+
+|Untestable code
+|Pure functions = easy testing
+|===
+
+== Package Guarantees
+
+=== No Hidden Runtime Dependencies
+
+rescript-tea has *zero hidden runtime dependencies*. The only runtime dependencies are the explicitly declared peer dependencies:
+
+* `react` / `react-dom` - For rendering
+* `@rescript/react` - ReScript React bindings
+* `rescript` - ReScript compiler/runtime
+
+All functionality is implemented in pure ReScript with no external JavaScript libraries bundled or required. What you see in `peerDependencies` is exactly what you get.
+
+=== Stable API Surface
+
+The public API is explicitly defined in `.resi` interface files:
+
+* `Tea.resi` - Main module re-exports
+* `Tea_Cmd.resi` - Command types and constructors
+* `Tea_Sub.resi` - Subscription types and constructors
+* `Tea_Json.resi` - JSON decoding combinators
+* `Tea_Http.resi` - HTTP request helpers
+* `Tea_Html.resi` - HTML element helpers
+* `Tea_App.resi` - Application functors
+* `Tea_Test.resi` - Testing utilities
+
+Only types and functions exposed in these interfaces are part of the public API. Internal implementation details may change between versions, but the public API follows semantic versioning:
+
+* *Patch* (0.0.x): Bug fixes, no API changes
+* *Minor* (0.x.0): Additions only, backwards compatible
+* *Major* (x.0.0): Breaking changes (rare, well-documented)
+
+== Formally Verified Components (Idris Inside)
+
+rescript-tea integrates with https://github.com/hyperpolymath/proven[proven], a library of formally verified components written in Idris2. The proven library provides mathematical proofs of correctness for critical operations:
+
+=== Available Proven Modules
+
+* *ProvenSafeUrl* - URL parsing that mathematically cannot crash
+* *ProvenSafeString* - String operations with proven bounds safety
+* *ProvenSafeJson* - JSON parsing with formal validation proofs
+
+=== Using Proven in TEA Applications
+
+[source,rescript]
+----
+open ProvenSafeUrl
+
+// URL parsing in update function - proven to be safe
+let update = (msg, model) => {
+  switch msg {
+  | Navigate(urlString) =>
+      switch parse(urlString) {
+      | Ok(url) => ({...model, currentUrl: url}, Cmd.none)
+      | Error(_) => (model, Cmd.none) // Invalid URLs mathematically excluded
+      }
+  | _ => (model, Cmd.none)
+  }
+}
+
+// JSON handling with proven safety
+open ProvenSafeJson
+
+let decodeUser = (jsonString: string) => {
+  switch parse(jsonString) {
+  | Ok(json) => getPath(json, ["user", "name"])
+  | Error(e) => Error(e)
+  }
+}
+----
+
+=== Why Formal Verification?
+
+Traditional testing can only prove the *presence* of bugs, not their absence. Formal verification using dependent types (Idris2) proves properties about *all possible inputs*:
+
+* *SafeUrl.parse* proves the result is either a well-formed URL or an error - no crashes, no undefined behavior
+* *SafeString.charAt* proves index access is within bounds or returns an error - no buffer overruns
+* *SafeJson.parse* proves JSON structure validity - no malformed data sneaks through
+
+These proofs are checked at compile-time in Idris2, then exposed through type-safe ReScript bindings.
+
+=== Architecture
+
+```
+ReScript Application (rescript-tea)
+        ↓
+ReScript Bindings (@proven/rescript-bindings)
+        ↓
+JavaScript Bindings (proven/bindings/javascript)
+        ↓
+Zig FFI (proven/ffi/zig)
+        ↓
+Idris2 ABI (proven/src/Proven/*.idr)
+        ↓
+Formally Verified Implementation ✓
+```
+
+For more information, see the https://github.com/hyperpolymath/proven[proven library documentation].
+
+== License
+
+This project is dual-licensed under:
+
+* link:LICENSE.txt[Palimpsest-MPL-1.0 License]
+* link:LICENSE-PALIMPSEST.txt[Palimpsest License v0.8]
+
+See link:CONTRIBUTING.adoc[CONTRIBUTING] for details on how to contribute.
+
+== RSR Compliance
+
+This repository follows the https://github.com/Hyperpolymath/rhodium-standard-repositories[Rhodium Standard Repositories] specification.

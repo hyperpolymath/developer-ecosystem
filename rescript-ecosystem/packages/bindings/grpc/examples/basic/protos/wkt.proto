@@ -1,0 +1,35 @@
+// SPDX-License-Identifier: MPL-2.0
+syntax = "proto3";
+package example;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/struct.proto";
+
+// Message using well-known types
+message AuditLog {
+  string id = 1;
+  string action = 2;
+  google.protobuf.Timestamp created_at = 3;
+  google.protobuf.Duration duration = 4;
+  google.protobuf.StringValue description = 5;
+  google.protobuf.Int64Value response_code = 6;
+}
+
+// Task with optional deadline
+message Task {
+  string id = 1;
+  string title = 2;
+  google.protobuf.Timestamp deadline = 3;
+  google.protobuf.Duration estimated_time = 4;
+  google.protobuf.BoolValue completed = 5;
+}
+
+// Dynamic metadata
+message Metadata {
+  string key = 1;
+  google.protobuf.Struct data = 2;
+  google.protobuf.Value value = 3;
+}

@@ -1,0 +1,197 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= rescript-redis Roadmap
+:toc:
+:icons: font
+
+This document outlines the development roadmap for `rescript-redis`.
+
+== Current Status
+
+*Version:* 0.1.0 (Development)
+
+Core Redis bindings are implemented with full support for:
+
+* [x] String operations (GET, SET, SETEX, DEL, etc.)
+* [x] Hash operations (HGET, HSET, HGETALL, etc.)
+* [x] List operations (LPUSH, RPUSH, LPOP, RPOP, LRANGE, etc.)
+* [x] Set operations (SADD, SREM, SMEMBERS, etc.)
+* [x] Sorted Set operations (ZADD, ZRANGE, ZREVRANGE, etc.)
+* [x] Pub/Sub (SUBSCRIBE, PUBLISH)
+* [x] Redis Streams (XADD, XREAD, XGROUP, etc.)
+* [x] Sentinel support
+* [x] Cluster support
+* [x] JSON helpers (getJson, setJson)
+* [x] Connection management
+
+== Milestones
+
+=== v0.1.0 - Initial Release
+
+*Focus:* Core functionality and API stability
+
+* [x] Core Redis data structure operations
+* [x] Type-safe API with proper option types
+* [x] Connection management
+* [x] Pub/Sub support
+* [x] JSON helpers
+* [ ] Basic test suite
+* [ ] Documentation
+* [ ] JSR publishing
+
+=== v0.2.0 - Streams & Enterprise Features
+
+*Focus:* Advanced Redis features
+
+* [x] Redis Streams API
+* [x] Consumer groups support
+* [x] Sentinel support for HA
+* [x] Cluster support for horizontal scaling
+* [ ] Stream blocking operations (XREADGROUP BLOCK)
+* [ ] SCAN/HSCAN/SSCAN/ZSCAN iterators
+* [ ] Lua scripting (EVAL, EVALSHA)
+* [ ] Transactions (MULTI/EXEC)
+
+=== v0.3.0 - Performance & Reliability
+
+*Focus:* Production readiness
+
+* [ ] Connection pooling
+* [ ] Automatic reconnection with backoff
+* [ ] Pipeline support for batching
+* [ ] Command queuing during reconnection
+* [ ] Comprehensive error types
+* [ ] Timeout handling
+* [ ] Memory usage optimization
+
+=== v0.4.0 - Developer Experience
+
+*Focus:* Ergonomics and tooling
+
+* [ ] ReScript PPX for type-safe key patterns
+* [ ] Schema validation integration
+* [ ] Debugging utilities
+* [ ] Performance metrics/tracing
+* [ ] CLI tool for testing connections
+
+=== v1.0.0 - Stable Release
+
+*Focus:* Production stability
+
+* [ ] API stability guarantee
+* [ ] Full test coverage
+* [ ] Performance benchmarks
+* [ ] Migration guide from other clients
+* [ ] Complete documentation
+* [ ] Security audit
+
+== Feature Backlog
+
+=== High Priority
+
+[cols="1,2,1"]
+|===
+|Feature |Description |Status
+
+|Transactions
+|MULTI/EXEC/DISCARD/WATCH support
+|Planned for v0.2.0
+
+|Pipelining
+|Batch multiple commands for better performance
+|Planned for v0.3.0
+
+|Connection Pool
+|Manage multiple connections for concurrent access
+|Planned for v0.3.0
+
+|Lua Scripts
+|EVAL and EVALSHA for server-side logic
+|Planned for v0.2.0
+|===
+
+=== Medium Priority
+
+[cols="1,2,1"]
+|===
+|Feature |Description |Status
+
+|Geospatial
+|GEOADD, GEODIST, GEORADIUS commands
+|Backlog
+
+|HyperLogLog
+|PFADD, PFCOUNT, PFMERGE commands
+|Backlog
+
+|Bitmap
+|SETBIT, GETBIT, BITCOUNT commands
+|Backlog
+
+|Key expiration events
+|Keyspace notifications
+|Backlog
+|===
+
+=== Low Priority / Future
+
+[cols="1,2,1"]
+|===
+|Feature |Description |Status
+
+|Redis Modules
+|Support for RedisJSON, RediSearch, etc.
+|Future
+
+|Client-side caching
+|Track invalidations for local cache
+|Future
+
+|ACL support
+|User management commands
+|Future
+
+|Memory analysis
+|MEMORY USAGE, MEMORY DOCTOR
+|Future
+|===
+
+== API Design Principles
+
+=== Type Safety
+
+All Redis operations return properly typed values:
+
+* Nullable values use `option<T>`
+* Errors use `Result<T, error>` where appropriate
+* Collections are properly typed arrays or dicts
+
+=== Ergonomics
+
+* Pipe-first (`->`) friendly API
+* Sensible defaults
+* Helper functions for common patterns
+
+=== Compatibility
+
+* Follow Redis command naming where practical
+* Match deno.land/x/redis API for familiarity
+* Provide escape hatches for raw commands
+
+== Contributing
+
+See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc] for how to contribute to this roadmap.
+
+We welcome:
+
+* Feature requests via GitHub issues
+* Pull requests for planned features
+* Bug reports and fixes
+* Documentation improvements
+
+== Version Policy
+
+* *0.x.y* - Development versions, API may change
+* *1.x.y* - Stable versions following semver
+* Breaking changes only in major versions after 1.0.0

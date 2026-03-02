@@ -1,0 +1,29 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+cff-version: 1.2.0
+title: rescript-poly-core
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - name: Hyperpolymath
+    email: hyperpolymath@users.noreply.github.com
+repository-code: 'https://github.com/hyperpolymath/rescript-poly-core'
+url: 'https://github.com/hyperpolymath/rescript-full-stack'
+abstract: >-
+  Shared foundation library for the Hyperpolymath ReScript ecosystem.
+  Provides common utilities for error handling, async operations,
+  structured logging, configuration management, and MCP server
+  infrastructure.
+keywords:
+  - rescript
+  - deno
+  - mcp
+  - model-context-protocol
+  - functional-programming
+  - type-safe
+license: AGPL-3.0-or-later
+version: 0.1.0
+date-released: '2025-01-04'

@@ -1,0 +1,36 @@
+# ReScript
+lib/
+.bsb.lock
+*.bs.js
+.merlin
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Deno
+.deno/
+
+# Tauri
+target/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+dist/
+build/
+*.tsbuildinfo

@@ -1,0 +1,240 @@
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+
+= Bridge: Web-ReScript
+
+
+
+
+:toc: macro
+:toc-title: Contents
+:toclevels: 3
+:icons: font
+:std: ReScript > WASM
+:a11y: WCAG 2.3 AAA / BSL Support
+
+A TypeScript-free Progressive Web Application framework. All frontend logic is written in **ReScript** and compiled to **WebAssembly**.
+
+[cols="1,1,1,1"]
+|===
+|Status |License |Accessibility |Runtime
+
+|*Specification*
+|PMPL-1.0 OR PMPL-1.0+
+|WCAG 2.3 AAA
+|Deno + WASM
+|===
+
+toc::[]
+
+== Project Status
+
+[IMPORTANT]
+====
+**This repository is currently at the specification stage.**
+
+The project infrastructure, governance, and vision are in place. Implementation will follow the phases outlined in link:ROADMAP.adoc[ROADMAP.adoc].
+====
+
+== Vision
+
+Bridge is a next-generation PWA framework built on three core principles:
+
+=== 1. TypeScript-Free Architecture
+
+All application code is written in **ReScript**, providing:
+
+* Sound type system with complete inference
+* Zero-cost JavaScript interop where needed
+* Compilation to optimized WebAssembly
+
+=== 2. Accessibility as a First-Class Concern
+
+* **WCAG 2.3 AAA compliance** as the baseline, not an afterthought
+* **Sign Language support** (BSL/GSL) built into the resource system
+* Semantic structure enforced at the type level
+
+=== 3. Verified Asset Loading
+
+* **Ephapax WebFrame**: Assets are cryptographically verified before rendering
+* **Linear Loader**: Deterministic, auditable asset loading sequence
+* No runtime surprises from tampered resources
+
+== Core Concepts
+
+=== The Ephapax WebFrame
+
+A security boundary that validates all resources before they enter the application context. Resources are integrity-checked against known hashes, ensuring what you ship is what runs.
+
+=== Linear Loader
+
+Assets load in a defined, predictable order:
+
+1. Critical path resources (verified)
+2. Progressive enhancement layers
+3. Deferred non-essential resources
+
+This enables:
+
+* Predictable performance characteristics
+* Debuggable load sequences
+* Guaranteed resource availability at each stage
+
+=== Sign Language Resources
+
+BSL (British Sign Language) and GSL (Generic Sign Language) are treated as first-class content types:
+
+* Native resource type in the asset system
+* Synchronization primitives for video/text pairing
+* Fallback chains respecting user preferences
+
+== Technology Stack
+
+[cols="2,3,2"]
+|===
+|Layer |Technology |Purpose
+
+|**Frontend**
+|ReScript
+|Type-safe application logic
+
+|**Compilation Target**
+|WebAssembly
+|Performance, sandboxing
+
+|**Runtime**
+|Deno
+|Package management, tooling
+
+|**Build**
+|Rust toolchain
+|WASM compilation, CLI tools
+
+|**Mobile**
+|Tauri 2.0+ / Dioxus
+|Native mobile deployment
+
+|**Backend** (optional)
+|Gleam
+|BEAM or JS compilation target
+
+|**Configuration**
+|Nickel
+|Type-safe configuration
+|===
+
+See link:.claude/CLAUDE.md[CLAUDE.md] for the complete Hyperpolymath language policy.
+
+== Repository Structure
+
+[source]
+----
+bridge-web-rescript/
+├── .claude/              # AI assistant configuration
+│   └── CLAUDE.md         # Hyperpolymath language policy
+├── .github/
+│   ├── ISSUE_TEMPLATE/   # Bug, feature, docs, question templates
+│   ├── workflows/        # CI/CD (CodeQL, security, sync)
+│   ├── CODEOWNERS        # Review requirements
+│   ├── FUNDING.yml       # Sponsorship configuration
+│   └── dependabot.yml    # Dependency updates
+├── CODE_OF_CONDUCT.md    # Community standards
+├── CONTRIBUTING.md       # Contribution guidelines
+├── LICENSE.txt           # PMPL-1.0 OR PMPL-1.0+ (dual license)
+├── README.adoc           # This file
+├── ROADMAP.adoc          # Development phases
+└── SECURITY.md           # Security policy
+----
+
+=== Planned Structure (Post-Implementation)
+
+[source]
+----
+bridge-web-rescript/
+├── src/                  # ReScript source
+│   ├── core/             # Framework core
+│   ├── loader/           # Linear Loader implementation
+│   ├── webframe/         # Ephapax WebFrame
+│   └── a11y/             # Accessibility primitives
+├── lib/                  # Shared libraries
+├── wasm/                 # Rust/WASM components
+├── examples/             # Example applications
+├── tests/                # Test suite
+├── docs/                 # Documentation
+│   └── architecture/     # ADRs
+├── deno.json             # Deno configuration
+├── flake.nix             # Nix flake
+└── guix.scm              # Guix package definition
+----
+
+== Getting Started
+
+[NOTE]
+====
+Implementation has not yet begun. This section will be updated when the first development milestone is reached.
+====
+
+=== Prerequisites (Planned)
+
+* Deno 2.0+
+* Rust toolchain (for WASM compilation)
+* Nix or Guix (for reproducible builds)
+
+=== Installation (Future)
+
+[source,bash]
+----
+# Clone the repository
+git clone https://github.com/hyperpolymath/bridge-web-rescript.git
+cd bridge-web-rescript
+
+# Enter development environment
+nix develop  # or: guix shell
+
+# Verify setup
+deno task check
+deno task test
+----
+
+== Contributing
+
+Contributions are welcome once implementation begins. See link:CONTRIBUTING.md[CONTRIBUTING.md] for guidelines.
+
+The project uses a **perimeter-based contribution model**:
+
+* **Perimeter 1**: Security-critical (maintainer only)
+* **Perimeter 2**: Core features (reviewed contributions)
+* **Perimeter 3**: Community sandbox (open contributions)
+
+== Security
+
+See link:SECURITY.md[SECURITY.md] for:
+
+* Vulnerability reporting process
+* Supported versions
+* Security update policy
+
+== License
+
+Dual-licensed under your choice of:
+
+* **Palimpsest-MPL License v1.0 (PMPL-1.0)** - Maximum flexibility
+* **PMPL-1.0-or-later** - Copyleft for network services
+
+See link:LICENSE.txt[LICENSE.txt] for full terms.
+
+=== Palimpsest Philosophical Overlay
+
+This project encourages (non-binding) adherence to the https://github.com/hyperpolymath/palimpsest-license[Palimpsest License] principles for consent-based digital interaction.
+
+== Links
+
+* link:ROADMAP.adoc[Development Roadmap]
+* link:CONTRIBUTING.md[Contributing Guidelines]
+* link:SECURITY.md[Security Policy]
+* link:.claude/CLAUDE.md[Hyperpolymath Language Policy]
+
+---
+
+_Part of the Hyperpolymath ecosystem._

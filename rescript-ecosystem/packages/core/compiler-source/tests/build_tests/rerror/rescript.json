@@ -1,0 +1,5 @@
+{
+  "name": "rerror",
+  "sources": ["src"],
+  "dependencies": []
+}

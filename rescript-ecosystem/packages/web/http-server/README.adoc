@@ -1,0 +1,438 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+= ReScript HTTP Server
+:toc: macro
+:toc-title: Contents
+:toclevels: 3
+:icons: font
+:source-highlighter: rouge
+:experimental:
+
+Type-safe HTTP server bindings for ReScript using Deno.serve.
+
+image:https://img.shields.io/badge/ReScript-v11-e84f4f[ReScript]
+image:https://img.shields.io/badge/Runtime-Deno-000000[Deno]
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+toc::[]
+
+== Overview
+
+*rescript-http-server* provides idiomatic ReScript bindings to https://deno.land/api?s=Deno.serve[Deno.serve], enabling type-safe HTTP server development without leaving the ReScript ecosystem.
+
+Part of the https://github.com/hyperpolymath/rescript-full-stack[ReScript Full Stack] ecosystem.
+
+=== Key Features
+
+* *Type-safe routing* - Pattern-based routing with compile-time checks
+* *Middleware support* - Composable middleware chain (CORS, logging, custom)
+* *Request helpers* - Type-safe access to method, path, headers, body
+* *Response builders* - Fluent API for JSON, HTML, redirects, errors
+* *Zero runtime overhead* - Compiles to clean JavaScript with no wrapper cost
+* *Deno-native* - Built for Deno's secure, modern runtime
+
+== Installation
+
+=== Prerequisites
+
+* https://deno.land[Deno] v1.40+
+* https://rescript-lang.org[ReScript] v11+
+* https://github.com/rescript-association/rescript-core[@rescript/core]
+
+=== Setup
+
+Add to your `rescript.json`:
+
+[source,json]
+----
+{
+  "bs-dependencies": [
+    "@rescript/core",
+    "@hyperpolymath/rescript-http-server"
+  ]
+}
+----
+
+== Quick Start
+
+=== Basic Server
+
+[source,rescript]
+----
+open HttpServer
+
+let handler = async request => {
+  switch (method(request), path(request)) {
+  | (Get, "/") => respond("Hello, World!")
+  | (Get, "/health") => respondJson(JSON.Encode.object([("status", JSON.Encode.string("ok"))]))
+  | _ => notFound()
+  }
+}
+
+let server = serve({port: 8000, onListen: info => {
+  Console.log(`Server running at http://${info["hostname"]}:${Int.toString(info["port"])}`)
+}}, handler)
+----
+
+=== Using the Router
+
+[source,rescript]
+----
+open HttpServer
+
+let routes = [
+  get("/", async _ => respond("Home")),
+  get("/api/users", async _ => respondJson(usersData)),
+  post("/api/users", async req => {
+    let body = await json(req)
+    // Process body...
+    respondJson(~status=201, newUser)
+  }),
+  get("/api/*", async _ => respondJson(apiIndex)),
+]
+
+let server = serve({port: 8000}, router(routes))
+----
+
+=== With Middleware
+
+[source,rescript]
+----
+open HttpServer
+
+let handler = router([
+  get("/", async _ => respond("Hello")),
+  get("/data", async _ => respondJson(data)),
+])
+
+// Apply middleware chain
+let withLogging = withMiddleware(handler, logging())
+let withCors = withMiddleware(withLogging, cors(~origin="https://example.com"))
+
+let server = serve({port: 8000}, withCors)
+----
+
+== API Reference
+
+=== Server Functions
+
+[cols="1,2,1"]
+|===
+|Function |Description |Returns
+
+|`serve(options, handler)`
+|Start HTTP server with options
+|`server`
+
+|`serveHandler(handler)`
+|Start server with defaults (port 8000)
+|`server`
+
+|`shutdown(server)`
+|Gracefully stop server
+|`promise<unit>`
+
+|`finished(server)`
+|Wait for server to finish
+|`promise<unit>`
+
+|`addr(server)`
+|Get listening address
+|`listenInfo`
+|===
+
+=== Request Helpers
+
+[cols="1,2,1"]
+|===
+|Function |Description |Returns
+
+|`method(req)`
+|HTTP method as variant
+|`method`
+
+|`path(req)`
+|URL pathname
+|`string`
+
+|`searchParams(req)`
+|Query parameters
+|`URLSearchParams.t`
+
+|`header(req, name)`
+|Get header value
+|`option<string>`
+
+|`text(req)`
+|Read body as text
+|`promise<string>`
+
+|`json(req)`
+|Parse body as JSON
+|`promise<JSON.t>`
+
+|`requestUrl(req)`
+|Full URL string
+|`string`
+
+|`requestHeaders(req)`
+|All headers
+|`Fetch.Headers.t`
+|===
+
+=== Response Builders
+
+[cols="1,2"]
+|===
+|Function |Description
+
+|`respond(~status?, ~headers?, body)`
+|Plain text response
+
+|`respondJson(~status?, ~headers?, data)`
+|JSON response with correct Content-Type
+
+|`respondHtml(~status?, ~headers?, html)`
+|HTML response
+
+|`redirect(~status?, location)`
+|Redirect response (default 302)
+
+|`notFound(~body?)`
+|404 Not Found
+
+|`badRequest(~body?)`
+|400 Bad Request
+
+|`unauthorized(~body?)`
+|401 Unauthorized
+
+|`forbidden(~body?)`
+|403 Forbidden
+
+|`serverError(~body?)`
+|500 Internal Server Error
+|===
+
+=== Routing
+
+[cols="1,2"]
+|===
+|Function |Description
+
+|`router(routes)`
+|Create handler from route array
+
+|`get(pattern, handler)`
+|Define GET route
+
+|`post(pattern, handler)`
+|Define POST route
+
+|`put(pattern, handler)`
+|Define PUT route
+
+|`patch(pattern, handler)`
+|Define PATCH route
+
+|`delete(pattern, handler)`
+|Define DELETE route
+
+|`matchPath(pattern, path)`
+|Check if path matches pattern
+|===
+
+Pattern matching supports:
+
+* Exact match: `"/users"` matches `/users`
+* Wildcard suffix: `"/api/*"` matches `/api/anything`
+
+=== Middleware
+
+[cols="1,2"]
+|===
+|Function |Description
+
+|`withMiddleware(handler, middleware)`
+|Wrap handler with middleware
+
+|`cors(~origin?, ~methods?, ~headers?)`
+|CORS middleware with configurable options
+
+|`logging()`
+|Request logging middleware
+|===
+
+== Types
+
+[source,rescript]
+----
+type method = Get | Post | Put | Patch | Delete | Head | Options
+
+type handler = request => promise<response>
+
+type middleware = (request, handler) => promise<response>
+
+type route = {
+  method: method,
+  pattern: string,
+  handler: request => promise<response>,
+}
+
+type serveOptions = {
+  port?: int,
+  hostname?: string,
+  onListen?: {"port": int, "hostname": string} => unit,
+  onError?: Error.t => response,
+}
+
+type listenInfo = {
+  port: int,
+  hostname: string,
+}
+----
+
+== Examples
+
+=== JSON API Server
+
+[source,rescript]
+----
+open HttpServer
+
+type user = {id: int, name: string, email: string}
+
+let users = ref([
+  {id: 1, name: "Alice", email: "alice@example.com"},
+  {id: 2, name: "Bob", email: "bob@example.com"},
+])
+
+let encodeUser = user => JSON.Encode.object([
+  ("id", JSON.Encode.int(user.id)),
+  ("name", JSON.Encode.string(user.name)),
+  ("email", JSON.Encode.string(user.email)),
+])
+
+let routes = [
+  get("/api/users", async _ => {
+    respondJson(JSON.Encode.array(users.contents, encodeUser))
+  }),
+
+  get("/api/users/*", async req => {
+    let idStr = path(req)->String.sliceToEnd(~start=12)
+    switch Int.fromString(idStr) {
+    | Some(id) =>
+      switch users.contents->Array.find(u => u.id == id) {
+      | Some(user) => respondJson(encodeUser(user))
+      | None => notFound(~body="User not found")
+      }
+    | None => badRequest(~body="Invalid user ID")
+    }
+  }),
+
+  post("/api/users", async req => {
+    let body = await json(req)
+    // Validate and create user...
+    respondJson(~status=201, body)
+  }),
+]
+
+let handler = router(routes)
+  ->withMiddleware(logging())
+  ->withMiddleware(cors())
+
+let _ = serve({port: 8000, onListen: _ => Console.log("API ready")}, handler)
+----
+
+=== Static File Server
+
+[source,rescript]
+----
+open HttpServer
+
+let serveFile = async path => {
+  try {
+    let content = await Deno.readTextFile(path)
+    let contentType = switch {
+    | path->String.endsWith(".html") => "text/html"
+    | path->String.endsWith(".css") => "text/css"
+    | path->String.endsWith(".js") => "application/javascript"
+    | _ => "text/plain"
+    }
+    respondHtml(~headers=Dict.fromArray([("Content-Type", contentType)]), content)
+  } catch {
+  | _ => notFound()
+  }
+}
+
+let handler = async req => {
+  let reqPath = path(req)
+  let filePath = switch reqPath {
+  | "/" => "./public/index.html"
+  | p => "./public" ++ p
+  }
+  await serveFile(filePath)
+}
+
+let _ = serve({port: 3000}, handler)
+----
+
+== Ecosystem Integration
+
+This package is part of the https://github.com/hyperpolymath/rescript-full-stack[ReScript Full Stack] ecosystem:
+
+[cols="1,2"]
+|===
+|Package |Purpose
+
+|https://github.com/hyperpolymath/rescript-tea[rescript-tea]
+|Elm Architecture for frontend
+
+|https://github.com/hyperpolymath/rescript-postgres[rescript-postgres]
+|Type-safe PostgreSQL client
+
+|https://github.com/hyperpolymath/rescript-websocket[rescript-websocket]
+|WebSocket client/server
+
+|https://github.com/hyperpolymath/rescript-redis[rescript-redis]
+|Redis client with Streams
+
+|https://github.com/hyperpolymath/rescript-env[rescript-env]
+|Environment variable access
+|===
+
+== Development
+
+[source,bash]
+----
+# Build
+deno task build
+
+# Watch mode
+deno task dev
+
+# Clean
+deno task clean
+----
+
+== Design Principles
+
+Following the https://github.com/hyperpolymath/rescript-full-stack[ReScript Full Stack] design philosophy:
+
+1. *No global state* - Configuration passed explicitly
+2. *Interface files* - `.resi` defines public API boundary
+3. *Minimal dependencies* - Only `@rescript/core` required
+4. *Configuration over convention* - Explicit options, no magic
+5. *Async-first* - All I/O returns promises
+
+== License
+
+SPDX-License-Identifier: PMPL-1.0-or-later-or-later
+
+Copyright (C) 2025 Hyperpolymath
+
+See link:LICENSE.txt[LICENSE.txt] for full terms.
+
+== Contributing
+
+See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc] for guidelines.

@@ -1,0 +1,149 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= PolyCore Roadmap
+:toc:
+:toc-placement: preamble
+:icons: font
+
+This document outlines the development roadmap for rescript-poly-core, the foundation library for the Hyperpolymath ReScript ecosystem.
+
+== Vision
+
+PolyCore aims to be the definitive foundation library for building ReScript applications and MCP servers in the Hyperpolymath ecosystem. It provides battle-tested utilities, consistent patterns, and infrastructure that enables rapid development of reliable software.
+
+== Current Status
+
+**Phase: Alpha (v0.1.x)**
+
+Core functionality is implemented and working. The library is suitable for experimental use but APIs may change before v1.0.
+
+[cols="2,1,3"]
+|===
+|Component |Status |Notes
+
+|Core.Result
+|✅ Complete
+|Extended Result utilities for error handling
+
+|Core.Async
+|✅ Complete
+|Promise utilities with retry, throttle, debounce
+
+|Core.Logger
+|✅ Complete
+|Structured JSON logging with child contexts
+
+|Core.Config
+|✅ Complete
+|Environment and JSON configuration loading
+
+|MCP.Protocol
+|✅ Complete
+|MCP types, schema builders, argument parsing
+
+|MCP.Server
+|🔶 90%
+|Server builder, tool registration, request handling
+|===
+
+== Milestones
+
+=== v0.1.0 - Foundation ✅
+
+_Target: Q1 2025_
+
+* [x] Core.Result - Result type extensions
+* [x] Core.Async - Promise utilities
+* [x] Core.Logger - Structured logging
+* [x] Core.Config - Configuration loading
+* [x] MCP.Protocol - Protocol types and builders
+* [x] MCP.Server - Server infrastructure
+* [x] Basic documentation
+* [x] Deno configuration
+
+=== v0.2.0 - Testing & Quality
+
+_Target: Q1 2025_
+
+* [ ] Unit tests for all Core modules
+* [ ] Unit tests for MCP modules
+* [ ] Integration tests for MCP server
+* [ ] CI/CD pipeline with GitHub Actions
+* [ ] Code coverage reporting (target: 80%)
+* [ ] Automated formatting and linting
+
+=== v0.3.0 - Ecosystem Integration
+
+_Target: Q2 2025_
+
+* [ ] Publish to JSR (jsr:@hyperpolymath/rescript-poly-core)
+* [ ] Example MCP server project
+* [ ] Integration with poly-mcps
+* [ ] Version compatibility matrix
+* [ ] Migration guide from direct implementations
+
+=== v0.4.0 - Extended Utilities
+
+_Target: Q2 2025_
+
+* [ ] Core.JSON - JSON parsing and schema validation
+* [ ] Core.Http - HTTP client with retry and circuit breaker
+* [ ] Core.Cache - In-memory caching with TTL
+* [ ] Core.Queue - Simple async task queue
+* [ ] MCP.Transport - Stdio and HTTP transport implementations
+
+=== v1.0.0 - Stable Release
+
+_Target: Q3 2025_
+
+* [ ] API stability guarantee
+* [ ] Comprehensive documentation
+* [ ] Performance benchmarks
+* [ ] Security audit
+* [ ] Production deployment guides
+* [ ] LTS commitment
+
+== Future Directions
+
+=== v1.x - Maintenance & Refinement
+
+* Performance optimizations based on production usage
+* Additional utilities based on ecosystem needs
+* Expanded MCP protocol support as spec evolves
+
+=== v2.0 - Next Generation
+
+_Tentative, subject to ecosystem evolution_
+
+* WASM compilation support
+* Cross-platform MCP transport
+* Enhanced observability (OpenTelemetry integration)
+* Schema-first API design
+
+== Non-Goals
+
+These are explicitly out of scope for PolyCore:
+
+* **Web framework** - See poly-web for HTTP servers, routing, middleware
+* **CLI framework** - See poly-cli for argument parsing, commands, TUI
+* **Database ORM** - Each project should choose appropriate data layer
+* **Node.js support** - Deno-only by design
+* **React/UI components** - Frontend concerns are separate
+
+== Contributing to the Roadmap
+
+We welcome community input on the roadmap:
+
+1. **Feature requests** - Open an issue with the `enhancement` label
+2. **Priority feedback** - Comment on existing roadmap issues
+3. **Implementation** - PRs welcome for any roadmap item
+
+See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc] for contribution guidelines.
+
+== Related Projects
+
+* https://github.com/hyperpolymath/rescript-full-stack[rescript-full-stack] - Ecosystem overview
+* https://github.com/hyperpolymath/poly-mcps[poly-mcps] - MCP servers using PolyCore
+* https://github.com/hyperpolymath/poly-web[poly-web] - Web application framework
+* https://github.com/hyperpolymath/poly-cli[poly-cli] - CLI application framework

@@ -1,0 +1,187 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2024 Jonathan D.A. Jewell
+= rescript-tea Roadmap
+:toc:
+
+== Current Status: Alpha (v0.1.0)
+
+Core TEA implementation complete with HTTP, JSON decoding, and subscriptions.
+
+== MVP 1.0 Release Checklist
+
+=== Must Have (P0)
+
+[cols="1,3,1"]
+|===
+|Status |Item |Effort
+
+|[x]
+|Unit tests for core modules (Tea_Cmd, Tea_Json)
+|Medium
+
+|[x]
+|Tea_Http module for HTTP requests
+|Medium
+
+|[x]
+|HTTP example (fetch data, loading states, error handling)
+|Small
+
+|[x]
+|React 19 / ReScript 12 compatibility
+|Small
+
+|[x]
+|npm publish configuration (package.json fields, files list)
+|Small
+
+|[ ]
+|GitHub Actions CI (build, test, lint)
+|Small
+
+|[ ]
+|API documentation (generated from .resi files)
+|Medium
+|===
+
+=== Should Have (P1)
+
+[cols="1,3,1"]
+|===
+|Status |Item |Effort
+
+|[ ]
+|Tea_Storage module (localStorage/sessionStorage)
+|Small
+
+|[ ]
+|Form example with validation
+|Medium
+
+|[ ]
+|TodoMVC example (proves complete CRUD)
+|Medium
+
+|[ ]
+|Performance benchmarks
+|Small
+|===
+
+=== Nice to Have (P2)
+
+[cols="1,3,1"]
+|===
+|Status |Item |Effort
+
+|[ ]
+|Tea_Navigation (SPA routing)
+|Large
+
+|[ ]
+|Tea_Debug (time-travel debugger)
+|Large
+
+|[ ]
+|Tea_Ports (JS interop helpers)
+|Medium
+|===
+
+== Phase 2: Ecosystem (v1.1 - v1.x)
+
+After MVP, expand the ecosystem:
+
+=== Modules
+
+* **Tea_Navigation** - Client-side routing
+  - URL parsing and building
+  - History API integration
+  - Route-based subscriptions
+  - Nested routes
+
+* **Tea_Http** enhancements
+  - Request cancellation
+  - Retry policies
+  - Caching strategies
+  - File uploads
+
+* **Tea_Storage**
+  - localStorage commands
+  - sessionStorage commands
+  - IndexedDB (maybe)
+
+* **Tea_Ports**
+  - Type-safe JS interop
+  - Port-based subscriptions
+  - Encoder/decoder helpers
+
+=== Examples
+
+* TodoMVC (complete CRUD)
+* SPA with routing
+* Real-time chat (WebSocket)
+* Form wizard with validation
+
+== Phase 3: Advanced (v2.0+)
+
+=== Tea_Debug
+
+Time-travel debugging:
+
+* Message history
+* State snapshots
+* Replay functionality
+* Export/import sessions
+* Browser DevTools integration
+
+=== Tea_Animation
+
+Declarative animations:
+
+* Spring physics
+* Keyframe animations
+* Subscription-based animation loop
+* Interruptible animations
+
+=== Tea_Test Enhancements
+
+* Property-based testing helpers
+* Snapshot testing for views
+* Command/subscription mocking
+* Integration test utilities
+
+=== Performance
+
+* Virtual DOM diffing optimizations
+* Lazy subscriptions
+* Batched updates
+* Memory profiling tools
+
+== Release Criteria
+
+=== Alpha (current)
+- [x] Core modules compile
+- [x] Basic example works
+- [x] Counter example
+- [x] HTTP example
+
+=== Beta (v0.9.0)
+- [ ] All P0 items complete
+- [ ] Unit test coverage > 70%
+- [ ] CI passing
+- [x] npm installable
+
+=== Stable (v1.0.0)
+- [ ] All P1 items complete
+- [ ] Used in at least one real project
+- [ ] API stable (no breaking changes expected)
+- [ ] Documentation complete
+- [ ] Community feedback incorporated
+
+== Contributing to the Roadmap
+
+See link:CONTRIBUTING.adoc[CONTRIBUTING] for how to propose changes.
+
+Priority is determined by:
+1. User demand (issues, discussions)
+2. Ecosystem gaps (what's blocking real-world use)
+3. Maintainer capacity

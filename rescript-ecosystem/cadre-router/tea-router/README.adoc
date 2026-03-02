@@ -1,0 +1,204 @@
+= cadre-tea-router
+
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/Idris-Inside-5E5086?style=flat&logo=idris&logoColor=white[Idris Inside,link="https://github.com/hyperpolymath/proven"]
+
+
+:toc:
+
+TEA-specialised routing integration for ReScript, built on top of `cadre-router`.
+
+== Architecture
+
+[source]
+----
+┌─────────────────────────────────────────────────────────────┐
+│                     cadre-tea-router                        │
+│  • Route → Msg patterns                                     │
+│  • URL subscriptions                                        │
+│  • Navigation Cmds (push/replace/back/forward)              │
+│  • init-from-URL helpers                                    │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      cadre-router                           │
+│  • URL parsing/formatting combinators                       │
+│  • Route definitions                                        │
+│  • Framework-agnostic primitives                            │
+└─────────────────────────────────────────────────────────────┘
+----
+
+== Scope
+
+This repository provides TEA/Elm-Architecture wiring:
+
+* Route → Msg patterns
+* init-from-URL helpers
+* Subscriptions for URL changes
+* Cmd helpers for navigation (push/replace/back/forward)
+* TEA-focused examples
+
+== Non-goals
+
+* Re-implementing URL parsing/formatting combinators (belongs to `cadre-router`).
+* Framework-agnostic routing primitives (belongs to `cadre-router`).
+* React-specific routing APIs unless they are explicitly TEA-driven.
+
+== Installation
+
+[source,bash]
+----
+npm install @anthropics/cadre-tea-router @anthropics/cadre-router
+----
+
+Add to `rescript.json`:
+[source,json]
+----
+{
+  "bs-dependencies": [
+    "@anthropics/cadre-router",
+    "@anthropics/cadre-tea-router"
+  ]
+}
+----
+
+== Usage
+
+[source,rescript]
+----
+// Define your routes using cadre-router
+module Routes = {
+  open CadreRouter
+
+  let home = root
+  let users = s("users")
+  let user = s("users") / int
+}
+
+// Wire into TEA with cadre-tea-router
+module App = {
+  open CadreTeaRouter
+
+  type route =
+    | Home
+    | Users
+    | User(int)
+    | NotFound
+
+  type msg =
+    | UrlChanged(route)
+    | Navigate(route)
+    | ...
+
+  let parseRoute = url => {
+    open Routes
+    switch url {
+    | url if home->matches(url) => Home
+    | url if users->matches(url) => Users
+    | url => user->parse(url)->Option.mapOr(NotFound, id => User(id))
+    }
+  }
+
+  let subscriptions = _ => {
+    Router.urlChanges(url => UrlChanged(parseRoute(url)))
+  }
+
+  let update = (msg, model) => {
+    switch msg {
+    | Navigate(route) => (model, Router.push(routeToUrl(route)))
+    | UrlChanged(route) => ({...model, route}, Cmd.none)
+    | ...
+    }
+  }
+}
+----
+
+== Formally Verified URL Parsing (Idris Inside)
+
+cadre-tea-router integrates with https://github.com/hyperpolymath/proven[proven] for unbreakable URL parsing. The `ProvenSafeUrl` module provides mathematical guarantees that URL operations cannot crash:
+
+[source,rescript]
+----
+open ProvenSafeUrl
+
+// Formally verified URL parsing
+let parseRoute = (urlString: string) => {
+  switch parse(urlString) {
+  | Ok(url) => {
+      // url.pathname is guaranteed to be well-formed
+      // No undefined behavior, no crashes
+      switch url.pathname {
+      | "/users" => Users
+      | "/posts" => Posts
+      | _ => NotFound
+      }
+    }
+  | Error(_) => NotFound // Invalid URLs mathematically excluded
+  }
+}
+
+// Safe query parameter extraction
+let getUserId = (url: string) => {
+  switch getQueryParam(url, "id") {
+  | Ok(Some(id)) => Some(id)
+  | Ok(None) | Error(_) => None
+  }
+}
+----
+
+=== Why Formal Verification Matters for Routing
+
+Traditional URL parsers rely on runtime validation and can fail in unexpected ways:
+
+* Buffer overruns on malformed URLs
+* Undefined behavior on edge cases
+* Silent failures that corrupt application state
+
+Proven's `SafeUrl` uses **Idris2 dependent types** to prove correctness:
+
+* ✓ URLs are either well-formed or return an error (no crashes)
+* ✓ Query parameters are safely extracted (no undefined access)
+* ✓ Path operations maintain URL validity (no corruption)
+
+These proofs are checked at compile-time in Idris2, ensuring runtime safety in ReScript/JavaScript routing.
+
+=== Integration Architecture
+
+```
+cadre-tea-router (Route → Msg patterns)
+        ↓
+ProvenSafeUrl (Formally verified URL parsing)
+        ↓
+JavaScript Bindings (proven/bindings/javascript)
+        ↓
+Zig FFI (proven/ffi/zig)
+        ↓
+Idris2 ABI (proven/src/Proven/SafeUrl.idr)
+        ↓
+Formally Verified Implementation ✓
+```
+
+For more information, see the https://github.com/hyperpolymath/proven[proven library documentation].
+
+== Related Packages
+
+* https://github.com/anthropics/cadre-router[cadre-router] - Core routing primitives
+* https://github.com/anthropics/rescript-tea[rescript-tea] - TEA implementation for ReScript
+* https://github.com/hyperpolymath/proven[proven] - Formally verified library (Idris2)
+
+== License
+
+MIT
+
+== OPSM Link
+
+[source]
+----
+OPSM Core
+  |
+  v
+cadre-tea-router (UI routing layer for OPSM (ReScript TEA))
+
+----

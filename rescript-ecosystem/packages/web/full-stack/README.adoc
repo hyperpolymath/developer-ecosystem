@@ -1,0 +1,380 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= ReScript Full Stack
+:toc:
+:toc-placement: preamble
+:icons: font
+:source-highlighter: rouge
+
+**A complete map of the ReScript ecosystem across all stack layers.**
+
+This repository serves as an organizing framework for building full-stack applications entirely in ReScript, with smooth seams between layers and the ability to operate standalone or as swap-in components.
+
+== Vision
+
+[quote]
+ReScript with authority for all layers—seams smoothed, sealed, and shining.
+
+The goal is a coherent ecosystem where:
+
+* Every layer speaks ReScript (or has type-safe FFI)
+* Components work standalone OR as part of larger stacks
+* ABIs/FFIs are well-defined for interop with other ecosystems
+* Coverage gaps are visible and prioritized
+
+== Stack Architecture
+
+[source,text]
+----
+┌─────────────────────────────────────────────────────────────────────────┐
+│                             PRESENTATION                                │
+│  ┌───────────────┐ ┌───────────────┐ ┌───────────────┐ ┌─────────────┐  │
+│  │  rescript-tea │ │  rescript-jsx │ │@rescript/react│ │rescript-tauri│ │
+│  │   (TEA/Elm)   │ │     (JSX)     │ │    (React)    │ │  (Mobile)   │  │
+│  └───────────────┘ └───────────────┘ └───────────────┘ └─────────────┘  │
+├─────────────────────────────────────────────────────────────────────────┤
+│                               ROUTING                                   │
+│  ┌───────────────────────────────────────────────────────────────────┐  │
+│  │                       cadre-tea-router                            │  │
+│  │    URL parsing • Query params • Route guards • State sync         │  │
+│  └───────────────────────────────────────────────────────────────────┘  │
+├─────────────────────────────────────────────────────────────────────────┤
+│                            STATE & DATA                                 │
+│  ┌───────────────┐ ┌───────────────┐ ┌───────────────┐ ┌─────────────┐  │
+│  │ rescript-json │ │rescript-schema│ │  rescript-env │ │  indexeddb  │  │
+│  │   (Parsing)   │ │ (Validation)  │ │   (Config)    │ │  (Browser)  │  │
+│  └───────────────┘ └───────────────┘ └───────────────┘ └─────────────┘  │
+├─────────────────────────────────────────────────────────────────────────┤
+│                              RUNTIME                                    │
+│  ┌─────────────────────────────┐ ┌─────────────────────────────────────┐│
+│  │   rescript-wasm-runtime     │ │     rescript-runtime-tools          ││
+│  │ Deno/Bun • SharedMem • DAG  │ │  dev/build/test CLI • zero npm      ││
+│  └─────────────────────────────┘ └─────────────────────────────────────┘│
+├─────────────────────────────────────────────────────────────────────────┤
+│                           COMPUTE (WASM)                                │
+│  ┌───────────────┐ ┌───────────────┐ ┌───────────────┐ ┌─────────────┐  │
+│  │  WASM Modules │ │ Shared Memory │ │   Dep Graph   │ │  Codeprint  │  │
+│  │   (Rust→RS)   │ │  (Zero-copy)  │ │     (DAG)     │ │  (Analysis) │  │
+│  └───────────────┘ └───────────────┘ └───────────────┘ └─────────────┘  │
+├─────────────────────────────────────────────────────────────────────────┤
+│                            NETWORK/API                                  │
+│  ┌───────────────┐ ┌───────────────┐ ┌───────────────┐ ┌─────────────┐  │
+│  │rescript-http  │ │rescript-graphql│ │ rescript-ws  │ │rescript-grpc│  │
+│  │(Fetch/Server) │ │    (Client)   │ │  (WebSocket)  │ │  (Protobuf) │  │
+│  └───────────────┘ └───────────────┘ └───────────────┘ └─────────────┘  │
+├─────────────────────────────────────────────────────────────────────────┤
+│                         PERSISTENCE/STORAGE                             │
+│  ┌───────────────┐ ┌───────────────┐ ┌───────────────┐ ┌─────────────┐  │
+│  │rescript-postgres│ │rescript-sqlite│ │  rescript-s3 │ │rescript-redis│ │
+│  │     (SQL)     │ │    (Embed)    │ │   (Object)    │ │   (Cache)   │  │
+│  └───────────────┘ └───────────────┘ └───────────────┘ └─────────────┘  │
+└─────────────────────────────────────────────────────────────────────────┘
+----
+
+NOTE: Infrastructure bindings (Docker, Kubernetes, Terraform) are intentionally excluded. Use existing CLI tools via `Deno.Command` or TypeScript CDK libraries instead. See link:ROADMAP.adoc#wont-deprecated-or-not-recommended[ROADMAP § WON'T] for rationale.
+
+== Coverage Status
+
+=== ✅ Hyperpolymath Components (Ours)
+
+[cols="2,3,1,2",options="header"]
+|===
+|Component |Description |Status |Link
+
+|**rescript-tea**
+|TEA (Elm Architecture) for ReScript with layout engine and animation subscriptions
+|✅ Active
+|https://github.com/hyperpolymath/rescript-tea[GitHub]
+
+|**cadre-tea-router**
+|TEA-integrated routing with query parameters, state synchronisation, and route guards
+|✅ Active
+|https://github.com/hyperpolymath/cadre-tea-router[GitHub]
+
+|**rescript-wasm-runtime**
+|Deno/Bun runtime with SharedMemory zero-copy transfer and DAG dependency analysis
+|✅ Active
+|https://github.com/hyperpolymath/rescript-wasm-runtime[GitHub]
+
+|**rescript-runtime-tools**
+|Runtime-aware build/dev tooling for Deno/Bun with zero npm (uses Deno npm: specifier)
+|✅ Active
+|https://github.com/hyperpolymath/rescript-runtime-tools[GitHub]
+
+|**rescribe-ssg**
+|Type-safe static site generator in ReScript with ML-family type inference and npm compatibility
+|✅ Active
+|https://github.com/hyperpolymath/rescribe-ssg[GitHub]
+
+|**rescript-postgres**
+|Type-safe PostgreSQL client with parameterised queries, connection pooling, and transaction support
+|✅ Active
+|https://github.com/hyperpolymath/rescript-postgres[GitHub]
+
+|**rescript-http-server**
+|Type-safe HTTP server for Deno with routing, middleware, and response helpers
+|✅ Active
+|https://github.com/hyperpolymath/rescript-http-server[GitHub]
+
+|**rescript-websocket**
+|Type-safe WebSocket client and server with Deno's native WebSocket API
+|✅ Active
+|https://github.com/hyperpolymath/rescript-websocket[GitHub]
+
+|**rescript-redis**
+|Type-safe Redis client with Streams, Sentinel, Cluster support plus strings, hashes, lists, sets, sorted sets, and pub/sub
+|✅ Active
+|https://github.com/hyperpolymath/rescript-redis[GitHub]
+
+|**rescript-env**
+|Type-safe environment variable access with runtime detection for Deno, Bun, and Node.js
+|✅ Active
+|https://github.com/hyperpolymath/rescript-env[GitHub]
+
+|**rescript-poly-core**
+|Shared foundation library with Result, Async, Logger, Config utilities and MCP server infrastructure
+|✅ Active
+|https://github.com/hyperpolymath/rescript-poly-core[GitHub]
+
+|**create-rescript-poly**
+|CLI scaffolding tool for creating new ReScript projects with the Hyperpolymath stack
+|✅ Active
+|https://github.com/hyperpolymath/create-rescript-poly[GitHub]
+
+|**rescript-openapi**
+|Generate type-safe ReScript clients from OpenAPI specs (Rust CLI with rescript-schema integration)
+|✅ Active
+|https://github.com/hyperpolymath/rescript-openapi[GitHub]
+
+|**rescript-grpc**
+|Complete gRPC stack: protobuf codegen, JSON/binary codecs, streaming RPC, server handlers, OneOf/well-known types
+|✅ Active
+|https://github.com/hyperpolymath/rescript-grpc[GitHub]
+|===
+
+=== 🔵 Community Components (Recommended)
+
+[cols="2,3,1,2",options="header"]
+|===
+|Component |Description |Status |Link
+
+|**@rescript/react**
+|Official React bindings for ReScript
+|✅ Stable
+|https://github.com/rescript-lang/rescript-react[GitHub]
+
+|**@rescript/core**
+|Standard library for ReScript
+|✅ Stable
+|https://github.com/rescript-lang/rescript-core[GitHub]
+
+|**rescript-schema (Sury)**
+|Runtime type validation with excellent ergonomics. _Recommended for all API boundaries._ Now called "Sury" with Standard Schema support.
+|✅ Stable
+|https://github.com/DZakh/rescript-schema[GitHub]
+
+|**rescript-webapi**
+|Browser Web API bindings. _Includes Fetch API bindings._
+|✅ Stable
+|https://github.com/TheSpyder/rescript-webapi[GitHub]
+
+|**rescript-json-combinators**
+|JSON encoding and decoding with combinator pattern
+|✅ Stable
+|https://github.com/glennsl/rescript-json-combinators[GitHub]
+
+|**rescript-relay**
+|Relay GraphQL client bindings
+|✅ Stable
+|https://github.com/zth/rescript-relay[GitHub]
+
+|**rescript-bun**
+|Bun runtime bindings
+|🔵 Community
+|https://github.com/zth/rescript-bun[GitHub]
+|===
+
+=== ⚠️ Legacy (Not Recommended)
+
+[cols="2,3,2",options="header"]
+|===
+|Component |Issue |Alternative
+
+|**rescript-nodejs**
+|Node.js lacks Deno's security model, native TypeScript support, and modern module resolution.
+|Migrate to Deno with rescript-wasm-runtime
+|===
+
+=== ⬜ Gaps (Prioritised)
+
+==== SHOULD (High Value)
+
+[cols="2,3",options="header"]
+|===
+|Component |Requirement
+
+|**rescript-tauri**
+|Tauri 2.0 bindings for mobile and desktop applications
+|===
+
+==== COULD (Future Consideration)
+
+[cols="2,3",options="header"]
+|===
+|Component |Requirement
+
+|**rescript-s3**
+|S3-compatible object storage client (AWS, Minio, R2)
+
+|**rescript-sqlite**
+|Embedded SQLite bindings (primarily for Tauri apps)
+|===
+
+== ABI/FFI Strategy
+
+=== JavaScript Interop (Primary)
+
+ReScript compiles to JavaScript, so JS interop is native:
+
+[source,rescript]
+----
+// Direct binding to any JS library
+@module("some-js-lib") external doThing: string => unit = "doThing"
+----
+
+=== WASM Interop (High Performance)
+
+For compute-heavy operations, use SharedArrayBuffer for zero-copy:
+
+[source,rescript]
+----
+// See rescript-wasm-runtime/src/SharedMemory.res
+let pool = SharedMemory.createPool()
+let offset = SharedMemory.writeCommitHistory(pool, commits)
+// Pass pool.buffer directly to WASM - no serialization
+----
+
+=== Rust Interop (Systems)
+
+For systems programming, use wasm-bindgen or direct FFI:
+
+[source,rust]
+----
+// Rust side - compile to WASM
+#[wasm_bindgen]
+pub fn analyze_dependencies(buffer: &[u8]) -> JsValue { ... }
+----
+
+=== Native Interop (Mobile/Desktop)
+
+Use Tauri 2.0+ for mobile/desktop with Rust backend:
+
+[source,rescript]
+----
+// ReScript frontend talks to Rust backend via Tauri IPC
+@module("@tauri-apps/api") external invoke: string => promise<'a> = "invoke"
+----
+
+== Swap-In/Out Design Principles
+
+Every component should follow these principles to work standalone OR integrated:
+
+1. **No Global State**: Components receive dependencies via props/config
+2. **Type Boundaries**: Export `.resi` interface files
+3. **Minimal Dependencies**: Each component should work with just `@rescript/core`
+4. **Config Over Convention**: Accept configuration, don't assume structure
+5. **Async-First**: All I/O operations return promises
+
+== Quick Start
+
+For a full-stack ReScript application:
+
+[source,bash]
+----
+# Frontend (TEA + Layout + Routing)
+deno add npm:rescript npm:@rescript/react
+deno add npm:rescript-tea npm:cadre-tea-router
+
+# Runtime (Deno with JSR packages)
+deno add jsr:@rescript/core
+
+# Clone rescript-wasm-runtime for server components
+git clone https://github.com/hyperpolymath/rescript-wasm-runtime
+
+# Scaffold a new project (API, Web, MCP, or Library)
+deno run -A jsr:@hyperpolymath/create-rescript-poly my-app --api --postgres --redis
+----
+
+=== A Note on Package Managers
+
+This project recommends **Deno** as the primary runtime and package manager. While npm remains technically compatible, its use is strongly discouraged for the following reasons:
+
+1. **Security Model**: npm's permissive execution model permits arbitrary code execution during installation. Deno's explicit permissions system (`--allow-read`, `--allow-net`, etc.) provides defence in depth.
+
+2. **Dependency Resolution**: npm's nested `node_modules` structure creates significant disk overhead and introduces phantom dependency risks. Deno's URL-based imports and global cache eliminate these concerns.
+
+3. **Native TypeScript**: Deno executes TypeScript directly without transpilation configuration, reducing toolchain complexity.
+
+4. **Standard Library**: Deno's standard library undergoes security review, whereas npm packages vary considerably in maintenance and security posture.
+
+For legacy Node.js projects requiring npm compatibility, ensure thorough dependency auditing and consider migration to Deno at the earliest opportunity.
+
+== MCP Tooling (LLM Integration)
+
+The https://github.com/hyperpolymath/poly-mcps[poly-mcps] repository provides Model Context Protocol servers that complement this stack. While not ReScript-specific, they provide LLM-accessible tooling for common infrastructure tasks.
+
+=== Relevant MCP Servers
+
+[cols="2,3,2",options="header"]
+|===
+|Server |Purpose |Replaces Need For
+
+|**poly-db-mcp**
+|Unified access to 20+ databases (PostgreSQL, Redis, MongoDB, etc.)
+|Direct bindings for LLM workflows
+
+|**poly-secret-mcp**
+|Secrets management across providers
+|rescript-env for LLM-driven config
+
+|**poly-queue-mcp**
+|Message queue operations
+|Direct queue bindings
+
+|**poly-container-mcp**
+|Container runtime operations (Docker, Podman, nerdctl)
+|rescript-docker (WON'T)
+
+|**poly-k8s-mcp**
+|Kubernetes cluster management
+|rescript-k8s (WON'T)
+
+|**poly-cloud-mcp**
+|Multi-cloud provider management (AWS, GCP, Azure)
+|Individual cloud bindings
+|===
+
+NOTE: MCP servers provide LLM tooling, not direct FFI bindings. For programmatic access in ReScript code, use the stack components above. For AI-assisted development workflows, use the MCP servers.
+
+== Related Repos
+
+=== Core Ecosystem
+* https://github.com/hyperpolymath/rescript-runtime-tools[rescript-runtime-tools] - Runtime-aware dev tooling for Deno/Bun
+* https://github.com/hyperpolymath/poly-mcps[poly-mcps] - MCP servers for LLM integration
+* https://github.com/hyperpolymath/rescribe-ssg[rescribe-ssg] - Type-safe static site generator
+
+=== Standards & Philosophy
+* https://github.com/hyperpolymath/git-dispatcher[git-dispatcher] - Development philosophy docs
+* https://github.com/hyperpolymath/rhodium-standard-repositories[RSR] - Repository standards
+
+=== Satellite Tools
+* https://github.com/hyperpolymath/etma-handler[etma-handler] - OU eTMA handler (Java 25 + Jakarta EE)
+
+== Contributing
+
+See link:ROADMAP.adoc[ROADMAP.adoc] for priorities and how to contribute.
+
+== License
+
+PMPL-1.0-or-later (legal) and Palimpsest 0.4 (encouraged) dual licence

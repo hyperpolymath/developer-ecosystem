@@ -1,0 +1,58 @@
+// SPDX-License-Identifier: MPL-2.0
+// Streaming service example
+
+syntax = "proto3";
+
+package example;
+
+// User type for streaming (self-contained for testing)
+message StreamUser {
+  int32 id = 1;
+  string name = 2;
+  string email = 3;
+}
+
+// Request for getting a user
+message GetStreamUserRequest {
+  int32 id = 1;
+}
+
+// Request for listing users with streaming
+message ListUsersStreamRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+// Request for uploading multiple users
+message UploadUsersRequest {
+  StreamUser user = 1;
+}
+
+// Response for upload
+message UploadUsersResponse {
+  int32 uploaded_count = 1;
+  repeated string failed_ids = 2;
+}
+
+// Chat message for bidirectional streaming
+message ChatMessage {
+  string id = 1;
+  string sender = 2;
+  string content = 3;
+  int64 timestamp = 4;
+}
+
+// User service with streaming RPCs
+service UserStreamingService {
+  // Unary RPC - get single user
+  rpc GetUser(GetStreamUserRequest) returns (StreamUser);
+
+  // Server streaming - list users as stream
+  rpc ListUsersStream(ListUsersStreamRequest) returns (stream StreamUser);
+
+  // Client streaming - upload multiple users
+  rpc UploadUsers(stream UploadUsersRequest) returns (UploadUsersResponse);
+
+  // Bidirectional streaming - chat
+  rpc Chat(stream ChatMessage) returns (stream ChatMessage);
+}

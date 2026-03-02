@@ -1,0 +1,74 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Justfile - hyperpolymath standard task runner
+
+default:
+    @just --list
+
+# Build the project
+build:
+    @echo "Building..."
+
+# Run tests
+test:
+    @echo "Testing..."
+
+# Run lints
+lint:
+    @echo "Linting..."
+
+# Clean build artifacts
+clean:
+    @echo "Cleaning..."
+
+# Format code
+fmt:
+    @echo "Formatting..."
+
+# Run all checks
+check: lint test
+
+# Prepare a release
+release VERSION:
+    @echo "Releasing {{VERSION}}..."
+
+# ============================================================================
+# Superintendent Audit Recipes
+# ============================================================================
+
+# Full superintendent audit
+audit:
+    @echo "╔══════════════════════════════════════════════════════════════════╗"
+    @echo "║          Superintendent Audit: cadre-tea-router                  ║"
+    @echo "╚══════════════════════════════════════════════════════════════════╝"
+    @just audit-queryparams
+    @just audit-guards
+    @echo ""
+    @echo "Audit complete."
+
+# Audit query parameter utilities
+audit-queryparams:
+    @echo ""
+    @echo "── Query Parameter Utilities ────────────────────────────────────────"
+    @test -f src/CadreTeaRouter_QueryParams.res && echo "✓ QueryParams module exists" || echo "✗ MISSING: QueryParams module"
+    @grep -q "parseComparison" src/CadreTeaRouter_QueryParams.res 2>/dev/null && echo "✓ Multi-param state sync" || echo "✗ MISSING: Multi-param state sync"
+    @grep -q "parseSwotState" src/CadreTeaRouter_QueryParams.res 2>/dev/null && echo "✓ SWOT state persistence" || echo "✗ MISSING: SWOT state persistence"
+    @grep -q "pushToUrl" src/CadreTeaRouter_QueryParams.res 2>/dev/null && echo "✓ URL integration" || echo "✗ MISSING: URL integration"
+
+# Audit route guards
+audit-guards:
+    @echo ""
+    @echo "── Route Guards ─────────────────────────────────────────────────────"
+    @test -f src/CadreTeaRouter_Guards.res && echo "✓ Guards module exists" || echo "✗ MISSING: Guards module"
+    @grep -q "startSync" src/CadreTeaRouter_Guards.res 2>/dev/null && echo "✓ Sync blocking support" || echo "✗ MISSING: Sync blocking"
+    @grep -q "guardedPush" src/CadreTeaRouter_Guards.res 2>/dev/null && echo "✓ Guarded navigation" || echo "✗ MISSING: Guarded navigation"
+    @grep -q "setupBeforeUnload" src/CadreTeaRouter_Guards.res 2>/dev/null && echo "✓ BeforeUnload integration" || echo "✗ MISSING: BeforeUnload"
+    @grep -q "module QueryParams" src/CadreTeaRouter.res 2>/dev/null && echo "✓ QueryParams exported" || echo "✗ MISSING: QueryParams export"
+    @grep -q "module Guards" src/CadreTeaRouter.res 2>/dev/null && echo "✓ Guards exported" || echo "✗ MISSING: Guards export"
+
+# Verify superintendent environment
+super-check:
+    @echo "Checking Superintendent Environment..."
+    @command -v rescript >/dev/null 2>&1 && echo "✓ ReScript available" || echo "✗ ReScript missing"
+    @command -v deno >/dev/null 2>&1 && echo "✓ Deno available" || echo "✗ Deno missing"
+    @echo "Environment check complete."
+

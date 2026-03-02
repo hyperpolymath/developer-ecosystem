@@ -1,0 +1,87 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= rescript-websocket Roadmap
+:toc:
+
+== Current Status
+
+v0.1.0 - Initial release with core WebSocket client and server bindings.
+
+== Milestones
+
+=== v0.1.0 - Foundation (Current)
+
+* [x] Core WebSocket client bindings
+* [x] Ready state type-safe enum
+* [x] Event handlers (open, close, message, error)
+* [x] Text and binary message support
+* [x] Deno server-side WebSocket upgrade
+* [x] Broadcast utilities for multi-client messaging
+* [x] Promise-based `waitForOpen`
+* [x] JSON send helper
+* [x] ReScript interface file (.resi)
+* [ ] Basic test suite
+* [ ] JSR package publication
+
+=== v0.2.0 - Enhanced Server
+
+* [ ] Room/channel abstraction
+* [ ] Connection tracking helpers
+* [ ] Heartbeat/ping-pong support
+* [ ] Connection metadata storage
+* [ ] Graceful shutdown with client notification
+* [ ] Rate limiting utilities
+
+=== v0.3.0 - Protocol Support
+
+* [ ] WebSocket subprotocol helpers
+* [ ] JSON-RPC over WebSocket
+* [ ] Message framing utilities
+* [ ] Compression (permessage-deflate) support
+* [ ] Binary message helpers (Blob, TypedArray)
+
+=== v0.4.0 - Reliability
+
+* [ ] Automatic reconnection with configurable backoff
+* [ ] Connection state machine
+* [ ] Message queue for offline buffering
+* [ ] Duplicate message detection
+* [ ] Acknowledgment patterns
+
+=== v1.0.0 - Stable Release
+
+* [ ] Comprehensive test coverage (>80%)
+* [ ] Performance benchmarks
+* [ ] Complete API documentation
+* [ ] Migration guide from other libraries
+* [ ] Production deployment guide
+* [ ] Security audit
+* [ ] Stable API guarantee
+
+== Future Directions
+
+=== Post-1.0 Possibilities
+
+* **WebTransport support** - When Deno supports WebTransport
+* **Server-Sent Events (SSE)** - Companion library for SSE
+* **GraphQL subscriptions** - WebSocket transport for GraphQL
+* **Cluster support** - Multi-process WebSocket handling
+* **Metrics/observability** - OpenTelemetry integration
+* **Protocol adapters** - Socket.IO, STOMP, MQTT compatibility
+
+== Non-Goals
+
+Things this library intentionally does not aim to provide:
+
+* Full Socket.IO compatibility layer
+* Built-in authentication (use your own middleware)
+* Database-backed message persistence
+* Horizontal scaling coordination (use Redis/NATS)
+* Browser polyfills (standard WebSocket only)
+
+== Contributing
+
+See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc] for how to contribute to this roadmap.
+
+Feature requests and discussions welcome in GitHub Issues.

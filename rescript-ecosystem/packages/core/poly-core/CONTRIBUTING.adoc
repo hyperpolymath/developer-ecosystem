@@ -1,0 +1,270 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= Contributing to PolyCore
+:toc:
+:toc-placement: preamble
+:icons: font
+
+Thank you for your interest in contributing to PolyCore! This document provides guidelines for contributing to the project.
+
+== Code of Conduct
+
+This project follows the https://www.contributor-covenant.org/version/2/1/code_of_conduct/[Contributor Covenant Code of Conduct]. Please read and adhere to it in all interactions.
+
+== Getting Started
+
+=== Prerequisites
+
+* https://deno.land/[Deno] 1.40+ (runtime and package management)
+* https://rescript-lang.org/[ReScript] 11+ (compiler)
+* Git with commit signing configured
+
+=== Setup
+
+[source,bash]
+----
+# Clone the repository
+git clone https://github.com/hyperpolymath/rescript-poly-core.git
+cd rescript-poly-core
+
+# Install dependencies
+deno cache --reload src/PolyCore.res.js
+
+# Build
+deno task build
+
+# Run tests
+deno task test
+----
+
+== Development Workflow
+
+=== Branch Strategy
+
+* `main` - Stable, release-ready code
+* `develop` - Integration branch for features
+* `feature/*` - New features
+* `fix/*` - Bug fixes
+* `docs/*` - Documentation updates
+
+=== Creating a Feature Branch
+
+[source,bash]
+----
+git checkout main
+git pull origin main
+git checkout -b feature/my-feature
+----
+
+== Code Guidelines
+
+=== Language Policy
+
+[IMPORTANT]
+====
+This project follows the Hyperpolymath Language Policy:
+
+* **ReScript** for all application code
+* **Deno** as runtime (no Node.js/npm)
+* **No TypeScript** - use ReScript instead
+* **No Go/Python** - use Rust for systems code
+====
+
+=== Code Style
+
+* Use `rescript format` before committing
+* Maximum line length: 100 characters
+* 2-space indentation
+* Prefer pattern matching over if/else chains
+* Use pipe operator (`->`) for function chaining
+
+=== Naming Conventions
+
+[cols="2,3,2"]
+|===
+|Element |Convention |Example
+
+|Modules
+|PascalCase
+|`Core.Result`
+
+|Functions
+|camelCase
+|`flatMap`, `getOr`
+
+|Types
+|camelCase
+|`retryConfig`, `toolResult`
+
+|Type constructors
+|PascalCase
+|`Ok`, `Error`, `Some`
+
+|Constants
+|camelCase
+|`defaultConfig`
+|===
+
+=== Error Handling
+
+* Use `Result` types for recoverable errors
+* Use exceptions only for programmer errors
+* Always provide meaningful error messages
+* Document error conditions in doc comments
+
+[source,rescript]
+----
+// Good: Result for recoverable errors
+let parseConfig = (json: string): result<config, string> => {
+  // ...
+}
+
+// Good: Exception for programmer errors
+exception InvalidArgument(string)
+----
+
+=== Documentation
+
+* All public functions must have doc comments
+* Use `/** */` syntax for doc comments
+* Include examples for non-trivial functions
+* Update README.adoc when adding new features
+
+[source,rescript]
+----
+/**
+ * Map over the Ok value of a Result.
+ *
+ * @example
+ * Ok(42)->map(x => x * 2)  // Ok(84)
+ * Error("fail")->map(x => x * 2)  // Error("fail")
+ */
+let map = (result: result<'a, 'e>, fn: 'a => 'b): result<'b, 'e> => {
+  // ...
+}
+----
+
+== Commit Guidelines
+
+=== Commit Messages
+
+Use https://www.conventionalcommits.org/[Conventional Commits]:
+
+----
+type(scope): description
+
+[optional body]
+
+[optional footer]
+----
+
+Types:
+* `feat` - New feature
+* `fix` - Bug fix
+* `docs` - Documentation
+* `style` - Formatting (no code change)
+* `refactor` - Code restructuring
+* `test` - Adding tests
+* `chore` - Maintenance
+
+Examples:
+----
+feat(result): add tryCatchAsync function
+
+fix(logger): handle undefined context gracefully
+
+docs(readme): add Core.Config examples
+----
+
+=== Signing Commits
+
+All commits must be signed (DCO):
+
+[source,bash]
+----
+git commit -s -m "feat(module): description"
+----
+
+This adds a `Signed-off-by` line certifying you have the right to submit the code under the project license.
+
+== Pull Requests
+
+=== Before Submitting
+
+1. Ensure all tests pass: `deno task test`
+2. Format code: `rescript format`
+3. Update documentation if needed
+4. Add tests for new functionality
+
+=== PR Template
+
+Your PR description should include:
+
+* **Summary** - What does this PR do?
+* **Motivation** - Why is this change needed?
+* **Testing** - How was this tested?
+* **Breaking Changes** - Any API changes?
+
+=== Review Process
+
+1. Automated checks must pass
+2. At least one maintainer approval required
+3. All review comments must be addressed
+4. Squash merge preferred for clean history
+
+== Testing
+
+=== Running Tests
+
+[source,bash]
+----
+# Run all tests
+deno task test
+
+# Run specific test file
+deno test tests/Result_test.res.js
+
+# With coverage
+deno test --coverage=coverage/
+----
+
+=== Writing Tests
+
+* Place tests in `tests/` directory
+* Name test files `{Module}_test.res`
+* Use Deno's built-in test framework
+* Aim for 80%+ coverage
+
+== Module Structure
+
+When adding new modules:
+
+----
+src/
+├── PolyCore.res          # Re-exports (update this)
+├── Core/
+│   └── NewModule.res     # New core module
+└── MCP/
+    └── NewModule.res     # New MCP module
+
+tests/
+└── NewModule_test.res    # Tests for new module
+----
+
+Remember to:
+
+1. Add SPDX license header
+2. Add to `PolyCore.res` re-exports
+3. Update `README.adoc` with usage examples
+4. Add comprehensive tests
+
+== License
+
+By contributing to this project, you agree that your contributions will be licensed under the AGPL-3.0-or-later license.
+
+== Questions?
+
+* Open a https://github.com/hyperpolymath/rescript-poly-core/discussions[Discussion] for questions
+* File an https://github.com/hyperpolymath/rescript-poly-core/issues[Issue] for bugs or features
+* See link:README.adoc[README.adoc] for usage documentation

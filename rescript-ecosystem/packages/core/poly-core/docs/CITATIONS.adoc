@@ -1,0 +1,40 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= rescript-poly-core - Citation Guide
+:toc:
+
+== BibTeX
+
+[source,bibtex]
+----
+@software{rescript_poly_core_2025,
+  author = {Polymath, Hyper},
+  title = {rescript-poly-core: Shared Foundation Library for ReScript},
+  year = {2025},
+  url = {https://github.com/hyperpolymath/rescript-poly-core},
+  license = {AGPL-3.0-or-later},
+  version = {0.1.0}
+}
+----
+
+== Harvard Style
+
+Polymath, H. (2025) _rescript-poly-core: Shared Foundation Library for ReScript_ [Computer software]. Available at: https://github.com/hyperpolymath/rescript-poly-core
+
+== OSCOLA
+
+Hyper Polymath, 'rescript-poly-core: Shared Foundation Library for ReScript' (2025) <https://github.com/hyperpolymath/rescript-poly-core>
+
+== MLA
+
+Polymath, Hyper. "rescript-poly-core: Shared Foundation Library for ReScript." 2025, github.com/hyperpolymath/rescript-poly-core.
+
+== APA 7
+
+Polymath, H. (2025). _rescript-poly-core: Shared Foundation Library for ReScript_ (Version 0.1.0) [Computer software]. GitHub. https://github.com/hyperpolymath/rescript-poly-core
+
+== See Also
+
+* link:../CITATION.cff[CITATION.cff]
+* link:../codemeta.json[codemeta.json]

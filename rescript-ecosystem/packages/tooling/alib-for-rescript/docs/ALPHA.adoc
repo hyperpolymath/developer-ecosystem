@@ -1,0 +1,7 @@
+= ALPHA Status
+This project is alpha, opt-in, namespaced, and upstream-first.
+
+Key promises:
+* per-file adoption
+* reversible changes
+* optional Proven entrypoints

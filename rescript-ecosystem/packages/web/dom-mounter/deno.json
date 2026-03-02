@@ -1,0 +1,17 @@
+{
+  "tasks": {
+    "build": "deno run -A npm:rescript",
+    "clean": "deno run -A npm:rescript clean",
+    "watch": "deno run -A npm:rescript -w",
+    "test": "deno test --allow-all"
+  },
+  "imports": {
+    "rescript": "npm:rescript@^12.1.0",
+    "@rescript/core": "npm:@rescript/core@^1.6.0",
+    "proven/": "../proven/bindings/rescript/src/"
+  },
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": false
+  }
+}
