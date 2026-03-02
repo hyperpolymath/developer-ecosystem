@@ -1,0 +1,55 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= Project Identity
+
+== What This Project Is
+
+[cols="1,3"]
+|===
+|*Name* |Spindle
+|*Type* |Haskell library/CLI tool
+|*Purpose* |Parse Nickel configuration files into type-safe Haskell data structures
+|*Language* |Haskell (GHC 9.6+)
+|*Key Dependency* |`hnickel` (Nickel language bindings)
+|*Features* |Config parsing, validation, local config registry
+|===
+
+== What This Project Is NOT
+
+* *NOT* an Ada programming language project
+* *NOT* related to textile looms or weaving
+* *NOT* a package registry (it has a local _config_ registry for managing validated configs)
+* *NOT* related to the repository name `ada-loom-registry`
+
+== Why The Confusing Repository Name?
+
+The repository was created as `ada-loom-registry` as a placeholder before the project scope was defined. The name was a creative placeholder combining:
+
+* "Ada" - a reference to Ada Lovelace (not the language)
+* "Loom" - metaphor for weaving/combining (not textiles)
+* "Registry" - original concept that was abandoned
+
+The actual project that emerged is *Spindle*, which parses Nickel configs. The "spindle" name maintains the weaving metaphor (spindles are used in spinning thread) while accurately reflecting the tool's function.
+
+== Repository Rename Plan
+
+|===
+|*Current* |`ada-loom-registry`
+|*Target* |`spindle` or `spindle-nickel`
+|*When* |Before v1.0.0 release
+|===
+
+The rename is pending because:
+
+1. CI/CD pipelines currently reference the existing name
+2. A potential merge with the `scaffoldia` project is under consideration
+3. We want to choose a permanent name (avoiding multiple renames)
+
+== Quick Reference
+
+If you found this repository and are confused:
+
+* *Looking for Ada code?* This isn't it.
+* *Looking for a package registry?* This isn't it (but there is a config registry).
+* *Looking for a Nickel config parser in Haskell?* You're in the right place.
+
+See link:README.adoc[README.adoc] for usage instructions.

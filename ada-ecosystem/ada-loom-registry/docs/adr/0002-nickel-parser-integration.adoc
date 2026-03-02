@@ -1,0 +1,52 @@
+= ADR-0002: Nickel Parser Integration
+:toc: macro
+
+[cols="1,2"]
+|===
+|Status |Accepted
+|Date |2025-01-21
+|===
+
+== Context
+
+ada-loom-registry requires parsing and validating Nickel configuration files with FFI boundaries.
+
+== Decision
+
+**Language:** Haskell 9.6.3 (native Nickel parser integration)
+**Nickel Usage:** Configuration language (parser) + runtime validation
+**Build:** Cabal with Nickel FFI
+
+**Native Advantage:** Uses Nickel as primary configuration language, exceeding Rhodium's typed config requirement.
+
+== Alternatives Considered
+
+* JSON/YAML: Rejected - no type safety, Nickel provides contracts and type checking
+* TOML: Rejected - limited expressiveness compared to Nickel
+
+== Consequences
+
+* ✅ Type-safe configuration (Nickel contracts)
+* ✅ Exceeds Rhodium typed config requirement
+* ✅ GHC 9.6.3 has WASM support (better positioned than scaffoldia)
+* ⚠️ Nickel FFI boundaries need WASM compatibility testing
+
+== WASM Strategy
+
+**Advantage:** GHC 9.6.3 includes wasm32-wasi target.
+
+**Challenge:** Nickel parser FFI boundaries in WASM environment.
+
+**Timeline:** 2025-12 (Waiver-2025-003) - includes FFI testing.
+
+== References
+
+* link:https://nickel-lang.org/[Nickel Language]
+* link:../../.rhodium/WAIVER.adoc[Waiver-2025-003] - WASM + Nickel FFI
+* link:../../.rhodium/compliance.json[Native Nickel noted as exceeding standard]
+
+== Related ADRs
+
+* link:0001-adopt-rhodium-standard.adoc[ADR-0001]
+* ADR-0003: Registry Operations Architecture (planned)
+* ADR-0004: WASM + Nickel FFI Testing (planned)

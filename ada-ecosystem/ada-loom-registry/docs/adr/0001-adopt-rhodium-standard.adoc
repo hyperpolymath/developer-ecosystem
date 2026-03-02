@@ -1,0 +1,35 @@
+= ADR-0001: Adopt Rhodium Standard 0.5
+:toc: macro
+
+[cols="1,2"]
+|===
+|Status |Accepted
+|Date |2025-01-21
+|===
+
+== Context
+
+ada-loom-registry (Haskell + Nickel parser) requires compliance with advantage of native Nickel usage (exceeds Rhodium requirement).
+
+== Decision
+
+We adopt Rhodium Standard 0.5, targeting Silver level.
+
+**Native Nickel Advantage:** Already uses Nickel for configuration, exceeding Rhodium typed config requirement!
+
+**GHC 9.6.3 Advantage:** Has wasm32-wasi support (unlike scaffoldia's 9.4.8).
+
+== Consequences
+
+* ✅ Native Nickel usage exceeds Rhodium standard
+* ✅ GHC 9.6.3 WASM support available
+* ✅ Only 2 Markdown files to convert (low effort)
+
+== References
+
+* link:../../.rhodium/WAIVER.adoc[4 Active Waivers]
+* link:../../.rhodium/compliance.json[Native Nickel noted as advantage]
+
+== Related ADRs
+
+* link:0002-nickel-parser-integration.adoc[ADR-0002]

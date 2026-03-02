@@ -1,0 +1,21 @@
+= WASM Compliance Status - ada-loom-registry
+
+== Current Status
+
+**Compliance Level:** ✅ **Ready** (GHC 9.6.3 has wasm32-wasi support)
+
+**Advantage:** GHC 9.6.3 includes native WASM support via wasm32-wasi target.
+
+**Compilation:**
+[source,bash]
+----
+cabal build --with-ghc wasm32-wasi-ghc
+----
+
+**Status:** Compile-tested, deployment deferred pending WASM runtime evaluation.
+
+**Waiver:** None (WASM-ready)
+
+---
+
+_Last Updated: 2025-01-21 | Rhodium Standard 0.5_

@@ -1,0 +1,439 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= Spindle Roadmap
+:toc: macro
+:toclevels: 2
+:icons: font
+
+[abstract]
+--
+Development roadmap for Spindle, a Haskell-based Nickel configuration parser. This document outlines phases, milestones, and deliverables.
+--
+
+toc::[]
+
+== Current State
+
+[cols="1,2,1"]
+|===
+|Area |Status |Completion
+
+|*Core Implementation*
+|`app/Main.hs` (190 lines) - CLI with register/list/get/remove/parse commands
+|~70%
+
+|*Registry Module*
+|`src/Spindle/Registry.hs` (113 lines) - Full CRUD, JSON persistence, typed errors
+|100%
+
+|*Library API*
+|`src/Spindle.hs` - Re-exports Registry module
+|100%
+
+|*Configuration*
+|4 Nickel config files (`build`, `ci`, `dev`, `deploy`)
+|100%
+
+|*Documentation*
+|Rhodium Silver level complete
+|100%
+
+|*Testing*
+|Framework planned, not implemented
+|0%
+
+|*WASM*
+|GHC 9.6.3 ready, untested
+|10%
+|===
+
+== What Exists Today
+
+=== Implemented
+
+* [x] Project structure (`spindle.cabal`, Cabal build)
+* [x] Core parsing pipeline in `app/Main.hs`:
+  ** Nickel file reading
+  ** Parse via `hnickel`
+  ** Evaluate expressions
+  ** Convert to JSON via Aeson
+  ** Decode to Haskell `Config` type
+* [x] Full CLI with 5 commands: `register`, `list`, `get`, `remove`, `parse`
+* [x] Registry module (`src/Spindle/Registry.hs`):
+  ** `RegistryEntry` data type with name, version, description, path, timestamp
+  ** `Registry` with Map-based storage
+  ** `RegistryError` ADT (EntryNotFound, EntryAlreadyExists, RegistryIOError, RegistryParseError)
+  ** CRUD operations: register, unregister, lookupEntry, listEntries
+  ** JSON persistence: loadRegistry, saveRegistry
+* [x] Library API (`src/Spindle.hs`) - re-exports Registry module
+* [x] Self-hosted Nickel configs (`config/build.ncl`, `config/ci.ncl`, etc.)
+* [x] Architecture Decision Records (ADR-0001, ADR-0002)
+* [x] Rhodium Standard compliance tracking
+* [x] CI/CD configuration (GitLab, GitHub Actions)
+* [x] Justfile with build, test, clean, format, lint commands
+
+=== Partially Implemented
+
+* [x] CLI argument parsing (manual pattern matching, functional)
+* [x] Error handling (typed `RegistryError`, user-friendly messages)
+* [ ] Multi-file support (single file only)
+
+=== Not Implemented
+
+* [ ] Test suite (Hspec, QuickCheck)
+* [ ] Complex Nickel structures (nested records, arrays)
+* [ ] Multiple output formats (YAML, TOML)
+* [ ] WASM deployment
+* [ ] Hackage publication
+
+---
+
+== Phase 1: Foundation
+
+*Goal:* Complete core functionality and testing
+
+=== Milestone 1.1: CLI Enhancement
+
+* [ ] Add `optparse-applicative` for proper argument parsing
+* [ ] Support flags: `--version`, `--help`, `--output FORMAT`
+* [ ] Add `--validate` mode (check without output)
+* [ ] Support multiple input files
+
+.Expected CLI
+[source,bash]
+----
+spindle config.ncl                    # Parse and print
+spindle --output json config.ncl      # Output as JSON
+spindle --validate config.ncl         # Validate only
+spindle config1.ncl config2.ncl       # Multiple files
+----
+
+=== Milestone 1.2: Error Handling
+
+* [ ] Structured error types (`SpindleError` ADT)
+* [ ] Location-aware parse errors (file, line, column)
+* [ ] Nickel contract violation reporting
+* [ ] User-friendly error messages
+
+.Error Type
+[source,haskell]
+----
+data SpindleError
+  = ParseError FilePath Int Int Text
+  | EvalError Text
+  | ContractViolation Text
+  | TypeMismatch Text Text
+  | FileNotFound FilePath
+----
+
+=== Milestone 1.3: Test Suite
+
+* [ ] Set up Hspec test framework
+* [ ] Unit tests for parsing functions
+* [ ] Property tests with QuickCheck
+* [ ] Integration tests with real `.ncl` files
+* [ ] Golden tests for output formats
+* [ ] Target: 80% code coverage
+
+.Test Structure
+[source]
+----
+test/
++-- Spec.hs                    # Test runner
++-- Spindle/
+|   +-- ParserSpec.hs          # Parser unit tests
+|   +-- EvalSpec.hs            # Evaluator tests
+|   +-- JsonSpec.hs            # JSON conversion tests
++-- Integration/
+|   +-- ConfigSpec.hs          # Full pipeline tests
++-- fixtures/
+    +-- valid/                  # Valid .ncl files
+    +-- invalid/                # Invalid .ncl files
+----
+
+---
+
+== Phase 2: Library Extraction
+
+*Goal:* Make Spindle usable as a library by other Haskell projects
+
+=== Milestone 2.1: Module Structure
+
+* [ ] Extract core logic to `src/Spindle.hs`
+* [ ] Create internal modules (`Spindle.Parser`, `Spindle.Eval`, etc.)
+* [ ] Keep `app/Main.hs` as thin CLI wrapper
+* [ ] Export stable public API
+
+.Library Structure
+[source]
+----
+src/
++-- Spindle.hs                 # Public API
++-- Spindle/
+    +-- Parser.hs              # Nickel parsing
+    +-- Eval.hs                # Expression evaluation
+    +-- Convert.hs             # JSON/Haskell conversion
+    +-- Types.hs               # Core types
+    +-- Error.hs               # Error types
+----
+
+=== Milestone 2.2: Type Flexibility
+
+* [ ] Generic type decoding (not just `Config`)
+* [ ] Support for nested records
+* [ ] Array/list handling
+* [ ] Optional fields
+* [ ] Custom type derivation
+
+.Generic API
+[source,haskell]
+----
+parseNickel :: FromJSON a => FilePath -> IO (Either SpindleError a)
+
+-- Usage
+data MyConfig = MyConfig { ... } deriving (Generic, FromJSON)
+result <- parseNickel @MyConfig "my-config.ncl"
+----
+
+=== Milestone 2.3: Documentation
+
+* [ ] Haddock documentation for all public modules
+* [ ] Usage examples in documentation
+* [ ] Tutorial in `docs/TUTORIAL.adoc`
+* [ ] API reference
+
+---
+
+== Phase 3: Extended Features
+
+*Goal:* Production-ready features and multi-format support
+
+=== Milestone 3.1: Multi-Format Output
+
+* [ ] JSON output (via Aeson) -- *exists*
+* [ ] YAML output (via `yaml`)
+* [ ] TOML output (via `tomland`)
+* [ ] Pretty-printed Haskell (via `pretty-simple`)
+
+.Multi-Format CLI
+[source,bash]
+----
+spindle --output json config.ncl
+spindle --output yaml config.ncl
+spindle --output toml config.ncl
+spindle --output haskell config.ncl
+----
+
+=== Milestone 3.2: Nickel Features
+
+* [ ] Import resolution (`import "other.ncl"`)
+* [ ] Standard library access
+* [ ] Contract validation reporting
+* [ ] Type annotation support
+* [ ] Merge operations
+
+=== Milestone 3.3: Performance
+
+* [ ] Lazy parsing for large files
+* [ ] Caching of evaluated results
+* [ ] Parallel file processing
+* [ ] Benchmark suite (Criterion)
+
+---
+
+== Phase 4: WASM & Distribution
+
+*Goal:* Cross-platform deployment and package publication
+
+=== Milestone 4.1: WASM Compilation
+
+* [ ] Verify GHC 9.6.3 `wasm32-wasi` build
+* [ ] Test Nickel FFI boundaries in WASM
+* [ ] Create WASM test harness
+* [ ] Document WASM limitations
+* [ ] Browser demo (via wasm-bindgen or similar)
+
+.WASM Build
+[source,bash]
+----
+cabal build --with-ghc wasm32-wasi-ghc
+wasm-opt -O3 spindle.wasm -o spindle.opt.wasm
+----
+
+=== Milestone 4.2: Hackage Publication
+
+* [ ] Update cabal metadata (author, maintainer, URLs)
+* [ ] Write package description
+* [ ] Create release workflow
+* [ ] Publish to Hackage
+* [ ] Add to Stackage
+
+=== Milestone 4.3: Guix/Nix Packaging
+
+* [ ] Create `guix.scm` package definition
+* [ ] Create `flake.nix` for Nix users
+* [ ] Add to nixpkgs (upstream)
+* [ ] Document installation methods
+
+---
+
+== Phase 5: Ecosystem Integration
+
+*Goal:* Integration with related projects
+
+=== Milestone 5.1: Scaffoldia Integration
+
+Decision point: Merge into scaffoldia or remain standalone?
+
+*Option A: Merge*
+
+* [ ] Move Spindle into `scaffoldia/src/Scaffoldia/Nickel.hs`
+* [ ] Integrate with scaffoldia's template system
+* [ ] Shared Nickel evaluation context
+* [ ] Archive this repository
+
+*Option B: Standalone Library*
+
+* [ ] Publish as `spindle` on Hackage
+* [ ] scaffoldia depends on `spindle`
+* [ ] Maintain separate versioning
+* [ ] Cross-project documentation
+
+=== Milestone 5.2: Valence Integration
+
+* [ ] Create Spindle client for Elixir
+* [ ] NIF or Port-based communication
+* [ ] Valence configuration via Nickel
+
+---
+
+== Decision Points
+
+=== Repository Rename (PRIORITY)
+
+[IMPORTANT]
+====
+The current repository name `ada-loom-registry` does not reflect the project's purpose. See link:IDENTITY.adoc[IDENTITY.adoc] for full context.
+====
+
+[cols="1,3"]
+|===
+|*Current Name* |`ada-loom-registry`
+|*Proposed Names* |`spindle`, `spindle-nickel`, `haskell-nickel-parser`
+|*Decision Deadline* |Phase 1 completion
+|*Blocking Factor* |Scaffoldia merger decision
+|===
+
+*Recommended action:* Rename to `spindle` unless merger with scaffoldia is confirmed.
+
+=== Other Decisions
+
+[cols="1,2,2"]
+|===
+|Decision |Options |Deadline
+
+|Merge with scaffoldia
+|Merge vs Standalone library
+|Phase 5 start
+
+|WASM runtime
+|Wasmtime, Wasmer, or browser-only
+|Phase 4 start
+
+|Nickel version support
+|Latest only vs multi-version
+|Phase 3
+|===
+
+---
+
+== Success Metrics
+
+[cols="1,2,1,1"]
+|===
+|Metric |Target |Current |Phase
+
+|Source modules
+|10+
+|3 (Main.hs, Spindle.hs, Registry.hs)
+|Phase 2
+
+|Test coverage
+|80%+
+|0%
+|Phase 1
+
+|Example configs
+|20+
+|4 (build, ci, dev, deploy)
+|Phase 1
+
+|CLI commands
+|5+
+|5 (register, list, get, remove, parse) ✅
+|Phase 1
+
+|Output formats
+|4
+|1
+|Phase 3
+
+|Hackage downloads
+|100+ monthly
+|N/A
+|Phase 4
+|===
+
+---
+
+== Risk Register
+
+[cols="1,2,2,1"]
+|===
+|Risk |Impact |Mitigation |Probability
+
+|`hnickel` library abandoned
+|HIGH -- core dependency
+|Fork or reimplement parser
+|LOW
+
+|GHC WASM instability
+|MEDIUM -- affects Phase 4
+|Native binary fallback
+|MEDIUM
+
+|Nickel breaking changes
+|MEDIUM -- parser updates
+|Version pinning, adapters
+|MEDIUM
+
+|Scaffoldia merger rejected
+|LOW -- continue standalone
+|Publish independently
+|LOW
+|===
+
+---
+
+== Contributing
+
+See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc] for how to contribute to this roadmap.
+
+Priority areas for contribution:
+
+1. Test suite implementation (Phase 1.3)
+2. CLI enhancement (Phase 1.1)
+3. Library documentation (Phase 2.3)
+
+---
+
+== References
+
+* link:PROJECT_STATUS.adoc[PROJECT_STATUS.adoc] -- Detailed current status
+* link:docs/adr/0002-nickel-parser-integration.adoc[ADR-0002] -- Nickel integration decision
+* link:WASM_STATUS.adoc[WASM_STATUS.adoc] -- WASM compilation status
+* https://nickel-lang.org/[Nickel Language]
+* https://www.haskell.org/ghc/blog/20230914-wasm-backend-merged.html[GHC WASM Backend]
+
+---
+
+_Last Updated: 2025-12-26 | Spindle v0.1.0.0_

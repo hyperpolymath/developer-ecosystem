@@ -1,0 +1,301 @@
+= Testing Guide - ada-loom-registry
+:toc: macro
+
+[abstract]
+--
+Testing strategy for ada-loom-registry (package registry). Rhodium Standard 0.5, Pillar 3, Section 3.2.
+--
+
+toc::[]
+
+== Testing Philosophy
+
+**Critical:** Registry is a trusted source - testing prevents supply chain attacks.
+
+**Goals:**
+* Verify package validation
+* Prevent malicious packages
+* Ensure cryptographic integrity
+* Test Nickel parser security
+
+== Test Types
+
+=== Unit Tests (Hspec)
+
+**Location:** `test/Registry/*Spec.hs`
+
+[source,haskell]
+----
+-- test/Registry/PackageSpec.hs
+module Registry.PackageSpec where
+
+import Test.Hspec
+import Registry.Package
+
+spec :: Spec
+spec = do
+  describe "validatePackageName" $ do
+    it "accepts valid package name" $ do
+      validatePackageName "my-package" `shouldBe` Right ()
+
+    it "rejects reserved names" $ do
+      validatePackageName "core" `shouldSatisfy` isLeft
+      validatePackageName "ada" `shouldSatisfy` isLeft
+
+    it "rejects invalid characters" $ do
+      validatePackageName "my package" `shouldSatisfy` isLeft
+      validatePackageName "my/package" `shouldSatisfy` isLeft
+
+  describe "verifyPackageHash" $ do
+    it "verifies correct hash" $ do
+      let content = "package content"
+      let hash = computeHash content
+      verifyPackageHash hash content `shouldBe` Right ()
+
+    it "rejects incorrect hash" $ do
+      let content = "package content"
+      let wrongHash = PackageHash "wrong hash"
+      verifyPackageHash wrongHash content `shouldSatisfy` isLeft
+----
+
+**Run:**
+[source,bash]
+----
+just test
+cabal test
+----
+
+=== Security Tests
+
+[source,haskell]
+----
+describe "malicious package detection" $ do
+  it "rejects package with malicious Nickel code" $ do
+    let maliciousEntry = PackageEntry
+          { nickelCode = "std.sys.exec \"rm -rf /\""
+          }
+
+    validateEntry maliciousEntry `shouldSatisfy` isLeft
+
+  it "enforces package size limits" $ do
+    let hugePackage = PackageEntry { size = 100_000_000 }  -- 100MB
+    validateEntry hugePackage `shouldSatisfy` isLeft
+
+  it "validates namespace isolation" $ do
+    -- Can't register "core/my-package"
+    validatePackageName "core/my-package" `shouldSatisfy` isLeft
+----
+
+=== Cryptographic Tests
+
+[source,haskell]
+----
+describe "cryptographic verification" $ do
+  it "verifies Ed25519 signature" $ do
+    (publicKey, privateKey) <- generateKeyPair
+    let content = "package content"
+    let signature = sign privateKey content
+
+    verifySignature publicKey signature content `shouldBe` Right ()
+
+  it "rejects invalid signature" $ do
+    (publicKey, _) <- generateKeyPair
+    let content = "package content"
+    let wrongSignature = Signature "wrong"
+
+    verifySignature publicKey wrongSignature content `shouldSatisfy` isLeft
+
+  it "computes correct SHA256 hash" $ do
+    let content = "test"
+    let hash = computeHash content
+    hash `shouldBe` PackageHash "9f86d081884c7d659a2feaa0c55ad015..."
+----
+
+=== Registry Integrity Tests
+
+[source,haskell]
+----
+describe "registry integrity" $ do
+  it "prevents duplicate package versions" $ do
+    let entry1 = PackageEntry { name = "test", version = "1.0.0" }
+    let entry2 = PackageEntry { name = "test", version = "1.0.0" }
+
+    addToRegistry entry1 `shouldReturn` Right ()
+    addToRegistry entry2 `shouldSatisfy` isLeft
+
+  it "validates dependency graph" $ do
+    let entries = [entryA, entryB, entryC]
+    validateDependencyGraph entries `shouldBe` Right ()
+
+  it "detects circular dependencies" $ do
+    let entryA = PackageEntry { deps = ["b"] }
+    let entryB = PackageEntry { deps = ["c"] }
+    let entryC = PackageEntry { deps = ["a"] }  -- Circular!
+
+    validateDependencyGraph [entryA, entryB, entryC] `shouldSatisfy` isLeft
+----
+
+=== Nickel Parser Tests
+
+[source,haskell]
+----
+describe "Nickel parser security" $ do
+  it "parses valid entry" $ do
+    entry <- parseNickelEntry "test-entry.ncl"
+    entry `shouldSatisfy` isRight
+
+  it "rejects entry with system calls" $ do
+    let malicious = "{ name = \"evil\", postInstall = std.sys.exec \"...\" }"
+    parseNickelEntry malicious `shouldSatisfy` isLeft
+
+  it "enforces evaluation timeout" $ do
+    let infiniteLoop = "{ x = x }"  -- Infinite recursion
+    result <- timeout 5000000 $ parseNickelEntry infiniteLoop
+    result `shouldBe` Nothing  -- Should timeout
+----
+
+== Property-Based Tests
+
+[source,haskell]
+----
+import Test.QuickCheck
+
+prop_hash_deterministic :: String -> Bool
+prop_hash_deterministic content =
+  computeHash content == computeHash content
+
+prop_signature_verification :: (PublicKey, PrivateKey) -> String -> Bool
+prop_signature_verification (pub, priv) content =
+  let sig = sign priv content
+  in verifySignature pub sig content == Right ()
+
+prop_package_name_validation :: String -> Property
+prop_package_name_validation name =
+  length name >= 3 && length name <= 64 ==>
+    isValidPackageName name
+----
+
+**Run:**
+[source,bash]
+----
+cabal test --test-options="--quickcheck-tests=1000"
+----
+
+== Integration Tests
+
+[source,haskell]
+----
+describe "full package submission flow" $ do
+  it "validates, stores, and retrieves package" $ do
+    -- 1. Validate
+    validateEntry testEntry `shouldBe` Right ()
+
+    -- 2. Add to registry
+    addToRegistry testEntry `shouldReturn` Right ()
+
+    -- 3. Query registry
+    result <- queryRegistry (packageName testEntry)
+    result `shouldBe` Right testEntry
+
+    -- 4. Verify cryptographic integrity
+    verifyRegistryEntry result `shouldBe` Right ()
+----
+
+== Coverage Requirements
+
+* **Overall:** 80%+
+* **Security validations:** 100%
+* **Cryptographic functions:** 100%
+* **Package validation:** 100%
+
+**Run coverage:**
+[source,bash]
+----
+cabal test --enable-coverage
+hpc report ada-loom-registry-test.tix
+----
+
+== Running Tests
+
+[source,bash]
+----
+# All tests
+just test
+cabal test
+
+# Security tests only
+just test-security
+
+# Registry validation
+just registry-validate
+
+# With coverage
+just test-coverage
+----
+
+== Mock Registry
+
+**Create test registry:**
+[source,haskell]
+----
+testRegistry :: Registry
+testRegistry = Registry
+  { entries =
+      [ testEntry1
+      , testEntry2
+      ]
+  , signatures = Map.fromList [...]
+  }
+
+testEntry1 :: PackageEntry
+testEntry1 = PackageEntry
+  { name = PackageName "test-package"
+  , version = PackageVersion "1.0.0"
+  , hash = PackageHash "..."
+  , signature = Signature "..."
+  }
+----
+
+== CI Integration
+
+**GitHub Actions:**
+[source,yaml]
+----
+- name: Build
+  run: cabal build
+
+- name: Run tests
+  run: cabal test --test-show-details=direct
+
+- name: Security scan
+  run: just scan-registry
+
+- name: Validate all entries
+  run: just registry-validate
+----
+
+== Manual Testing
+
+[source,bash]
+----
+# Test package submission (staging)
+just package-validate my-package-1.0.0
+just registry-publish-staging my-package-1.0.0
+
+# Query package
+just registry-query my-package
+
+# Verify signatures
+just verify-signatures
+----
+
+## Resources
+
+* Hspec: https://hspec.github.io/
+* Cryptonite: https://hackage.haskell.org/package/cryptonite
+* Nickel: https://nickel-lang.org/
+* link:SECURITY.adoc[SECURITY.adoc]
+
+---
+
+_Last Updated: 2025-01-21 | Rhodium Standard 0.5_
