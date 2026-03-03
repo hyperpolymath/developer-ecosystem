@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: PMPL-1.0-or-later
-// SPDX-FileCopyrightText: 2025 Hyperpolymath
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell
 
 //! Intermediate Representation for ReScript codegen
 //!
@@ -112,7 +112,8 @@ pub enum RsType {
 }
 
 impl RsType {
-    pub fn to_rescript(&self, config: &crate::codegen::Config) -> String {
+    /// Generate a ReScript type expression for this type
+    pub fn to_rescript(&self) -> String {
         match self {
             RsType::String => "string".to_string(),
             RsType::Int => "int".to_string(),
@@ -120,37 +121,29 @@ impl RsType {
             RsType::Bool => "bool".to_string(),
             RsType::Unit => "unit".to_string(),
             RsType::DateTime | RsType::Date => "Date.t".to_string(),
-            RsType::Option(inner) => format!("option<{}>", inner.to_rescript(config)),
-            RsType::Array(inner) => format!("array<{}>", inner.to_rescript(config)),
-            RsType::Dict(inner) => format!("Dict.t<{}>", inner.to_rescript(config)),
+            RsType::Option(inner) => format!("option<{}>", inner.to_rescript()),
+            RsType::Array(inner) => format!("array<{}>", inner.to_rescript()),
+            RsType::Dict(inner) => format!("Dict.t<{}>", inner.to_rescript()),
             RsType::Json => "JSON.t".to_string(),
-            RsType::Named(name) => name.to_lower_camel_case(),  // lowercase for ReScript types
+            RsType::Named(name) => name.to_lower_camel_case(),
             RsType::Tuple(types) => {
-                let inner: Vec<_> = types.iter().map(|t| t.to_rescript(config)).collect();
+                let inner: Vec<_> = types.iter().map(|t| t.to_rescript()).collect();
                 format!("({})", inner.join(", "))
             }
             RsType::StringEnum(values) => {
-                if config.variant_mode == crate::codegen::VariantMode::Standard {
-                    // Standard variants don't work inline easily without a name
-                    // Fall back to polymorphic for inline enums or warn?
-                    // For now, let's keep polymorphic for inline as it's the only way to represent them without a separate type.
-                    let cases: Vec<_> = values
-                        .iter()
-                        .map(|v| format!("#\"{}\"", v))
-                        .collect();
-                    format!("[{}]", cases.join(" | "))
-                } else {
-                    let cases: Vec<_> = values
-                        .iter()
-                        .map(|v| format!("#\"{}\"", v))
-                        .collect();
-                    format!("[{}]", cases.join(" | "))
-                }
+                // Inline string enums always use polymorphic variants regardless of variant_mode,
+                // since standard variants require a named type definition.
+                let cases: Vec<_> = values
+                    .iter()
+                    .map(|v| format!("#\"{}\"", v))
+                    .collect();
+                format!("[{}]", cases.join(" | "))
             }
         }
     }
 
-    pub fn to_schema(&self, config: &crate::codegen::Config) -> String {
+    /// Generate a rescript-schema expression for this type
+    pub fn to_schema(&self) -> String {
         match self {
             RsType::String => "S.string".to_string(),
             RsType::Int => "S.int".to_string(),
@@ -158,14 +151,14 @@ impl RsType {
             RsType::Bool => "S.bool".to_string(),
             RsType::Unit => "S.unit".to_string(),
             RsType::DateTime => "S.datetime".to_string(),
-            RsType::Date => "S.string".to_string(), 
-            RsType::Option(inner) => format!("S.option({})", inner.to_schema(config)),
-            RsType::Array(inner) => format!("S.array({})", inner.to_schema(config)),
-            RsType::Dict(inner) => format!("S.dict({})", inner.to_schema(config)),
+            RsType::Date => "S.string".to_string(),
+            RsType::Option(inner) => format!("S.option({})", inner.to_schema()),
+            RsType::Array(inner) => format!("S.array({})", inner.to_schema()),
+            RsType::Dict(inner) => format!("S.dict({})", inner.to_schema()),
             RsType::Json => "S.json".to_string(),
             RsType::Named(name) => format!("{}Schema", name.to_lower_camel_case()),
             RsType::Tuple(types) => {
-                let schemas: Vec<_> = types.iter().map(|t| t.to_schema(config)).collect();
+                let schemas: Vec<_> = types.iter().map(|t| t.to_schema()).collect();
                 format!("S.tuple(s => ({}))", schemas.join(", "))
             }
             RsType::StringEnum(values) => {
@@ -576,23 +569,19 @@ impl<'a> Lowerer<'a> {
             }
         }
 
-        let request_body = if let Some(body) = &op.request_body {
-            if let ReferenceOr::Item(body) = body {
-                body.content.get("application/json").map(|media| {
-                    let ty = media
-                        .schema
-                        .as_ref()
-                        .and_then(|s| self.schema_to_type(s).ok())
-                        .unwrap_or(RsType::Json);
-                    RequestBody {
-                        ty,
-                        required: body.required,
-                        content_type: "application/json".to_string(),
-                    }
-                })
-            } else {
-                None
-            }
+        let request_body = if let Some(ReferenceOr::Item(body)) = &op.request_body {
+            body.content.get("application/json").map(|media| {
+                let ty = media
+                    .schema
+                    .as_ref()
+                    .and_then(|s| self.schema_to_type(s).ok())
+                    .unwrap_or(RsType::Json);
+                RequestBody {
+                    ty,
+                    required: body.required,
+                    content_type: "application/json".to_string(),
+                }
+            })
         } else {
             None
         };

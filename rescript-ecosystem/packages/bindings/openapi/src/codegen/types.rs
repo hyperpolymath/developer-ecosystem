@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: PMPL-1.0-or-later
-// SPDX-FileCopyrightText: 2025 Hyperpolymath
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell
 
 //! ReScript type generation
 
@@ -89,7 +89,7 @@ pub fn generate_type(type_def: &TypeDef, is_rec: bool, config: &Config) -> Strin
                     output.push_str("  ");
                 }
 
-                output.push_str(&format!("{}: {},\n", field.name, field.ty.to_rescript(config)));
+                output.push_str(&format!("{}: {},\n", field.name, field.ty.to_rescript()));
             }
 
             output.push_str("}\n");
@@ -111,7 +111,7 @@ pub fn generate_type(type_def: &TypeDef, is_rec: bool, config: &Config) -> Strin
                 for case in cases {
                     match &case.payload {
                         Some(ty) => {
-                            output.push_str(&format!("  | {}({})\n", case.name, ty.to_rescript(config)));
+                            output.push_str(&format!("  | {}({})\n", case.name, ty.to_rescript()));
                         }
                         None => {
                             output.push_str(&format!("  | {}\n", case.name));
@@ -143,7 +143,7 @@ pub fn generate_type(type_def: &TypeDef, is_rec: bool, config: &Config) -> Strin
             }
 
             let type_name = name.to_lower_camel_case();
-            output.push_str(&format!("{} {} = {}\n", keyword, type_name, target.to_rescript(config)));
+            output.push_str(&format!("{} {} = {}\n", keyword, type_name, target.to_rescript()));
         }
     }
 

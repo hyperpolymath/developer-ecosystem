@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: PMPL-1.0-or-later
-// SPDX-FileCopyrightText: 2025 Hyperpolymath
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell
 
 //! HTTP client generation with pluggable HTTP backend
 
@@ -179,7 +179,7 @@ module Make = (Http: HttpClient) => {
 
     // Generate endpoint functions inside the functor
     for endpoint in &spec.endpoints {
-        output.push_str(&generate_endpoint(endpoint, config));
+        output.push_str(&generate_endpoint(endpoint));
         output.push('\n');
     }
 
@@ -205,7 +205,7 @@ module Make = (Http: HttpClient) => {
     Ok(output)
 }
 
-fn generate_endpoint(endpoint: &Endpoint, config: &Config) -> String {
+fn generate_endpoint(endpoint: &Endpoint) -> String {
     let mut output = String::new();
 
     // Documentation
@@ -230,17 +230,17 @@ fn generate_endpoint(endpoint: &Endpoint, config: &Config) -> String {
     let mut params = vec!["config: config".to_string()];
 
     for p in &path_params {
-        params.push(format!("~{}: {}", p.name, p.ty.to_rescript(config)));
+        params.push(format!("~{}: {}", p.name, p.ty.to_rescript()));
     }
 
     if let Some(body) = &endpoint.request_body {
-        params.push(format!("~body: {}", body.ty.to_rescript(config)));
+        params.push(format!("~body: {}", body.ty.to_rescript()));
     }
 
     // Optional query parameters
     for p in &query_params {
         if p.required {
-            params.push(format!("~{}: {}", p.name, p.ty.to_rescript(config)));
+            params.push(format!("~{}: {}", p.name, p.ty.to_rescript()));
         } else {
             params.push(format!("~{}=?", p.name));
         }
@@ -249,7 +249,7 @@ fn generate_endpoint(endpoint: &Endpoint, config: &Config) -> String {
     // Optional header parameters
     for p in &header_params {
         if p.required {
-            params.push(format!("~{}: {}", p.name, p.ty.to_rescript(config)));
+            params.push(format!("~{}: {}", p.name, p.ty.to_rescript()));
         } else {
             params.push(format!("~{}=?", p.name));
         }
@@ -261,7 +261,7 @@ fn generate_endpoint(endpoint: &Endpoint, config: &Config) -> String {
 
     let return_type = success_response
         .and_then(|r| r.ty.as_ref())
-        .map(|t| t.to_rescript(config))
+        .map(|t| t.to_rescript())
         .unwrap_or_else(|| "unit".to_string());
 
     output.push_str(&format!(
