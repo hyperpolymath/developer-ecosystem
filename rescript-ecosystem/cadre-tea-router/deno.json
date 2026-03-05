@@ -8,7 +8,7 @@
     "watch": "deno run -A npm:rescript -w"
   },
   "imports": {
-    "rescript": "npm:rescript@^12.1.0",
+    "rescript": "^12.0.0",
     "@rescript/core": "npm:@rescript/core@^1.7.0",
     "@anthropics/cadre-router": "npm:@anthropics/cadre-router@^0.1.0",
     "rescript-tea": "../rescript-tea/src/",

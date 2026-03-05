@@ -6,6 +6,6 @@
     "clean": "rescript clean"
   },
   "dependencies": {
-    "rescript": "workspace:^"
+    "rescript": "^12.0.0"
   }
 }
