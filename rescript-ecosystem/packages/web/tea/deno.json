@@ -6,15 +6,17 @@
     "build": "deno run -A npm:rescript",
     "clean": "deno run -A npm:rescript clean",
     "watch": "deno run -A npm:rescript -w",
-    "test": "deno test --allow-read lib/es6/test/"
+    "test": "deno test --allow-read lib/es6/test/",
+    "dev": "rescript -w"
   },
   "imports": {
-    "rescript": "npm:rescript@^12.1.0",
+    "rescript": "^12.0.0",
     "@rescript/core": "npm:@rescript/core@^1.7.0",
     "@rescript/react": "npm:@rescript/react@^0.14.0",
     "react": "npm:react@^19.0.0",
     "react-dom": "npm:react-dom@^19.0.0",
-    "proven/": "../proven/bindings/rescript/src/"
+    "proven/": "../proven/bindings/rescript/src/",
+    "@proven/rescript-bindings": "npm:@proven/rescript-bindings@file:../../proven/bindings/rescript"
   },
   "compilerOptions": {
     "allowJs": true,

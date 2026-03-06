@@ -12,7 +12,7 @@
     "fmt": "deno run --allow-all bin/rrt.ts fmt",
     "clean": "deno run --allow-all bin/rrt.ts clean",
     "info": "deno run --allow-all bin/rrt.ts info",
-    "rescript": "deno run -A npm:rescript build",
+    "rescript": "^12.0.0",
     "rescript:watch": "deno run -A npm:rescript build -w",
     "rescript:clean": "deno run -A npm:rescript clean"
   },

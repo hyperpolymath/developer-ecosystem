@@ -22,10 +22,10 @@
   },
   "peerDependencies": {
     "@anthropics/cadre-router": "^0.1.0",
-    "rescript": "^11.0.0",
+    "rescript": "^12.0.0",
     "rescript-tea": "^0.1.0"
   },
   "devDependencies": {
-    "rescript": "^11.1.0"
+    "rescript": "^12.0.0"
   }
 }

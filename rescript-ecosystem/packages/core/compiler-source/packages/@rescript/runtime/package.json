@@ -46,7 +46,7 @@
     "cppo": "node scripts/cppo.js"
   },
   "devDependencies": {
-    "rescript": "workspace:^"
+    "rescript": "^12.0.0"
   },
   "preferUnplugged": true
 }

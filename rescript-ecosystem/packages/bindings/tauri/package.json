@@ -18,11 +18,11 @@
   },
   "peerDependencies": {
     "@tauri-apps/api": "^2.0.0",
-    "rescript": "^11.0.0"
+    "rescript": "^12.0.0"
   },
   "devDependencies": {
     "@rescript/core": "^1.0.0",
     "@tauri-apps/api": "^2.0.0",
-    "rescript": "^11.0.0"
+    "rescript": "^12.0.0"
   }
 }

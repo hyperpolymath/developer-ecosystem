@@ -11,6 +11,6 @@
   "imports": {
     "cadre-router": "npm:cadre-router@^0.1.0",
     "rescript-tea": "npm:rescript-tea@^0.9.0",
-    "rescript": "npm:rescript@^11.0.0"
+    "rescript": "^12.0.0"
   }
 }
