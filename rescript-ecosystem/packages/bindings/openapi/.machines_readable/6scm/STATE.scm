@@ -6,7 +6,7 @@
     (version "0.1.0")
     (schema-version "1.0")
     (created "2025-01-05")
-    (updated "2026-01-05")
+    (updated "2026-03-03")
     (project "rescript-openapi")
     (repo "github.com/hyperpolymath/rescript-openapi"))
 
@@ -37,7 +37,7 @@
       "Authentication (Bearer token, API key)"
       "File watching with --watch flag"
       "Dry run with --dry-run flag"
-      "Snapshot tests with insta (6 passing)"))
+      "Snapshot tests with insta (12 tests passing, 13 snapshots)"))
 
   (route-to-mvp
     (milestone "m1-compiles" (status completed)
@@ -96,4 +96,24 @@
         "Security audit passed (0 vulnerabilities)"
         "Performance tested (<10ms generation)"
         "All 6 tests passing"
-        "Ready for crates.io publish"))))
+        "Ready for crates.io publish"))
+    (session "2026-02-24-dual-track"
+      (accomplishments
+        "Implemented dual-track architecture (OOTB vs Streamlined)"
+        "Added --client-mode flag (full, functor-only, none)"
+        "Added --unified flag for single-module output"
+        "Added --variant-mode flag (polymorphic, standard)"
+        "Added rescript-openapi.toml project config support"
+        "ADR-001: Dual-Track Generation Architecture documented"
+        "All 12 tests passing, 13 snapshots"))
+    (session "2026-03-03-cleanup"
+      (accomplishments
+        "Fixed 3 clippy warnings (collapsible if-let, unused param, too-many-args)"
+        "Removed dead codegen::generate function"
+        "Fixed duplicate StringEnum branches in RsType::to_rescript"
+        "Fixed all SPDX copyright headers (2025 Hyperpolymath -> 2026 Jonathan D.A. Jewell)"
+        "Fixed Cargo.toml author attribution"
+        "Updated README with missing CLI flags"
+        "Fixed README module import (RescriptSchema -> RescriptSchema.S)"
+        "Added SPDX header to DECISIONS.md"
+        "Updated STATE.scm with correct test counts and session history"))))

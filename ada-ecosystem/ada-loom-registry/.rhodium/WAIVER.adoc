@@ -1,0 +1,193 @@
+= Rhodium Standard Waivers - ada-loom-registry
+:toc: macro
+:toclevels: 2
+:icons: font
+
+[abstract]
+--
+Documented exceptions to Rhodium Standard 0.5 requirements for ada-loom-registry repository (Haskell + Nickel configuration registry), with justification, remediation plans, and expiration dates.
+--
+
+toc::[]
+
+== Active Waivers
+
+=== Waiver-2025-001: Markdown to Asciidoc Conversion
+
+**Requirement:** Asciidoc for all documentation except SECURITY.md (Pillar 2, Section 2.2.1)
+
+**Status:** WAIVED until 2025-03-01
+
+**Justification:**
+
+ada-loom-registry has **2 Markdown files** requiring conversion:
+
+**Files to Convert:**
+
+1. README.md → README.adoc
+2. CHANGELOG.md → CHANGELOG.adoc
+
+**Remediation Plan:**
+
+* 2025-02: Use pandoc for automated conversion
+* 2025-02: Manual cleanup of conversion artifacts
+* 2025-03: Verify all cross-references and formatting
+
+**Signed By:** Documentation team
+**Expiry:** 2025-03-01 (short timeline - only 2 files)
+
+---
+
+=== Waiver-2025-002: SLSA Attestation Implementation
+
+**Requirement:** SLSA v1.0 provenance + in-toto attestation (Pillar 1, Section 2.1.2)
+
+**Status:** WAIVED until 2025-08-01
+
+**Justification:**
+
+ada-loom-registry is a Haskell library/tool with Cabal packaging. SLSA attestation requires integration with Haskell build toolchain.
+
+**Remediation Plan:**
+
+* 2025-04: Investigate Haskell SLSA tooling options
+* 2025-05: Implement attestation for Cabal builds
+* 2025-06: Test provenance generation in CI
+* 2025-08: Full SLSA v1.0 compliance
+
+**Signed By:** Infrastructure team
+**Expiry:** 2025-08-01
+
+---
+
+=== Waiver-2025-003: WASM Compilation Target
+
+**Requirement:** WASM-first compilation with fallback (Pillar 3, Section 2.3.1)
+
+**Status:** WAIVED until 2025-12-01
+
+**Justification:**
+
+ada-loom-registry uses Haskell 9.6.3 with Nickel parser integration. WASM considerations:
+
+* **GHC 9.6.3:** Has experimental wasm32-wasi support
+* **Nickel Parser:** FFI boundary considerations for WASM
+* **Registry Operations:** File system access in WASM environment
+
+**Partial Advantage:** GHC 9.6+ already has WASM support (unlike scaffoldia's 9.4.8)
+
+**Remediation Plan:**
+
+* 2025-06: Evaluate WASM viability for registry tool
+* 2025-08: Test GHC wasm32-wasi target with Nickel FFI
+* 2025-10: Implement WASM build if feasible, document limitations if not
+* 2025-12: WASM-first or documented exemption
+
+**Signed By:** Architecture team
+**Expiry:** 2025-12-01
+
+---
+
+=== Waiver-2025-004: Full Gold-Level Documentation
+
+**Requirement:** cookbook.adoc, ARCHITECTURE.adoc with C4 diagrams (Pillar 2, Gold level)
+
+**Status:** WAIVED until 2025-09-01 (Silver level target)
+
+**Justification:**
+
+ada-loom-registry targets Rhodium Silver, not Gold. Gold-level documentation is optional for Silver compliance.
+
+**Silver Requirements (Must Complete):**
+
+* ✅ README.adoc (from README.md conversion)
+* ✅ CONTRIBUTING.adoc
+* ✅ ONBOARDING.adoc
+* ✅ ADR framework
+* ✅ REVERSIBILITY.adoc
+
+**Gold Requirements (Deferred):**
+
+* cookbook.adoc
+* ARCHITECTURE.adoc with C4 diagrams
+
+**Remediation Plan:**
+
+* 2025-06: Complete all Silver-level documentation
+* 2025-07-09: Begin Gold-level documentation if needed
+* 2025-09: Re-evaluate need for Gold promotion
+
+**Signed By:** Documentation team
+**Expiry:** 2025-09-01 (re-evaluation date)
+
+---
+
+== Waiver Tracking
+
+[cols="1,2,1,1"]
+|===
+|ID |Requirement |Status |Expiry
+
+|2025-001
+|Markdown Conversion (2 files)
+|Active
+|2025-03-01
+
+|2025-002
+|SLSA Attestation
+|Active
+|2025-08-01
+
+|2025-003
+|WASM Compilation
+|Active
+|2025-12-01
+
+|2025-004
+|Gold-Level Docs
+|Active (Deferred)
+|2025-09-01
+
+|===
+
+**Total Active Waivers:** 4
+**Expiring Within 6 Months:** 3 (2025-001, 2025-002, 2025-004)
+
+---
+
+== Haskell + Nickel Compliance Notes
+
+**Nickel Integration:**
+
+ada-loom-registry parses and processes Nickel configuration files. This creates unique compliance considerations:
+
+* **Typed Configuration:** Already using Nickel (exceeds Rhodium requirement)
+* **WASM FFI:** Nickel parser FFI boundaries need WASM compatibility testing
+* **Registry Operations:** File system access patterns for WASM
+
+**GHC 9.6.3 Advantage:**
+
+Unlike scaffoldia (GHC 9.4.8), ada-loom-registry uses GHC 9.6.3 which has experimental wasm32-wasi support. This makes WASM compliance more achievable.
+
+**Toolchain:**
+
+* **Build Tools:** Cabal (primary)
+* **SBOM:** cabal-plan with SBOM converter
+* **Reproducible Builds:** Nix integration via Nickel configs
+* **WASM:** wasm32-wasi target available
+
+---
+
+== Waiver Policy
+
+**Automatic Expiry:** Waivers expire on the date specified. CI gates will enforce compliance after expiry unless waiver is renewed.
+
+**Renewal Process:** Submit ADR documenting justification, updated plan, risk assessment, and sign-off.
+
+**Maximum Extension:** 6 months per renewal, 2 renewals maximum (18 months total)
+
+---
+
+_This document complies with Rhodium Standard 0.5, Pillar 1 (Audit-Grade), Section 2.1.6 (Documented Waivers), with Haskell + Nickel-specific adaptations._
+
+_Last Updated: 2025-01-21_

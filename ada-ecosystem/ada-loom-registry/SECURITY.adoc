@@ -1,0 +1,437 @@
+= Security Policy - ada-loom-registry
+:toc: macro
+
+[abstract]
+--
+Security vulnerability reporting and response procedures for ada-loom-registry. Rhodium Standard 0.5, Pillar 1, Section 2.1.7.
+--
+
+toc::[]
+
+== Supported Versions
+
+[cols="1,1,2"]
+|===
+|Version |Supported |Notes
+
+|1.x.x
+|✅ Yes
+|Active maintenance, security patches
+
+|0.x.x
+|⚠️ Limited
+|Critical security fixes only, upgrade recommended
+
+|<0.1.0
+|❌ No
+|End of life, no security support
+
+|===
+
+**Current stable version:** 1.0.0
+
+== Registry Security Context
+
+**ada-loom-registry is a package registry with Haskell + Nickel parser.**
+
+**Critical security concerns:**
+* **Registry integrity:** Malicious packages in registry
+* **Supply chain attacks:** Compromised dependencies
+* **Nickel parser vulnerabilities:** Code injection via malicious schemas
+* **Package verification:** Cryptographic signatures required
+* **Namespace squatting:** Reserved package names
+
+== Reporting a Vulnerability
+
+**⚠️ DO NOT open public GitHub issues for security vulnerabilities.**
+
+**⚠️ For malicious packages in registry, report IMMEDIATELY.**
+
+=== Preferred Reporting Method
+
+**Email:** security@example.com
+
+**Subject line:** `[SECURITY] ada-loom-registry - Brief description`
+
+**For malicious packages:**
+* **Subject:** `[SECURITY - MALICIOUS PACKAGE] package-name`
+* **Priority:** Critical - will be removed within 24 hours
+
+**PGP Key (optional):** https://example.com/pgp-key.asc
+
+=== What to Include
+
+1. **Description:** Detailed vulnerability explanation
+2. **Impact:** Potential consequences (registry corruption, supply chain attack)
+3. **Reproduction:** Step-by-step instructions to reproduce
+4. **Environment:**
+   - GHC version
+   - Nickel version
+   - ada-loom-registry version
+   - OS/architecture
+5. **Proof of Concept:** Registry entries, parser inputs, Nickel schemas
+6. **Affected packages:** If malicious package in registry
+7. **Suggested Fix:** If known
+
+**Example report:**
+[source]
+----
+Subject: [SECURITY] ada-loom-registry - Nickel parser RCE
+
+Description:
+Nickel parser does not sanitize schema evaluation, allowing arbitrary
+code execution via crafted Nickel contracts.
+
+Impact:
+Attacker can upload malicious package entry with Nickel code that
+executes on registry server during validation.
+
+Reproduction:
+1. Craft malicious Nickel schema with system call
+2. Submit package entry via registry-publish
+3. Parser evaluates malicious code on server
+
+Environment:
+- ada-loom-registry 1.0.5
+- GHC 9.6.3
+- Nickel 1.2.0
+- Ubuntu 22.04
+
+PoC:
+# malicious-entry.ncl
+{
+  name = "evil-package",
+  version = "1.0.0",
+  # Malicious code in contract
+  postInstall = fun x => std.sys.exec "rm -rf /",
+}
+
+Suggested Fix:
+Sandbox Nickel evaluation:
+- Disable std.sys module
+- Timeout evaluation (5s)
+- Validate against strict schema
+----
+
+=== Response Timeline
+
+* **Acknowledgment:**
+  - Malicious packages: Within 4 hours
+  - Other vulnerabilities: Within 48 hours
+* **Initial assessment:**
+  - Malicious packages: Within 24 hours
+  - Other vulnerabilities: Within 1 week
+* **Status update:** Every 3-7 days until resolution
+* **Fix deployment:**
+  - Malicious packages: Immediate removal
+  - Critical vulnerabilities: 7-14 days
+  - Other vulnerabilities: 30-90 days
+
+=== Severity Levels
+
+**Critical:** Malicious package in registry, remote code execution, registry corruption
+* Response: Immediate action (remove package, emergency patch)
+* Disclosure: After patch deployment + 7 days
+* **Registry may be temporarily frozen during incident response**
+
+**High:** Nickel parser vulnerability, package verification bypass, cryptographic weakness
+* Response: Patch within 14 days
+* Disclosure: After patch deployment + 14 days
+
+**Medium:** Information disclosure, DoS, dependency vulnerabilities
+* Response: Patch within 60 days
+* Disclosure: After patch deployment + 30 days
+
+**Low:** Minor information leaks, configuration issues
+* Response: Patch in next release
+* Disclosure: After patch deployment + 30 days
+
+== Coordinated Disclosure
+
+**We follow responsible disclosure:**
+
+1. **Private report** to security@example.com
+2. **Confirmation** and severity assessment
+3. **Fix development** in private branch
+4. **For malicious packages:**
+   - Immediate removal from registry
+   - Notify all users who downloaded package
+   - Publish security advisory
+5. **Patch release** with CVE assignment
+6. **Public disclosure** after coordinated timeline
+
+**Embargo period:**
+* **Malicious packages:** No embargo - immediate public disclosure after removal
+* **Other vulnerabilities:** 90 days from report or patch release (whichever is sooner)
+
+== Security Advisories
+
+Published at:
+* **GitHub:** https://github.com/yourorg/ada-loom-registry/security/advisories
+* **Email list:** security-announce@example.com (subscribe: https://example.com/security-list)
+* **Registry:** https://ada-loom-registry.example.com/security
+
+**Format:** CVE-YYYY-XXXXX, severity, affected packages/versions, mitigation
+
+== Bug Bounty Program
+
+**⚠️ No formal bug bounty program at this time.**
+
+**Acknowledgments:**
+* Security researchers credited in SECURITY_ACKNOWLEDGMENTS.adoc
+* Name + website/Twitter (with permission)
+* Hall of Fame: https://example.com/security-hall-of-fame
+
+== Security Best Practices
+
+=== Registry Operations
+
+**Package verification:**
+[source,haskell]
+----
+import Crypto.Hash (SHA256, Digest, hash)
+import qualified Data.ByteString as BS
+
+-- Verify package integrity
+verifyPackage :: PackageEntry -> PackageArchive -> Either Error ()
+verifyPackage entry archive = do
+  let computedHash = hash (archiveContent archive) :: Digest SHA256
+  let declaredHash = packageHash entry
+
+  unless (computedHash == declaredHash) $
+    Left HashMismatchError
+
+  -- Verify signature
+  verifySignature (packageSignature entry) (packageContent entry)
+----
+
+**Nickel schema validation:**
+[source,haskell]
+----
+import qualified Nickel.Eval as Nickel
+import System.Timeout (timeout)
+
+-- Safely evaluate Nickel schema
+safeEvaluateSchema :: FilePath -> IO (Either Error Schema)
+safeEvaluateSchema schemaPath = do
+  -- Timeout: 5 seconds
+  result <- timeout (5 * 1000000) $ Nickel.evaluate schemaPath
+
+  case result of
+    Nothing -> pure $ Left TimeoutError
+    Just schema -> do
+      -- Validate against meta-schema
+      validateAgainstMetaSchema schema
+----
+
+**Namespace protection:**
+[source,haskell]
+----
+-- Reserved namespaces
+reservedNames :: [String]
+reservedNames = ["ada", "core", "std", "system", "internal"]
+
+validatePackageName :: String -> Either Error ()
+validatePackageName name
+  | name `elem` reservedNames = Left ReservedNameError
+  | length name < 3 = Left NameTooShortError
+  | not (isValidName name) = Left InvalidNameError
+  | otherwise = Right ()
+
+isValidName :: String -> Bool
+isValidName = all (\c -> isAlphaNum c || c `elem` "-_")
+----
+
+=== Haskell Development
+
+**Type safety:**
+[source,haskell]
+----
+-- Use newtypes for registry types
+newtype PackageName = PackageName Text
+newtype PackageVersion = PackageVersion Text
+newtype PackageHash = PackageHash (Digest SHA256)
+
+data PackageEntry = PackageEntry
+  { packageName :: PackageName
+  , packageVersion :: PackageVersion
+  , packageHash :: PackageHash
+  , packageSignature :: Signature
+  , packageMetadata :: Metadata
+  }
+----
+
+**Database integrity:**
+[source,haskell]
+----
+-- Use transactions for registry updates
+addPackageToRegistry :: PackageEntry -> IO (Either Error ())
+addPackageToRegistry entry = runTransaction $ do
+  -- Check if package already exists
+  existing <- lookupPackage (packageName entry) (packageVersion entry)
+  case existing of
+    Just _ -> throwError DuplicatePackageError
+    Nothing -> do
+      -- Validate entry
+      validatePackageEntry entry
+      -- Insert atomically
+      insertPackage entry
+      -- Commit transaction
+      commit
+----
+
+=== Package Submission Security
+
+**Submission validation:**
+1. **Schema validation:** Entry conforms to registry schema
+2. **Namespace check:** Package name not reserved
+3. **Version check:** Semver valid, not duplicate
+4. **Cryptographic verification:** Hash + signature valid
+5. **Content scan:** No malicious code patterns
+6. **Size limits:** Package < 100MB (configurable)
+7. **Rate limiting:** Max 10 submissions/hour per user
+
+**Example validation pipeline:**
+[source,haskell]
+----
+validateSubmission :: PackageSubmission -> IO (Either Error ValidatedPackage)
+validateSubmission submission = runExceptT $ do
+  -- Schema validation
+  schema <- liftEither $ parseSchema (submissionSchema submission)
+  validateSchema schema registryMetaSchema
+
+  -- Namespace check
+  validatePackageName (submissionName submission)
+
+  -- Version check
+  version <- liftEither $ parseSemver (submissionVersion submission)
+  checkVersionNotExists (submissionName submission) version
+
+  -- Cryptographic verification
+  verifyHash submission
+  verifySignature submission
+
+  -- Content scan
+  scanForMaliciousPatterns (submissionContent submission)
+
+  -- Size check
+  unless (submissionSize submission < maxPackageSize) $
+    throwError PackageTooLargeError
+
+  pure $ ValidatedPackage submission
+----
+
+=== Code Review
+
+**Security checklist:**
+* [ ] No secrets in code/commits
+* [ ] User input validated before registry operations
+* [ ] Nickel evaluation sandboxed + timeout
+* [ ] Cryptographic verification on all packages
+* [ ] Database transactions for atomicity
+* [ ] Rate limiting on submissions
+* [ ] Size limits enforced
+* [ ] Namespace protection
+* [ ] Error messages don't leak system paths
+
+=== Dependencies
+
+**Audit dependencies:**
+[source,bash]
+----
+# Check for outdated dependencies
+cabal outdated
+
+# Update cabal index
+cabal update
+
+# Verify dependency hashes
+cabal build --only-dependencies
+----
+
+**Pin critical dependencies:**
+* Nickel parser: Exact version (security-critical)
+* Cryptographic libraries: Exact version
+* Database driver: Exact version
+
+**Subscribe to:**
+* Nickel Security: https://github.com/tweag/nickel/security
+* Hackage Security Advisories: https://hackage.haskell.org/
+* GHC Security: https://www.haskell.org/ghc/security.html
+
+=== Testing
+
+**Security testing:**
+[source,bash]
+----
+# Run tests
+cabal test
+
+# Test malicious entry rejection
+just test-malicious-entry
+
+# Test Nickel parser safety
+just test-nickel-sandbox
+
+# Test cryptographic verification
+just test-signature-verification
+
+# Integration tests
+just test-registry-integrity
+----
+
+== Security Features
+
+**ada-loom-registry includes:**
+
+* **Cryptographic Verification:** SHA256 hashes + Ed25519 signatures
+* **Nickel Sandboxing:** Evaluation timeout + disabled system calls
+* **Namespace Protection:** Reserved names enforced
+* **Rate Limiting:** 10 submissions/hour per user
+* **Size Limits:** Max 100MB per package
+* **Content Scanning:** Pattern matching for malicious code
+* **Database Transactions:** Atomic registry updates
+* **Type Safety:** Haskell's type system prevents many vulnerabilities
+* **Audit Logging:** All registry operations logged
+* **Backup/Recovery:** Daily snapshots, 30-day retention
+
+== Vulnerability Disclosure Log
+
+**2025-01-20: [PLACEHOLDER] - Awaiting first security report**
+
+**(See full log in SECURITY_ADVISORIES.adoc)**
+
+== Malicious Package Response Plan
+
+**If malicious package found in registry:**
+
+1. **Immediate removal** from registry (< 4 hours)
+2. **Notify all users** who downloaded package via email
+3. **Publish security advisory** with package details
+4. **Investigate compromise:** How did it pass validation?
+5. **Strengthen validation:** Add checks to prevent similar attacks
+6. **Monitor for resubmission:** Ban package name + author
+
+== Contact
+
+**Security Team:**
+* Email: security@example.com
+* PGP: https://example.com/pgp-key.asc
+
+**Emergency (malicious packages):**
+* Email: security-emergency@example.com
+* Response: Within 4 hours
+
+**Maintainers:**
+* Lead: [Name] (@handle)
+* Security: [Name] (@handle)
+
+**Response hours:**
+* **Malicious packages:** 24/7
+* **Other vulnerabilities:** Monday-Friday, 9 AM - 5 PM UTC
+
+---
+
+**Thank you for helping keep ada-loom-registry secure!** 🔒
+
+_Last Updated: 2025-01-21 | Rhodium Standard 0.5_

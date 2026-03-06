@@ -1,0 +1,295 @@
+= Reversibility and Rollback Procedures - ada-loom-registry
+:toc: macro
+:toclevels: 2
+
+[abstract]
+--
+Rollback procedures for ada-loom-registry (Haskell + Nickel parser). Covers GHC compilation, Nickel parser integration, and registry operations. Rhodium Standard 0.5, Pillar 1, Section 2.1.5.
+--
+
+toc::[]
+
+== Quick Reference
+
+[source,bash]
+----
+# Repository Rollback
+git revert <commit>
+git checkout v1.2.3
+
+# Haskell Compilation Rollback
+cabal clean && cabal build
+
+# Nickel Parser Rollback
+cp cabal.project.freeze.backup cabal.project.freeze
+cabal build --only-dependencies
+
+# Registry Rollback
+just rollback-registry v1.2.3
+----
+
+== Repository Rollback
+
+[source,bash]
+----
+# Revert commit
+git revert <commit-hash>
+git push origin main
+
+# Roll back to version
+git checkout v1.2.3
+----
+
+**Time:** 2-5 min | **Data Loss:** None
+
+== Haskell Compilation Rollback
+
+=== GHC Version Rollback
+
+[source,bash]
+----
+# Current: GHC 9.6.3 (WASM-ready via wasm32-wasi target)
+
+# Via GHCup
+ghcup install ghc 9.6.3
+ghcup set ghc 9.6.3
+
+# Verify
+ghc --version
+
+# Rebuild
+cabal clean && cabal build
+----
+
+**Time:** 10-20 min (GHC install) or 2-5 min (rebuild)
+
+=== Cabal Build Rollback
+
+[source,bash]
+----
+# Restore dependency freeze file
+cp cabal.project.freeze.backup cabal.project.freeze
+
+# Clean and rebuild
+cabal clean
+cabal build --only-dependencies
+cabal build
+
+# Verify
+cabal run ada-loom-registry -- --version
+----
+
+**Time:** 5-15 min (depends on Nickel parser compilation)
+**Data Loss:** None
+
+== Nickel Parser Integration Rollback
+
+=== Nickel Library Version Rollback
+
+[source,bash]
+----
+# In cabal.project or package.yaml
+# Revert nickel dependency version
+git checkout v1.2.3 cabal.project
+
+# Rebuild with specific Nickel version
+cabal build --only-dependencies
+cabal build
+
+# Verify Nickel parser functionality
+cabal test nickel-parser-tests
+----
+
+**Time:** 5-15 min (Nickel parser compilation can be slow)
+**Data Loss:** None
+
+=== Nickel Schema Rollback
+
+[source,bash]
+----
+# Rollback Nickel schemas used by registry
+git checkout v1.2.3 schemas/
+
+# Validate schemas
+nickel eval schemas/registry.ncl
+nickel typecheck schemas/registry.ncl
+
+# Rebuild registry with schema changes
+cabal build && cabal test
+----
+
+**Time:** 2-5 min | **Data Loss:** None
+
+== Registry Operations Rollback
+
+=== Local Registry Rollback
+
+[source,bash]
+----
+# Restore registry database from backup
+cp registry.db.backup registry.db
+
+# Or rollback specific entries
+just registry-rollback-entry <entry-id>
+
+# Verify registry integrity
+just registry-validate
+----
+
+**Time:** 1-5 min | **Data Loss:** Varies (see irreversible operations)
+
+=== Registry Index Rebuild
+
+[source,bash]
+----
+# If registry index corrupted, rebuild from source
+just rebuild-registry-index
+
+# Verify index
+just registry-query --test-all
+----
+
+**Time:** 5-15 min (depends on registry size)
+
+== Configuration Rollback
+
+[source,bash]
+----
+# Rollback Nickel configs
+git checkout v1.2.3 config/
+
+# Validate
+nickel eval config/registry.ncl
+
+# Apply
+just apply-config && just rebuild-registry
+----
+
+**Time:** 2-5 min | **Data Loss:** None
+
+== Dependency Rollback
+
+[source,bash]
+----
+# Cabal: Restore exact versions
+cp cabal.project.freeze.backup cabal.project.freeze
+cabal build --only-dependencies
+
+# Verify Nickel parser version
+cabal list --installed | grep nickel
+
+# Test integration
+cabal test
+----
+
+**Time:** 5-15 min | **Data Loss:** None
+
+== Irreversible Operations
+
+=== Published Registry Entries (⚠️ CANNOT ROLLBACK)
+
+**⚠️ Once registry entries are published externally, they cannot be unpublished.**
+
+**Example:**
+[source,bash]
+----
+ada-loom-registry publish --entry my-package-1.0.0
+# Entry is now public, immutable
+----
+
+**Mitigation:**
+* Staging registry for testing before production publish
+* Version bumping instead of modification (publish 1.0.1, not edit 1.0.0)
+* Deprecation flags instead of deletion
+* Audit log of all publish operations
+
+=== Registry Entry Deletion
+
+**⚠️ Deleting entries removes them permanently (unless backups exist).**
+
+**Mitigation:**
+* Soft deletes with retention policy
+* Daily registry backups with 30-day retention
+* Require confirmation for delete operations
+* Tombstone records for deleted entries
+
+=== Nickel Schema Migrations (Data Transformation)
+
+**⚠️ Schema changes that transform data may lose original structure.**
+
+**Example:**
+[source,nickel]
+----
+# Old schema
+{ name: String, version: String }
+
+# New schema (flattened)
+{ full_name: String }  # Combining name + version loses separation
+----
+
+**Mitigation:**
+* Store original data in separate archive table
+* Migration scripts with rollback procedures
+* Test migrations on staging data first
+
+== Testing Rollback
+
+[source,bash]
+----
+# Rollback drill
+cabal build && cabal test
+
+# Publish test entry to staging registry
+just registry-publish-staging test-entry-1.0.0
+
+# Rollback to previous version
+git checkout v1.2.3
+cabal clean && cabal build
+cabal test
+
+# Verify registry still operational
+just registry-health-check
+
+# Measure time
+echo "Rollback completed in: X minutes"
+----
+
+== Monitoring
+
+[source,bash]
+----
+# Registry health check
+just registry-health-check
+
+# Check Nickel parser performance
+cabal bench nickel-parser-bench
+
+# Verify GHC version
+ghc --version
+----
+
+== WASM Advantage
+
+**GHC 9.6.3 supports wasm32-wasi target:**
+
+[source,bash]
+----
+# Build for WASM
+cabal build --with-ghc wasm32-wasi-ghc
+
+# Rollback: Same as native build
+cabal clean && cabal build
+----
+
+**Rhodium Compliance:** Exceeds Pillar 3 (Interoperable) requirement with native Nickel usage and WASM-ready GHC.
+
+== References
+
+* link:https://cabal.readthedocs.io/en/stable/[Cabal Documentation]
+* link:https://www.haskell.org/ghc/blog/20230914-wasm-backend-merged.html[GHC WASM Backend]
+* link:https://nickel-lang.org/[Nickel Language]
+* link:docs/adr/0002-nickel-parser-integration.adoc[ADR-0002: Nickel Parser Integration]
+
+---
+
+_Last Updated: 2025-01-21 | Repository: ada-loom-registry (GHC 9.6.3, Nickel Parser)_

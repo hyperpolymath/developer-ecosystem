@@ -1,0 +1,47 @@
+# ada-loom-registry - Development Tasks
+set shell := ["bash", "-uc"]
+set dotenv-load := true
+
+project := "ada-loom-registry"
+
+# Show all recipes
+default:
+    @just --list --unsorted
+
+# Build the project
+build:
+    cabal build all
+
+# Run tests
+test:
+    cabal test all --test-show-details=direct
+
+# Clean build artifacts
+clean:
+    cabal clean
+    rm -rf dist-newstyle/
+
+# Format Haskell source files using ormolu
+fmt:
+    find src app -name '*.hs' -exec ormolu --mode inplace {} +
+
+# Run hlint on source files
+lint:
+    hlint src/ app/
+
+# Build and run the executable
+run *args:
+    cabal run spindle -- {{args}}
+
+# Generate documentation
+docs:
+    cabal haddock --enable-documentation --haddock-hyperlink-source
+
+# Build with optimizations
+build-release:
+    cabal build all -O2
+
+# Run all quality checks (lint + format check)
+check:
+    @just lint
+    find src app -name '*.hs' -exec ormolu --mode check {} +

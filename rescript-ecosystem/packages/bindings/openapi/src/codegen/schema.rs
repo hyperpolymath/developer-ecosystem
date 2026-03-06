@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: PMPL-1.0-or-later
-// SPDX-FileCopyrightText: 2025 Hyperpolymath
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell
 
 //! rescript-schema validator generation with topological sorting
 
@@ -272,6 +272,7 @@ pub fn topological_sort_scc(types: &[TypeDef]) -> Vec<Vec<&TypeDef>> {
     result
 }
 
+#[allow(clippy::too_many_arguments)]
 fn tarjan_dfs(
     at: usize,
     adj: &Vec<Vec<usize>>,
@@ -330,7 +331,7 @@ fn generate_schema(type_def: &TypeDef, config: &Config) -> String {
             output.push_str(&format!("let {}: S.t<{}> = S.object(s => ({{\n", schema_name, type_name));
 
             for field in fields {
-                output.push_str(&generate_field_schema(field, config));
+                output.push_str(&generate_field_schema(field));
             }
 
             output.push_str(&format!("}}: {}))\n", type_name));
@@ -376,7 +377,7 @@ fn generate_schema(type_def: &TypeDef, config: &Config) -> String {
                             // Wrap the inner schema to transform to variant constructor
                             output.push_str(&format!(
                                 "  {}->S.transform(s => {{\n    parser: v => {}(v),\n    serializer: v => switch v {{ | {}(x) => x | _ => S.fail(\"Expected {}\") }}\n  }}),\n",
-                                ty.to_schema(config),
+                                ty.to_schema(),
                                 case.name,
                                 case.name,
                                 case.name
@@ -405,14 +406,14 @@ fn generate_schema(type_def: &TypeDef, config: &Config) -> String {
                 output.push_str(&format!("/** Schema for {} */\n", doc));
             }
 
-            output.push_str(&format!("let {} = {}\n", schema_name, target.to_schema(config)));
+            output.push_str(&format!("let {} = {}\n", schema_name, target.to_schema()));
         }
     }
 
     output
 }
 
-fn generate_field_schema(field: &Field, config: &Config) -> String {
+fn generate_field_schema(field: &Field) -> String {
     let method = if field.optional { "fieldOr" } else { "field" };
     let default = if field.optional {
         ", None"
@@ -420,7 +421,7 @@ fn generate_field_schema(field: &Field, config: &Config) -> String {
         ""
     };
 
-    let schema = field.ty.to_schema(config);
+    let schema = field.ty.to_schema();
 
     if field.name != field.original_name {
         format!(

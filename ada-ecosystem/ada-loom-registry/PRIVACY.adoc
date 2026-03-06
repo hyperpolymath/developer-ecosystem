@@ -1,0 +1,454 @@
+= Privacy Policy - ada-loom-registry
+:toc: macro
+
+[abstract]
+--
+Privacy policy and data handling procedures for ada-loom-registry. Rhodium Standard 0.5, Pillar 1, Section 2.1.8.
+--
+
+toc::[]
+
+== Overview
+
+**ada-loom-registry is a package registry for the Ada ecosystem.**
+
+**Core Privacy Principles:**
+* **Minimal data collection:** Only what's necessary for registry operation
+* **Transparency:** All data practices documented
+* **User control:** Package authors control their metadata
+* **Public registry:** Package metadata is public by design
+* **No tracking:** No cross-site tracking or advertising
+
+**Last Updated:** 2025-01-21
+
+== What Data We Collect
+
+=== Package Metadata (Public)
+
+**All package metadata is PUBLIC by design:**
+
+[cols="1,2,1"]
+|===
+|Data Type |Purpose |Retention
+
+|Package name
+|Registry identification
+|Permanent
+
+|Package version
+|Version management
+|Permanent
+
+|Description
+|Package discovery
+|Permanent
+
+|License
+|Legal compliance
+|Permanent
+
+|Dependencies
+|Dependency resolution
+|Permanent
+
+|Author name/email
+|Attribution, contact
+|Permanent (unless author updates)
+
+|Source repository URL
+|Code access
+|Permanent
+
+|Package hash (SHA256)
+|Integrity verification
+|Permanent
+
+|Upload timestamp
+|Audit trail
+|Permanent
+
+|===
+
+**⚠️ IMPORTANT:** Package metadata is **PUBLIC** and **PERMANENT**. Do not include sensitive information.
+
+=== User Account Data
+
+**For package submitters:**
+
+[cols="1,2,1"]
+|===
+|Data Type |Purpose |Retention
+
+|Email address
+|Authentication, notifications
+|Until account deletion
+
+|Username
+|Attribution, identification
+|Permanent (associated with published packages)
+
+|Cryptographic public key
+|Package signing
+|Until key rotation
+
+|API tokens (hashed)
+|Programmatic access
+|Until revoked (max 1 year)
+
+|Account creation date
+|Audit trail
+|Permanent
+
+|===
+
+=== Usage Data
+
+**Aggregated, anonymized:**
+
+[cols="1,2,1"]
+|===
+|Data Type |Purpose |Retention
+
+|Download counts
+|Package popularity
+|Permanent
+
+|Search queries (anonymized)
+|Search improvement
+|90 days
+
+|API usage (rate limiting)
+|Abuse prevention
+|7 days
+
+|Error logs (anonymized)
+|Debugging
+|30 days
+
+|===
+
+=== Data We DO NOT Collect
+
+* ❌ IP addresses (anonymized after 24 hours)
+* ❌ Device fingerprints
+* ❌ Browsing history
+* ❌ Location data
+* ❌ Social graphs
+* ❌ Package download history (per-user)
+* ❌ Search history (per-user)
+
+== How We Use Your Data
+
+=== Primary Uses
+
+**Registry Operation:**
+* Package hosting and distribution
+* Dependency resolution
+* Package search and discovery
+* Cryptographic verification
+
+**User Authentication:**
+* Login to registry
+* API token generation
+* Package submission authorization
+
+**Service Improvement:**
+* Aggregated usage analytics (no individual tracking)
+* Error monitoring
+* Performance optimization
+
+**Security:**
+* Rate limiting (abuse prevention)
+* Anomaly detection (compromise detection)
+* Audit logging (admin actions only)
+
+=== We DO NOT:
+
+* ❌ Sell or share data with third parties
+* ❌ Track individual user behavior
+* ❌ Build user profiles for advertising
+* ❌ Use data for marketing
+* ❌ Share data with governments (except legal requirement)
+
+== Your Rights
+
+=== Account Data
+
+**You have the right to:**
+
+* **Access:** Request copy of your account data
+* **Rectification:** Update your email, username (if not in use)
+* **Deletion:** Delete your account (with limitations)
+* **Portability:** Export your package list
+* **Object:** Object to specific data processing
+
+**How to exercise rights:**
+Email: privacy@example.com with subject: `[PRIVACY REQUEST] <Your request>`
+
+**Response time:** 30 days
+
+=== Account Deletion Limitations
+
+**When you delete your account:**
+
+* ✅ Email address deleted
+* ✅ API tokens revoked
+* ✅ Private metadata deleted
+* ❌ **Published packages remain** (registry integrity)
+* ❌ **Username remains** (attribution for published packages)
+* ❌ **Package metadata remains** (public registry)
+
+**Rationale:** Published packages are part of the public registry. Deletion would break downstream projects depending on your packages.
+
+**Alternative:** Transfer package ownership to another user before account deletion.
+
+=== Package Metadata Control
+
+**As a package author, you can:**
+
+* ✅ Update package metadata (new version)
+* ✅ Deprecate package versions
+* ✅ Transfer package ownership
+* ❌ Delete published packages (breaks downstream)
+
+**Exceptional deletion:**
+* Malicious packages: Immediate removal by security team
+* Legal requirement: DMCA takedown, court order
+
+== Data Retention
+
+[cols="1,1,2"]
+|===
+|Data Type |Retention |Rationale
+
+|Package metadata
+|Permanent
+|Public registry integrity
+
+|User email
+|Until account deletion
+|Authentication
+
+|API tokens
+|Until revoked (max 1 year)
+|Security (forced rotation)
+
+|Download counts
+|Permanent
+|Package popularity
+
+|Search queries (anonymized)
+|90 days
+|Search improvement
+
+|Error logs
+|30 days
+|Debugging
+
+|Access logs (IP anonymized)
+|7 days
+|Rate limiting
+
+|Audit logs (admin actions)
+|7 years
+|Compliance
+
+|===
+
+**Automated deletion:**
+* Expired API tokens: Auto-deleted after 1 year
+* Old logs: Auto-purged per retention schedule
+
+== Data Security
+
+=== Cryptographic Protection
+
+**Data in transit:**
+* TLS 1.3 for all connections
+* Certificate pinning (API clients)
+
+**Data at rest:**
+* Database encrypted with AES-256
+* Package archives hashed (SHA256)
+* Passwords hashed (Argon2id)
+* API tokens hashed (SHA256)
+
+**Package integrity:**
+* Ed25519 signatures for all packages
+* SHA256 hashes verified on download
+* Signature verification automatic
+
+=== Access Control
+
+**Production infrastructure:**
+* Multi-factor authentication (MFA) required for admins
+* Role-based access control (RBAC)
+* Principle of least privilege
+* Audit logging of all admin actions
+
+**Database access:**
+* Firewalled (internal network only)
+* Encrypted connections
+* Least-privilege DB users
+
+=== Incident Response
+
+**Data breach procedure:**
+1. **Identification:** Detect breach within 24 hours
+2. **Containment:** Isolate affected systems within 4 hours
+3. **Assessment:** Determine scope of data exposed within 72 hours
+4. **Notification:**
+   - Affected users: Within 72 hours (GDPR requirement)
+   - Regulators: Within 72 hours (GDPR requirement)
+   - Public disclosure: Within 7 days
+5. **Remediation:** Fix vulnerability, rotate all tokens
+6. **Post-mortem:** Public incident report
+
+**Contact for breaches:** security@example.com
+
+== Third-Party Services
+
+=== Hosting Provider
+
+**Provider:** [Cloud provider name]
+* **Data shared:** Registry database, package archives
+* **Privacy policy:** [Link]
+* **Data residency:** EU/US (configurable)
+* **DPA:** Data Processing Agreement in place
+
+=== Email Provider
+
+**Provider:** [Email service name]
+* **Data shared:** Email addresses (for notifications)
+* **Privacy policy:** [Link]
+* **Purpose:** Account notifications, security alerts
+
+=== CDN (Package Distribution)
+
+**Provider:** [CDN name]
+* **Data shared:** Package archives (public)
+* **Privacy policy:** [Link]
+* **Purpose:** Fast package downloads globally
+
+**No third-party tracking:**
+* We do NOT use Google Analytics, Facebook Pixel, or similar
+* Self-hosted analytics only (anonymized)
+
+== Cookies and Tracking
+
+**We DO NOT use:**
+* ❌ Advertising cookies
+* ❌ Social media tracking pixels
+* ❌ Cross-site trackers
+* ❌ Fingerprinting
+
+**Essential cookies only:**
+
+[cols="1,2,1"]
+|===
+|Cookie Name |Purpose |Expiry
+
+|session_id
+|Authentication
+|Session (7 days)
+
+|csrf_token
+|CSRF protection
+|Session
+
+|===
+
+**Analytics:**
+* Self-hosted (no third-party analytics)
+* IP anonymization enabled (last octet zeroed)
+* Aggregate metrics only (no individual tracking)
+
+== Children's Privacy
+
+**Age restriction:** ada-loom-registry is not intended for children under 13.
+
+* We do not knowingly collect data from children
+* If we discover child data, we will delete it within 72 hours
+* Parents: Contact privacy@example.com to report child data
+
+== International Data Transfers
+
+**Primary jurisdiction:** [Your jurisdiction, e.g., EU/US]
+
+**Data residency:**
+* Database: [EU/US] data center
+* Package archives: CDN (globally distributed)
+* Backups: Same region as primary
+
+**GDPR compliance (EU users):**
+* Standard Contractual Clauses (SCCs) with processors
+* Adequacy decisions (EU-approved countries)
+* Privacy Shield (if applicable)
+
+== Changes to Privacy Policy
+
+**Notification of changes:**
+* Email notification to registered users
+* Banner on registry homepage
+* 30-day notice before enforcement
+
+**Version history:**
+* https://github.com/yourorg/ada-loom-registry/blob/main/PRIVACY.adoc
+* Git commit log shows all historical versions
+
+== Contact
+
+**Privacy Officer:**
+* Email: privacy@example.com
+* Response time: 7 days
+
+**Data Protection Officer (DPO):**
+* Email: dpo@example.com (if required by GDPR)
+
+**General inquiries:**
+* Email: contact@example.com
+
+**Postal address:**
+[Your organization address]
+
+== Regulatory Compliance
+
+**Applicable regulations:**
+* ✅ GDPR (EU General Data Protection Regulation)
+* ✅ CCPA (California Consumer Privacy Act)
+* ✅ ePrivacy Directive (Cookie Law)
+
+**Legal basis for processing (GDPR):**
+* **Contract:** Necessary for registry service
+* **Legitimate interest:** Service improvement, fraud prevention
+* **Consent:** Optional features (e.g., email notifications)
+
+**Supervisory authority:**
+* [Your data protection authority]
+* Complaint procedure: https://[authority-website]
+
+== Open Source Transparency
+
+**Code transparency:**
+* Registry code: https://github.com/yourorg/ada-loom-registry
+* Privacy-related code: Clearly documented
+* Reproducible builds: Docker images with SHA256 hashes
+
+**Audit reports:**
+* Privacy audit: [Link to audit report, if available]
+* Security audit: [Link to security audit]
+
+**Self-audit checklist:**
+* [ ] Minimal data collection
+* [ ] Secure data storage (encryption)
+* [ ] Clear retention policies
+* [ ] User control over data
+* [ ] Transparent practices
+* [ ] No third-party tracking
+* [ ] Regular security updates
+
+---
+
+**Questions?** Email privacy@example.com
+
+_Last Updated: 2025-01-21 | Rhodium Standard 0.5_

@@ -9,6 +9,6 @@
     "check": "npm run build && npm run test"
   },
   "devDependencies": {
-    "rescript": "^11.1.4"
+    "rescript": "^12.0.0"
   }
 }

@@ -1,0 +1,181 @@
+{
+  "repository": "ada-loom-registry",
+  "description": "Haskell + Nickel configuration registry and parser",
+  "rhodium_version": "0.5",
+  "compliance_level": "rhodium-bronze",
+  "target_level": "rhodium-silver",
+  "last_updated": "2025-01-21T00:00:00Z",
+  "pillars": {
+    "audit_grade": {
+      "level": "bronze",
+      "score": 45,
+      "requirements": {
+        "commit_signing": {
+          "status": "planned",
+          "details": "GPG signing to be configured"
+        },
+        "artifact_attestation": {
+          "status": "planned",
+          "details": "SLSA for Haskell binaries and libraries",
+          "waiver": "Waiver-2025-002"
+        },
+        "immutable_logs": {
+          "status": "partial",
+          "details": "Protected branches to be configured"
+        },
+        "sbom_generation": {
+          "status": "planned",
+          "details": "cabal-plan with SBOM converter"
+        },
+        "reproducible_builds": {
+          "status": "partial",
+          "details": "Nickel configs present (already using target config language!)"
+        },
+        "reversibility_doc": {
+          "status": "planned",
+          "details": "REVERSIBILITY.adoc to be created"
+        },
+        "security_doc": {
+          "status": "planned",
+          "details": "SECURITY.adoc to be created"
+        }
+      }
+    },
+    "narratable": {
+      "level": "bronze",
+      "score": 40,
+      "requirements": {
+        "asciidoc_only": {
+          "status": "non_compliant",
+          "details": "2 Markdown files need conversion",
+          "waiver": "Waiver-2025-001"
+        },
+        "readme_length": {
+          "status": "partial",
+          "details": "README.md exists, needs conversion and length check"
+        },
+        "cookbook": {
+          "status": "not_required",
+          "details": "Gold-level requirement, Silver target",
+          "waiver": "Waiver-2025-004"
+        },
+        "architecture_doc": {
+          "status": "not_required",
+          "details": "Gold-level requirement, Silver target",
+          "waiver": "Waiver-2025-004"
+        },
+        "onboarding_doc": {
+          "status": "planned",
+          "details": "ONBOARDING.adoc to be created"
+        },
+        "adr_framework": {
+          "status": "planned",
+          "details": "docs/adr/ structure to be created"
+        },
+        "conventional_commits": {
+          "status": "partial",
+          "details": "Git hooks to be installed"
+        },
+        "changelog": {
+          "status": "partial",
+          "details": "CHANGELOG.md exists, needs conversion",
+          "waiver": "Waiver-2025-001"
+        },
+        "typed_config": {
+          "status": "compliant",
+          "details": "Uses Nickel natively for configuration (exceeds requirement!)"
+        }
+      }
+    },
+    "interoperable": {
+      "level": "bronze",
+      "score": 40,
+      "requirements": {
+        "multi_ecosystem_packaging": {
+          "status": "partial",
+          "details": "Cabal/Hackage packaging, multi-ecosystem pending"
+        },
+        "wasm_compilation": {
+          "status": "planned",
+          "details": "GHC 9.6.3 has wasm32-wasi support, Nickel FFI needs testing",
+          "waiver": "Waiver-2025-003"
+        },
+        "oil_scripts": {
+          "status": "planned",
+          "details": "Scripts to be created with alternatives"
+        },
+        "multi_shell_support": {
+          "status": "planned",
+          "details": "Nushell, Oil, and POSIX sh alternatives needed"
+        },
+        "wcag_accessibility": {
+          "status": "planned",
+          "details": "Documentation to target WCAG AA"
+        },
+        "i18n": {
+          "status": "not_required",
+          "details": "Rhodium-level requirement, Silver target"
+        }
+      }
+    },
+    "inclusive": {
+      "level": "bronze",
+      "score": 45,
+      "requirements": {
+        "osi_license": {
+          "status": "compliant",
+          "details": "MIT + Palimpsest 0.8 dual license"
+        },
+        "code_of_conduct": {
+          "status": "partial",
+          "details": "CODE_OF_CONDUCT.adoc needs expansion"
+        },
+        "contributing_guide": {
+          "status": "compliant",
+          "details": "CONTRIBUTING.adoc exists"
+        },
+        "carbon_reporting": {
+          "status": "planned",
+          "details": "CodeCarbon integration after CI/CD setup"
+        },
+        "ai_usage_disclosure": {
+          "status": "in_progress",
+          "details": "AI_USAGE.adoc being created"
+        },
+        "privacy_doc": {
+          "status": "not_applicable",
+          "details": "Configuration registry, no user data collection"
+        }
+      }
+    }
+  },
+  "technology_stack": {
+    "primary_language": "Haskell",
+    "version": "9.6.3",
+    "config_language": "Nickel",
+    "build_tools": ["Cabal"],
+    "package_manager": "Hackage"
+  },
+  "git_infrastructure": {
+    "hooks_count": 8,
+    "ci_stages": 7,
+    "nickel_configs": 4,
+    "dotfiles": 30
+  },
+  "markdown_files_to_convert": 2,
+  "waivers_active": 4,
+  "waivers_expiring_soon": 3,
+  "next_audit": "2025-04-01",
+  "nickel_integration": {
+    "native_usage": true,
+    "exceeds_standard": true,
+    "details": "Uses Nickel as primary configuration language, exceeding Rhodium requirement for typed config"
+  },
+  "notes": [
+    "Already uses Nickel natively - exceeds Rhodium typed configuration requirement!",
+    "GHC 9.6.3 has wasm32-wasi support (advantage over scaffoldia's 9.4.8)",
+    "Only 2 Markdown files to convert (low effort)",
+    "Target: Silver level, Gold documentation deferred",
+    "Focus areas: SLSA attestation, Markdown conversion, WASM + Nickel FFI testing"
+  ]
+}

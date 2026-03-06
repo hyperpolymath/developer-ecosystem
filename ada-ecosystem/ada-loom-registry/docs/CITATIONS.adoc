@@ -1,0 +1,36 @@
+= ada-loom-registry - Citation Guide
+:toc:
+
+== BibTeX
+
+[source,bibtex]
+----
+@software{ada-loom-registry_2025,
+  author = {Polymath, Hyper},
+  title = {ada-loom-registry},
+  year = {2025},
+  url = {https://github.com/hyperpolymath/ada-loom-registry},
+license = "PMPL-1.0"
+}
+----
+
+== Harvard Style
+
+Polymath, H. (2025) _ada-loom-registry_ [Computer software]. Available at: https://github.com/hyperpolymath/ada-loom-registry
+
+== OSCOLA
+
+Hyper Polymath, 'ada-loom-registry' (2025) <https://github.com/hyperpolymath/ada-loom-registry>
+
+== MLA
+
+Polymath, Hyper. "ada-loom-registry." 2025, github.com/hyperpolymath/ada-loom-registry.
+
+== APA 7
+
+Polymath, H. (2025). _ada-loom-registry_ [Computer software]. GitHub. https://github.com/hyperpolymath/ada-loom-registry
+
+== See Also
+
+* link:../CITATION.cff[CITATION.cff]
+* link:../codemeta.json[codemeta.json]

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: PMPL-1.0-or-later
-// SPDX-FileCopyrightText: 2025 Hyperpolymath
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell
 
 = rescript-openapi
 :toc:
@@ -72,6 +72,30 @@ This generates:
 | `--with-client`
 | Generate HTTP client
 | `true`
+
+| `--unified`
+| Generate single module with types + schemas
+| `false`
+
+| `--client-mode`
+| Client generation: `full`, `functor-only`, `none`
+| `full`
+
+| `--variant-mode`
+| Variant style: `polymorphic`, `standard`
+| `polymorphic`
+
+| `-c, --config`
+| Path to `rescript-openapi.toml` config file
+| `rescript-openapi.toml`
+
+| `-w, --watch`
+| Watch input file and regenerate on change
+| `false`
+
+| `--dry-run`
+| Print generated code to stdout
+| `false`
 |===
 
 === Validate Spec
@@ -113,7 +137,7 @@ type userRole = [
 
 [source,rescript]
 ----
-module S = RescriptSchema
+module S = RescriptSchema.S
 
 let userSchema: S.t<user> = S.object(s => ({
   id: s.field("id", S.string),
