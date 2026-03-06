@@ -1,0 +1,38 @@
+{
+  "version": "5",
+  "specifiers": {
+    "npm:@rescript/core@1": "1.6.1_rescript@11.1.4",
+    "npm:@tauri-apps/api@2": "2.9.1",
+    "npm:rescript@11": "11.1.4"
+  },
+  "npm": {
+    "@rescript/core@1.6.1_rescript@11.1.4": {
+      "integrity": "sha512-vyb5k90ck+65Fgui+5vCja/mUfzKaK3kOPT4Z6aAJdHLH1eljEi1zKhXroCiCtpNLSWp8k4ulh1bdB5WS0hvqA==",
+      "dependencies": [
+        "rescript"
+      ]
+    },
+    "@tauri-apps/api@2.9.1": {
+      "integrity": "sha512-IGlhP6EivjXHepbBic618GOmiWe4URJiIeZFlB7x3czM0yDHHYviH1Xvoiv4FefdkQtn6v7TuwWCRfOGdnVUGw=="
+    },
+    "rescript@11.1.4": {
+      "integrity": "sha512-0bGU0bocihjSC6MsE3TMjHjY0EUpchyrREquLS8VsZ3ohSMD+VHUEwimEfB3kpBI1vYkw3UFZ3WD8R28guz/Vw==",
+      "scripts": true,
+      "bin": true
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "npm:@rescript/core@1",
+      "npm:@tauri-apps/api@2",
+      "npm:rescript@11"
+    ],
+    "packageJson": {
+      "dependencies": [
+        "npm:@rescript/core@1",
+        "npm:@tauri-apps/api@2",
+        "npm:rescript@11"
+      ]
+    }
+  }
+}

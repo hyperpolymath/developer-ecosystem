@@ -1,0 +1,52 @@
+{
+  "name": "rescript-tea",
+  "version": "0.1.0",
+  "description": "The Elm Architecture for ReScript",
+  "keywords": [
+    "rescript",
+    "elm",
+    "tea",
+    "react",
+    "architecture",
+    "functional"
+  ],
+  "author": "Jonathan D.A. Jewell",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hyperpolymath/rescript-tea"
+  },
+  "main": "lib/es6/src/Tea.res.mjs",
+  "files": [
+    "src",
+    "lib/es6/src",
+    "lib/bs/src",
+    "lib/bs/compiler-info.json",
+    "lib/rescript.lock",
+    "rescript.json",
+    "README.adoc",
+    "LICENSE.txt"
+  ],
+  "scripts": {
+    "build": "rescript",
+    "clean": "rescript clean",
+    "dev": "rescript -w",
+    "test": "deno test --no-check --allow-read lib/es6/test/Tea_Cmd_test.res.mjs lib/es6/test/Tea_Json_test.res.mjs"
+  },
+  "dependencies": {
+    "@proven/rescript-bindings": "file:../../proven/bindings/rescript",
+    "@rescript/core": "^1.5.0"
+  },
+  "peerDependencies": {
+    "@rescript/react": ">=0.14.0",
+    "react": ">=19.0.0",
+    "react-dom": ">=19.0.0",
+    "rescript": "^12.0.0"
+  },
+  "devDependencies": {
+    "@rescript/react": "^0.14.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "rescript": "^12.0.0"
+  }
+}

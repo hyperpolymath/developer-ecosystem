@@ -1,0 +1,244 @@
+= Onboarding - ada-loom-registry
+:toc: macro
+
+[abstract]
+--
+Fast-track onboarding for ada-loom-registry (Haskell + Nickel parser for Ada ecosystem). Target: <2 hours. Rhodium Standard 0.5.
+--
+
+toc::[]
+
+== Quick Start
+
+1. Setup: GHC + Nickel (45 min)
+2. Build: Compile Nickel parser (30 min)
+3. Registry: Publish test entry (25 min)
+4. Query: Test registry (20 min)
+
+== Prerequisites
+
+* GHC 9.6.3+ (WASM-ready)
+* Cabal 3.10+
+* Nickel 1.x
+
+== Setup (45 min)
+
+=== Install GHC via GHCup
+
+[source,bash]
+----
+curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
+ghcup install ghc 9.6.3
+ghcup set ghc 9.6.3
+----
+
+=== Install Nickel
+
+[source,bash]
+----
+curl -L https://github.com/tweag/nickel/releases/latest/download/nickel-x86_64-unknown-linux-gnu.tar.gz \
+  | tar xz -C ~/.local/bin
+
+# Verify
+nickel --version
+----
+
+=== Clone Repository
+
+[source,bash]
+----
+git clone https://github.com/yourorg/ada-loom-registry.git
+cd ada-loom-registry
+----
+
+=== Install Dependencies
+
+[source,bash]
+----
+cabal update
+cabal build --only-dependencies
+----
+
+== Build (30 min)
+
+=== Compile Project
+
+[source,bash]
+----
+$ just build
+# or
+$ cabal build
+
+Building library for ada-loom-registry...
+Building Nickel parser bindings...
+✓ Build successful
+----
+
+**Note:** Nickel parser compilation can take 10-15 minutes (first build)
+
+=== Run Tests
+
+[source,bash]
+----
+$ just test
+Test suite passed
+----
+
+== Registry Operations (25 min)
+
+=== Validate Schema
+
+[source,bash]
+----
+$ just validate-schema
+✓ Registry schema valid
+----
+
+=== Publish Test Entry (Staging)
+
+[source,bash]
+----
+$ just registry-publish-staging test-package-1.0.0
+Validating entry against schema...
+✓ Entry validated
+Adding to staging registry...
+✓ test-package-1.0.0 published to staging
+----
+
+=== View Entry Format
+
+**Example entry:**
+[source,nickel]
+----
+{
+  name = "test-package",
+  version = "1.0.0",
+  description = "Test package for ada-loom",
+  license = "PMPL-1.0",
+  dependencies = [],
+}
+----
+
+== Query Registry (20 min)
+
+=== Query Package
+
+[source,bash]
+----
+$ just registry-query test-package
+Package: test-package
+Version: 1.0.0
+Description: Test package for ada-loom
+License: PMPL-1.0
+----
+
+=== Validate Registry
+
+[source,bash]
+----
+$ just registry-validate
+Checking entries against schemas...
+Validating dependency graph...
+✓ Registry integrity verified
+----
+
+== Make a Change (30 min)
+
+=== Add Registry Entry Field
+
+**File:** `schemas/registry.ncl`
+
+[source,nickel]
+----
+{
+  Entry = {
+    name | String,
+    version | String,
+    description | String,
+    license | String,
+    // Add new field
+    homepage | String | optional,
+  },
+}
+----
+
+**Validate:**
+[source,bash]
+----
+$ just validate-schema
+✓ Schema valid
+----
+
+**Rebuild:**
+[source,bash]
+----
+$ just build
+$ just test
+----
+
+== Nickel Basics
+
+**Type annotations:**
+[source,nickel]
+----
+let name : String = "ada-loom"
+let version : Number = 1
+let enabled : Bool = true
+----
+
+**Records:**
+[source,nickel]
+----
+{
+  name = "package",
+  version = "1.0.0",
+  dependencies = ["foo", "bar"],
+}
+----
+
+**Contracts:**
+[source,nickel]
+----
+let PositiveNumber = fun label value =>
+  if value > 0 then value
+  else %blame% label
+
+let count | PositiveNumber = 42
+----
+
+== GHC WASM Support
+
+**Build for WASM:**
+[source,bash]
+----
+$ just build-wasm
+# or
+$ cabal build --with-ghc wasm32-wasi-ghc
+----
+
+**Advantage:** GHC 9.6.3 has native WASM support (wasm32-wasi target)
+
+== Common Issues
+
+**"Nickel not found"**
+→ Install from: https://github.com/tweag/nickel/releases
+
+**"GHC version mismatch"**
+→ Verify: `ghc --version` (need 9.6.3+)
+
+**"Schema validation failed"**
+→ Check: `nickel typecheck schemas/registry.ncl`
+
+**"Registry entry exists"**
+→ Bump version number (semver)
+
+== Resources
+
+* link:https://nickel-lang.org/[Nickel Language]
+* link:https://www.haskell.org/ghc/blog/20230914-wasm-backend-merged.html[GHC WASM]
+* link:cookbook.adoc[Cookbook]
+* link:docs/adr/0002-nickel-parser-integration.adoc[ADR-0002]
+
+---
+
+_Last Updated: 2025-01-21 | Rhodium Standard 0.5_

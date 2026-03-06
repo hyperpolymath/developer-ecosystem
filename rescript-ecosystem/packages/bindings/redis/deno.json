@@ -1,0 +1,47 @@
+{
+  "name": "@hyperpolymath/rescript-redis",
+  "version": "0.1.0",
+  "license": "AGPL-3.0-or-later",
+  "exports": "./src/Redis.res.js",
+  "publish": {
+    "include": [
+      "src/**/*.res",
+      "src/**/*.resi",
+      "src/**/*.res.js",
+      "README.adoc",
+      "LICENSE.txt",
+      "deno.json"
+    ]
+  },
+  "tasks": {
+    "build": "rescript build",
+    "clean": "rescript clean",
+    "dev": "rescript build -w",
+    "test": "deno test --allow-net tests/",
+    "test:watch": "deno test --allow-net --watch tests/",
+    "check": "deno check src/**/*.res.js",
+    "fmt": "deno fmt",
+    "lint": "deno lint"
+  },
+  "imports": {
+    "redis": "https://deno.land/x/redis@v0.32.4/mod.ts",
+    "@std/assert": "jsr:@std/assert@^1.0.0",
+    "@std/testing": "jsr:@std/testing@^1.0.0"
+  },
+  "compilerOptions": {
+    "lib": ["deno.ns", "deno.unstable"],
+    "strict": true
+  },
+  "fmt": {
+    "useTabs": false,
+    "lineWidth": 100,
+    "indentWidth": 2,
+    "semiColons": false,
+    "singleQuote": false
+  },
+  "lint": {
+    "rules": {
+      "tags": ["recommended"]
+    }
+  }
+}

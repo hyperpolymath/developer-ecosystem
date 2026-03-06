@@ -1,0 +1,6 @@
+homepage: "https://github.com/hyperpolymath/rescript-openapi"
+language: rust
+main_repo: "https://github.com/hyperpolymath/rescript-openapi"
+sanitizers:
+  - address
+  - undefined

@@ -1,0 +1,171 @@
+= ReScript Runtime Tools
+:toc:
+:toc-placement!:
+:icons: font
+
+Runtime-aware build/dev tooling for ReScript that's first-class for Deno and Bun.
+
+toc::[]
+
+== Overview
+
+`rescript-runtime-tools` provides unified developer experience tooling that understands and leverages the capabilities of modern JavaScript runtimes (Deno, Bun) without falling back to Node.js + npm glue.
+
+=== Key Features
+
+* *Runtime Detection* - Automatically detects Deno/Bun and uses native APIs
+* *Unified CLI* - Single `rrt` command works identically across runtimes
+* *Watch Mode* - Integrated file watching with ReScript compilation
+* *Test Runner* - Runtime-native test execution (Deno.test / bun:test)
+* *Zero npm* - No node_modules in production
+
+== Installation
+
+[source,bash]
+----
+# Deno (no npm install needed!)
+deno install --allow-all -n rrt https://raw.githubusercontent.com/hyperpolymath/rescript-runtime-tools/main/bin/rrt.ts
+
+# Or run directly
+deno run --allow-all https://raw.githubusercontent.com/hyperpolymath/rescript-runtime-tools/main/bin/rrt.ts dev
+
+# Bun
+bunx rescript-runtime-tools
+----
+
+=== Zero npm Philosophy
+
+This tool uses Deno's `npm:` specifier to run ReScript directly from the npm registry *without* `node_modules` or `package.json`. Deno caches packages globally, so:
+
+* No `npm install` step
+* No `node_modules/` directory
+* No `package-lock.json`
+* Works offline after first run
+
+== Usage
+
+[source,bash]
+----
+# Start dev server with watch mode
+rrt dev
+
+# Start on custom port
+rrt dev -p 3000
+
+# Production build
+rrt build --prod
+
+# Run tests
+rrt test
+
+# Watch mode testing
+rrt test --watch
+
+# Run benchmarks
+rrt bench
+
+# Format ReScript files
+rrt fmt
+
+# Clean build artifacts
+rrt clean
+
+# Show runtime info
+rrt info
+----
+
+== Architecture
+
+[source]
+----
+rescript-runtime-tools/
+├── src/
+│   ├── Detect.res      # Runtime detection (Deno/Bun/Browser)
+│   ├── Dev.res         # Dev server with watch
+│   ├── Test.res        # Test runner abstraction
+│   └── Build.res       # Build orchestration
+├── bin/
+│   └── rrt.ts          # CLI entry point
+├── deno.json           # Deno configuration
+└── rescript.json       # ReScript configuration
+----
+
+=== Runtime Detection
+
+The `Detect` module provides runtime identification:
+
+[source,rescript]
+----
+type runtime = Deno | Bun | Browser | Unknown
+
+let detect = (): runtime
+let getInfo = (): runtimeInfo
+----
+
+=== Capability Checking
+
+[source,rescript]
+----
+Detect.Capabilities.hasFileSystem()    // true for Deno/Bun
+Detect.Capabilities.hasNetwork()       // true for Deno/Bun/Browser
+Detect.Capabilities.hasNativeModules() // true for Bun only
+Detect.Capabilities.hasWebAssembly()   // true for all modern runtimes
+----
+
+== Comparison with Node.js Tooling
+
+|===
+| Feature | Node.js | rescript-runtime-tools
+
+| Package manager
+| npm/yarn/pnpm
+| *None* (Deno npm: specifier)
+
+| node_modules
+| Required (~100MB+)
+| *Not needed*
+
+| Watch mode
+| nodemon + glue
+| Native runtime watch
+
+| Test runner
+| Jest + config
+| Deno.test / bun:test
+
+| Bundling
+| Webpack/Vite + plugins
+| Runtime native (Deno.emit / Bun.build)
+
+| Permissions
+| None (full access)
+| Deno: explicit, Bun: full
+
+| Cold start
+| ~1.8s
+| ~95ms
+|===
+
+== Integration with rescript-wasm-runtime
+
+This tooling is designed to work seamlessly with the link:https://github.com/hyperpolymath/rescript-wasm-runtime[rescript-wasm-runtime] ecosystem:
+
+[source,bash]
+----
+# Clone both repos
+git clone https://github.com/hyperpolymath/rescript-runtime-tools
+git clone https://github.com/hyperpolymath/rescript-wasm-runtime
+
+# In your project
+cd my-rescript-project
+rrt dev  # Uses Detect, Dev, Test modules
+----
+
+== License
+
+PMPL-1.0-or-later
+
+== Related Projects
+
+* link:https://github.com/hyperpolymath/rescript-wasm-runtime[rescript-wasm-runtime] - Runtime abstraction for Deno/Bun
+* link:https://github.com/hyperpolymath/full-stack-rescript[full-stack-rescript] - Full stack ReScript architecture

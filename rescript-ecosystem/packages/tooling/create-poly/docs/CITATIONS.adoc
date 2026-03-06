@@ -1,0 +1,104 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= rescript-poly-core - Citation Guide
+:toc:
+:icons: font
+
+If you use `rescript-poly-core` in academic work, please cite it appropriately.
+
+== BibTeX
+
+[source,bibtex]
+----
+@software{rescript_poly_core_2025,
+  author = {Hyperpolymath},
+  title = {rescript-poly-core: Shared Foundation Library for the Hyperpolymath ReScript Ecosystem},
+  year = {2025},
+  url = {https://github.com/hyperpolymath/rescript-poly-core},
+  version = {0.1.0},
+  license = {AGPL-3.0-or-later},
+  note = {Part of the rescript-full-stack ecosystem}
+}
+----
+
+== Harvard Style
+
+Hyperpolymath (2025) _rescript-poly-core: Shared Foundation Library for the Hyperpolymath ReScript Ecosystem_ [Computer software]. Version 0.1.0. Available at: https://github.com/hyperpolymath/rescript-poly-core (AGPL-3.0-or-later)
+
+== OSCOLA
+
+Hyperpolymath, 'rescript-poly-core: Shared Foundation Library for the Hyperpolymath ReScript Ecosystem' (Version 0.1.0, 2025) <https://github.com/hyperpolymath/rescript-poly-core>
+
+== MLA 9th Edition
+
+Hyperpolymath. _rescript-poly-core: Shared Foundation Library for the Hyperpolymath ReScript Ecosystem_. Version 0.1.0, 2025, github.com/hyperpolymath/rescript-poly-core.
+
+== APA 7th Edition
+
+Hyperpolymath. (2025). _rescript-poly-core: Shared foundation library for the Hyperpolymath ReScript ecosystem_ (Version 0.1.0) [Computer software]. GitHub. https://github.com/hyperpolymath/rescript-poly-core
+
+== Chicago 17th Edition
+
+Hyperpolymath. "rescript-poly-core: Shared Foundation Library for the Hyperpolymath ReScript Ecosystem." Version 0.1.0. Computer software. GitHub, 2025. https://github.com/hyperpolymath/rescript-poly-core.
+
+== IEEE
+
+[1] Hyperpolymath, "rescript-poly-core: Shared Foundation Library for the Hyperpolymath ReScript Ecosystem," Version 0.1.0, 2025. [Online]. Available: https://github.com/hyperpolymath/rescript-poly-core
+
+== ACM
+
+Hyperpolymath. 2025. rescript-poly-core: Shared Foundation Library for the Hyperpolymath ReScript Ecosystem. Version 0.1.0. https://github.com/hyperpolymath/rescript-poly-core
+
+== Plain Text
+
+rescript-poly-core v0.1.0 (2025)
+Hyperpolymath
+https://github.com/hyperpolymath/rescript-poly-core
+License: AGPL-3.0-or-later
+
+== Machine-Readable Formats
+
+=== CITATION.cff
+
+See link:../CITATION.cff[CITATION.cff] for the Citation File Format metadata.
+
+=== codemeta.json
+
+For CodeMeta format, use the following:
+
+[source,json]
+----
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "rescript-poly-core",
+  "description": "Shared foundation library for the Hyperpolymath ReScript ecosystem",
+  "version": "0.1.0",
+  "datePublished": "2025-01-04",
+  "license": "https://spdx.org/licenses/AGPL-3.0-or-later",
+  "codeRepository": "https://github.com/hyperpolymath/rescript-poly-core",
+  "programmingLanguage": ["ReScript", "JavaScript"],
+  "runtimePlatform": "Deno",
+  "author": {
+    "@type": "Organization",
+    "name": "Hyperpolymath"
+  },
+  "keywords": [
+    "rescript",
+    "deno",
+    "mcp",
+    "model-context-protocol",
+    "functional-programming"
+  ]
+}
+----
+
+== Related Projects
+
+When citing the broader ecosystem, consider also citing:
+
+* https://github.com/hyperpolymath/rescript-full-stack[rescript-full-stack] - Ecosystem overview
+* https://rescript-lang.org/[ReScript] - The programming language
+* https://deno.land/[Deno] - The runtime environment
+* https://modelcontextprotocol.io/[Model Context Protocol] - The MCP specification

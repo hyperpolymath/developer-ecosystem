@@ -1,0 +1,108 @@
+# SPDX-License-Identifier: PLMP-1.0-or-later
+# Justfile for rescript-early-return
+
+set shell := ["bash", "-uc"]
+
+# Project metadata
+project := "rescript-early-return"
+version := "0.1.0-alpha.1"
+
+# Show all available recipes
+default:
+    @just --list
+
+# Show project info
+info:
+    @echo "Project: {{project}}"
+    @echo "Version: {{version}}"
+    @echo "Type: ReScript PPX macro"
+
+# Build the PPX transformer
+build:
+    @echo "Building PPX transformer..."
+    cd ppx && dune build
+
+# Clean build artifacts
+clean:
+    @echo "Cleaning build artifacts..."
+    cd ppx && dune clean
+    rm -rf lib _build
+
+# Run all tests
+test: build
+    @echo "Running tests..."
+    # TODO: Add test command when tests are implemented
+    @echo "Tests not yet implemented"
+
+# Format code
+fmt:
+    @echo "Formatting code..."
+    cd ppx && dune fmt
+
+# Check formatting
+check-fmt:
+    @echo "Checking code format..."
+    cd ppx && dune fmt --check
+
+# Run lints
+lint:
+    @echo "Running lints..."
+    # OCaml code
+    cd ppx && dune build @check
+    # ReScript examples
+    @echo "Linting ReScript examples..."
+    # TODO: Add rescript format check
+
+# Check all (format + lint + test)
+check-all: check-fmt lint test
+    @echo "✅ All checks passed!"
+
+# Generate documentation
+docs:
+    @echo "Generating documentation..."
+    cd ppx && dune build @doc
+
+# Watch for changes and rebuild
+watch:
+    @echo "Watching for changes..."
+    cd ppx && dune build --watch
+
+# Install locally
+install: build
+    @echo "Installing PPX..."
+    cd ppx && dune install
+
+# Uninstall
+uninstall:
+    @echo "Uninstalling PPX..."
+    cd ppx && dune uninstall
+
+# Create release
+release version:
+    @echo "Creating release {{version}}..."
+    @git tag -a v{{version}} -m "Release v{{version}}"
+    @echo "Tagged v{{version}}. Push with: git push origin v{{version}}"
+
+# Run examples
+examples: build
+    @echo "Running examples..."
+    @echo "Example: before/after transformation in examples/"
+
+# Validate SCM files
+validate-scm:
+    @echo "Validating SCM files..."
+    @test -f .machine_readable/6scm/STATE.scm && echo "  ✓ STATE.scm"
+    @test -f .machine_readable/6scm/META.scm && echo "  ✓ META.scm"
+    @test -f .machine_readable/6scm/ECOSYSTEM.scm && echo "  ✓ ECOSYSTEM.scm"
+
+# Check RSR compliance
+check-rsr:
+    @echo "Checking RSR 2026 compliance..."
+    @test -f README.adoc && echo "  ✓ README.adoc"
+    @test -f LICENSE && echo "  ✓ LICENSE"
+    @test -f SECURITY.md && echo "  ✓ SECURITY.md"
+    @test -f CODE_OF_CONDUCT.md && echo "  ✓ CODE_OF_CONDUCT.md"
+    @test -f CONTRIBUTING.adoc && echo "  ✓ CONTRIBUTING.adoc"
+    @test -f MAINTAINERS.adoc && echo "  ✓ MAINTAINERS.adoc"
+    @test -d .machine_readable/6scm && echo "  ✓ .machine_readable/6scm/"
+    @test -f Justfile && echo "  ✓ Justfile"

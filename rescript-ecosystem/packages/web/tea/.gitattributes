@@ -1,0 +1,49 @@
+# SPDX-License-Identifier: MIT AND Palimpsest-0.8
+# SPDX-FileCopyrightText: 2024 Jonathan D.A. Jewell
+
+# Git attributes for rescript-tea
+
+# Auto-detect text files and normalize line endings
+* text=auto
+
+# ReScript source files
+*.res text eol=lf linguist-language=ReScript
+*.resi text eol=lf linguist-language=ReScript
+
+# JavaScript (generated)
+*.js text eol=lf
+*.mjs text eol=lf
+
+# Configuration files
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.toml text eol=lf
+
+# Documentation
+*.md text eol=lf
+*.adoc text eol=lf
+*.txt text eol=lf
+
+# Shell scripts
+*.sh text eol=lf
+
+# Nix files
+*.nix text eol=lf
+
+# Lock files - don't merge, always use ours
+package-lock.json merge=ours
+
+# Binary files
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+
+# Exports for GitHub linguist
+*.res linguist-language=ReScript
+*.resi linguist-language=ReScript

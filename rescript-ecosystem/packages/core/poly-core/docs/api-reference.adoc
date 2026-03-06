@@ -1,0 +1,745 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= PolyCore API Reference
+:toc:
+:toc-placement: preamble
+:icons: font
+:source-highlighter: highlight.js
+
+Complete API reference for rescript-poly-core.
+
+== Core.Result
+
+Extended utilities for the Result type.
+
+=== Type
+
+[source,rescript]
+----
+type result<'a, 'e> =
+  | Ok('a)
+  | Error('e)
+----
+
+=== Functions
+
+==== map
+
+[source,rescript]
+----
+let map: (result<'a, 'e>, 'a => 'b) => result<'b, 'e>
+----
+
+Transform the Ok value, leaving Error unchanged.
+
+[source,rescript]
+----
+Ok(42)->Result.map(x => x * 2)      // Ok(84)
+Error("fail")->Result.map(x => x * 2) // Error("fail")
+----
+
+==== mapError
+
+[source,rescript]
+----
+let mapError: (result<'a, 'e>, 'e => 'f) => result<'a, 'f>
+----
+
+Transform the Error value, leaving Ok unchanged.
+
+==== flatMap
+
+[source,rescript]
+----
+let flatMap: (result<'a, 'e>, 'a => result<'b, 'e>) => result<'b, 'e>
+----
+
+Chain Result-returning functions.
+
+[source,rescript]
+----
+Ok(42)
+  ->Result.flatMap(x => if x > 0 { Ok(x) } else { Error("negative") })
+----
+
+==== getOr
+
+[source,rescript]
+----
+let getOr: (result<'a, 'e>, 'a) => 'a
+----
+
+Get Ok value or return default.
+
+==== getOrElse
+
+[source,rescript]
+----
+let getOrElse: (result<'a, 'e>, 'e => 'a) => 'a
+----
+
+Get Ok value or compute from error.
+
+==== fromOption
+
+[source,rescript]
+----
+let fromOption: (option<'a>, 'e) => result<'a, 'e>
+----
+
+Convert Option to Result.
+
+==== toOption
+
+[source,rescript]
+----
+let toOption: result<'a, 'e> => option<'a>
+----
+
+Convert Result to Option (discards error).
+
+==== isOk / isError
+
+[source,rescript]
+----
+let isOk: result<'a, 'e> => bool
+let isError: result<'a, 'e> => bool
+----
+
+Check Result variant.
+
+==== both
+
+[source,rescript]
+----
+let both: (result<'a, 'e>, result<'b, 'e>) => result<('a, 'b), 'e>
+----
+
+Combine two Results into a tuple.
+
+==== all
+
+[source,rescript]
+----
+let all: array<result<'a, 'e>> => result<array<'a>, 'e>
+----
+
+Collect array of Results. Fails on first error.
+
+==== tryCatch
+
+[source,rescript]
+----
+let tryCatch: (unit => 'a, exn => 'e) => result<'a, 'e>
+----
+
+Convert throwing function to Result.
+
+==== tryCatchAsync
+
+[source,rescript]
+----
+let tryCatchAsync: (unit => promise<'a>, exn => 'e) => promise<result<'a, 'e>>
+----
+
+Async version of tryCatch.
+
+==== tap / tapError
+
+[source,rescript]
+----
+let tap: (result<'a, 'e>, 'a => unit) => result<'a, 'e>
+let tapError: (result<'a, 'e>, 'e => unit) => result<'a, 'e>
+----
+
+Side effects without changing the Result.
+
+---
+
+== Core.Async
+
+Promise utilities for async operations.
+
+=== Types
+
+[source,rescript]
+----
+type retryConfig = {
+  maxAttempts: int,
+  initialDelayMs: int,
+  maxDelayMs: int,
+  backoffMultiplier: float,
+}
+
+type debounced<'a> = {
+  call: 'a => unit,
+  cancel: unit => unit,
+}
+----
+
+=== Constants
+
+[source,rescript]
+----
+let defaultRetryConfig: retryConfig
+// { maxAttempts: 3, initialDelayMs: 1000, maxDelayMs: 30000, backoffMultiplier: 2.0 }
+----
+
+=== Functions
+
+==== sleep
+
+[source,rescript]
+----
+let sleep: int => promise<unit>
+----
+
+Pause execution for specified milliseconds.
+
+==== timeout
+
+[source,rescript]
+----
+let timeout: (int, promise<'a>) => promise<'a>
+----
+
+Reject if promise doesn't resolve within timeout.
+
+[source,rescript]
+----
+await Async.timeout(5000, fetchData())  // Throws Timeout after 5s
+----
+
+==== retry
+
+[source,rescript]
+----
+let retry: (~config: retryConfig=?, unit => promise<'a>) => promise<'a>
+----
+
+Retry with exponential backoff.
+
+[source,rescript]
+----
+await Async.retry(
+  ~config={maxAttempts: 5, initialDelayMs: 100, maxDelayMs: 5000, backoffMultiplier: 2.0},
+  () => unreliableApi()
+)
+----
+
+==== parallelLimit
+
+[source,rescript]
+----
+let parallelLimit: (~concurrency: int, array<unit => promise<'a>>) => promise<array<'a>>
+----
+
+Run promises in parallel with concurrency limit.
+
+==== sequential
+
+[source,rescript]
+----
+let sequential: array<unit => promise<'a>> => promise<array<'a>>
+----
+
+Run promises one at a time.
+
+==== mapAsync
+
+[source,rescript]
+----
+let mapAsync: (array<'a>, 'a => promise<'b>) => promise<array<'b>>
+----
+
+Map with async function (sequential).
+
+==== filterAsync
+
+[source,rescript]
+----
+let filterAsync: (array<'a>, 'a => promise<bool>) => promise<array<'a>>
+----
+
+Filter with async predicate (sequential).
+
+==== debounce
+
+[source,rescript]
+----
+let debounce: (int, 'a => unit) => debounced<'a>
+----
+
+Debounce a function.
+
+[source,rescript]
+----
+let debouncedSave = Async.debounce(500, data => save(data))
+debouncedSave.call(data)
+debouncedSave.cancel()
+----
+
+==== throttle
+
+[source,rescript]
+----
+let throttle: (int, 'a => unit) => ('a => unit)
+----
+
+Throttle a function.
+
+---
+
+== Core.Logger
+
+Structured JSON logging.
+
+=== Types
+
+[source,rescript]
+----
+type level = Debug | Info | Warn | Error
+
+type config = {
+  minLevel: level,
+  json: bool,
+  timestamps: bool,
+  context: Dict.t<string>,
+}
+
+type t  // Logger instance
+----
+
+=== Constants
+
+[source,rescript]
+----
+let defaultConfig: config
+let defaultLogger: t
+----
+
+=== Functions
+
+==== make
+
+[source,rescript]
+----
+let make: (~config: config=?) => t
+----
+
+Create a logger instance.
+
+==== debug / info / warn / error
+
+[source,rescript]
+----
+let debug: (t, string, ~extra: Dict.t<JSON.t>=?) => unit
+let info: (t, string, ~extra: Dict.t<JSON.t>=?) => unit
+let warn: (t, string, ~extra: Dict.t<JSON.t>=?) => unit
+let error: (t, string, ~extra: Dict.t<JSON.t>=?) => unit
+----
+
+Log at specified level.
+
+[source,rescript]
+----
+logger->Logger.info("Request received", ~extra=Dict.fromArray([
+  ("path", JSON.Encode.string("/api/users")),
+  ("method", JSON.Encode.string("GET")),
+]))
+----
+
+==== child
+
+[source,rescript]
+----
+let child: (t, Dict.t<string>) => t
+----
+
+Create child logger with additional context.
+
+[source,rescript]
+----
+let reqLogger = logger->Logger.child(Dict.fromArray([
+  ("requestId", "abc123"),
+  ("userId", "user456"),
+]))
+----
+
+---
+
+== Core.Config
+
+Configuration loading.
+
+=== Types
+
+[source,rescript]
+----
+type source = Env | File(string) | Object(Dict.t<JSON.t>)
+
+type configError =
+  | MissingKey(string)
+  | InvalidType(string, string)
+  | ValidationFailed(string, string)
+
+type t  // Config instance
+----
+
+=== Functions
+
+==== fromEnv
+
+[source,rescript]
+----
+let fromEnv: (~prefix: string=?) => t
+----
+
+Load from environment variables.
+
+[source,rescript]
+----
+let config = Config.fromEnv(~prefix="APP_")
+// APP_PORT=3000 becomes accessible as "PORT"
+----
+
+==== fromObject
+
+[source,rescript]
+----
+let fromObject: Dict.t<JSON.t> => t
+----
+
+Create from JSON object.
+
+==== getString / getStringOpt / getStringOr
+
+[source,rescript]
+----
+let getString: (t, string) => string           // throws if missing
+let getStringOpt: (t, string) => option<string>
+let getStringOr: (t, string, string) => string
+----
+
+==== getInt / getIntOpt / getIntOr
+
+[source,rescript]
+----
+let getInt: (t, string) => int
+let getIntOpt: (t, string) => option<int>
+let getIntOr: (t, string, int) => int
+----
+
+==== getBool / getBoolOpt / getBoolOr
+
+[source,rescript]
+----
+let getBool: (t, string) => bool
+let getBoolOpt: (t, string) => option<bool>
+let getBoolOr: (t, string, bool) => bool
+----
+
+==== getFloat / getFloatOpt
+
+[source,rescript]
+----
+let getFloat: (t, string) => float
+let getFloatOpt: (t, string) => option<float>
+----
+
+==== merge
+
+[source,rescript]
+----
+let merge: (t, t) => t
+----
+
+Merge configs (second takes precedence).
+
+==== has
+
+[source,rescript]
+----
+let has: (t, string) => bool
+----
+
+Check if key exists.
+
+==== keys
+
+[source,rescript]
+----
+let keys: t => array<string>
+----
+
+Get all config keys.
+
+---
+
+== MCP.Protocol
+
+MCP protocol types and builders.
+
+=== Types
+
+[source,rescript]
+----
+type content = {
+  type_: string,
+  text?: string,
+  data?: string,
+  mimeType?: string,
+}
+
+type toolResult = {
+  content: array<content>,
+  isError?: bool,
+}
+
+type inputSchema = {
+  type_: string,
+  properties?: Dict.t<JSON.t>,
+  required?: array<string>,
+}
+
+type tool = {
+  name: string,
+  description: string,
+  inputSchema: inputSchema,
+}
+
+type resource = {
+  uri: string,
+  name: string,
+  description?: string,
+  mimeType?: string,
+}
+
+type prompt = {
+  name: string,
+  description?: string,
+  arguments?: array<promptArgument>,
+}
+----
+
+=== Result Builders
+
+==== success
+
+[source,rescript]
+----
+let success: string => toolResult
+----
+
+Create successful text result.
+
+==== successJson
+
+[source,rescript]
+----
+let successJson: JSON.t => toolResult
+----
+
+Create successful JSON result.
+
+==== error
+
+[source,rescript]
+----
+let error: string => toolResult
+----
+
+Create error result.
+
+==== multi
+
+[source,rescript]
+----
+let multi: array<content> => toolResult
+----
+
+Create multi-content result.
+
+=== Content Builders
+
+==== text
+
+[source,rescript]
+----
+let text: string => content
+----
+
+==== image
+
+[source,rescript]
+----
+let image: (string, string) => content  // (base64Data, mimeType)
+----
+
+=== Schema Builders
+
+==== objectSchema
+
+[source,rescript]
+----
+let objectSchema: (~properties: Dict.t<JSON.t>, ~required: array<string>=?) => inputSchema
+----
+
+==== stringProp / numberProp / boolProp
+
+[source,rescript]
+----
+let stringProp: (~description: string=?) => JSON.t
+let numberProp: (~description: string=?) => JSON.t
+let boolProp: (~description: string=?) => JSON.t
+----
+
+==== arrayProp
+
+[source,rescript]
+----
+let arrayProp: (~items: JSON.t, ~description: string=?) => JSON.t
+----
+
+==== enumProp
+
+[source,rescript]
+----
+let enumProp: (~values: array<string>, ~description: string=?) => JSON.t
+----
+
+=== Argument Parsers
+
+==== getArg / requireArg
+
+[source,rescript]
+----
+let getArg: (Dict.t<JSON.t>, string) => option<string>
+let requireArg: (Dict.t<JSON.t>, string) => result<string, string>
+----
+
+==== getIntArg / getBoolArg / getArrayArg
+
+[source,rescript]
+----
+let getIntArg: (Dict.t<JSON.t>, string) => option<int>
+let getBoolArg: (Dict.t<JSON.t>, string) => option<bool>
+let getArrayArg: (Dict.t<JSON.t>, string) => option<array<JSON.t>>
+----
+
+---
+
+== MCP.Server
+
+MCP server infrastructure.
+
+=== Types
+
+[source,rescript]
+----
+type toolHandler = Dict.t<JSON.t> => promise<Protocol.toolResult>
+
+type t  // Server instance
+----
+
+=== Functions
+
+==== make
+
+[source,rescript]
+----
+let make: (~name: string, ~version: string) => t
+----
+
+Create a new MCP server.
+
+==== registerTool
+
+[source,rescript]
+----
+let registerTool: (t, Protocol.tool, toolHandler) => t
+----
+
+Register a tool with its handler.
+
+[source,rescript]
+----
+let server = Server.make(~name="my-mcp", ~version="1.0.0")
+  ->Server.registerTool(
+    {
+      name: "greet",
+      description: "Greet a user",
+      inputSchema: Protocol.objectSchema(
+        ~properties=Dict.fromArray([("name", Protocol.stringProp())]),
+        ~required=["name"],
+      ),
+    },
+    async args => {
+      switch Protocol.requireArg(args, "name") {
+      | Ok(name) => Protocol.success(`Hello, ${name}!`)
+      | Error(e) => Protocol.error(e)
+      }
+    },
+  )
+----
+
+==== registerResource
+
+[source,rescript]
+----
+let registerResource: (t, Protocol.resource) => t
+----
+
+Register a resource.
+
+==== registerPrompt
+
+[source,rescript]
+----
+let registerPrompt: (t, Protocol.prompt) => t
+----
+
+Register a prompt.
+
+==== listTools / listResources / listPrompts
+
+[source,rescript]
+----
+let listTools: t => array<Protocol.tool>
+let listResources: t => array<Protocol.resource>
+let listPrompts: t => array<Protocol.prompt>
+----
+
+Get registered items.
+
+==== callTool
+
+[source,rescript]
+----
+let callTool: (t, string, Dict.t<JSON.t>) => promise<Protocol.toolResult>
+----
+
+Call a tool by name.
+
+==== handleRequest
+
+[source,rescript]
+----
+let handleRequest: (t, string, option<JSON.t>) => promise<JSON.t>
+----
+
+Handle an MCP JSON-RPC request.
+
+Supported methods:
+* `initialize` - Return server info and capabilities
+* `tools/list` - Return list of tools
+* `tools/call` - Execute a tool
+
+---
+
+== See Also
+
+* link:architecture.adoc[Architecture Guide]
+* link:../README.adoc[README]
+* link:../CONTRIBUTING.adoc[Contributing]

@@ -1,0 +1,34 @@
+= Component Coverage Status
+:toc:
+
+== ✅ Hyperpolymath Components (Ours)
+[cols="1,2,1,1",options="header"]
+|===
+| Component          | Description                          | Status      | Link
+| rescript-tea       | TEA (Elm Architecture) with layout   | ✅ Active    | link:https://github.com/hyperpolymath/rescript-tea[GitHub]
+| cadre-tea-router   | TEA-integrated routing               | ✅ Active    | link:https://github.com/hyperpolymath/cadre-tea-router[GitHub]
+| rescript-wasm-runtime | Deno/Bun runtime with SharedMemory  | ✅ Active    | link:https://github.com/hyperpolymath/rescript-wasm-runtime[GitHub]
+|===
+
+== 🔵 Community Components (Recommended)
+[cols="1,2,1,1",options="header"]
+|===
+| Component          | Description                          | Status      | Link
+| @rescript/react    | Official React bindings              | ✅ Stable    | link:https://github.com/rescript-lang/rescript-react[GitHub]
+| rescript-schema    | Runtime type validation              | ✅ Stable    | link:https://github.com/glennsl/rescript-schema[GitHub]
+|===
+
+== ⚠️ Legacy (Not Recommended)
+[cols="1,2,1",options="header"]
+|===
+| Component          | Issue                                | Alternative
+| rescript-nodejs    | Lacks Deno’s security model          | Migrate to `rescript-wasm-runtime`
+|===
+
+== ⬜ Gaps (Prioritised)
+[cols="1,2",options="header"]
+|===
+| Component          | Requirement
+| rescript-tauri     | Tauri 2.0 bindings for mobile/desktop
+| rescript-s3        | S3-compatible object storage client
+|===

@@ -1,0 +1,34 @@
+= aLib Codemods
+:toc: macro
+:toclevels: 3
+:sectanchors:
+:icons: font
+
+Optional codemods and migration helpers to adopt (or remove) aLib-style libraries safely and incrementally.
+
+toc::[]
+
+== Status
+Experimental.
+
+== Purpose
+These tools help with:
+* small-step adoption (one module/file at a time),
+* preserving compilation at every step,
+* rollback-friendly changes.
+
+== Non-goals
+* Not required to use aLib.
+* Not a mass-migration campaign.
+* Not a compiler feature.
+
+== Contents
+[source]
+----
+rescript/          codemods targeting ReScript codebases
+melange/           codemods targeting Melange codebases
+docs/              safety notes and usage guides
+----
+
+== License
+PLMP-1.0.0-or-later

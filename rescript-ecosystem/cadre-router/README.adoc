@@ -1,0 +1,419 @@
+= cadre-router
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+
+
+
+image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+
+:toc:
+:toclevels: 3
+:sectanchors:
+:source-highlighter: rouge
+
+Type-safe URL routing for ReScript applications.
+
+== What this is
+
+`cadre-router` is a **ReScript-first routing library** providing:
+
+* **Type-safe route definitions** — Routes are variants, not strings
+* **Bidirectional serialization** — `Route.t → string` and `string → Route.t`
+* **Typed route parameters** — `Journey(JourneyId.t)` instead of `Journey(string)`
+* **Elm-style parser combinators** — Composable URL parsing DSL
+* **Browser History API** — Client-side navigation primitives
+* **Framework-agnostic core** — Works with React, rescript-tea, or vanilla
+
+== Quick Example
+
+[source,rescript]
+----
+// Define your routes as a variant
+type route =
+  | Home
+  | Profile
+  | Journey(JourneyId.t)
+  | NotFound
+
+// Create a parser using combinators
+let parser = {
+  open CadreRouter.Parser
+  oneOf([
+    top->map(_ => Home),
+    s("profile")->map(_ => Profile),
+    s("journey")->andThen(JourneyId.parser)->map(((_, id)) => Journey(id)),
+  ])
+}
+
+// Serialize routes to URLs
+let toString = route => switch route {
+  | Home => "/"
+  | Profile => "/profile"
+  | Journey(id) => "/journey/" ++ JourneyId.toString(id)
+  | NotFound => "/404"
+}
+
+// Parse current URL
+let currentRoute = CadreRouter.Url.fromLocation()->CadreRouter.Parser.parse(parser, _)
+
+// Navigate programmatically
+module Nav = CadreRouter.Navigation.Make({ type t = route; let toString = toString })
+Nav.pushRoute(Profile)
+----
+
+== Modules
+
+=== `Url`
+
+Parsed URL representation.
+
+[source,rescript]
+----
+type t = {
+  path: list<string>,           // ["journey", "abc123"]
+  query: Belt.Map.String.t<string>,  // {"tab": "map"}
+  fragment: option<string>,     // Some("section")
+}
+
+let fromString: string => t
+let fromLocation: unit => t    // Read window.location
+let toString: t => string
+let getQueryParam: (t, string) => option<string>
+let getQueryParamInt: (t, string) => option<int>
+----
+
+=== `Parser`
+
+Elm-style URL parser combinators.
+
+[source,rescript]
+----
+type t<'a>  // Parser producing 'a
+
+// Segment matchers
+let s: string => t<unit>           // Literal: s("profile")
+let str: t<string>                 // Any string segment
+let int: t<int>                    // Integer segment
+let custom: (string => option<'a>) => t<'a>  // Custom (for typed IDs)
+let top: t<unit>                   // End of path
+
+// Combinators
+let andThen: (t<'a>, t<'b>) => t<('a, 'b)>   // Sequential
+let \"</>": (t<'a>, t<'b>) => t<('a, 'b)>    // Operator form
+let map: (t<'a>, 'a => 'b) => t<'b>          // Transform
+let oneOf: array<t<'a>> => t<'a>             // Alternatives
+
+// Query params
+let query: string => t<option<string>>
+let queryInt: string => t<option<int>>
+let queryRequired: string => t<string>
+
+// Execute
+let parse: (t<'a>, Url.t) => option<'a>
+----
+
+=== `Navigation`
+
+Browser History API abstraction.
+
+[source,rescript]
+----
+let pushUrl: string => unit
+let replaceUrl: string => unit
+let back: unit => unit
+let forward: unit => unit
+let currentUrl: unit => Url.t
+let onUrlChange: (Url.t => unit) => unsubscribe
+
+// Type-safe functor
+module Make: (R: { type t; let toString: t => string }) => {
+  let pushRoute: R.t => unit
+  let replaceRoute: R.t => unit
+}
+----
+
+=== `Link` (React, optional)
+
+Type-safe link component for React applications.
+
+[source,rescript]
+----
+// Generic href-based link
+<CadreRouter.Link href="/profile">"Profile"</CadreRouter.Link>
+
+// Type-safe route-based link (via functor)
+module MyLink = CadreRouter.Link.Make({
+  type t = Route.t
+  let toString = Route.toString
+})
+
+<MyLink route={Route.Profile}>"Profile"</MyLink>
+----
+
+== Typed ID Pattern
+
+For type-safe route parameters, define ID modules:
+
+[source,rescript]
+----
+module JourneyId = {
+  type t = JourneyId(string)
+
+  let fromString = str =>
+    if Js.String2.length(str) > 0 { Some(JourneyId(str)) }
+    else { None }
+
+  let toString = (JourneyId(str)) => str
+
+  // Parser for cadre-router
+  let parser = CadreRouter.Parser.custom(fromString)
+}
+
+// Usage in route parser:
+s("journey")->andThen(JourneyId.parser)->map(((_, id)) => Journey(id))
+----
+
+Invalid IDs are rejected during URL parsing, not later in the app.
+
+== Nested Routes
+
+[source,rescript]
+----
+type journeySubRoute = JourneyMap | JourneyLog | JourneySettings
+
+type route = Journey(JourneyId.t, journeySubRoute)
+
+let subParser = Parser.oneOf([
+  Parser.s("map")->Parser.map(_ => JourneyMap),
+  Parser.s("log")->Parser.map(_ => JourneyLog),
+  Parser.s("settings")->Parser.map(_ => JourneySettings),
+  Parser.top->Parser.map(_ => JourneyMap),  // default
+])
+
+// /journey/:id/map, /journey/:id/log, etc.
+let parser =
+  Parser.s("journey")
+  ->Parser.andThen(JourneyId.parser)
+  ->Parser.andThen(subParser)
+  ->Parser.map((((_, id), sub)) => Journey(id, sub))
+----
+
+== Query Parameters
+
+[source,rescript]
+----
+type route = Search({ query: string, page: option<int> })
+
+let parser =
+  Parser.s("search")
+  ->Parser.andThen(Parser.queryRequired("q"))
+  ->Parser.andThen(Parser.queryInt("page"))
+  ->Parser.map((((_, q), page)) => Search({ query: q, page }))
+
+// Parses: /search?q=hello&page=2
+----
+
+== Framework Integration
+
+=== rescript-tea (NEW: Integrated!)
+
+**TEA integration is now built-in!** (Merged from cadre-tea-router v0.2.0)
+
+The `src/tea/` modules provide complete TEA/Elm Architecture integration:
+
+[source,rescript]
+----
+// Import TEA routing modules
+open CadreRouter.Tea
+
+// Define routes
+type route = Home | Profile | Journey(JourneyId.t) | NotFound
+
+// TEA-specific routing
+let init = () => {
+  // Initialize from current URL
+  let route = Tea_Router.fromUrl(Url.fromLocation())
+  ({route}, Cmd.none)
+}
+
+let update = (msg, model) => {
+  switch msg {
+  | UrlChanged(route) => ({...model, route}, Cmd.none)
+  | Navigate(newRoute) =>
+      (model, Tea_Navigation.push(routeToUrl(newRoute)))
+  }
+}
+
+let subscriptions = _ => {
+  // Subscribe to URL changes
+  Tea_Router.urlChanges(url => UrlChanged(parseRoute(url)))
+}
+----
+
+**TEA Modules:**
+
+* `Tea_Router` — URL → Msg patterns, route parsing
+* `Tea_Navigation` — `Tea.Cmd.t` wrappers for push/replace/back/forward
+* `Tea_Url` — URL parsing utilities
+* `Tea_QueryParams` — Query parameter helpers
+* `Tea_Guards` — Route guards (block navigation during sync)
+
+**Installation for TEA apps:**
+
+[source,bash]
+----
+npm install cadre-router rescript-tea
+----
+
+Add to `rescript.json`:
+[source,json]
+----
+{
+  "bs-dependencies": ["cadre-router"]
+}
+----
+
+**Note:** `rescript-tea` is a peer dependency. If you're only using the framework-agnostic core (React/vanilla), you don't need it.
+
+=== React
+
+Use the `Link` module directly:
+
+[source,rescript]
+----
+module RouteLink = CadreRouter.Link.Make({
+  type t = Route.t
+  let toString = Route.toString
+})
+
+@react.component
+let make = () => {
+  <nav>
+    <RouteLink route={Route.Home}>"Home"</RouteLink>
+    <RouteLink route={Route.Profile}>"Profile"</RouteLink>
+  </nav>
+}
+----
+
+=== Vanilla
+
+Use `Navigation` directly:
+
+[source,rescript]
+----
+module Nav = CadreRouter.Navigation.Make({
+  type t = Route.t
+  let toString = Route.toString
+})
+
+// Navigate
+Nav.pushRoute(Route.Profile)
+
+// Listen for changes
+let unsubscribe = CadreRouter.Navigation.onUrlChange(url => {
+  let route = url->CadreRouter.Parser.parse(Route.parser, _)
+  // Update your app state
+})
+----
+
+== Documentation
+
+* **link:docs/API_GUIDE.md[Complete API Guide]** — Comprehensive routing documentation covering type-safe routing concepts, parser combinators, navigation system, TEA integration, and complete examples
+
+== Repository Layout
+
+* `src/client/` — Client-side routing modules (Url, Parser, Navigation, Link)
+* `src/` — Server-side routing (future)
+* `examples/` — Usage examples
+* `docs/` — Design documents and specifications
+
+== Performance Optimisations (v0.3.0)
+
+=== Grouped Dispatch
+
+`Parser.oneOfGrouped` and `RouteBuilder.oneOfGrouped` pre-group routes by first
+path segment for O(1) dispatch instead of O(N) linear scanning:
+
+[source,rescript]
+----
+// O(1) dispatch by first segment, then linear within group
+let parser = Parser.oneOfGrouped([
+  ("api",   apiParser),
+  ("admin", adminParser),
+  ("user",  userParser),
+  ("",      homeParser),   // root/catch-all
+])
+----
+
+=== Set-Based Auth
+
+`RouteMeta.checkAuthFast` uses a pre-built `Belt.Set.String` for O(1) role
+membership checks instead of O(R*U) nested array scans:
+
+[source,rescript]
+----
+let userRoleSet = RouteMeta.makeRoleSet(userRoles)
+let result = RouteMeta.checkAuthFast(routeWithMeta, ~isLoggedIn=true, ~userRoleSet)
+----
+
+=== Async Navigation Guards
+
+`Tea_Guards.guardedPushAsync` runs both sync and async guards before navigating,
+closing the gap where `guardedPush` ignored async guards:
+
+[source,rescript]
+----
+let _ = await Tea_Guards.guardedPushAsync(guardConfig, targetUrl)
+----
+
+=== CSS Transition Delegation
+
+`Transition.CssTransition.animate` offloads route animations to CSS instead of
+driving them frame-by-frame via `requestAnimationFrame`:
+
+[source,rescript]
+----
+let cancel = Transition.CssTransition.animate(
+  manager, newRoute, ~element=container, ~eq=routeEq,
+)
+----
+
+See link:docs/API_GUIDE.md[API Guide § Performance Optimisations] for details.
+
+== Design Principles
+
+* **Typed by default** — Routes are variants, not strings
+* **Bidirectional** — Parse and serialize with the same type
+* **Explicit** — No hidden global state or magic
+* **Composable** — Small combinators, not monolithic config
+* **Framework-agnostic** — Core works anywhere, integrations are separate
+
+== Technology Boundaries
+
+This project uses:
+
+* ReScript (source of truth)
+* JavaScript (compiled output)
+* Web APIs / Deno runtime
+
+It does *not* depend on:
+
+* Node.js
+* TypeScript
+* npm (use Deno imports)
+
+== License
+
+See `LICENSE.txt`.
+
+== Contributing
+
+Contributions welcome:
+
+* Bug fixes and improvements
+* Additional parser combinators
+* Documentation improvements
+* Framework integration examples
+
+AsciiDoc is preferred for documentation.

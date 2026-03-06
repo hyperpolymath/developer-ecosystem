@@ -1,0 +1,113 @@
+= aLib for ReScript (alib-for-rescript)
+:toc: macro
+:toclevels: 3
+:sectanchors:
+:icons: font
+
+A practical aLib implementation for the ReScript ecosystem: a *proving ground + adapter layer* that brings together ReScript stdlib direction, Melange compatibility, and optional Proven validation — while staying upstream-first and reversible.
+
+toc::[]
+
+== Status
+Alpha / opt-in / namespaced.
+
+== The “no tears” contract
+This repo is *not* a replacement standard library.
+
+We commit to:
+
+* *Namespacing:* All public APIs live under a clear prefix (e.g. `Aggregate.*` / `Alib.*`). No shadowing of `Option`, `Result`, `Array`, etc.
+* *Upstream-first:* Upstream stdlibs remain the sources of truth.
+* *Reversible adoption:* Per-file, per-module adoption; easy to remove.
+* *Optional validation:* Proven-powered checks are opt-in entrypoints, not required usage.
+* *Deletion-friendly:* Anything that graduates upstream is deprecated and removed here to avoid long-term duplication.
+
+== What this repo is
+This is the *ecosystem implementation* of the aLib method for ReScript developers.
+
+It provides:
+
+* A *Common* layer: utilities and patterns that work cleanly across ReScript + Melange constraints.
+* A *Specific* layer: ReScript-centric ergonomics and higher-level helpers that are intentionally not “common”.
+* Compatibility adapters: explicit conversions/escape hatches to/from upstream types and runtime modules.
+* Optional Proven integration: safer boundaries for FFI / JSON / external data during development.
+
+== What this repo is NOT
+* Not “the new ReScript stdlib”.
+* Not a fork of upstream stdlibs.
+* Not a mandate for compiler/tooling direction.
+* Not required for library authors.
+
+== Why Common + Specific?
+This repo is deliberately split so we can:
+
+* keep a small “Common” surface stable and testable,
+* iterate on “Specific” without fear of fragmenting the ecosystem,
+* and propose upstream changes selectively (only where maintainers want them).
+
+“Common” here means: *common to ReScript + Melange usage patterns we support*, not universal across all languages or all runtimes.
+
+== Relationship to aggregate-library
+`aggregate-library` is the methods + stress-test lab: overlap demos and extreme constraints.
+
+This repo applies the method to real ReScript ecosystem needs:
+clear boundaries + tests + reversibility, plus optional integration of ideas from Proven where they help.
+
+== Proven integration (optional)
+Proven is supported only where it improves boundary safety (FFI/JSON/untyped data).
+
+Rules:
+
+* Proven entrypoints are opt-in (e.g. `fromJsonWithSchema`).
+* Non-Proven paths remain first-class and documented.
+* Proven usage should be easy to remove without redesigning code.
+
+== Repo structure
+[source]
+----
+alib-for-rescript/
+  README.adoc
+  packages/
+    common/          # shared across ReScript + Melange constraints
+    specific/        # ReScript-centric ergonomics / higher-level helpers
+    melange/         # melange adapters and shims
+    proven/          # optional Proven schemas/adapters
+    compat/          # explicit conversions to/from upstream types
+  docs/
+    ALPHA.adoc
+    MIGRATION_GUIDE.adoc
+    DESIGN_NOTES.adoc
+  tests/
+    compat/
+    property/
+  scripts/
+    codemods/
+----
+
+== Adoption strategy
+Per-file adoption:
+
+. Import one namespaced module in one file.
+. Keep upstream stdlib everywhere else.
+. Convert at boundaries only (via `compat/` helpers).
+. If you stop using aLib, remove it cleanly.
+
+== Graduation / retirement policy
+Each module has one of these outcomes:
+
+* *Experiment:* fast iteration, namespaced, obvious warnings in docs.
+* *Stable:* semver discipline + tests.
+* *Propose upstream:* only if maintainers want it and it fits upstream goals.
+* *Upstreamed:* deprecate here, remove here, keep only adapters if needed.
+* *Remain here:* if it is inherently ecosystem glue (adapters, codemods, boundary helpers).
+
+== Contributing
+We prefer contributions that reduce long-term maintenance load:
+
+* small modules with explicit upstream mapping,
+* clear docs for boundary behavior,
+* tests for stabilization,
+* and reversible changes.
+
+== License
+PLMP-1.0.0-or-later

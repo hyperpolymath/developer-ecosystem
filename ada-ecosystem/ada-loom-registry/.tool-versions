@@ -1,0 +1,14 @@
+# ASDF tool versions for Ada-loom-registry (Spindle)
+# Haskell Nickel parser and registry manager
+
+# Haskell
+haskell 9.4.8
+
+# Nickel for testing and validation
+nickel 1.4.0
+
+# Build tools
+just 1.25.2
+
+# Development tools
+nodejs 20.11.1

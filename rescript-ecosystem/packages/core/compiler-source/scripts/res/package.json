@@ -1,0 +1,15 @@
+{
+  "name": "@utils/scripts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "rescript build",
+    "clean": "rescript clean",
+    "dev": "rescript watch",
+    "apidocs:generate": "yarn build && node GenApiDocs.res.js"
+  },
+  "dependencies": {
+    "@tests/docstring-tests": "workspace:^",
+    "rescript": "^12.0.0"
+  }
+}

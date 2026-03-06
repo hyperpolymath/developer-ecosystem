@@ -1,0 +1,261 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= Contributing to rescript-poly-core
+:toc:
+:icons: font
+
+Thank you for your interest in contributing to `rescript-poly-core`. This document provides guidelines and information for contributors.
+
+== Code of Conduct
+
+This project follows the https://www.contributor-covenant.org/[Contributor Covenant]. Please be respectful and constructive in all interactions.
+
+== Getting Started
+
+=== Prerequisites
+
+* https://deno.land/[Deno] 1.40+
+* https://rescript-lang.org/[ReScript] 11.x
+* Git with commit signing configured
+
+=== Development Setup
+
+[source,bash]
+----
+# Clone the repository
+git clone https://github.com/hyperpolymath/rescript-poly-core.git
+cd rescript-poly-core
+
+# Build the project
+deno task build
+
+# Run tests
+deno task test
+
+# Start development mode (watch)
+deno task dev
+----
+
+== Language Policy
+
+This project follows the Hyperpolymath language policy:
+
+[cols="1,2"]
+|===
+|Allowed |Not Allowed
+
+|ReScript
+|TypeScript
+
+|Deno
+|Node.js, npm, Bun
+
+|Bash/POSIX Shell (minimal)
+|Python, Go, Java
+|===
+
+All source code must be written in ReScript. JavaScript is only permitted for:
+
+* MCP protocol glue where ReScript bindings don't exist
+* Deno-specific APIs not yet bound
+
+== How to Contribute
+
+=== Reporting Issues
+
+1. Search existing issues to avoid duplicates
+2. Use the appropriate issue template
+3. Provide minimal reproduction steps
+4. Include ReScript and Deno versions
+
+=== Submitting Changes
+
+==== 1. Fork and Branch
+
+[source,bash]
+----
+# Fork on GitHub, then:
+git clone https://github.com/YOUR_USERNAME/rescript-poly-core.git
+cd rescript-poly-core
+git checkout -b feature/your-feature-name
+----
+
+==== 2. Make Changes
+
+* Write clear, idiomatic ReScript code
+* Add tests for new functionality
+* Update documentation as needed
+* Ensure all tests pass: `deno task test`
+* Ensure code compiles: `deno task build`
+
+==== 3. Commit Guidelines
+
+We use https://www.conventionalcommits.org/[Conventional Commits]:
+
+[source]
+----
+type(scope): description
+
+[optional body]
+
+[optional footer]
+----
+
+**Types:**
+
+* `feat` - New feature
+* `fix` - Bug fix
+* `docs` - Documentation only
+* `style` - Code style (formatting, etc.)
+* `refactor` - Code change that neither fixes a bug nor adds a feature
+* `perf` - Performance improvement
+* `test` - Adding or correcting tests
+* `chore` - Build process or auxiliary tool changes
+
+**Examples:**
+
+[source]
+----
+feat(async): add parallelLimit function for concurrency control
+
+fix(logger): handle undefined extra fields gracefully
+
+docs(readme): add usage examples for MCP.Server
+----
+
+==== 4. Sign Your Commits
+
+All commits must be signed off (DCO):
+
+[source,bash]
+----
+git commit -s -m "feat(scope): description"
+----
+
+This adds a `Signed-off-by` line certifying you have rights to submit the code.
+
+==== 5. Submit Pull Request
+
+1. Push to your fork
+2. Open a PR against `main`
+3. Fill out the PR template
+4. Wait for review
+
+== Code Style
+
+=== ReScript Conventions
+
+[source,rescript]
+----
+// Use @@uncurried at module level
+@@uncurried
+
+// Use doc comments for public APIs
+/** Brief description of the function */
+let functionName = (param: type): returnType => {
+  // Implementation
+}
+
+// Prefer pattern matching over if/else
+let result = switch value {
+| Some(x) => x
+| None => default
+}
+
+// Use pipe-first consistently
+value->Array.map(fn)->Array.filter(pred)
+----
+
+=== File Organization
+
+* One module per file
+* Group related functions together
+* Public API at top, helpers below
+* Tests in separate `tests/` directory
+
+=== Naming Conventions
+
+[cols="1,2"]
+|===
+|Convention |Example
+
+|Modules
+|`PascalCase` (`Result`, `Logger`)
+
+|Functions
+|`camelCase` (`getOrElse`, `mapAsync`)
+
+|Types
+|`camelCase` (`retryConfig`, `toolResult`)
+
+|Variants
+|`PascalCase` (`Ok`, `Error`, `Debug`)
+
+|Constants
+|`camelCase` (`defaultConfig`, `maxRetries`)
+|===
+
+== Testing
+
+=== Writing Tests
+
+Tests use Deno's built-in test runner:
+
+[source,typescript]
+----
+// tests/Core/Result_test.ts
+import { assertEquals } from "https://deno.land/std/assert/mod.ts";
+import * as Result from "../../src/Core/Result.res.js";
+
+Deno.test("Result.map transforms Ok value", () => {
+  const result = Result.map({ TAG: "Ok", _0: 42 }, (x) => x * 2);
+  assertEquals(result, { TAG: "Ok", _0: 84 });
+});
+----
+
+=== Running Tests
+
+[source,bash]
+----
+# All tests
+deno task test
+
+# Specific test file
+deno test tests/Core/Result_test.ts
+
+# With coverage
+deno task test:coverage
+----
+
+== Documentation
+
+=== Code Documentation
+
+* All public functions need doc comments
+* Include examples for complex APIs
+* Document exceptions/errors that can occur
+
+=== README Updates
+
+* Update README.adoc for new features
+* Add examples for new modules
+* Keep the API reference current
+
+== Review Process
+
+1. **Automated checks** - CI must pass
+2. **Code review** - At least one maintainer approval
+3. **Documentation review** - Docs updated if needed
+4. **Testing** - Adequate test coverage
+
+== Licence
+
+By contributing, you agree that your contributions will be licensed under the AGPL-3.0-or-later license.
+
+== Questions?
+
+* Open a https://github.com/hyperpolymath/rescript-poly-core/discussions[Discussion]
+* Check existing https://github.com/hyperpolymath/rescript-poly-core/issues[Issues]
+
+Thank you for contributing!

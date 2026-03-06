@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# ReScript build artifacts
+lib/
+.bsb.lock
+*.res.mjs
+*.resi.mjs
+.merlin
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*

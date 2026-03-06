@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+name: CodeQL
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * 1'
+permissions: read-all
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: github/codeql-action/init@662472033e021d55d94146f66f6058822b0b39fd # v3
+        with:
+          languages: actions
+      - uses: github/codeql-action/analyze@662472033e021d55d94146f66f6058822b0b39fd # v3

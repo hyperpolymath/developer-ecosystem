@@ -1,0 +1,350 @@
+= Transformation Rules
+:toc:
+:toc-placement!:
+
+toc::[]
+
+== Overview
+
+This document specifies the exact AST transformations performed by the PPX.
+
+== Rule 1: %return.if(condition, value)
+
+=== Pattern
+
+```rescript
+{
+  %return.if(condition, value)
+  <rest>
+}
+```
+
+=== Transformation
+
+```rescript
+{
+  if condition {
+    value
+  } else {
+    <rest>
+  }
+}
+```
+
+=== Multiple Sequential Returns
+
+```rescript
+// Before
+{
+  %return.if(cond1, val1)
+  %return.if(cond2, val2)
+  expr
+}
+
+// After
+{
+  if cond1 {
+    val1
+  } else if cond2 {
+    val2
+  } else {
+    expr
+  }
+}
+```
+
+=== Edge Cases
+
+**Empty rest:**
+```rescript
+// Before
+{
+  %return.if(condition, value)
+}
+
+// After
+{
+  if condition {
+    value
+  } else {
+    ()  // Unit value
+  }
+}
+```
+
+**Type mismatch:**
+```rescript
+// Before (ERROR)
+let foo = (): int => {
+  %return.if(condition, Error("fail"))  // Error: returns string, expects int
+  42
+}
+
+// Compiler catches this AFTER transformation
+// Error message points to transformed code location
+```
+
+== Rule 2: %return.error(result)
+
+=== Pattern
+
+```rescript
+{
+  let x = resultExpression()
+  %return.error(x)
+  <rest>
+}
+```
+
+=== Transformation
+
+```rescript
+{
+  let x = resultExpression()
+  switch x {
+  | Error(e) => Error(e)
+  | Ok(x) => <rest>
+  }
+}
+```
+
+=== With Inline Expression
+
+```rescript
+// Before
+{
+  %return.error(Email.parse(input))
+  <rest>
+}
+
+// After
+{
+  switch Email.parse(input) {
+  | Error(e) => Error(e)
+  | Ok(value) => <rest>
+  }
+}
+```
+
+**Note:** When used inline, the Ok value is bound to anonymous variable.
+
+=== Nested Results
+
+```rescript
+// Before
+{
+  let email = Email.parse(emailStr)
+  %return.error(email)
+
+  let slug = Slug.parse(slugStr)
+  %return.error(slug)
+
+  Ok((email, slug))
+}
+
+// After
+{
+  let email = Email.parse(emailStr)
+  switch email {
+  | Error(e) => Error(e)
+  | Ok(email) =>
+      let slug = Slug.parse(slugStr)
+      switch slug {
+      | Error(e) => Error(e)
+      | Ok(slug) => Ok((email, slug))
+      }
+  }
+}
+```
+
+== Rule 3: %return.none(option)
+
+=== Pattern
+
+```rescript
+{
+  let x = optionExpression()
+  %return.none(x)
+  <rest>
+}
+```
+
+=== Transformation
+
+```rescript
+{
+  let x = optionExpression()
+  switch x {
+  | None => None
+  | Some(x) => <rest>
+  }
+}
+```
+
+=== With Inline Expression
+
+```rescript
+// Before
+{
+  %return.none(findUser(id))
+  <rest>
+}
+
+// After
+{
+  switch findUser(id) {
+  | None => None
+  | Some(value) => <rest>
+  }
+}
+```
+
+== Scope and Binding
+
+=== Variable Rebinding
+
+When %return.error or %return.none succeeds, the variable is rebound in the Ok/Some branch:
+
+```rescript
+// Before
+let email: result<Email.t, error> = Email.parse(input)
+%return.error(email)
+// Here: email has type Email.t (unwrapped)
+
+// After
+let email: result<Email.t, error> = Email.parse(input)
+switch email {
+| Error(e) => Error(e)
+| Ok(email) =>  // email rebound with type Email.t
+    // ...
+}
+```
+
+This is **intentional** - the transformation maintains the variable name, narrowing the type.
+
+=== Anonymous Values
+
+When expression is inline (not bound), anonymous variable is used:
+
+```rescript
+// Before
+%return.error(Email.parse(input))
+useEmail(???)  // ERROR: email not bound
+
+// After
+switch Email.parse(input) {
+| Error(e) => Error(e)
+| Ok(_value) =>  // Anonymous, not accessible
+    useEmail(???)  // ERROR: still not bound
+}
+```
+
+**Fix:** Bind first:
+```rescript
+let email = Email.parse(input)
+%return.error(email)
+useEmail(email)  // OK: email is bound and narrowed
+```
+
+== Limitations
+
+=== Cannot Transform
+
+**1. Loop bodies:**
+```rescript
+// NOT SUPPORTED
+while true {
+  %return.if(condition, value)  // ERROR: outside function body
+}
+```
+
+**2. Async functions:**
+```rescript
+// NOT YET SUPPORTED
+let foo = async () => {
+  %return.if(condition, value)  // TODO: handle promises
+}
+```
+
+**3. Nested functions:**
+```rescript
+// UNCLEAR: Which function does return apply to?
+let outer = () => {
+  let inner = () => {
+    %return.if(condition, value)  // Applies to inner, not outer
+  }
+}
+```
+
+**4. Try/catch blocks:**
+```rescript
+// NOT YET SUPPORTED
+try {
+  %return.if(condition, value)  // TODO: exception interaction
+} catch {
+| e => Error(e)
+}
+```
+
+=== Future Work
+
+- [ ] Support `%return.false(condition)` - early return if false
+- [ ] Support `%return.empty(array)` - early return if empty
+- [ ] Better error messages for unsupported locations
+- [ ] Detect and warn about unreachable code after return
+- [ ] Integration with async/await when ReScript supports it
+
+== Comparison to Real Return
+
+[cols="1,2,2"]
+|===
+|Feature |This Transformer |Real Return (#8191)
+
+|Syntax
+|`%return.X(...)`
+|`return ...`
+
+|Location
+|Statement-level only
+|Anywhere in function
+
+|Loops
+|Not supported
+|Supported
+
+|Async
+|Not yet
+|Supported
+
+|Type inference
+|Post-transformation
+|During parsing
+
+|Error messages
+|Point to transformed code
+|Point to original code
+|===
+
+== Implementation Notes
+
+The PPX operates on the OCaml/ReScript AST:
+
+```
+Parsetree (ReScript) → PPX transform → Parsetree → Compiler
+```
+
+**Key AST types used:**
+
+- `Pexp_extension` - Extension nodes (`%return.X`)
+- `Pexp_ifthenelse` - If-else expressions
+- `Pexp_match` - Pattern matching (switch)
+- `Pexp_sequence` - Statement sequences
+
+**Traversal strategy:**
+
+1. Find `%return.X` extension nodes
+2. Collect rest of function body
+3. Wrap rest in if/switch based on rule
+4. Replace extension node with transformed AST
+
+See `ppx/ppx_return_sugar.ml` for implementation.

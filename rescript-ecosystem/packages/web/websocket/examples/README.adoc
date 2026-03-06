@@ -1,0 +1,54 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= rescript-websocket Examples
+
+This directory contains example code demonstrating how to use rescript-websocket.
+
+== Prerequisites
+
+Build the examples first:
+
+[source,bash]
+----
+just build
+----
+
+== Examples
+
+=== Echo Client
+
+Simple client that connects to an echo server:
+
+[source,bash]
+----
+deno run --allow-net examples/echo_client.res.js
+----
+
+=== Chat Server
+
+Multi-user chat server with broadcasting:
+
+[source,bash]
+----
+# Start the server
+deno run --allow-net examples/chat_server.res.js
+
+# Connect with websocat (in another terminal)
+websocat ws://localhost:8080/ws
+
+# Or open http://localhost:8080 in a browser for instructions
+----
+
+== Running Examples
+
+All examples require the `--allow-net` permission for Deno:
+
+[source,bash]
+----
+deno run --allow-net examples/<example>.res.js
+----
+
+== Source Files
+
+The `.res` files are ReScript source code. After running `just build`, the compiled `.res.js` files can be executed with Deno.

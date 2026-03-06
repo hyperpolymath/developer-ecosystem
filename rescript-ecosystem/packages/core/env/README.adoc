@@ -1,0 +1,417 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= rescript-env
+:toc: left
+:toclevels: 3
+:sectnums:
+:icons: font
+:source-highlighter: rouge
+
+image:https://img.shields.io/badge/ReScript-v11-e6484f?logo=rescript[ReScript]
+image:https://img.shields.io/badge/Deno-Runtime-000000?logo=deno[Deno]
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/RSR-Tier%201-gold[RSR Tier 1]
+image:https://img.shields.io/badge/Part%20of-ReScript%20Full%20Stack-purple[Ecosystem]
+
+**Type-safe environment variable access for ReScript with automatic runtime detection.**
+
+Part of the https://github.com/hyperpolymath/rescript-full-stack[ReScript Full Stack] ecosystem.
+
+Part of the https://github.com/hyperpolymath/rescript-full-stack[ReScript Full Stack] ecosystem.
+
+`rescript-env` provides a type-safe, cross-runtime API for accessing environment variables in ReScript applications. It automatically detects whether your code is running in Deno, Bun, or Node.js and uses the appropriate APIs.
+
+=== Why rescript-env?
+
+[cols="1,3"]
+|===
+|Problem |Solution
+
+|Environment variables are stringly-typed
+|Returns `option<string>` for safe handling
+
+|No built-in type coercion
+|`getInt`, `getFloat`, `getBool` with validation
+
+|Runtime differences (Deno vs Node)
+|Automatic runtime detection and API selection
+
+|Missing required config crashes apps
+|`getExn` with descriptive `MissingEnvVar` exception
+
+|Boilerplate for dev/prod checks
+|Built-in `isDevelopment`, `isProduction`, `isTest`
+|===
+
+== Installation
+
+=== Using Deno (Recommended)
+
+[source,bash]
+----
+deno add jsr:@hyperpolymath/rescript-env
+----
+
+=== Using npm (for Node.js projects)
+
+[source,bash]
+----
+# Not yet published - use git submodule or copy src/
+----
+
+== Quick Start
+
+[source,rescript]
+----
+// Required configuration - throws if missing
+let databaseUrl = Env.getExn("DATABASE_URL")
+
+// Optional with default
+let port = Env.getOr("PORT", "3000")
+
+// Type-safe coercion
+let maxConnections = Env.getInt("MAX_CONNECTIONS")  // option<int>
+let debugMode = Env.getBool("DEBUG")                // option<bool>
+let timeout = Env.getFloat("TIMEOUT_SECONDS")       // option<float>
+
+// Environment detection
+if Env.isDevelopment() {
+  Console.log("Running in development mode")
+}
+
+// Check existence
+if Env.has("API_KEY") {
+  // API key is configured
+}
+----
+
+== API Reference
+
+=== Basic Access
+
+==== `get`
+[source,rescript]
+----
+let get: string => option<string>
+----
+Returns `Some(value)` if the environment variable is set, `None` otherwise.
+
+[source,rescript]
+----
+switch Env.get("API_KEY") {
+| Some(key) => authenticateWith(key)
+| None => Console.log("No API key configured")
+}
+----
+
+==== `getOr`
+[source,rescript]
+----
+let getOr: (string, string) => string
+----
+Returns the environment variable value or the provided default.
+
+[source,rescript]
+----
+let host = Env.getOr("HOST", "localhost")
+let port = Env.getOr("PORT", "8080")
+----
+
+==== `getExn`
+[source,rescript]
+----
+let getExn: string => string
+----
+Returns the value or raises `MissingEnvVar(name)` exception.
+
+[source,rescript]
+----
+// Will crash with clear error if DATABASE_URL is not set
+let dbUrl = Env.getExn("DATABASE_URL")
+----
+
+=== Type Coercion
+
+==== `getInt`
+[source,rescript]
+----
+let getInt: string => option<int>
+----
+Parses the environment variable as an integer.
+
+[source,rescript]
+----
+let port = Env.getInt("PORT")->Option.getOr(3000)
+let workers = Env.getInt("WORKERS")->Option.getOr(4)
+----
+
+==== `getFloat`
+[source,rescript]
+----
+let getFloat: string => option<float>
+----
+Parses the environment variable as a float.
+
+[source,rescript]
+----
+let timeout = Env.getFloat("TIMEOUT_SECONDS")->Option.getOr(30.0)
+----
+
+==== `getBool`
+[source,rescript]
+----
+let getBool: string => option<bool>
+----
+Parses the environment variable as a boolean. Recognises:
+
+* **True values**: `"true"`, `"1"`, `"yes"`, `"on"`
+* **False values**: `"false"`, `"0"`, `"no"`, `"off"`
+
+[source,rescript]
+----
+let debug = Env.getBool("DEBUG")->Option.getOr(false)
+let enableMetrics = Env.getBool("ENABLE_METRICS")->Option.getOr(true)
+----
+
+=== Mutation
+
+==== `set`
+[source,rescript]
+----
+let set: (string, string) => unit
+----
+Sets an environment variable.
+
+[source,rescript]
+----
+Env.set("NODE_ENV", "test")
+----
+
+==== `delete`
+[source,rescript]
+----
+let delete: string => unit
+----
+Deletes an environment variable.
+
+[source,rescript]
+----
+Env.delete("TEMPORARY_TOKEN")
+----
+
+=== Introspection
+
+==== `has`
+[source,rescript]
+----
+let has: string => bool
+----
+Checks if an environment variable is set.
+
+[source,rescript]
+----
+if Env.has("REDIS_URL") {
+  initializeRedisCache()
+}
+----
+
+==== `all`
+[source,rescript]
+----
+let all: unit => Dict.t<string>
+----
+Returns all environment variables as a dictionary.
+
+[source,rescript]
+----
+let allEnv = Env.all()
+allEnv->Dict.forEach((key, value) => {
+  Console.log(`${key}=${value}`)
+})
+----
+
+=== Environment Detection
+
+==== `isDevelopment`
+[source,rescript]
+----
+let isDevelopment: unit => bool
+----
+Returns `true` if `NODE_ENV`, `DENO_ENV`, or `ENV` is `"development"` or `"dev"`.
+
+==== `isProduction`
+[source,rescript]
+----
+let isProduction: unit => bool
+----
+Returns `true` if `NODE_ENV`, `DENO_ENV`, or `ENV` is `"production"` or `"prod"`.
+
+==== `isTest`
+[source,rescript]
+----
+let isTest: unit => bool
+----
+Returns `true` if `NODE_ENV`, `DENO_ENV`, or `ENV` is `"test"`.
+
+=== Exception
+
+==== `MissingEnvVar`
+[source,rescript]
+----
+exception MissingEnvVar(string)
+----
+Raised by `getExn` when the requested environment variable is not set.
+
+[source,rescript]
+----
+try {
+  let secret = Env.getExn("SECRET_KEY")
+  // use secret
+} catch {
+| Env.MissingEnvVar(name) =>
+  Console.error(`Missing required env var: ${name}`)
+  Process.exit(1)
+}
+----
+
+== Patterns & Best Practices
+
+=== Configuration Module Pattern
+
+Create a dedicated configuration module that validates all required env vars at startup:
+
+[source,rescript]
+----
+// src/Config.res
+let database = {
+  "url": Env.getExn("DATABASE_URL"),
+  "maxConnections": Env.getInt("DB_MAX_CONNECTIONS")->Option.getOr(10),
+  "timeout": Env.getFloat("DB_TIMEOUT")->Option.getOr(30.0),
+}
+
+let server = {
+  "host": Env.getOr("HOST", "0.0.0.0"),
+  "port": Env.getInt("PORT")->Option.getOr(3000),
+}
+
+let features = {
+  "debug": Env.getBool("DEBUG")->Option.getOr(false),
+  "metrics": Env.getBool("ENABLE_METRICS")->Option.getOr(true),
+}
+----
+
+=== Fail-Fast Validation
+
+[source,rescript]
+----
+// Validate all required env vars at startup
+let validateConfig = () => {
+  let required = ["DATABASE_URL", "SECRET_KEY", "API_ENDPOINT"]
+  let missing = required->Array.filter(name => !Env.has(name))
+
+  if Array.length(missing) > 0 {
+    Console.error("Missing required environment variables:")
+    missing->Array.forEach(name => Console.error(`  - ${name}`))
+    Process.exit(1)
+  }
+}
+----
+
+== Runtime Detection
+
+`rescript-env` automatically detects the JavaScript runtime:
+
+[cols="1,2,2"]
+|===
+|Runtime |Detection |API Used
+
+|Deno
+|`globalThis.Deno` exists
+|`Deno.env.get()`, `Deno.env.set()`, etc.
+
+|Node.js / Bun
+|`globalThis.process` exists
+|`process.env` object
+
+|Browser / Unknown
+|Neither exists
+|Returns `None` / no-op for mutations
+|===
+
+== Development
+
+=== Prerequisites
+
+* Deno 1.40+
+* ReScript 11+
+
+=== Building
+
+[source,bash]
+----
+# Install dependencies and build
+deno task build
+
+# Watch mode for development
+deno task dev
+
+# Clean build artifacts
+deno task clean
+----
+
+=== Project Structure
+
+[source]
+----
+rescript-env/
+├── src/
+│   ├── Env.res          # Implementation
+│   └── Env.resi         # Public interface
+├── deno.json            # Deno configuration
+├── rescript.json        # ReScript compiler config
+├── README.adoc          # This file
+├── ROADMAP.adoc         # Future plans
+├── CHANGELOG.adoc       # Version history
+└── LICENCE              # PMPL-1.0-or-later
+----
+
+== Ecosystem
+
+This library is part of the **ReScript Full Stack** ecosystem:
+
+[cols="1,2"]
+|===
+|Library |Purpose
+
+|https://github.com/hyperpolymath/rescript-env[rescript-env]
+|Environment variable access (this library)
+
+|https://github.com/hyperpolymath/rescript-full-stack[rescript-full-stack]
+|Ecosystem overview and integration
+
+|More coming soon...
+|See ROADMAP.adoc
+|===
+
+== Contributing
+
+See link:CONTRIBUTING.md[CONTRIBUTING.md] for guidelines.
+
+== Licence
+
+SPDX-License-Identifier: PMPL-1.0-or-later-or-later
+
+Copyright (C) 2025 Hyperpolymath
+
+This program is free software: you can redistribute it and/or modify it under
+the terms of the Palimpsest-MPL License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.
+
+== Links
+
+* https://github.com/hyperpolymath/rescript-full-stack[ReScript Full Stack Ecosystem]
+* https://rescript-lang.org/[ReScript Language]
+* https://deno.land/[Deno Runtime]
+* https://rhodium.sh[Rhodium Standard (RSR)]

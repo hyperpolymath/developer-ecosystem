@@ -1,0 +1,37 @@
+{
+  "name": "rescript-wasm-runtime",
+  "version": "0.1.0",
+  "description": "WebAssembly runtime for ReScript with Deno support",
+  "type": "module",
+  "scripts": {
+    "build": "rescript build",
+    "clean": "rescript clean",
+    "watch": "rescript build -w",
+    "test": "deno test --allow-net --allow-read tests/",
+    "dev": "just dev-api",
+    "fmt": "rescript format -all"
+  },
+  "keywords": [
+    "rescript",
+    "webassembly",
+    "wasm",
+    "deno",
+    "runtime",
+    "functional-programming",
+    "type-safe",
+    "http-server",
+    "microservices"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@rescript/core": "^1.5.0"
+  },
+  "devDependencies": {
+    "@rescript/core": "^1.0.0",
+    "rescript": "^12.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

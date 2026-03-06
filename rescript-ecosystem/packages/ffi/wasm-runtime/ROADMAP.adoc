@@ -1,0 +1,135 @@
+= Roadmap — rescript-wasm-runtime
+:toc:
+:toclevels: 3
+:sectanchors:
+
+This roadmap is organised as staged work that keeps the project stable while it evolves.
+
+== North star
+
+Deliver a *ReScript-first* WebAssembly runtime/bindings layer that is:
+
+* Correct and test-backed
+* Small-core + additive extensions
+* Easy to use from ReScript without TypeScript drift
+* Portable across browser and “server JS” environments (as far as the underlying WASM APIs allow)
+
+== Stage 0 — Re-anchor scope and invariants
+
+Goal: make the project unambiguous again.
+
+MUST:
+* Define the public “one paragraph” promise (what you get, what you don’t)
+* Define supported environments (browser only? browser + server JS runtimes?)
+* Define compatibility assumptions (WASM MVP only? selected proposals?)
+* Inventory current code: what exists in `src/`, what is stubbed, what is experimental
+
+SHOULD:
+* Add a short `docs/DECISIONS.adoc` capturing key constraints (no TS drift, stable API surface)
+* Add a simple “capabilities table” in docs (what’s implemented vs planned)
+
+COULD:
+* Add a project glossary in `docs/GLOSSARY.adoc`
+
+Exit criteria:
+* A reader can tell in <2 minutes what this repo does and whether it fits their needs.
+
+== Stage 1 — Minimal viable runtime surface (MVP)
+
+Goal: a tiny but real “load/instantiate/call” story with tests.
+
+MUST:
+* Module loading from bytes / ArrayBuffer
+* Instantiate with explicit imports
+* Call exports with basic value types
+* Explicit error model (typed error variants, not just thrown strings)
+* Tests for: invalid module, missing import, wrong signature, trap propagation
+
+SHOULD:
+* Provide 2–3 examples demonstrating:
+  * a pure function export
+  * memory access (read/write)
+  * host import callbacks
+
+COULD:
+* Add golden tests for known wasm fixtures
+
+Exit criteria:
+* `examples/` run cleanly and `tests/` cover the minimum surface.
+
+== Stage 2 — Typed bindings layer (ReScript ergonomics)
+
+Goal: make it pleasant from ReScript.
+
+MUST:
+* Provide a stable binding API that feels ReScript-native:
+  * explicit types
+  * predictable naming
+  * no implicit global state
+* Document the API in `docs/API.adoc`
+* Provide at least one “real-ish” example beyond hello world (e.g. parsing, hashing, or a small algorithm)
+
+SHOULD:
+* Introduce a small “interop helpers” module for common patterns (imports, memory views)
+
+COULD:
+* Optional codegen from WAT/wasm metadata (kept additive)
+
+Exit criteria:
+* Users can copy an example and understand the types without reading source.
+
+== Stage 3 — Performance + benchmark discipline
+
+Goal: measure and avoid regressions.
+
+MUST:
+* Benchmarks for:
+  * instantiate time
+  * call overhead
+  * memory view operations
+* A documented “benchmark methodology” in `benchmark/README.adoc`
+
+SHOULD:
+* Add CI job that runs a small benchmark subset and flags large regressions
+
+COULD:
+* Profile-guided notes for hotspots
+
+Exit criteria:
+* Benchmarks exist, are repeatable, and inform decisions.
+
+== Stage 4 — Packaging and distribution
+
+Goal: make it consumable.
+
+MUST:
+* Produce a versioned package artefact (JS + types via ReScript)
+* Clear install instructions (no placeholders)
+* A changelog discipline (`CHANGELOG.md` exists; keep it meaningful)
+
+SHOULD:
+* Add “supported versions” policy (ReScript compiler version range, JS runtime assumptions)
+
+COULD:
+* Provide dual build outputs (browser-focused bundle + minimal library build)
+
+Exit criteria:
+* Someone can depend on it without cloning the repo.
+
+== Stage 5 — Optional extensions (additive, not core)
+
+Choose any, but keep them modular:
+
+Candidates:
+* WASI/WASI-like helpers (if appropriate for your target environments)
+* Proposal support (carefully scoped) with capability flags
+* Better debugging / tracing tools around instantiation and traps
+
+Rule:
+* Extensions must not destabilise Stage 1–4 guarantees.
+
+== Work hygiene
+
+* Prefer `.adoc` for documentation (except files required by platform standards).
+* Keep the core small; new features should land as additive modules.
+* Add tests with every change that affects behaviour.

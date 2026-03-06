@@ -1,0 +1,299 @@
+= rescript-tauri
+:toc: macro
+:toc-title: Contents
+:toclevels: 2
+:icons: font
+:source-highlighter: highlight.js
+
+Type-safe ReScript bindings for https://tauri.app[Tauri 2.0] - Build native desktop and mobile apps with ReScript.
+
+image:https://img.shields.io/badge/ReScript-11.0+-blue[ReScript]
+image:https://img.shields.io/badge/Tauri-2.0-purple[Tauri]
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+toc::[]
+
+== Overview
+
+`rescript-tauri` provides comprehensive ReScript bindings for the Tauri 2.0 JavaScript API, enabling type-safe development of native desktop and mobile applications.
+
+=== Key Features
+
+* **Type-safe command bridge** - Typed request/response pattern with error handling
+* **Full event system** - Listen, emit, and create typed event channels
+* **Window management** - Complete window API with properties and events
+* **Plugin bindings** - Filesystem, dialogs, and more
+* **TEA integration** - Examples using rescript-tea architecture
+* **Zero npm option** - Works with Deno imports
+
+== Installation
+
+=== With npm/pnpm/yarn
+
+[source,bash]
+----
+npm install rescript-tauri @tauri-apps/api
+----
+
+=== With Deno
+
+[source,json]
+----
+{
+  "imports": {
+    "rescript-tauri": "npm:rescript-tauri",
+    "@tauri-apps/api": "npm:@tauri-apps/api@^2.0.0"
+  }
+}
+----
+
+=== rescript.json
+
+[source,json]
+----
+{
+  "bs-dependencies": ["rescript-tauri"]
+}
+----
+
+== Quick Start
+
+=== Basic Invoke
+
+[source,rescript]
+----
+open Tauri
+
+// Call a Tauri command
+let result = await invoke("greet", ~args={"name": "World"})
+Console.log(result) // "Hello, World!"
+----
+
+=== Type-Safe Commands
+
+The command bridge pattern provides compile-time type safety:
+
+[source,rescript]
+----
+open Tauri
+
+// Define a typed command
+let greetCommand = Command.defineCommand(
+  ~name="greet",
+  ~encode=name => {"name": name},
+  ~decode=json => {
+    switch JSON.Decode.string(json) {
+    | Some(s) => Ok(s)
+    | None => Error("Expected string")
+    }
+  },
+)
+
+// Execute with type safety
+switch await Command.execute(greetCommand, "World") {
+| Ok(greeting) => Console.log(greeting)
+| Error(err) => Console.error(Command.CommandError.toString(err))
+}
+----
+
+=== With Retry and Timeout
+
+[source,rescript]
+----
+// Execute with retry logic
+let result = await Command.executeWithRetry(
+  greetCommand,
+  "World",
+  ~maxRetries=3,
+  ~delayMs=1000,
+)
+
+// Or use the fluent builder
+let result = await Command.Builder.make(greetCommand)
+  ->Command.Builder.withTimeout(5000)
+  ->Command.Builder.withRetries(3)
+  ->Command.Builder.run("World")
+----
+
+=== Events
+
+[source,rescript]
+----
+open Tauri
+
+// Listen for events
+let unlisten = await Event.listen("my-event", event => {
+  Console.log(`Received: ${event.payload}`)
+})
+
+// Emit events
+await Event.emit("my-event", ~payload="Hello from ReScript!")
+
+// Clean up
+unlisten()
+----
+
+=== Window Management
+
+[source,rescript]
+----
+open Tauri
+
+// Get current window
+let window = Window.getCurrentWindow()
+
+// Window operations
+await window->Window.setTitle("My App")
+await window->Window.center()
+await window->Window.maximize()
+
+// Or use the convenience module
+await Window.Current.setTitle("My App")
+await Window.Current.center()
+----
+
+=== File Dialogs
+
+[source,rescript]
+----
+open Tauri
+
+// Pick a file
+let path = await Dialog.openSingle(
+  ~options={
+    title: "Select a file",
+    filters: [Dialog.Filters.json, Dialog.Filters.all],
+  },
+)
+
+// Or use the fluent builder
+let path = await Dialog.OpenDialog.make()
+  ->Dialog.OpenDialog.title("Select a file")
+  ->Dialog.OpenDialog.filter(Dialog.Filters.json)
+  ->Dialog.OpenDialog.pickSingle()
+----
+
+=== Filesystem
+
+[source,rescript]
+----
+open Tauri
+
+// Read a file
+let content = await Fs.readTextFile("config.json", ~options={baseDir: AppConfig})
+
+// Write a file
+await Fs.writeTextFile("output.txt", "Hello!", ~options={baseDir: AppData})
+
+// JSON helpers
+switch await Fs.readJsonFile("data.json") {
+| Ok(json) => Console.log(json)
+| Error(err) => Console.error(err)
+}
+----
+
+== Modules
+
+[cols="1,3"]
+|===
+|Module |Description
+
+|`Tauri.Core`
+|Core invoke API, channels, resources, app info
+
+|`Tauri.Event`
+|Event listeners, emitters, typed event channels
+
+|`Tauri.Window`
+|Window management, properties, events
+
+|`Tauri.Command`
+|Type-safe command bridge pattern
+
+|`Tauri.Fs`
+|Filesystem operations (requires @tauri-apps/plugin-fs)
+
+|`Tauri.Dialog`
+|Native file/message dialogs (requires @tauri-apps/plugin-dialog)
+|===
+
+== Examples
+
+See the `examples/` directory:
+
+* **counter** - TEA-based counter with Rust backend state
+
+== Tauri Plugins
+
+Some modules require Tauri plugins to be installed:
+
+[source,bash]
+----
+# Filesystem
+npm install @tauri-apps/plugin-fs
+
+# Dialogs
+npm install @tauri-apps/plugin-dialog
+----
+
+And add to `tauri.conf.json`:
+
+[source,json]
+----
+{
+  "plugins": {
+    "fs": {
+      "scope": ["$APPDATA/**", "$RESOURCE/**"]
+    },
+    "dialog": {}
+  }
+}
+----
+
+== Integration with rescript-tea
+
+`rescript-tauri` works seamlessly with https://github.com/hyperpolymath/rescript-tea[rescript-tea]:
+
+[source,rescript]
+----
+type msg =
+  | LoadData
+  | DataLoaded(result<data, Tauri.Command.commandError>)
+
+let update = (model, msg) => {
+  switch msg {
+  | LoadData => (
+      {...model, loading: true},
+      Cmd.call(dispatch => {
+        let _ = Tauri.Command.execute(loadCommand, ())
+          ->Promise.thenResolve(result => dispatch(DataLoaded(result)))
+      }),
+    )
+  | DataLoaded(Ok(data)) => ({...model, data, loading: false}, Cmd.none)
+  | DataLoaded(Error(err)) => ({...model, error: Some(err), loading: false}, Cmd.none)
+  }
+}
+----
+
+== Part of rescript-full-stack
+
+This library is part of the https://github.com/hyperpolymath/rescript-full-stack[rescript-full-stack] ecosystem, providing the P4 (Mobile & Desktop) layer.
+
+== License
+
+PMPL-1.0-or-later
+
+== Contributing
+
+See CONTRIBUTING.adoc for guidelines.
+
+== OPSM Link
+
+[source]
+----
+OPSM Core
+  |
+  v
+rescript-tauri (Tauri bridge for OPSM desktop/mobile shell)
+
+----

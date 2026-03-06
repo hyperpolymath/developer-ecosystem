@@ -1,0 +1,14 @@
+{
+  "name": "bridge-web-rescript",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "rescript build",
+    "clean": "rescript clean",
+    "test": "node --test tests/*.mjs",
+    "check": "npm run build && npm run test"
+  },
+  "devDependencies": {
+    "rescript": "^12.0.0"
+  }
+}

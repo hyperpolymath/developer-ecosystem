@@ -1,0 +1,12 @@
+{
+  "name": "@tests/reanalyze-deadcode",
+  "private": true,
+  "scripts": {
+    "build": "rescript build",
+    "clean": "rescript clean"
+  },
+  "dependencies": {
+    "@rescript/react": "link:../../../dependencies/rescript-react",
+    "rescript": "^12.0.0"
+  }
+}

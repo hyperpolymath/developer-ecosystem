@@ -1,0 +1,21 @@
+{
+  "$schema": "https://tauri.app/schemas/tauri.conf.json",
+  "productName": "OPSM Shell",
+  "version": "0.1.0",
+  "identifier": "dev.opsm.shell",
+  "build": {
+    "frontendDist": "../",
+    "devUrl": "http://localhost:1420",
+    "beforeDevCommand": "",
+    "beforeBuildCommand": ""
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "OPSM Shell",
+        "width": 1200,
+        "height": 800
+      }
+    ]
+  }
+}

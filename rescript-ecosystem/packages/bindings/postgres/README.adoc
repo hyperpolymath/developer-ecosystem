@@ -1,0 +1,23 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= Rescript Postgres
+
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+:toc: preamble
+:toclevels: 2
+:icons: font
+
+ReScript bindings for PostgreSQL database operations.
+
+== Overview
+
+This project is part of the hyperpolymath ecosystem.
+
+== Status
+
+Under development.
+
+== License
+
+PMPL-1.0-or-later. See link:LICENSE[LICENSE].

@@ -1,0 +1,37 @@
+= aLib Conformance Suite
+:toc: macro
+:toclevels: 3
+:sectanchors:
+:icons: font
+
+Canonical conformance vectors and runner harnesses for aLib-style libraries.
+
+toc::[]
+
+== Status
+Alpha.
+
+== Purpose
+This repo provides:
+
+* test vectors (fixtures),
+* expected behaviors (assertions),
+* and runner harnesses
+
+…so that ecosystem implementations can validate behavior without importing any particular implementation.
+
+== Non-goals
+* Not a standard library.
+* Not an implementation.
+* Not a mandate.
+
+== Contents
+[source]
+----
+vectors/           canonical fixtures
+semantics/         clarifying notes and edge cases
+runners/           harnesses for specific environments
+----
+
+== License
+PLMP-1.0.0-or-later

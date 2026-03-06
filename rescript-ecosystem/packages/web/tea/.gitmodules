@@ -1,0 +1,3 @@
+[submodule ".well-known"]
+	path = .well-known
+	url = https://github.com/hyperpolymath/well-known-ecosystem.git

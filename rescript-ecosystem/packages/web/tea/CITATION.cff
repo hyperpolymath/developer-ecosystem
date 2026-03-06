@@ -1,0 +1,30 @@
+# SPDX-License-Identifier: MIT AND Palimpsest-0.8
+# SPDX-FileCopyrightText: 2024 Jonathan D.A. Jewell
+
+cff-version: 1.2.0
+title: rescript-tea
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - family-names: Jewell
+    given-names: Jonathan D.A.
+    alias: Hyperpolymath
+repository-code: https://github.com/hyperpolymath/rescript-tea
+url: https://github.com/hyperpolymath/rescript-tea
+abstract: >-
+  The Elm Architecture (TEA) for ReScript, providing a
+  principled way to build web applications with guaranteed
+  state consistency, exhaustive event handling, and
+  type-safe side effects.
+keywords:
+  - rescript
+  - elm-architecture
+  - tea
+  - react
+  - functional-programming
+  - web-development
+license: MIT
+version: 0.1.0
+date-released: 2024-12-06

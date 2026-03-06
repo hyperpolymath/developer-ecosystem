@@ -1,0 +1,13 @@
+{
+  "name": "@hyperpolymath/rescript-websocket",
+  "version": "0.1.0",
+  "exports": "./src/WebSocket.res.js",
+  "tasks": {
+    "build": "rescript build",
+    "clean": "rescript clean",
+    "dev": "rescript build -w"
+  },
+  "compilerOptions": {
+    "lib": ["deno.ns", "deno.unstable"]
+  }
+}

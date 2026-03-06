@@ -1,0 +1,352 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= rescript-poly-core Architecture
+:toc:
+:icons: font
+:source-highlighter: rouge
+
+This document describes the architectural design of `rescript-poly-core`.
+
+== Overview
+
+`rescript-poly-core` is organized as a layered library with two main components:
+
+1. **Core** - Fundamental utilities for ReScript development
+2. **MCP** - Model Context Protocol infrastructure for AI tools
+
+----
+┌─────────────────────────────────────────────────────────────┐
+│                      PolyCore.res                           │
+│                    (Main Entry Point)                       │
+└─────────────────────────────────────────────────────────────┘
+                            │
+            ┌───────────────┴───────────────┐
+            │                               │
+            ▼                               ▼
+┌───────────────────────────┐   ┌───────────────────────────┐
+│         Core/             │   │          MCP/             │
+│                           │   │                           │
+│  ┌─────────────────────┐  │   │  ┌─────────────────────┐  │
+│  │     Result.res      │  │   │  │    Protocol.res     │  │
+│  │  (Error handling)   │  │   │  │   (MCP types)       │  │
+│  └─────────────────────┘  │   │  └─────────────────────┘  │
+│                           │   │                           │
+│  ┌─────────────────────┐  │   │  ┌─────────────────────┐  │
+│  │     Async.res       │  │   │  │     Server.res      │  │
+│  │  (Promise utils)    │  │   │  │  (Server builder)   │  │
+│  └─────────────────────┘  │   │  └─────────────────────┘  │
+│                           │   │                           │
+│  ┌─────────────────────┐  │   └───────────────────────────┘
+│  │     Logger.res      │  │
+│  │  (Structured logs)  │  │
+│  └─────────────────────┘  │
+│                           │
+│  ┌─────────────────────┐  │
+│  │     Config.res      │  │
+│  │  (Configuration)    │  │
+│  └─────────────────────┘  │
+│                           │
+└───────────────────────────┘
+----
+
+== Design Principles
+
+=== 1. Result Over Exceptions
+
+All fallible operations return `result<'a, 'e>` instead of throwing exceptions:
+
+[source,rescript]
+----
+// Bad: Throws exception
+let parseJson = (s: string): JSON.t => JSON.parseExn(s)
+
+// Good: Returns Result
+let parseJson = (s: string): result<JSON.t, string> => {
+  Result.tryCatch(
+    () => JSON.parseExn(s),
+    _ => "Invalid JSON"
+  )
+}
+----
+
+**Rationale**: Explicit error handling makes code more predictable and type-safe.
+
+=== 2. Pipe-First Composition
+
+All functions are designed for pipe-first (`->`) composition:
+
+[source,rescript]
+----
+value
+  ->Result.map(transform)
+  ->Result.flatMap(validate)
+  ->Result.tap(log)
+  ->Result.getOr(default)
+----
+
+**Rationale**: Consistent data-first arguments enable fluent chaining.
+
+=== 3. Zero External Dependencies
+
+Only `@rescript/core` is required:
+
+[source,json]
+----
+{
+  "bs-dependencies": ["@rescript/core"]
+}
+----
+
+**Rationale**: Minimizes supply chain risk and simplifies maintenance.
+
+=== 4. Uncurried by Default
+
+All modules use `@@uncurried`:
+
+[source,rescript]
+----
+@@uncurried
+
+let map = (result: result<'a, 'e>, fn: 'a => 'b): result<'b, 'e> => {
+  // ...
+}
+----
+
+**Rationale**: Better JavaScript interop and performance.
+
+== Module Design
+
+=== Core.Result
+
+Extended Result utilities that complement `@rescript/core`.
+
+.Key Functions
+[cols="1,2"]
+|===
+|Category |Functions
+
+|Transformations
+|`map`, `mapError`, `flatMap`
+
+|Extraction
+|`getOr`, `getOrElse`, `toOption`
+
+|Combination
+|`both`, `all`
+
+|Error Handling
+|`tryCatch`, `tryCatchAsync`
+
+|Side Effects
+|`tap`, `tapError`
+|===
+
+=== Core.Async
+
+Promise utilities for complex async patterns.
+
+.Key Features
+[cols="1,2"]
+|===
+|Feature |Description
+
+|`sleep`
+|Delay execution
+
+|`timeout`
+|Fail if operation exceeds time limit
+
+|`retry`
+|Exponential backoff retry
+
+|`parallelLimit`
+|Concurrent execution with limit
+
+|`sequential`
+|Sequential execution of tasks
+
+|`debounce`/`throttle`
+|Rate limiting utilities
+|===
+
+=== Core.Logger
+
+Structured JSON logging with hierarchical context.
+
+----
+┌─────────────────────────────────────────┐
+│              Logger.make()              │
+│  config: {minLevel, json, timestamps}   │
+│  context: {service: "app"}              │
+└─────────────────────────────────────────┘
+                    │
+                    │ Logger.child()
+                    ▼
+┌─────────────────────────────────────────┐
+│           Child Logger                  │
+│  context: {service: "app",              │
+│            requestId: "abc"}            │
+└─────────────────────────────────────────┘
+----
+
+=== Core.Config
+
+Type-safe configuration from environment.
+
+.Type Accessors
+[cols="1,1,1"]
+|===
+|Type |Required |Optional
+
+|String
+|`getString`
+|`getStringOpt`, `getStringOr`
+
+|Int
+|`getInt`
+|`getIntOpt`, `getIntOr`
+
+|Bool
+|`getBool`
+|`getBoolOpt`, `getBoolOr`
+
+|Float
+|`getFloat`
+|`getFloatOpt`
+|===
+
+=== MCP.Protocol
+
+MCP protocol types following spec version `2024-11-05`.
+
+.Type Definitions
+[source,rescript]
+----
+type content = {
+  type_: string,
+  text?: string,
+  data?: string,
+  mimeType?: string,
+}
+
+type toolResult = {
+  content: array<content>,
+  isError?: bool,
+}
+
+type tool = {
+  name: string,
+  description: string,
+  inputSchema: inputSchema,
+}
+----
+
+=== MCP.Server
+
+Server builder pattern for MCP tool registration.
+
+----
+Server.make()
+  │
+  ├── registerTool(definition, handler)
+  │         │
+  │         ├── Tool 1
+  │         ├── Tool 2
+  │         └── Tool N
+  │
+  ├── registerResource(resource)
+  │
+  └── handleRequest(method, params)
+            │
+            ├── "initialize"
+            ├── "tools/list"
+            └── "tools/call"
+----
+
+== Data Flow
+
+=== Typical MCP Request
+
+----
+Client                    Server                     Tool Handler
+  │                         │                              │
+  │  JSON-RPC Request       │                              │
+  │ ───────────────────────>│                              │
+  │  {"method": "tools/call",│                              │
+  │   "params": {...}}      │                              │
+  │                         │                              │
+  │                         │  handleRequest()             │
+  │                         │ ────────────────────────────>│
+  │                         │                              │
+  │                         │                   Parse args │
+  │                         │                   Execute    │
+  │                         │                   Return     │
+  │                         │                              │
+  │                         │<────────────────────────────│
+  │                         │  toolResult                  │
+  │                         │                              │
+  │<───────────────────────│                              │
+  │  JSON-RPC Response      │                              │
+  │  {"result": {...}}      │                              │
+----
+
+== File Organization
+
+----
+rescript-poly-core/
+├── src/
+│   ├── PolyCore.res          # Re-exports all modules
+│   ├── Core/
+│   │   ├── Result.res        # Result utilities
+│   │   ├── Async.res         # Promise utilities
+│   │   ├── Logger.res        # Structured logging
+│   │   └── Config.res        # Configuration
+│   └── MCP/
+│       ├── Protocol.res      # MCP types and builders
+│       └── Server.res        # Server infrastructure
+├── tests/                    # Deno test files
+├── docs/                     # Extended documentation
+└── .machine_readable/        # Scheme metadata files
+----
+
+== Extension Points
+
+=== Adding New Core Modules
+
+1. Create `src/Core/NewModule.res`
+2. Add `@@uncurried` directive
+3. Export via `PolyCore.res`:
+
+[source,rescript]
+----
+// src/PolyCore.res
+module NewModule = Core.NewModule
+----
+
+=== Adding MCP Capabilities
+
+1. Extend `Protocol.res` with new types
+2. Add handlers in `Server.res`
+3. Update `handleRequest` switch
+
+== Testing Strategy
+
+Tests are written in TypeScript/JavaScript for Deno:
+
+[source,typescript]
+----
+// tests/Core/Result_test.ts
+import { assertEquals } from "jsr:@std/assert";
+import * as Result from "../../src/Core/Result.res.js";
+
+Deno.test("Result.map", () => {
+  // Test implementation
+});
+----
+
+== See Also
+
+* link:../README.adoc[README] - Quick start and API reference
+* link:../ROADMAP.adoc[ROADMAP] - Future development plans
+* link:../.machine_readable/META.scm[META.scm] - Architecture decisions

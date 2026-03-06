@@ -1,0 +1,14 @@
+package safedom
+version = 1.0.0
+authors = "Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>"
+license = "PMPL-1.0-or-later"
+
+sourcedir = "src"
+
+modules = ABI.SafeDOM
+        , ABI.Types
+        , ABI.Layout
+        , ABI.Foreign
+
+depends = base >= 0.6.0,
+          contrib

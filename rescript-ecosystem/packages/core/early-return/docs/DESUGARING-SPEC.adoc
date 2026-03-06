@@ -1,0 +1,464 @@
+= Desugaring Specification for True Return Sugar
+:toc:
+:toc-placement!:
+
+**Target:** ReScript compiler implementation (if #8191 is accepted) +
+**Current status:** Design document (not implemented) +
+**Purpose:** Detailed specification for compiler team
+
+toc::[]
+
+== Overview
+
+This document specifies how `return` keyword would desugar in the ReScript compiler if Issue #8191 is accepted.
+
+**Our macro library** (`%return.X`) demonstrates these patterns work. This spec describes how to implement them properly in the compiler.
+
+== Design Goals
+
+1. **Zero runtime overhead** - Desugar to standard if/else, no function calls
+2. **Type safe** - Return type must match function signature
+3. **Readable errors** - Point to original `return` in error messages
+4. **Composable** - Works with result, option, try/catch, async
+5. **Backward compatible** - Don't break existing code
+
+== Core Transformation
+
+=== Simple Return
+
+**Source:**
+```rescript
+let foo = () => {
+  if condition {
+    return value
+  }
+  otherValue
+}
+```
+
+**Desugared:**
+```rescript
+let foo = () => {
+  if condition {
+    value
+  } else {
+    otherValue
+  }
+}
+```
+
+**Rule:** `return expr` at end of if-block → just `expr` (last expression already returns)
+
+=== Early Return in Sequence
+
+**Source:**
+```rescript
+let foo = () => {
+  statement1
+  if condition {
+    return earlyValue
+  }
+  statement2
+  finalValue
+}
+```
+
+**Desugared:**
+```rescript
+let foo = () => {
+  statement1
+  if condition {
+    earlyValue
+  } else {
+    statement2
+    finalValue
+  }
+}
+```
+
+**Rule:** Wrap remaining statements in `else` block
+
+=== Multiple Early Returns
+
+**Source:**
+```rescript
+let foo = () => {
+  if cond1 { return val1 }
+  if cond2 { return val2 }
+  val3
+}
+```
+
+**Desugared:**
+```rescript
+let foo = () => {
+  if cond1 {
+    val1
+  } else if cond2 {
+    val2
+  } else {
+    val3
+  }
+}
+```
+
+**Rule:** Chain into if-else-if
+
+== Result Type Early Return
+
+**Source:**
+```rescript
+let foo = (input): result<int, string> => {
+  let x = validate(input)
+  if Result.isError(x) {
+    return x  // Early return on Error
+  }
+  // Continue with Ok case
+  Ok(process(x))
+}
+```
+
+**Desugared:**
+```rescript
+let foo = (input): result<int, string> => {
+  let x = validate(input)
+  switch x {
+  | Error(e) => Error(e)
+  | Ok(x) => Ok(process(x))
+  }
+}
+```
+
+**Rule:** Transform to pattern match, rebind variable in Ok branch
+
+**Type requirement:** Return type must be `result<'a, 'e>` if returning a result early.
+
+== Option Type Early Return
+
+**Source:**
+```rescript
+let foo = (input): option<int> => {
+  let x = find(input)
+  if Option.isNone(x) {
+    return None
+  }
+  Some(process(x))
+}
+```
+
+**Desugared:**
+```rescript
+let foo = (input): option<int> => {
+  let x = find(input)
+  switch x {
+  | None => None
+  | Some(x) => Some(process(x))
+  }
+}
+```
+
+**Rule:** Transform to pattern match, rebind in Some branch
+
+== Loop Early Return
+
+**Source:**
+```rescript
+let findFirst = (arr, predicate) => {
+  for i in 0 to Array.length(arr) - 1 {
+    if predicate(arr[i]) {
+      return Some(arr[i])
+    }
+  }
+  None
+}
+```
+
+**Desugared:**
+```rescript
+let findFirst = (arr, predicate) => {
+  let result = ref(None)
+  try {
+    for i in 0 to Array.length(arr) - 1 {
+      if predicate(arr[i]) {
+        result := Some(arr[i])
+        raise(Exit)
+      }
+    }
+  } catch {
+  | Exit => ()
+  }
+  result.contents
+}
+```
+
+**Rule:** Use exception + ref to break out of loop
+
+**Alternative (better):** Convert loop to recursive function with early return
+
+**Trade-off:** Exception overhead vs code clarity. Recommend warning: "Early return in loop is expensive, consider recursion"
+
+== Async/Await Early Return
+
+**Source:**
+```rescript
+let foo = async (input) => {
+  let x = await fetchData(input)
+  if x.status != 200 {
+    return Error("Failed")
+  }
+  Ok(x.data)
+}
+```
+
+**Desugared:**
+```rescript
+let foo = async (input) => {
+  let x = await fetchData(input)
+  if x.status != 200 {
+    Promise.resolve(Error("Failed"))
+  } else {
+    Promise.resolve(Ok(x.data))
+  }
+}
+```
+
+**Rule:** Wrap early return value in `Promise.resolve`
+
+**Complexity:** Interacts with async/await transform. Need to ensure both transforms compose correctly.
+
+== Exception Interaction
+
+**Source:**
+```rescript
+let foo = () => {
+  try {
+    let x = risky()
+    if x < 0 {
+      return Error("negative")
+    }
+    Ok(x)
+  } catch {
+  | Exn(e) => Error(e)
+  }
+}
+```
+
+**Desugared:**
+```rescript
+let foo = () => {
+  try {
+    let x = risky()
+    if x < 0 {
+      Error("negative")
+    } else {
+      Ok(x)
+    }
+  } catch {
+  | Exn(e) => Error(e)
+  }
+}
+```
+
+**Rule:** Return inside try/catch just returns from try block (standard behavior)
+
+**No special handling needed** - try/catch already has return semantics
+
+== Nested Functions
+
+**Source:**
+```rescript
+let outer = () => {
+  let inner = () => {
+    return 1  // Returns from inner
+  }
+  let x = inner()
+  return x + 1  // Returns from outer
+}
+```
+
+**Desugared:**
+```rescript
+let outer = () => {
+  let inner = () => {
+    1
+  }
+  let x = inner()
+  x + 1
+}
+```
+
+**Rule:** `return` applies to innermost enclosing function
+
+**Clarity:** No ambiguity - standard scoping rules apply
+
+== Type Checking
+
+=== Return Type Inference
+
+```rescript
+let foo = () => {
+  if condition {
+    return 42  // Infer return type: int
+  }
+  0
+}
+// Inferred type: () => int
+```
+
+**Rule:** Unify all return paths (including early returns)
+
+=== Type Mismatch Error
+
+```rescript
+let foo = (): int => {
+  if condition {
+    return Error("fail")  // ERROR: Expected int, got result
+  }
+  42
+}
+```
+
+**Error message:**
+```
+Type error: This early return returns type result<'a, string> but the function expects int
+
+  return Error("fail")
+         ^^^^^^^^^^^^^
+  Expected: int
+  Got: result<'a, string>
+```
+
+**Requirement:** Error points to `return` statement, not desugared code
+
+== Error Messages
+
+**Critical requirement:** Errors must reference SOURCE code (with `return`), not desugared output.
+
+**Implementation:** Maintain source location mappings through transformation.
+
+=== Example: Type Error
+
+**Source:**
+```rescript
+let foo = (): string => {
+  return 42
+}
+```
+
+**Error (GOOD):**
+```
+Type error at line 2, column 10:
+  return 42
+         ^^
+  This expression has type int but is expected to have type string
+```
+
+**Error (BAD - points to desugared code):**
+```
+Type error at line 2, column 3:
+  42
+  ^^
+  This expression has type int but is expected to have type string
+```
+
+**Users must see their original code in error messages.**
+
+== Implementation Complexity
+
+=== Parser Changes
+
+**Effort:** Low-Medium
+
+- Add `return` keyword to lexer
+- Add `Pexp_return of expression` to AST
+- Parse `return <expr>` in statement position
+
+**Lines of code:** ~50-100
+
+=== Desugaring Pass
+
+**Effort:** Medium-High
+
+- New compiler pass after parsing, before type checking
+- Track function boundaries (nested functions)
+- Collect remaining statements after `return`
+- Wrap in if/else based on rules above
+
+**Lines of code:** ~500-1000
+
+**Complexity:** Must handle all control flow (if/switch/try/loop)
+
+=== Type Checker Integration
+
+**Effort:** Low
+
+- `Pexp_return(expr)` type checks as `expr`
+- Verify return type matches function signature
+- Already have this logic for last expression
+
+**Lines of code:** ~50
+
+=== Error Message Mapping
+
+**Effort:** Medium
+
+- Maintain source locations through transform
+- Map desugared positions back to original
+- Update error printer to handle return nodes
+
+**Lines of code:** ~200-300
+
+=== Total Estimate
+
+**Time:** 2-4 weeks for experienced ReScript compiler developer
+
+**Risk areas:**
+- Loop early return (ref + exception is clunky)
+- Async interaction (ensure transforms compose)
+- Error messages (must point to source, not desugared)
+
+== Open Questions
+
+1. **Syntax for result/option early return:**
+   - Option A: `if Result.isError(x) { return x }`
+   - Option B: `return? x` (like Rust's `?` operator)
+   - Option C: Compiler infers from type (smart but complex)
+
+2. **Loop early return strategy:**
+   - Option A: Exception + ref (simple, but overhead)
+   - Option B: Convert to recursion (optimal, but complex)
+   - Option C: Disallow (keep it simple)
+
+3. **Backward compatibility:**
+   - What if existing code uses `return` as variable name?
+   - Migration path: codemod to rename?
+
+4. **Performance:**
+   - Does desugaring impact compilation speed?
+   - Measure on large codebases
+
+== Validation Approach
+
+1. **Macro testing** (this library) - Proves patterns work
+2. **Prototype in fork** - Implement in test compiler branch
+3. **Benchmark** - Measure compilation time impact
+4. **Community feedback** - RFC discussion
+5. **Core team review** - Final approval
+
+**This spec informed by macro experience** - we've already tested these transformations work.
+
+== Recommendation
+
+**Phase 1:** Simple early return (if/else only)
+- No loops, no async
+- Gather feedback on basic patterns
+
+**Phase 2:** Result/option early return
+- Add smart desugaring for `return result` and `return option`
+- Most common use case (validated by macro usage)
+
+**Phase 3:** Loop and async support
+- After basics proven stable
+- More complex, can be separate proposal
+
+**Don't try to do everything at once.** Incremental rollout reduces risk.

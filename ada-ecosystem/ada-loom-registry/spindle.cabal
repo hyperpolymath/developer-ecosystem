@@ -1,0 +1,69 @@
+cabal-version: 2.2
+name:          spindle
+version:       0.1.0.0
+synopsis:      Parse Nickel configuration files into Haskell types
+description:
+  Spindle is a Haskell library for parsing, evaluating, and converting
+  Nickel configuration files into type-safe Haskell data structures.
+  It bridges Nickel's contract-based configuration with Haskell's type system.
+  .
+  Includes a minimal registry for storing and managing validated configs.
+  .
+  NOTE: This package is hosted in a repository currently named @ada-loom-registry@
+  due to historical reasons. The repository will be renamed to @spindle@ before
+  the first stable release.
+category:      Configuration, Data
+homepage:      https://github.com/hyperpolymath/ada-loom-registry#readme
+bug-reports:   https://github.com/hyperpolymath/ada-loom-registry/issues
+author:        Hyperpolymath Contributors
+maintainer:    hyperpolymath@users.noreply.github.com
+copyright:     2024-2025 Hyperpolymath Contributors
+license:       PMPL-1.0
+license-file:  LICENSE.txt
+build-type:    Simple
+extra-source-files:
+    README.adoc
+    CHANGELOG.adoc
+
+source-repository head
+  type: git
+  location: https://github.com/hyperpolymath/ada-loom-registry
+
+library
+  exposed-modules:
+      Spindle
+      Spindle.Registry
+  hs-source-dirs:
+      src
+  default-language: Haskell2010
+  ghc-options:
+      -Wall
+      -Wcompat
+      -Widentities
+      -Wincomplete-record-updates
+      -Wincomplete-uni-patterns
+      -Wredundant-constraints
+  build-depends:
+      base >=4.7 && <5
+    , aeson
+    , bytestring
+    , containers
+    , directory
+    , filepath
+    , text
+    , time
+
+executable spindle
+  main-is: Main.hs
+  hs-source-dirs:
+      app
+  default-language: Haskell2010
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      base >=4.7 && <5
+    , spindle
+    , aeson
+    , bytestring
+    , hnickel
+    , text
+    , time

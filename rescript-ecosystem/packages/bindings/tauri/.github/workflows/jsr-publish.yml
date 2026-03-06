@@ -1,0 +1,148 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-FileCopyrightText: 2026 Hyperpolymath
+#
+# JSR Publishing Workflow with Release Validation
+# Integrates finishing-bot validation concepts before publishing
+
+name: JSR Publish
+
+permissions: read-all
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (no actual publish)'
+        required: false
+        default: 'true'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+jobs:
+  validate:
+    name: Release Validation (finishing-bot concepts)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+
+      # ============================================================
+      # Placeholder Detection (finishing-bot: placeholder scanner)
+      # ============================================================
+      - name: Check for TODOs and FIXMEs
+        run: |
+          echo "Scanning for unresolved placeholders..."
+          PLACEHOLDERS=$(grep -rn "TODO\|FIXME\|XXX\|HACK\|TEMP\|WIP\|STUB" src/ --include="*.res" --include="*.resi" || true)
+          if [ -n "$PLACEHOLDERS" ]; then
+            echo "::warning::Found placeholders in source files:"
+            echo "$PLACEHOLDERS"
+            echo "Consider resolving these before release"
+          else
+            echo "✓ No placeholders found"
+          fi
+
+      # ============================================================
+      # License Validation (finishing-bot: license validator)
+      # ============================================================
+      - name: Check SPDX headers
+        run: |
+          echo "Checking SPDX license headers..."
+          MISSING=""
+          for file in $(find src/ -name "*.res" -o -name "*.resi"); do
+            if ! head -5 "$file" | grep -q "SPDX-License-Identifier"; then
+              MISSING="$MISSING $file"
+            fi
+          done
+          if [ -n "$MISSING" ]; then
+            echo "::error::Missing SPDX headers in:$MISSING"
+            exit 1
+          fi
+          echo "✓ All source files have SPDX headers"
+
+      - name: Check LICENSE file exists
+        run: |
+          if [ ! -f LICENSE ]; then
+            echo "::error::LICENSE file is missing"
+            exit 1
+          fi
+          echo "✓ LICENSE file present"
+
+      # ============================================================
+      # Version Consistency (finishing-bot: claim verifier)
+      # ============================================================
+      - name: Validate version consistency
+        run: |
+          echo "Checking version consistency..."
+          DENO_VERSION=$(grep '"version"' deno.json | head -1 | sed 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
+          echo "deno.json version: $DENO_VERSION"
+
+          if [ -n "$GITHUB_REF_NAME" ] && [[ "$GITHUB_REF_NAME" =~ ^v ]]; then
+            TAG_VERSION="${GITHUB_REF_NAME#v}"
+            echo "Git tag version: $TAG_VERSION"
+            if [ "$TAG_VERSION" != "$DENO_VERSION" ]; then
+              echo "::error::Version mismatch: tag=$TAG_VERSION, deno.json=$DENO_VERSION"
+              exit 1
+            fi
+            echo "✓ Git tag matches deno.json version"
+          else
+            echo "No version tag detected, skipping tag validation"
+          fi
+
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@5fae568d37c3b73449009674875529a984555dd1 # v2
+        with:
+          deno-version: v2.x
+
+      - name: Install dependencies
+        run: deno install
+
+      - name: Build ReScript
+        run: deno task build
+
+      - name: Run tests
+        run: deno task test
+
+      - name: Type check compiled output
+        run: deno task check
+
+  publish:
+    name: Publish to JSR
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@5fae568d37c3b73449009674875529a984555dd1 # v2
+        with:
+          deno-version: v2.x
+
+      - name: Install and build
+        run: |
+          deno install
+          deno task build
+
+      - name: Publish (dry run)
+        if: ${{ github.event.inputs.dry_run == 'true' || github.event_name != 'push' }}
+        run: deno publish --dry-run
+
+      - name: Publish to JSR
+        if: ${{ github.event.inputs.dry_run != 'true' && github.event_name == 'push' }}
+        run: deno publish

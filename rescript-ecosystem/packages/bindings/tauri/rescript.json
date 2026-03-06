@@ -1,0 +1,28 @@
+{
+  "name": "rescript-tauri",
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    },
+    {
+      "dir": "test",
+      "subdirs": true,
+      "type": "dev"
+    }
+  ],
+  "package-specs": [
+    {
+      "module": "esmodule",
+      "in-source": false
+    }
+  ],
+  "suffix": ".res.mjs",
+  "bs-dependencies": [
+    "@rescript/core"
+  ],
+  "bs-dev-dependencies": [],
+  "warnings": {
+    "number": "+A-48-42"
+  }
+}

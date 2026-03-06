@@ -1,0 +1,2 @@
+= Migration Guide (Incremental)
+Use aLib in one file at a time. Prefer boundary adapters. Avoid global rewrites.

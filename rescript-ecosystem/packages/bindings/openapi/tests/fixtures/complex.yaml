@@ -1,0 +1,398 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Complex OpenAPI spec for testing advanced features
+
+openapi: "3.0.3"
+info:
+  title: Complex API
+  version: "2.0.0"
+  description: API with advanced OpenAPI features for testing
+
+servers:
+  - url: https://api.example.com/v2
+
+paths:
+  /users:
+    get:
+      operationId: listUsers
+      summary: List all users
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, inactive, pending]
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, meta]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+                  meta:
+                    $ref: '#/components/schemas/PaginationMeta'
+    post:
+      operationId: createUser
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /users/{userId}:
+    get:
+      operationId: getUser
+      summary: Get user by ID
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /notifications:
+    post:
+      operationId: sendNotification
+      summary: Send a notification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Notification'
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  status:
+                    type: string
+                    enum: [queued, sent, failed]
+
+  /events:
+    get:
+      operationId: listEvents
+      summary: List events with polymorphic payloads
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+
+components:
+  schemas:
+    User:
+      type: object
+      required: [id, email, profile]
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        profile:
+          $ref: '#/components/schemas/UserProfile'
+        settings:
+          $ref: '#/components/schemas/UserSettings'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    UserProfile:
+      type: object
+      required: [firstName, lastName]
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        avatar:
+          type: string
+          format: uri
+          nullable: true
+        bio:
+          type: string
+          maxLength: 500
+        socialLinks:
+          type: object
+          additionalProperties:
+            type: string
+            format: uri
+
+    UserSettings:
+      type: object
+      properties:
+        theme:
+          type: string
+          enum: [light, dark, system]
+          default: system
+        language:
+          type: string
+          default: en
+        notifications:
+          type: object
+          properties:
+            email:
+              type: boolean
+              default: true
+            push:
+              type: boolean
+              default: false
+            sms:
+              type: boolean
+              default: false
+
+    CreateUserRequest:
+      type: object
+      required: [email, password, profile]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+          minLength: 8
+        profile:
+          $ref: '#/components/schemas/UserProfile'
+        settings:
+          $ref: '#/components/schemas/UserSettings'
+
+    PaginationMeta:
+      type: object
+      required: [total, limit, offset]
+      properties:
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+        hasMore:
+          type: boolean
+
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              error:
+                type: string
+
+    # Polymorphic notification type
+    Notification:
+      oneOf:
+        - $ref: '#/components/schemas/EmailNotification'
+        - $ref: '#/components/schemas/PushNotification'
+        - $ref: '#/components/schemas/SmsNotification'
+      discriminator:
+        propertyName: type
+        mapping:
+          email: '#/components/schemas/EmailNotification'
+          push: '#/components/schemas/PushNotification'
+          sms: '#/components/schemas/SmsNotification'
+
+    EmailNotification:
+      type: object
+      required: [type, to, subject, body]
+      properties:
+        type:
+          type: string
+          enum: [email]
+        to:
+          type: string
+          format: email
+        subject:
+          type: string
+        body:
+          type: string
+        html:
+          type: boolean
+          default: false
+
+    PushNotification:
+      type: object
+      required: [type, deviceToken, title, message]
+      properties:
+        type:
+          type: string
+          enum: [push]
+        deviceToken:
+          type: string
+        title:
+          type: string
+        message:
+          type: string
+        badge:
+          type: integer
+        sound:
+          type: string
+
+    SmsNotification:
+      type: object
+      required: [type, phoneNumber, message]
+      properties:
+        type:
+          type: string
+          enum: [sms]
+        phoneNumber:
+          type: string
+        message:
+          type: string
+          maxLength: 160
+
+    # Event with polymorphic payload
+    Event:
+      type: object
+      required: [id, type, timestamp, payload]
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [user.created, user.updated, user.deleted, order.placed]
+        timestamp:
+          type: string
+          format: date-time
+        payload:
+          oneOf:
+            - $ref: '#/components/schemas/UserEventPayload'
+            - $ref: '#/components/schemas/OrderEventPayload'
+
+    UserEventPayload:
+      type: object
+      required: [userId]
+      properties:
+        userId:
+          type: string
+        changes:
+          type: object
+          additionalProperties: true
+
+    OrderEventPayload:
+      type: object
+      required: [orderId, amount]
+      properties:
+        orderId:
+          type: string
+        amount:
+          type: number
+          format: double
+        currency:
+          type: string
+          default: USD
+
+    # anyOf example - Pet can be Cat or Dog (without discriminator)
+    Pet:
+      anyOf:
+        - $ref: '#/components/schemas/Cat'
+        - $ref: '#/components/schemas/Dog'
+
+    Cat:
+      type: object
+      required: [name, meowVolume]
+      properties:
+        name:
+          type: string
+        meowVolume:
+          type: integer
+          description: How loud the cat meows (1-10)
+
+    Dog:
+      type: object
+      required: [name, barkPitch]
+      properties:
+        name:
+          type: string
+        barkPitch:
+          type: string
+          enum: [low, medium, high]
+          description: The pitch of the dog's bark
+
+    # Mixed oneOf with inline schemas
+    SearchResult:
+      oneOf:
+        - $ref: '#/components/schemas/User'
+        - $ref: '#/components/schemas/OrderEventPayload'
+        - type: object
+          title: TextMatch
+          properties:
+            text:
+              type: string
+            score:
+              type: number
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+security:
+  - bearerAuth: []
+  - apiKey: []

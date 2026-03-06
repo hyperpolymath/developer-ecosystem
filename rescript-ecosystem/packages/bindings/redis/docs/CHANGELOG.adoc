@@ -1,0 +1,50 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= Changelog
+:toc:
+:icons: font
+
+All notable changes to this project will be documented in this file.
+
+The format is based on https://keepachangelog.com/en/1.1.0/[Keep a Changelog],
+and this project adheres to https://semver.org/spec/v2.0.0.html[Semantic Versioning].
+
+== [Unreleased]
+
+=== Added
+* Initial Redis bindings for ReScript
+* String operations (GET, SET, SETEX, SETNX, DEL, EXISTS, EXPIRE, TTL, INCR, DECR)
+* Hash operations (HGET, HSET, HDEL, HGETALL, HEXISTS, HINCRBY, HKEYS, HVALS, HLEN)
+* List operations (LPUSH, RPUSH, LPOP, RPOP, LRANGE, LLEN, LINDEX, LSET)
+* Set operations (SADD, SREM, SMEMBERS, SISMEMBER, SCARD)
+* Sorted Set operations (ZADD, ZREM, ZSCORE, ZRANK, ZRANGE, ZREVRANGE, ZCARD)
+* Pub/Sub support (SUBSCRIBE, PUBLISH)
+* JSON helpers (getJson, setJson, setJsonEx)
+* Redis Streams module with consumer groups
+* Redis Sentinel module for high availability
+* Redis Cluster module for horizontal scaling
+* Connection management (connect, make, makeFromUrl, ping, quit, close)
+* Comprehensive documentation
+
+== [0.1.0] - 2025-01-04
+
+=== Added
+* Initial release
+* Complete Redis data structure support
+* Type-safe API with proper option types
+* Deno-first implementation
+* Part of rescript-full-stack ecosystem
+
+---
+
+== Version History
+
+[cols="1,1,3"]
+|===
+|Version |Date |Summary
+
+|0.1.0
+|2025-01-04
+|Initial release with full Redis API support
+|===

@@ -1,0 +1,6 @@
+= Design Notes
+This repo separates:
+* Common (ReScript+Melange constraints)
+* Specific (ReScript ergonomics)
+* Compat (escape hatches)
+* Proven (optional validation)

@@ -1,0 +1,193 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= Contributing to rescript-redis
+:toc:
+:icons: font
+
+Thank you for your interest in contributing to rescript-redis!
+
+== Getting Started
+
+=== Prerequisites
+
+* https://deno.land/[Deno 2.x]
+* https://rescript-lang.org/[ReScript 11.x]
+* https://redis.io/[Redis 7.x] (for testing)
+* Git
+
+=== Setup
+
+[source,bash]
+----
+# Fork and clone the repository
+git clone https://github.com/YOUR_USERNAME/rescript-redis
+cd rescript-redis
+
+# Build the project
+deno task build
+
+# Start Redis for testing (via Docker)
+docker run -d -p 6379:6379 redis:7-alpine
+
+# Run tests
+deno task test
+----
+
+== Development Workflow
+
+=== 1. Create a Branch
+
+[source,bash]
+----
+git checkout -b feature/your-feature-name
+# or
+git checkout -b fix/issue-description
+----
+
+=== 2. Make Changes
+
+* Write code in `src/Redis.res`
+* Update interface in `src/Redis.resi` if adding public API
+* Add tests in `tests/`
+* Update documentation if needed
+
+=== 3. Test Your Changes
+
+[source,bash]
+----
+# Build
+deno task build
+
+# Run tests
+deno task test
+
+# Check formatting
+deno fmt --check
+----
+
+=== 4. Commit Your Changes
+
+We use conventional commits:
+
+[source]
+----
+type(scope): description
+
+[optional body]
+
+[optional footer]
+Signed-off-by: Your Name <your.email@example.com>
+----
+
+Types:
+
+* `feat` - New feature
+* `fix` - Bug fix
+* `docs` - Documentation only
+* `refactor` - Code change that neither fixes a bug nor adds a feature
+* `test` - Adding or updating tests
+* `chore` - Maintenance tasks
+
+Examples:
+
+[source]
+----
+feat(streams): add XAUTOCLAIM support
+
+Implements the XAUTOCLAIM command for claiming pending messages
+that have been idle for a specified time.
+
+Signed-off-by: Alice Developer <alice@example.com>
+----
+
+[source]
+----
+fix(connection): handle reconnection on network timeout
+
+Fixes #123
+
+Signed-off-by: Bob Developer <bob@example.com>
+----
+
+=== 5. Submit a Pull Request
+
+* Push your branch to your fork
+* Open a PR against `main`
+* Fill in the PR template
+* Wait for review
+
+== Code Guidelines
+
+=== ReScript Style
+
+* Use pipe-first (`->`) style
+* Prefer `option` over nullable
+* Use descriptive names
+* Add doc comments for public APIs
+
+[source,rescript]
+----
+/** Description of what this function does */
+let myFunction = async (redis: t, key: string): promise<option<string>> => {
+  // Implementation
+}
+----
+
+=== API Design
+
+* First parameter should be the Redis connection
+* Use `option<T>` for nullable responses
+* Return `promise<T>` for async operations
+* Match Redis command names where practical
+
+=== Testing
+
+* Write tests for new functionality
+* Tests go in `tests/` directory
+* Use descriptive test names
+* Clean up test data after each test
+
+== What to Contribute
+
+=== Good First Issues
+
+Look for issues labeled `good-first-issue` on GitHub.
+
+=== Feature Requests
+
+Check the link:ROADMAP.adoc[ROADMAP] for planned features. If you want to work on something:
+
+1. Comment on the issue to claim it
+2. Discuss the approach if it's complex
+3. Submit a PR
+
+=== Bug Reports
+
+When filing a bug:
+
+* Include Redis version
+* Include Deno version
+* Provide minimal reproduction code
+* Describe expected vs actual behavior
+
+== Community
+
+* Be respectful and constructive
+* Follow the link:CODE_OF_CONDUCT.md[Code of Conduct]
+* Help others when you can
+
+== License
+
+By contributing, you agree that your contributions will be licensed under the AGPL-3.0-or-later license.
+
+All contributions must include:
+
+* SPDX license header
+* Signed-off-by line (DCO)
+
+== Questions?
+
+* Open a GitHub issue for questions
+* Check existing issues first
+* Be patient - maintainers are volunteers

@@ -1,0 +1,70 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-FileCopyrightText: 2026 Hyperpolymath
+#
+# CI Workflow for rescript-tauri
+
+name: CI
+
+permissions: read-all
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@5fae568d37c3b73449009674875529a984555dd1 # v2
+        with:
+          deno-version: v2.x
+
+      - name: Install dependencies
+        run: deno install
+
+      - name: Build ReScript
+        run: deno task build
+
+      - name: Run tests
+        run: deno task test
+
+      - name: Type check compiled output
+        run: deno task check
+
+      - name: Check SPDX headers
+        run: |
+          for file in $(find src/ -name "*.res" -o -name "*.resi"); do
+            if ! head -5 "$file" | grep -q "SPDX-License-Identifier"; then
+              echo "Missing SPDX header: $file"
+              exit 1
+            fi
+          done
+          echo "All source files have SPDX headers"
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@5fae568d37c3b73449009674875529a984555dd1 # v2
+        with:
+          deno-version: v2.x
+
+      - name: Install dependencies
+        run: deno install
+
+      - name: Build ReScript (required for lint)
+        run: deno task build
+
+      - name: Deno lint
+        run: deno lint lib/es6/

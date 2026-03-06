@@ -1,0 +1,14 @@
+{
+  "name": "@hyperpolymath/rescript-poly-core",
+  "version": "0.1.0",
+  "exports": "./src/PolyCore.res.js",
+  "tasks": {
+    "build": "rescript build",
+    "clean": "rescript clean",
+    "dev": "rescript build -w",
+    "test": "deno test --allow-all tests/"
+  },
+  "compilerOptions": {
+    "lib": ["deno.ns", "deno.unstable"]
+  }
+}

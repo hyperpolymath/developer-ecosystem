@@ -1,0 +1,143 @@
+= Roadmap — cadre-router
+:toc:
+:toclevels: 3
+:sectanchors:
+
+This roadmap tracks progress on cadre-router, a type-safe URL routing library for ReScript.
+
+== Current Status
+
+[cols="2,1,3"]
+|===
+| Component | Status | Notes
+
+| Client-side URL parsing (`Url`)
+| ✓ Complete
+| Parse/serialize URLs with path, query, fragment
+
+| Parser combinators (`Parser`)
+| ✓ Complete
+| Elm-style DSL: `s`, `str`, `int`, `custom`, `oneOf`, `andThen`
+
+| Browser navigation (`Navigation`)
+| ✓ Complete
+| History API: `pushUrl`, `replaceUrl`, `onUrlChange`
+
+| Hash-based routing (`HashNavigation`)
+| ✓ Complete
+| For static hosting: `/#/route` style
+
+| Bidirectional routes (`RouteBuilder`)
+| ✓ Complete
+| Parse and serialize from single definition
+
+| React integration (`Link`)
+| ✓ Complete
+| Type-safe `<Link route={...}>` component
+
+| Tests
+| ✓ Complete
+| Url, Parser, Navigation, RouteBuilder tests
+
+| rescript-tea integration
+| → Separate project
+| See `cadre-tea-router` and `docs/TEA_INTEGRATION_HANDOVER.adoc`
+|===
+
+== Stage 1 — Client-side routing (Complete)
+
+Goal: Provide type-safe client-side URL routing for SPAs.
+
+DONE:
+
+* ✓ `Url` module for URL parsing/serialization
+* ✓ `Parser` module with Elm-style combinators
+* ✓ `Navigation` module for History API
+* ✓ `HashNavigation` for static hosting
+* ✓ `RouteBuilder` for bidirectional guarantees
+* ✓ `Link` component for React
+* ✓ Comprehensive test suite
+* ✓ Typed ID pattern (e.g., `JourneyId.t`)
+* ✓ Nested route support
+* ✓ Query parameter parsing
+
+Exit criteria: ✓ Met
+
+* Can define routes as ReScript variants
+* Bidirectional: `Route.t → string` and `string → Route.t`
+* Works with React and can be extended for other frameworks
+
+== Stage 2 — Framework integrations
+
+Goal: First-class support for popular ReScript UI frameworks.
+
+PLANNED:
+
+* `cadre-tea-router` — rescript-tea integration (separate project)
+  ** `Tea.Cmd.t` navigation commands
+  ** `Tea.Sub.t` URL change subscriptions
+  ** TEA-native link helper
+  ** See `docs/TEA_INTEGRATION_HANDOVER.adoc`
+
+* Consider: Rescript-react-native integration
+* Consider: Dioxus/Leptos bindings (Rust WASM)
+
+Exit criteria:
+
+* Each framework has idiomatic integration
+* Shared test suite validates consistency
+
+== Stage 3 — Server-side routing (Future)
+
+Goal: Extend URL routing to Deno HTTP servers.
+
+PLANNED:
+
+* Deno HTTP handler integration
+* Request context and middleware
+* Isomorphic routing (same routes client & server)
+* SSR-compatible URL handling
+
+NOT PLANNED:
+
+* CRDT/distributed state (removed from scope)
+* Express/Hono compatibility layer
+
+== Stage 4 — Ecosystem maturity
+
+Goal: Production-ready library with excellent DX.
+
+PLANNED:
+
+* npm/deno.land/x publishing
+* Comprehensive documentation site
+* Real-world example apps
+* Performance benchmarks
+* Migration guides from other routers
+
+== Non-goals
+
+* Not a web framework (no templates, ORM, etc.)
+* Not Node.js-first (Deno and Web APIs preferred)
+* Not a micro-router (more opinionated, type-first)
+* Not backwards-compatible with Express/Koa patterns
+
+== Related projects
+
+[cols="1,2"]
+|===
+| Project | Relationship
+
+| `cadre-tea-router`
+| rescript-tea integration, builds on cadre-router
+
+| `nafa-app-ambient`
+| Reference implementation using cadre-tea-router
+|===
+
+== Ongoing hygiene
+
+* Prefer `.adoc` for documentation
+* Maintain test coverage for all modules
+* Keep API surface minimal
+* Avoid features without examples

@@ -1,0 +1,28 @@
+{
+  "name": "rescript-tauri",
+  "version": "0.1.0",
+  "description": "ReScript bindings for Tauri 2.0 - Build native desktop and mobile apps with ReScript",
+  "keywords": ["rescript", "tauri", "desktop", "mobile", "native", "bindings"],
+  "license": "AGPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hyperpolymath/rescript-tauri"
+  },
+  "type": "module",
+  "main": "lib/es6/src/Tauri.res.mjs",
+  "files": ["lib/es6/src/", "src/"],
+  "scripts": {
+    "build": "rescript build",
+    "watch": "rescript build -w",
+    "clean": "rescript clean"
+  },
+  "peerDependencies": {
+    "@tauri-apps/api": "^2.0.0",
+    "rescript": "^12.0.0"
+  },
+  "devDependencies": {
+    "@rescript/core": "^1.0.0",
+    "@tauri-apps/api": "^2.0.0",
+    "rescript": "^12.0.0"
+  }
+}

@@ -1,0 +1,112 @@
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
+
+= ReScript-Zig-FFI
+:toc:
+:toclevels: 3
+
+ReScript bindings for calling Zig libraries via the C ABI.
+
+== Overview
+
+This library provides a type-safe way to call Zig code from ReScript.
+Zig exports C-compatible functions that ReScript can call through
+its external mechanism.
+
+== Architecture
+
+----
+ReScript → External Declarations → Deno FFI → Zig (C ABI)
+----
+
+ReScript compiles to JavaScript running in Deno, which uses `Deno.dlopen`
+to load Zig shared libraries.
+
+== Installation
+
+[source,bash]
+----
+# Add to your deno.json
+{
+  "imports": {
+    "@hyperpolymath/rescript-zig-ffi": "jsr:@hyperpolymath/rescript-zig-ffi@0.1"
+  }
+}
+----
+
+== Usage
+
+=== Defining External Functions
+
+[source,rescript]
+----
+// src/bindings/MyZigLib.res
+
+@module("./ffi.js")
+external zigFunction: (int, int) => int = "zigFunction"
+
+@module("./ffi.js")
+external zigStringOp: string => string = "zigStringOp"
+----
+
+=== JavaScript FFI Layer
+
+[source,javascript]
+----
+// src/ffi.js
+const lib = Deno.dlopen("./libmyzig.so", {
+  zigFunction: { parameters: ["i32", "i32"], result: "i32" },
+  zigStringOp: { parameters: ["pointer"], result: "pointer" }
+});
+
+export const zigFunction = lib.symbols.zigFunction;
+----
+
+== Building Zig Libraries for ReScript
+
+Your Zig code must export C-compatible functions:
+
+[source,zig]
+----
+// mylib.zig
+export fn add(a: i32, b: i32) callconv(.C) i32 {
+    return a + b;
+}
+----
+
+Build as shared library:
+
+[source,bash]
+----
+zig build-lib -dynamic -O ReleaseFast mylib.zig
+----
+
+== Type Mappings
+
+|===
+| ReScript Type | Zig Type | Notes
+
+| `int` | `i32` | 32-bit signed integer
+| `float` | `f64` | 64-bit float
+| `bool` | `bool` | Boolean
+| `string` | `[*:0]const u8` | Null-terminated string
+| `array<'a>` | `[*]T` | Pointer to array
+|===
+
+== Examples
+
+See the `examples/` directory for complete working examples.
+
+== RSR Compliance
+
+This library follows the Rhodium Standard Repository guidelines:
+
+* ReScript for all application code
+* Deno for runtime and package management
+* Zig for FFI implementation
+* No C code required
+
+== License
+
+PMPL-1.0-or-later

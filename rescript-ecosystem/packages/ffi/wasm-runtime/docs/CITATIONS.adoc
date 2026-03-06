@@ -1,0 +1,36 @@
+= rescript-wasm-runtime - Citation Guide
+:toc:
+
+== BibTeX
+
+[source,bibtex]
+----
+@software{rescript-wasm-runtime_2025,
+  author = {Polymath, Hyper},
+  title = {rescript-wasm-runtime},
+  year = {2025},
+  url = {https://github.com/hyperpolymath/rescript-wasm-runtime},
+  license = {AGPL-3.0-or-later}
+}
+----
+
+== Harvard Style
+
+Polymath, H. (2025) _rescript-wasm-runtime_ [Computer software]. Available at: https://github.com/hyperpolymath/rescript-wasm-runtime
+
+== OSCOLA
+
+Hyper Polymath, 'rescript-wasm-runtime' (2025) <https://github.com/hyperpolymath/rescript-wasm-runtime>
+
+== MLA
+
+Polymath, Hyper. "rescript-wasm-runtime." 2025, github.com/hyperpolymath/rescript-wasm-runtime.
+
+== APA 7
+
+Polymath, H. (2025). _rescript-wasm-runtime_ [Computer software]. GitHub. https://github.com/hyperpolymath/rescript-wasm-runtime
+
+== See Also
+
+* link:../CITATION.cff[CITATION.cff]
+* link:../codemeta.json[codemeta.json]

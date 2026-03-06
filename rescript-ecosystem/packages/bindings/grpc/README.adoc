@@ -1,0 +1,287 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= rescript-grpc
+:toc: macro
+:toclevels: 3
+:icons: font
+
+Protocol Buffers to ReScript codegen with JSON codecs and gRPC-web client stubs.
+
+image:https://img.shields.io/github/license/hyperpolymath/rescript-grpc[License]
+image:https://img.shields.io/badge/ReScript-11.0-blue[ReScript]
+image:https://img.shields.io/badge/Rust-1.75+-orange[Rust]
+
+toc::[]
+
+== Overview
+
+`rescript-grpc` provides a complete `.proto` → ReScript codegen pipeline:
+
+* **protoc-gen-rescript** - Rust-based protoc plugin generating type-safe ReScript
+* **@rescript-grpc/runtime** - JSON encode/decode runtime (proto3 JSON mapping)
+* **gRPC-web client stubs** - Optional async HTTP clients for services
+
+== Features
+
+* Type-safe ReScript types from `.proto` definitions
+* JSON encode/decode codecs following proto3 JSON mapping specification
+* Polymorphic variants for enum types
+* Optional gRPC-web client stubs (opt-in via `--rescript_opt=grpc`)
+* Topological sorting ensures message dependencies compile correctly
+* Proto3 field semantics (scalars required, messages optional, `optional` keyword supported)
+* Zero npm dependencies (uses Deno or works standalone)
+
+== Architecture
+
+[source]
+----
+┌─────────────────────────────────────────────────────────────────┐
+│                    Build Time (protoc)                          │
+├─────────────────────────────────────────────────────────────────┤
+│  .proto  ──→  protoc-gen-rescript                               │
+│                    │                                            │
+│                    └──→ ServiceProto.res  (ReScript types)      │
+│                              │                                  │
+│                              ├─ Message modules with make()     │
+│                              ├─ toJson()/fromJson() codecs      │
+│                              ├─ Enum toInt()/fromInt()          │
+│                              └─ ServiceClient (if --grpc)       │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│                    Runtime                                      │
+├─────────────────────────────────────────────────────────────────┤
+│  open UserProto                                                 │
+│                                                                 │
+│  let user = User.make(~name="Alice", ~id=42, ~status=#Active)   │
+│  let json = User.toJson(user)                                   │
+│  let decoded = User.fromJson(json)                              │
+│                                                                 │
+│  // With gRPC-web client                                        │
+│  let result = await UserServiceClient.getUser(                  │
+│    ~config={baseUrl: "http://localhost:8080", headers: None},   │
+│    ~request=GetUserRequest.make(~id=1)                          │
+│  )                                                              │
+└─────────────────────────────────────────────────────────────────┘
+----
+
+== Installation
+
+=== Prerequisites
+
+* https://github.com/protocolbuffers/protobuf[protoc] (Protocol Buffer Compiler)
+* https://www.rust-lang.org/[Rust] 1.75+
+* https://rescript-lang.org/[ReScript] 11.0+
+
+=== Install the protoc plugin
+
+[source,bash]
+----
+# From source
+cargo install --path protoc-gen-rescript
+
+# Or build locally
+cd protoc-gen-rescript && cargo build --release
+# Add target/release to PATH
+----
+
+=== Add runtime dependency
+
+[source,json]
+----
+// rescript.json
+{
+  "bs-dependencies": [
+    "@rescript-grpc/runtime"
+  ]
+}
+----
+
+Or copy `runtime/src/Json.res` and `runtime/src/Fetch.res` directly into your project.
+
+== Usage
+
+=== Generate ReScript from .proto
+
+[source,bash]
+----
+# Basic generation (types + JSON codecs)
+protoc --rescript_out=./src ./protos/user.proto
+
+# With gRPC-web client stubs
+protoc --rescript_out=./src --rescript_opt=grpc ./protos/user.proto
+----
+
+=== Proto3 Example
+
+[source,protobuf]
+----
+// user.proto
+syntax = "proto3";
+package example;
+
+enum Status {
+  STATUS_UNKNOWN = 0;
+  STATUS_ACTIVE = 1;
+  STATUS_INACTIVE = 2;
+}
+
+message User {
+  string name = 1;
+  int32 id = 2;
+  optional string email = 3;  // Optional scalar
+  Status status = 4;
+  repeated string tags = 5;
+  Address address = 6;        // Message fields always optional
+}
+
+message Address {
+  string street = 1;
+  string city = 2;
+  string country = 3;
+}
+
+service UserService {
+  rpc GetUser(GetUserRequest) returns (User);
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+}
+----
+
+=== Generated ReScript
+
+[source,rescript]
+----
+// UserProto.res (generated)
+module Status = {
+  type t = [#StatusUnknown | #StatusActive | #StatusInactive]
+  let toInt = (v: t): int => ...
+  let fromInt = (i: int): option<t> => ...
+}
+
+module Address = {
+  type t = { street: string, city: string, country: string }
+  let make = (~street, ~city, ~country): t => ...
+  let toJson = (msg: t): Js.Json.t => ...
+  let fromJson = (json: Js.Json.t): option<t> => ...
+}
+
+module User = {
+  type t = {
+    name: string,
+    id: int,
+    email: option<string>,
+    status: Status.t,
+    tags: array<string>,
+    address: option<Address.t>,
+  }
+  let make = (~name, ~id, ~email=?, ~status, ~tags=[], ~address=?): t => ...
+  let toJson = (msg: t): Js.Json.t => ...
+  let fromJson = (json: Js.Json.t): option<t> => ...
+}
+
+module UserServiceClient = {
+  type config = { baseUrl: string, headers: option<Js.Dict.t<string>> }
+  type error = NetworkError(string) | GrpcError(int, string) | DecodeError(string)
+
+  let getUser = async (~config, ~request: GetUserRequest.t): result<User.t, error> => ...
+  let listUsers = async (~config, ~request: ListUsersRequest.t): result<ListUsersResponse.t, error> => ...
+}
+----
+
+=== Use in application
+
+[source,rescript]
+----
+// Example.res
+open UserProto
+
+let alice = User.make(
+  ~name="Alice",
+  ~id=1,
+  ~email="alice@example.com",
+  ~status=#StatusActive,
+  ~tags=["admin", "developer"],
+  ~address=Address.make(~street="123 Main St", ~city="SF", ~country="USA"),
+)
+
+// JSON round-trip
+let json = User.toJson(alice)
+let decoded = User.fromJson(json)
+
+// gRPC-web call
+let fetchUser = async (id: int) => {
+  let config = { baseUrl: "http://localhost:8080", headers: None }
+  let request = GetUserRequest.make(~id)
+  await UserServiceClient.getUser(~config, ~request)
+}
+----
+
+== Project Structure
+
+[source]
+----
+rescript-grpc/
+├── protoc-gen-rescript/     # Rust protoc plugin
+│   ├── Cargo.toml
+│   └── src/
+│       ├── main.rs          # Plugin entry point
+│       ├── generator.rs     # Code generation logic
+│       └── templates.rs     # ReScript code templates
+├── runtime/                 # @rescript-grpc/runtime
+│   ├── rescript.json
+│   └── src/
+│       ├── Json.res         # JSON encode/decode helpers
+│       └── Fetch.res        # Fetch API bindings for gRPC-web
+├── codec/                   # WASM codec (optional, for binary proto)
+│   ├── Cargo.toml
+│   └── src/lib.rs
+└── examples/
+    └── basic/
+        ├── protos/user.proto
+        └── src/
+            ├── UserProto.res  # Generated
+            └── Example.res    # Usage example
+----
+
+== Proto3 JSON Mapping
+
+The generated codecs follow the https://protobuf.dev/programming-guides/proto3/#json[proto3 JSON mapping specification]:
+
+[cols="1,2",options="header"]
+|===
+|Proto Type |JSON Representation
+
+|`int32`, `sint32`, `sfixed32` |number
+|`int64`, `sint64`, `sfixed64` |string (for precision)
+|`float`, `double` |number
+|`bool` |boolean
+|`string` |string
+|`bytes` |base64 string
+|`enum` |integer value
+|`message` |object
+|`repeated` |array
+|===
+
+== Roadmap
+
+* [x] protoc plugin (Rust)
+* [x] Type-safe message generation
+* [x] JSON encode/decode codecs
+* [x] Enum polymorphic variants
+* [x] gRPC-web client stubs
+* [x] Topological message sorting
+* [ ] Streaming RPC support
+* [ ] Server-side handlers
+* [ ] Binary protobuf codec (WASM)
+* [ ] Well-known types (google.protobuf.*)
+* [ ] OneOf support
+
+== Related Projects
+
+* https://github.com/hyperpolymath/rescript-full-stack[rescript-full-stack] - ReScript ecosystem map
+* https://github.com/hyperpolymath/rescript-wasm-runtime[rescript-wasm-runtime] - WASM runtime for ReScript
+* https://github.com/hyperpolymath/rescript-openapi[rescript-openapi] - OpenAPI to ReScript codegen
+* https://github.com/tokio-rs/prost[prost] - Rust Protocol Buffers implementation
+
+== License
+
+MPL-2.0. See link:LICENSE.txt[LICENSE.txt].

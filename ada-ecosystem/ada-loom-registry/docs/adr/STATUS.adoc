@@ -1,0 +1,24 @@
+= ADR Status - ada-loom-registry
+
+== Active ADRs
+
+[cols="1,3,1"]
+|===
+|# |Title |Status
+
+|link:0001-adopt-rhodium-standard.adoc[0001] |Adopt Rhodium Standard 0.5 |✅ Accepted
+|link:0002-nickel-parser-integration.adoc[0002] |Nickel Parser Integration |✅ Accepted
+|===
+
+== Planned
+
+|===
+|# |Title
+
+|0003 |Registry Operations Architecture
+|0004 |WASM + Nickel FFI Testing Strategy
+|===
+
+**Total:** 2 | **Planned:** 2 | _Updated: 2025-01-21_
+
+**Advantages:** Native Nickel usage, GHC 9.6.3 WASM support

@@ -1,0 +1,6 @@
+packages: .
+
+source-repository-package
+  type: git
+  location: git://github.com/nickel-lang/hnickel.git
+  tag: v0.7.0.0

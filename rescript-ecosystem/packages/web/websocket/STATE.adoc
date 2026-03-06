@@ -1,0 +1,115 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= Project State: rescript-websocket
+
+== Overview
+
+|===
+|Field |Value
+
+|Version
+|0.1.0
+
+|Phase
+|Initial Release
+
+|Status
+|Active Development
+
+|Last Updated
+|2025-01
+|===
+
+== Components
+
+=== Client Module
+
+|===
+|Feature |Status |Notes
+
+|Basic connection
+| Complete
+|`make`, `makeWithProtocols`
+
+|Ready state
+| Complete
+|Type-safe enum
+
+|Event handlers
+| Complete
+|open, close, message, error
+
+|Send methods
+| Complete
+|text, binary, JSON
+
+|Close methods
+| Complete
+|with/without code
+
+|Helper functions
+| Complete
+|isOpen, isConnecting, isClosed, waitForOpen
+|===
+
+=== Server Module
+
+|===
+|Feature |Status |Notes
+
+|WebSocket upgrade
+| Complete
+|Deno.upgradeWebSocket binding
+
+|Serve function
+| Complete
+|with options and handler-only variants
+
+|Request helpers
+| Complete
+|requestUrl
+
+|Handler factory
+| Complete
+|makeHandler with callbacks
+
+|Shutdown
+| Complete
+|Graceful shutdown
+|===
+
+=== Utilities
+
+|===
+|Feature |Status |Notes
+
+|Broadcast
+| Complete
+|To array of connections
+
+|Broadcast JSON
+| Complete
+|JSON serialization included
+|===
+
+== Current Focus
+
+* Comprehensive test suite
+* JSR package publication
+* Documentation refinement
+
+== Blockers
+
+None currently.
+
+== Next Steps
+
+1. Write test suite for client and server modules
+2. Publish to JSR (jsr.io)
+3. Add examples directory with runnable demos
+4. Room/channel abstraction (v0.2.0)
+
+== Machine-Readable State
+
+See `.machine_readable/STATE.scm` for structured state data.

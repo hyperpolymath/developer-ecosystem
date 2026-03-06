@@ -1,0 +1,67 @@
+open Mocha
+open Test_utils
+
+@val external bigint: string => float = "BigInt"
+
+let five = bigint("5")
+
+describe(__MODULE__, () => {
+  test("compare: 123 and 555555", () => {
+    ok(__LOC__, compare(bigint("555555"), bigint("123")) > 0)
+    ok(__LOC__, compare(bigint("123"), bigint("555555")) < 0)
+    ok(__LOC__, bigint("123") < bigint("555555"))
+    ok(__LOC__, bigint("123") <= bigint("555555"))
+    ok(__LOC__, bigint("555555") > bigint("123"))
+    ok(__LOC__, bigint("555555") >= bigint("123"))
+    eq(__LOC__, min(bigint("555555"), bigint("123")), bigint("123"))
+    eq(__LOC__, min(bigint("123"), bigint("555555")), bigint("123"))
+    eq(__LOC__, max(bigint("555555"), bigint("123")), bigint("555555"))
+    eq(__LOC__, max(bigint("123"), bigint("555555")), bigint("555555"))
+    ok(__LOC__, bigint("555555") !== bigint("123"))
+    ok(__LOC__, bigint("123") !== bigint("555555"))
+    ok(__LOC__, bigint("555555") != bigint("123"))
+    ok(__LOC__, bigint("123") != bigint("555555"))
+    ok(__LOC__, !(bigint("555555") == bigint("123")))
+    ok(__LOC__, !(bigint("123") == bigint("555555")))
+    ok(__LOC__, !(bigint("555555") === bigint("123")))
+    ok(__LOC__, !(bigint("123") === bigint("555555")))
+  })
+
+  test("compare: 98765 and 98765", () => {
+    ok(__LOC__, !(bigint("98765") < bigint("98765")))
+    ok(__LOC__, bigint("98765") <= bigint("98765"))
+    ok(__LOC__, !(bigint("98765") > bigint("98765")))
+    ok(__LOC__, bigint("98765") >= bigint("98765"))
+    eq(__LOC__, min(bigint("98765"), bigint("98765")), bigint("98765"))
+    eq(__LOC__, max(bigint("98765"), bigint("98765")), bigint("98765"))
+    eq(__LOC__, compare(bigint("98765"), bigint("98765")), 0)
+    eq(__LOC__, compare(bigint("98765"), bigint("98765")), 0)
+    ok(__LOC__, !(bigint("98765") !== bigint("98765")))
+    ok(__LOC__, !(bigint("98765") !== bigint("98765")))
+    ok(__LOC__, !(bigint("98765") != bigint("98765")))
+    ok(__LOC__, !(bigint("98765") != bigint("98765")))
+    ok(__LOC__, bigint("98765") == bigint("98765"))
+    ok(__LOC__, bigint("98765") == bigint("98765"))
+    ok(__LOC__, bigint("98765") === bigint("98765"))
+    ok(__LOC__, bigint("98765") === bigint("98765"))
+  })
+
+  test("same instance", () => {
+    ok(__LOC__, !(five < five))
+    ok(__LOC__, five <= five)
+    ok(__LOC__, !(five > five))
+    ok(__LOC__, five >= five)
+    eq(__LOC__, min(five, five), five)
+    eq(__LOC__, max(five, five), five)
+    eq(__LOC__, compare(five, five), 0)
+    eq(__LOC__, compare(five, five), 0)
+    ok(__LOC__, !(five !== five))
+    ok(__LOC__, !(five !== five))
+    ok(__LOC__, !(five != five))
+    ok(__LOC__, !(five != five))
+    ok(__LOC__, five == five)
+    ok(__LOC__, five == five)
+    ok(__LOC__, five === five)
+    ok(__LOC__, five === five)
+  })
+})

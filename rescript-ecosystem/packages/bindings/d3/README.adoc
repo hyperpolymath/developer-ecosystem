@@ -1,0 +1,136 @@
+= rescript-d3
+:toc:
+:icons: font
+
+ReScript bindings for D3.js, focused on force-directed graph visualization.
+
+== Overview
+
+Lightweight D3 bindings for ReScript with a focus on:
+
+* Force-directed graph simulation
+* Interactive pan/zoom/drag
+* Color and size scales
+
+== Installation
+
+[source,json]
+----
+// rescript.json
+{
+  "bs-dependencies": ["rescript-d3"]
+}
+----
+
+[source,json]
+----
+// deno.json
+{
+  "imports": {
+    "d3": "npm:d3@^7"
+  }
+}
+----
+
+== Modules
+
+=== D3.Selection
+
+DOM selection and manipulation:
+
+[source,rescript]
+----
+open D3.Selection
+
+let svg = select("#graph")
+let circles = svg
+  ->selectChildren("circle")
+  ->data(nodes)
+  ->join("circle")
+  ->attr("r", 10)
+  ->attr("fill", "steelblue")
+----
+
+=== D3.Force
+
+Force-directed graph simulation:
+
+[source,rescript]
+----
+open D3.Force
+
+let simulation = forceSimulation(nodes)
+  ->force("charge", forceManyBody()->asManyBodyForce->strength(-100.0)->manyBodyForceAsForce)
+  ->force("center", forceCenter(width /. 2.0, height /. 2.0))
+  ->force("link", forceLink(links)->asLinkForce->linkDistance(50.0)->linkForceAsForce)
+  ->on("tick", () => {
+    // Update node positions
+  })
+----
+
+=== D3.Zoom
+
+Pan and zoom behavior:
+
+[source,rescript]
+----
+open D3.Zoom
+
+let zoomBehavior = zoom()
+  ->scaleExtent((0.1, 4.0))
+  ->on("zoom", (event, _) => {
+    container->attr("transform", event.transform->toString)
+  })
+
+svg->applyTo(zoomBehavior)
+----
+
+=== D3.Drag
+
+Node dragging:
+
+[source,rescript]
+----
+open D3.Drag
+
+let dragBehavior = drag()
+  ->on("start", (event, d) => {
+    simulation->alphaTarget(0.3)->restart
+    d.fx = Nullable.make(d.x)
+    d.fy = Nullable.make(d.y)
+  })
+  ->on("drag", (event, d) => {
+    d.fx = Nullable.make(event.x)
+    d.fy = Nullable.make(event.y)
+  })
+  ->on("end", (event, d) => {
+    simulation->alphaTarget(0.0)
+    d.fx = Nullable.null
+    d.fy = Nullable.null
+  })
+
+nodes->applyTo(dragBehavior)
+----
+
+=== D3.Scale
+
+Color and size scales:
+
+[source,rescript]
+----
+open D3.Scale
+
+// Categorical colors for node types
+let colorScale = scaleOrdinal()
+  ->ordinalDomain(["repo", "slot", "provider"])
+  ->ordinalRange(schemeCategory10)
+
+// Size scale based on connection count
+let sizeScale = scaleSqrt()
+  ->sqrtDomain((0.0, 100.0))
+  ->sqrtRange((5.0, 30.0))
+----
+
+== License
+
+AGPL-3.0-or-later

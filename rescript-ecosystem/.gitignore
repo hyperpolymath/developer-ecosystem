@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# rescript-ecosystem .gitignore
+
+# ReScript build artifacts
+lib/
+.bsb.lock
+.merlin
+
+# Deno
+.deno/
+
+# Node (legacy, if present in packages)
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Environment
+.env
+.env.*
+
+# KDE directory metadata
+.directory
+
+# Sync reports
+sync_report*.txt
+sync_repos_report*.txt
+
+# Crash recovery artifacts
+ai-cli-crash-capture/

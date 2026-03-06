@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions: read-all
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: goto-bus-stop/setup-zig@7ab5a70cec745637a2f99bcc28c0acb2ed782aaf # v2
+        with:
+          version: 0.13.0
+      - run: zig build
+      - run: zig build test
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+      - uses: goto-bus-stop/setup-zig@7ab5a70cec745637a2f99bcc28c0acb2ed782aaf # v2
+        with:
+          version: 0.13.0
+      - run: zig fmt --check src/

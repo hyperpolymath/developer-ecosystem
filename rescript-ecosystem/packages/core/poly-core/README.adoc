@@ -1,0 +1,103 @@
+= rescript-poly-core: Foundational Library
+:toc: macro
+:toc-title:
+:toclevels: 3
+:icons: font
+:source-highlighter: pygments
+:sectnums:
+
+toc::[]
+
+== Overview
+`rescript-poly-core` is the **foundational library** for the https://github.com/hyperpolymath/rescript-full-stack[Hyperpolymath ReScript Full Stack] ecosystem. It provides core utilities for error handling, async operations, logging, configuration, and MCP (Model Context Protocol) infrastructure.
+
+=== Key Features
+- **Core Utilities**: Extended `Result`, `Async`, `Logger`, and `Config` modules.
+- **MCP Infrastructure**: Protocol types, server builder, and tool registration for AI tools.
+- **Zero Dependencies**: Only requires `@rescript/core`.
+- **Deno Native**: Optimized for Deno runtime.
+
+== Installation
+[source,bash]
+----
+deno add jsr:@hyperpolymath/rescript-poly-core
+----
+
+== Modules
+=== Core.Result
+Extended `Result` type for robust error handling:
+[source,rescript]
+----
+open PolyCore
+let result = Ok(42)->Result.map(x => x * 2)
+----
+
+=== Core.Async
+Promise utilities with retry, timeout, and concurrency control:
+[source,rescript]
+----
+let data = await Async.retry(
+  ~config={maxAttempts: 5, initialDelayMs: 1000},
+  () => fetchData()
+)
+----
+
+=== Core.Logger
+Structured JSON logging:
+[source,rescript]
+----
+let logger = Logger.make(~config={minLevel: Logger.Debug})
+logger->Logger.info("Server started")
+----
+
+=== MCP.Protocol & MCP.Server
+Infrastructure for building AI tools:
+[source,rescript]
+----
+let server = Server.make(~name="my-tools")
+  ->Server.registerTool({name: "greet", ...}, handleGreet)
+----
+
+== Documentation
+- link:ROADMAP.adoc[Project Roadmap]
+- link:API.adoc[API Reference]
+- link:licences/[Licenses]
+
+== Usage
+Import modules as needed:
+[source,rescript]
+----
+open PolyCore
+open PolyCore.MCP
+----
+
+== Project Structure
+[source]
+----
+src/
+├── Core/          # Core utilities
+├── MCP/           # MCP infrastructure
+├── PolyCore.res   # Main entry point
+tests/             # Test suite
+docs/              # Extended documentation
+----
+
+== Automation
+Use `just` for build, test, and coverage tasks:
+[source,bash]
+----
+just build
+just test
+just test:coverage
+----
+
+== License
+This project is licensed under:
+- link:licences/PMPL-1.0-or-later.txt[PMPL-1.0-or-later]
+- link:licences/MIT.txt[MIT]
+- link:licences/Palimpsest-v0.4.txt[Palimpsest v0.4]
+
+== Community
+- link:CODE_OF_CONDUCT.adoc[Code of Conduct]
+- link:GOVERNANCE.adoc[Governance]
+- link:FUNDING.adoc[Funding & Sponsorship]

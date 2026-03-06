@@ -1,0 +1,11 @@
+{
+  "name": "@tests/generic-jsx-transform",
+  "private": true,
+  "scripts": {
+    "build": "rescript build",
+    "clean": "rescript clean"
+  },
+  "dependencies": {
+    "rescript": "^12.0.0"
+  }
+}

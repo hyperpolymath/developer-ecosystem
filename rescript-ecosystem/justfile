@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# rescript-ecosystem monorepo justfile
+# Author: Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>
+
+default:
+    @just --list
+
+build-all:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    for pkg in packages/*/*; do if [ -f "$pkg/rescript.json" ]; then echo "Building $pkg"; (cd "$pkg" && npx rescript build 2>/dev/null || true); fi; done
+
+clean-all:
+    #!/usr/bin/env bash
+    for pkg in packages/*/*; do [ -d "$pkg/lib" ] && rm -rf "$pkg/lib"; done
+
+list-packages:
+    #!/usr/bin/env bash
+    for group in core web bindings ffi tooling; do echo "=== $group ==="; ls packages/$group/; echo; done
+
+stats:
+    #!/usr/bin/env bash
+    for group in core web bindings ffi tooling; do count=$(find packages/$group -type f | wc -l); printf "  %-12s %5d files\n" $group $count; done

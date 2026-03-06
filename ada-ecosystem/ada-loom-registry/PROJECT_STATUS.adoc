@@ -1,0 +1,269 @@
+= Project Status - ada-loom-registry (Spindle)
+:project-status: 🟢 FUNCTIONAL
+:compliance-level: SILVER
+:blockers: 0 critical
+:updated: 2025-01-21
+
+== Current Status
+
+**Phase:** 🟢 **FUNCTIONAL/MVP**
+**Compliance:** ✅ **SILVER** (documentation complete)
+**Implementation:** ✅ **70%** (CLI and registry functional)
+
+== ⚠️ CRITICAL: Naming Mismatch
+
+**Repository name:** `ada-loom-registry`
+**Actual project:** `spindle` (Haskell Nickel parser)
+
+**This is NOT:**
+* An Ada project
+* A loom/textile project
+* A registry/package manager
+
+**This IS:**
+* A Haskell tool for parsing Nickel configuration
+* Named "Spindle" in `spindle.cabal`
+
+**RECOMMENDATION:** Rename repository to `spindle-nickel-parser` or `nickel-config-tools`
+
+== Overview
+
+Spindle is a Haskell-based tool for parsing and evaluating Nickel configuration files. Converts `.ncl` → Haskell types via JSON.
+
+== Blockers
+
+=== CRITICAL ❌
+
+_No critical blockers - all resolved._
+
+=== COMPLETED ✅
+
+1. **Source files** - `app/Main.hs` (190 lines) and `src/Spindle/Registry.hs` (113 lines) implemented
+   * **Status:** ✅ Complete - Full CLI with register, list, get, remove, parse commands
+   * **Status:** ✅ Complete - Registry module with persistence, CRUD operations
+
+2. **Metadata** - Cabal file has proper author/maintainer info
+   * **Status:** ✅ Complete
+
+3. **README** - `README.adoc` provides comprehensive documentation
+   * **Status:** ✅ Complete
+
+=== REMAINING ⚠️
+
+4. **Unit tests** - Test suite not yet implemented
+   * **Action:** Create test/Spec.hs with HSpec tests
+   * **Priority:** MEDIUM
+
+5. **WASM runtime testing** - GHC 9.6.3 WASM support compile-tested but not runtime-tested
+   * **Action:** Test in browser/node WASM environment
+   * **Priority:** LOW
+
+== Implementation Sequence
+
+[cols="1,3,2,1",options="header"]
+|===
+|Step |Task |Depends On |Status
+|1 |Create app/Main.hs |None |✅ DONE
+|2 |Implement Nickel file reader |Step 1 |✅ DONE
+|3 |Integrate hnickel library |Step 2 |✅ DONE
+|4 |Parse Nickel to JSON (aeson) |Step 3 |✅ DONE
+|5 |Convert JSON to Haskell types |Step 4 |✅ DONE
+|6 |Write unit tests |Steps 2-5 |⏳ TODO
+|7 |CLI argument parsing |Step 1 |✅ DONE
+|8 |Error handling & reporting |Steps 2-7 |✅ DONE
+|9 |Update metadata (cabal) |None |✅ DONE
+|10 |Build & test |All above |⏳ PENDING (needs test suite)
+|===
+
+== Dependencies
+
+**Declared in spindle.cabal (library):**
+* `base` (>=4.7 && <5) - Standard library
+* `aeson` - JSON parsing
+* `bytestring` - Binary data
+* `containers` - Data structures (Map)
+* `directory` - File system operations
+* `filepath` - Path manipulation
+* `text` - Text handling
+* `time` - UTC timestamps
+
+**Declared in spindle.cabal (executable):**
+* `hnickel` - Nickel language integration (parser, evaluator)
+
+**System:**
+* GHC 9.6.3 (wasm32-wasi support ✅)
+* Cabal 2.2+
+* Nickel language runtime
+
+== Related Projects
+
+=== Would Benefit FROM
+
+**1. scaffoldia** - Haskell scaffolding tool
+* **Connection:** Both use Haskell + Nickel
+* **Integration:** Share `hnickel` integration code and patterns
+* **Status:** Both need implementation
+* **Priority:** HIGH (code sharing - could merge projects!)
+
+=== Would Benefit OTHERS
+
+**1. scaffoldia** - Haskell scaffolding tool
+* **Connection:** scaffoldia could use Spindle as library for Nickel evaluation
+* **Integration:** `scaffoldia` depends on `spindle` for .ncl parsing
+* **Status:** Both need implementation
+* **Priority:** HIGH (architectural synergy)
+
+**2. valence** - Elixir web framework
+* **Connection:** Spindle could parse valence Nickel configs
+* **Integration:** valence loads config via Spindle
+* **Status:** Both need implementation
+* **Priority:** MEDIUM (configuration management)
+
+== Merger Opportunity
+
+**🔥 STRONG RECOMMENDATION: Merge with scaffoldia**
+
+**Rationale:**
+* Both are Haskell projects
+* Both integrate with Nickel
+* Spindle could be scaffoldia's Nickel module
+* Avoids code duplication
+* Single project easier to maintain
+
+**Proposed structure:**
+[source]
+----
+scaffoldia/
+├── scaffoldia.cabal
+├── app/
+│   └── Main.hs          ← CLI entry point
+├── src/
+│   ├── Scaffoldia/
+│   │   ├── CLI.hs       ← Scaffolding commands
+│   │   ├── Template.hs  ← Template engine
+│   │   └── Nickel.hs    ← Spindle functionality (Nickel parsing)
+│   └── Spindle.hs       ← Library export for other projects
+└── test/
+----
+
+**Benefits:**
+* Single Haskell project to maintain
+* Spindle becomes library usable by others
+* Reduced overhead
+* Combined documentation
+
+== Technical Architecture
+
+**Implemented (app/Main.hs, src/Spindle/Registry.hs):**
+[source,haskell]
+----
+-- CLI Commands:
+--   spindle register <file.ncl>  - Register validated config
+--   spindle list                 - List all registered configs
+--   spindle get <name>           - Show config details
+--   spindle remove <name>        - Remove from registry
+--   spindle parse <file.ncl>     - Parse and validate
+
+-- Pipeline:
+parseAndValidate :: FilePath -> B.ByteString -> Either String Config
+parseAndValidate filename content = do
+  expr <- parseNickelFile filename content  -- 1. Parse .ncl
+  evaluatedValue <- eval expr               -- 2. Evaluate with hnickel
+  let jsonValue = nvalueToJSON evaluatedValue -- 3. Convert to JSON
+  eitherDecodeStrict' jsonValue             -- 4. Decode to Haskell types
+----
+
+**Registry Module (Spindle.Registry):**
+* `RegistryEntry` - Metadata storage (name, version, description, path, timestamp)
+* `Registry` - Map-based storage with JSON persistence
+* `RegistryError` - Typed errors (EntryNotFound, EntryAlreadyExists, etc.)
+* Full CRUD operations: register, unregister, lookupEntry, listEntries
+* Persistence: loadRegistry, saveRegistry (`.spindle/registry.json`)
+
+**Future features:**
+* Export to multiple formats (YAML, TOML)
+* Type-safe Haskell bindings generation
+* WASM deployment
+
+== Next Actions
+
+**Completed ✅:**
+- [x] Create `app/Main.hs` with CLI implementation
+- [x] Update cabal metadata (author, homepage, description)
+- [x] Write comprehensive README.adoc
+- [x] Create example `.ncl` files (config/)
+- [x] Implement Nickel file parsing
+- [x] Integrate hnickel library
+- [x] JSON conversion with aeson
+- [x] CLI argument parsing (register, list, get, remove, parse)
+- [x] Registry module with persistence
+
+**Next Steps:**
+- [ ] Write unit tests (HSpec)
+- [ ] Add integration tests for Nickel parsing
+- [ ] **Decision:** Merge with scaffoldia OR continue standalone?
+- [ ] WASM runtime testing (GHC 9.6.3 supports wasm32-wasi)
+
+**Future:**
+- [ ] Publish to Hackage as library
+- [ ] Integration examples with scaffoldia
+- [ ] Performance optimization
+- [ ] Multi-format export (YAML, TOML)
+
+== Success Metrics
+
+[cols="1,2,1,1",options="header"]
+|===
+|Metric |Target |Current |Status
+|Source files |5+ modules |3 (Main.hs, Spindle.hs, Registry.hs) |🟡
+|Example configs |10+ .ncl files |4 (build, ci, dev, deploy) |🟡
+|Test coverage |80%+ |0% |❌
+|CLI commands |3+ commands |5 (register, list, get, remove, parse) |✅
+|Hackage publish |Published |Not created |❌
+|Documentation |Complete |✅ Complete |✅
+|===
+
+== WASM Status
+
+**✅ READY (GHC 9.6.3):**
+* Only project with full WASM support
+* No waiver needed
+
+**Compilation:**
+[source,bash]
+----
+cabal build --with-ghc wasm32-wasi-ghc
+----
+
+== Security Considerations
+
+**As Nickel parser:**
+* Validate file paths (no path traversal)
+* Limit evaluation depth (prevent DoS via infinite recursion)
+* Sandbox Nickel evaluation (no arbitrary code execution)
+* Validate JSON output size (prevent memory exhaustion)
+
+**As package registry (if that feature added later):**
+* See existing PRIVACY.adoc for data handling
+* Malicious package detection (<4 hour response time documented)
+
+== Resources
+
+**Documentation:** All Rhodium Silver docs complete
+* SECURITY.adoc (includes package registry security - may need revision if not a registry)
+* PRIVACY.adoc (includes package registry privacy - may need revision if not a registry)
+* CONTRIBUTING.adoc, TESTING.adoc (Haskell, Hspec, QuickCheck)
+* CI_CD.adoc (Haskell CI)
+* WASM_STATUS.adoc (✅ Ready)
+
+**Community:**
+* Repository: `/var/home/hyper/workspace/projects/to-git/_cccp/ada-loom-registry`
+* License: PMPL-1.0
+* Contact: See CONTRIBUTING.adoc
+
+**Recommendation:** Rename repository to match actual purpose
+
+---
+
+_Last Updated: 2025-01-21 | Rhodium Standard 0.5_
+_⚠️ Repository name misleading - consider renaming_

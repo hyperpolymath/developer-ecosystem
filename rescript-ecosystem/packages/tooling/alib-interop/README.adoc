@@ -1,0 +1,42 @@
+= aLib Interop Patterns
+:toc: macro
+:toclevels: 3
+:sectanchors:
+:icons: font
+
+A cookbook of safe interop and boundary patterns for the ReScript ecosystem (ReScript, Melange), with optional runtime validation.
+
+toc::[]
+
+== Status
+Alpha.
+
+== Purpose
+Documentation-first patterns for:
+
+* external bindings (defaults, optionals, polymorphism)
+* untyped data boundaries (JSON/dynamic objects)
+* exception boundaries (JS errors)
+* “safe wrapper first” conventions
+
+== Relationship to Proven
+Where runtime validation helps, patterns may demonstrate optional Proven entrypoints.
+Most patterns should be usable without a Proven dependency.
+
+== Relationship to aLib repos
+* `aggregate-library` demonstrates the method under stress.
+* `alib-for-rescript` applies it as an ecosystem proving ground.
+* This repo documents safe boundary patterns regardless of whether you adopt aLib.
+
+== Contents
+[source]
+----
+patterns/
+  externals/
+  json/
+  exceptions/
+  modules/
+----
+
+== License
+PLMP-1.0.0-or-later

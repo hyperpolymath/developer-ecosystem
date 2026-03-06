@@ -1,0 +1,8 @@
+# Security Policy for rescript-env
+# https://securitytxt.org/
+
+Contact: https://github.com/hyperpolymath/rescript-env/security/advisories/new
+Expires: 2026-12-31T23:59:59.000Z
+Preferred-Languages: en
+Canonical: https://github.com/hyperpolymath/rescript-env/.well-known/security.txt
+Policy: https://github.com/hyperpolymath/rescript-env/blob/main/SECURITY.md

@@ -1,0 +1,226 @@
+= Security Validation with Deno
+:toc:
+:toc-placement!:
+
+toc::[]
+
+== Overview
+
+This document explains how Deno compilation ensures the security guarantees of rescript-alib's phantom types.
+
+== Phantom Types: The Core Guarantee
+
+**Phantom type definition:** A type that exists at compile-time but has **zero runtime representation**.
+
+Our branded types use ReScript's `private string`:
+
+```rescript
+// In signature (.resi)
+type t = private string
+
+// In implementation (.res)
+type t = string  // Identical to string at runtime
+```
+
+**Security implication:** Because there's no runtime wrapper, there's no way for malicious code to:
+- Inject behavior through type constructors
+- Exploit wrapper pattern matching
+- Cause overhead in hot loops
+
+== What Deno Validates
+
+=== 1. Type Erasure (`deno check`)
+
+Validates that compiled JavaScript contains **no type artifacts**:
+
+```javascript
+// ✅ Good (phantom type erased)
+function sendEmail(email) {
+  send(email);  // Just a string
+}
+
+// ❌ Bad (runtime wrapper would show up)
+function sendEmail(email) {
+  if (email.__brand !== "Email") throw Error();  // Runtime check
+  send(email.value);  // Wrapper overhead
+}
+```
+
+**Command:** `just check-security`
+
+**What it catches:**
+- Accidental runtime type checks
+- Unexpected wrapper objects
+- Type metadata leaking to runtime
+
+=== 2. No Global Side Effects
+
+Validates modules don't access unexpected globals:
+
+```javascript
+// ✅ Good (pure validation)
+function parse(input) {
+  return /regex/.test(input) ? {tag: "Ok", value: input} : {tag: "Error"};
+}
+
+// ❌ Bad (unexpected global access)
+function parse(input) {
+  window.validatedEmails = window.validatedEmails || [];  // Side effect!
+  window.validatedEmails.push(input);
+  return /regex/.test(input) ? {tag: "Ok", value: input} : {tag: "Error"};
+}
+```
+
+**Command:** `just validate-output`
+
+**What it catches:**
+- Unintended global variable access
+- DOM/window access in library code
+- Filesystem access without permissions
+
+=== 3. Bundle Integrity (`deno bundle`)
+
+Creates a single-file bundle and validates it's self-contained:
+
+```bash
+just bundle
+# Creates: dist/alib-string.bundle.js
+
+just bundle-check
+# Validates: No external imports, no unexpected dependencies
+```
+
+**What it catches:**
+- Unexpected transitive dependencies (we claim zero deps)
+- Import resolution failures
+- Module boundary violations
+
+=== 4. Inline Optimization Verification
+
+The `@inline` directive tells ReScript to inline functions. Deno validates this happened:
+
+```rescript
+// Source
+@inline
+let parse = (input) => { ... }
+
+// After ReScript compilation (verified by Deno):
+// Should be inlined at call sites, not a function call
+```
+
+**Impact:** If inlining fails, performance overhead would show up. Deno's check catches this indirectly (bundle size, function count).
+
+== Running Security Checks
+
+=== Quick Security Check
+
+```bash
+just check-security
+```
+
+Validates all `.res.js` files are well-formed JavaScript with no unexpected behavior.
+
+=== Full Security Audit
+
+```bash
+just security-audit
+```
+
+Runs all validations:
+1. Output validation (all .res.js files)
+2. Bundle creation
+3. Bundle integrity check
+
+**CI Integration:** Add to GitHub Actions:
+
+```yaml
+- name: Security Audit
+  run: just security-audit
+```
+
+== Zero-Cost Abstractions: Provable
+
+**Claim:** Branded types add **0% runtime overhead** after compilation.
+
+**Proof method:**
+
+1. **Deno check** validates no runtime type guards
+2. **Bundle size** comparison (future benchmarks):
+   - Raw string operations: X bytes
+   - Branded type operations: X bytes (identical)
+3. **Performance benchmarks** (Alpha 2):
+   - `reveal()` overhead: 0% (it's a no-op cast)
+   - `parse()` overhead: ≤5% (one-time regex validation)
+
+== What Deno Does NOT Validate
+
+**Logic correctness:** Deno checks JavaScript is well-formed, not that your regex is correct.
+
+**ReScript type soundness:** That's ReScript compiler's job. Deno validates the output.
+
+**Regex security:** Deno doesn't analyze regexes for ReDoS. That's on you to avoid:
+
+```rescript
+// ❌ Vulnerable to ReDoS
+let validate = (s) => %re("/(a+)+$/")
+
+// ✅ Safe (bounded)
+let validate = (s) => %re("/^[a-z0-9-]{1,100}$/")
+```
+
+Use tools like `rxxr2` or `redos-detector` separately for regex analysis.
+
+== Comparison: Why Not Just Trust ReScript?
+
+**ReScript guarantees:** Type safety at compile-time
+**Deno adds:** Runtime artifact validation
+
+**Example where Deno catches issues:**
+
+If ReScript's JS backend changes and accidentally introduces wrappers:
+
+```javascript
+// ReScript accidentally outputs (hypothetical bug):
+function Email$parse(input) {
+  return {__brand: "Email", value: input};  // Wrapper appeared!
+}
+```
+
+Deno check would catch this because the phantom type guarantee broke. Bundle size would also increase.
+
+**Defense in depth:** ReScript + Deno = multiple validation layers.
+
+== Permissions Model
+
+Our library requires **zero permissions** because it:
+- Never reads files
+- Never makes network requests
+- Never accesses environment variables
+- Only performs string validation
+
+**Test suite permissions:**
+```bash
+deno test --allow-read --allow-env test/
+```
+
+These permissions are for:
+- `--allow-read`: Reading test fixture files
+- `--allow-env`: Accessing test configuration
+
+**Production use:** No permissions needed. The compiled .res.js files are pure JavaScript functions.
+
+== Future: Formal Verification
+
+**Goal:** Prove phantom type guarantee formally using Idris or Lean.
+
+**Current status:** Type erasure validated by Deno tooling (empirical).
+
+**Upgrade path:** Generate Idris proofs from ReScript types, verify in CI.
+
+See `.machine_readable/6scm/NEUROSYM.scm` for plans to integrate with `proven` (Idris "unbreakable" library).
+
+== References
+
+- ReScript Docs: Private Types
+- Deno Security: https://deno.land/manual/basics/permissions
+- Phantom Types: https://wiki.haskell.org/Phantom_type

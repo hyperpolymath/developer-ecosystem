@@ -1,0 +1,24 @@
+{
+  "name": "rescript-wasm-runtime",
+  "version": "0.1.0",
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    }
+  ],
+  "package-specs": [
+    {
+      "module": "esmodule",
+      "in-source": true
+    }
+  ],
+  "suffix": ".mjs",
+  "bs-dependencies": [
+    "@rescript/core"
+  ],
+  "bsc-flags": ["-open Belt", "-open RescriptCore"],
+  "warnings": {
+    "error": "+101"
+  }
+}

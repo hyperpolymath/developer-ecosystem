@@ -1,0 +1,69 @@
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+= create-rescript-poly: ReScript Project Generator
+
+
+
+:toc: macro
+:toc-title:
+:toclevels: 3
+:icons: font
+:source-highlighter: pygments
+:sectnums:
+
+toc::[]
+
+== Overview
+`create-rescript-poly` is a **project generator** for the https://github.com/hyperpolymath/rescript-full-stack[Hyperpolymath ReScript Full Stack] ecosystem. It bootstraps new ReScript projects with standardized structure, dependencies, and tooling, ensuring compliance with ecosystem conventions and best practices.
+
+=== Key Features
+- **Standardized Project Structure**: Generates projects with pre-configured directories, build scripts, and documentation.
+- **Ecosystem Integration**: Automatically includes `rescript-poly-core` and other ecosystem tools.
+- **Deno Native**: Designed for the Deno runtime, not Node.js.
+- **Automation**: Uses `Just` for task management (see link:justfile-cookbook.adoc[Justfile Cookbook]).
+
+== Prerequisites
+- Deno (v1.30+)
+- ReScript (v11+)
+- `just` (for task automation)
+
+== Installation
+[source,bash]
+----
+deno install --allow-all --name create-rescript-poly https://deno.land/x/create_rescript_poly/cli.ts
+----
+
+== Usage
+[source,bash]
+----
+create-rescript-poly new my-project
+cd my-project
+just setup
+----
+
+== Project Structure
+Generated projects include:
+- `src/`: ReScript source files
+- `tests/`: Deno test suite
+- `docs/`: Modular documentation (AsciiDoc)
+- `justfile`: Standardized automation (see link:justfile-cookbook.adoc[Justfile Cookbook])
+- `licences/`: License files (PMPL-1.0-or-later, PMPL-1.0, Palimpsest v0.4)
+
+== Documentation
+- link:ROADMAP.adoc[Project Roadmap]
+- link:CONTRIBUTING.adoc[Contribution Guidelines]
+- link:FUNDING.adoc[Funding & Sponsorship]
+- link:licences/[Licenses]
+
+== Automation
+All build, test, and deployment tasks are managed via `just`. Run `just --list` for available commands.
+
+== License
+This project is licensed under:
+- link:licences/PMPL-1.0-or-later.txt[PMPL-1.0-or-later]
+- link:licences/PMPL-1.0.txt[PMPL-1.0]
+- link:licences/Palimpsest-v0.4.txt[Palimpsest v0.4]
+
+== Community
+- link:CODE_OF_CONDUCT.adoc[Code of Conduct]
+- link:GOVERNANCE.adoc[Governance]

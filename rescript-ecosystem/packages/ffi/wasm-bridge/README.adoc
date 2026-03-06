@@ -1,0 +1,7 @@
+= WASM ↔ ReScript Bridge
+
+WASM integration for ReScript applications.
+
+== License
+
+PMLP-1.0-or-later

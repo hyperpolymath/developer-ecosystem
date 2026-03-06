@@ -1,0 +1,212 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= rescript-env Roadmap
+:toc:
+:sectnums:
+:icons: font
+
+This document outlines the planned development for `rescript-env`.
+
+== Current Status
+
+**Version**: 0.1.0 (Initial Release)
+
+[cols="1,1,3"]
+|===
+|Feature |Status |Notes
+
+|Basic get/set/delete
+|✅ Complete
+|Core functionality
+
+|Type coercion (int/float/bool)
+|✅ Complete
+|With validation
+
+|Runtime detection
+|✅ Complete
+|Deno and Node.js
+
+|Environment helpers
+|✅ Complete
+|isDevelopment/isProduction/isTest
+
+|JSR publishing
+|🔲 Pending
+|Ready for publication
+
+|npm publishing
+|🔲 Pending
+|Awaiting ecosystem decision
+|===
+
+== Version 0.2.0 - Enhanced Type Safety
+
+=== Planned Features
+
+==== Schema Validation
+Define expected environment variables with types and validation:
+
+[source,rescript]
+----
+// Define schema
+let schema = Env.Schema.make([
+  ("DATABASE_URL", Env.Schema.Required(Env.Schema.String)),
+  ("PORT", Env.Schema.Optional(Env.Schema.Int, 3000)),
+  ("DEBUG", Env.Schema.Optional(Env.Schema.Bool, false)),
+])
+
+// Validate and get typed config
+let config = Env.Schema.validate(schema)
+// Returns: result<{..}, array<string>>
+----
+
+==== .env File Loading
+Native support for loading `.env` files:
+
+[source,rescript]
+----
+// Load .env file
+Env.loadFile(".env")
+
+// Load with environment-specific override
+Env.loadFile(".env")
+Env.loadFile(`.env.${Env.getOr("NODE_ENV", "development")}`)
+----
+
+==== Prefix Namespacing
+Group related variables by prefix:
+
+[source,rescript]
+----
+let dbConfig = Env.withPrefix("DB_")
+let url = dbConfig.get("URL")      // reads DB_URL
+let port = dbConfig.getInt("PORT") // reads DB_PORT
+----
+
+== Version 0.3.0 - Testing & Development
+
+=== Planned Features
+
+==== Mock Environment
+For testing without modifying actual environment:
+
+[source,rescript]
+----
+Env.Mock.withEnv(
+  [("API_KEY", "test-key"), ("DEBUG", "true")],
+  () => {
+    // Tests run with mocked environment
+    assert(Env.get("API_KEY") == Some("test-key"))
+  }
+)
+----
+
+==== Snapshot/Restore
+Save and restore environment state:
+
+[source,rescript]
+----
+let snapshot = Env.snapshot()
+// ... modify environment ...
+Env.restore(snapshot)
+----
+
+==== Diff Detection
+Track environment changes:
+
+[source,rescript]
+----
+let before = Env.all()
+// ... code that might modify env ...
+let changes = Env.diff(before, Env.all())
+// Returns: {added: [...], removed: [...], changed: [...]}
+----
+
+== Version 0.4.0 - Secret Management
+
+=== Planned Features
+
+==== Sensitive Value Masking
+Prevent accidental logging of secrets:
+
+[source,rescript]
+----
+let apiKey = Env.getSecret("API_KEY")
+Console.log(apiKey->Env.Secret.toString) // "***REDACTED***"
+Console.log(apiKey->Env.Secret.expose)   // actual value
+----
+
+==== Encryption at Rest
+Encrypt sensitive values in .env files:
+
+[source,rescript]
+----
+// .env.encrypted
+// API_KEY=enc:v1:base64encodedvalue...
+
+Env.loadEncrypted(".env.encrypted", ~key=masterKey)
+----
+
+== Version 1.0.0 - Stable Release
+
+=== Requirements for 1.0
+
+* [ ] Comprehensive test suite (>90% coverage)
+* [ ] Published to JSR with stable API
+* [ ] Full documentation with examples
+* [ ] Security audit complete
+* [ ] Performance benchmarks
+* [ ] Integration examples for common frameworks
+
+=== Breaking Changes Policy
+
+After 1.0.0:
+
+* Major versions may include breaking changes
+* Minor versions add features, no breaking changes
+* Patch versions for bug fixes only
+* Deprecation warnings for at least one minor version before removal
+
+== Future Considerations
+
+=== Under Discussion
+
+* **Cloud Integration**: Direct loading from AWS SSM, HashiCorp Vault, etc.
+* **Watch Mode**: React to environment changes in development
+* **TypeScript Bindings**: For mixed-language projects
+* **CLI Tool**: For validating .env files against schemas
+
+=== Ecosystem Integration
+
+Future libraries in the ReScript Full Stack ecosystem:
+
+[cols="1,2,1"]
+|===
+|Library |Purpose |Integration
+
+|rescript-config
+|Structured configuration
+|Uses rescript-env as backend
+
+|rescript-secrets
+|Secret management
+|Extends rescript-env secrets
+
+|rescript-dotenv
+|.env file parsing
+|Standalone, usable with rescript-env
+|===
+
+== Contributing to the Roadmap
+
+We welcome community input on prioritisation:
+
+1. Open an issue with the `roadmap` label
+2. Discuss in GitHub Discussions
+3. Submit RFCs for major features
+
+== Version History
+
+See link:CHANGELOG.adoc[CHANGELOG.adoc] for detailed release notes.

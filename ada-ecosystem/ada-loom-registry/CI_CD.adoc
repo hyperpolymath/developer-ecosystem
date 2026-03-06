@@ -1,0 +1,57 @@
+= CI/CD Guide - ada-loom-registry
+:toc: macro
+
+[abstract]
+--
+CI/CD for package registry. Rhodium Standard 0.5, Pillar 3, Section 3.3.
+--
+
+toc::[]
+
+== CI Pipeline
+
+**GitHub Actions:**
+
+[source,yaml]
+----
+# .github/workflows/test.yml
+name: Test
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: haskell/actions/setup@v2
+        with:
+          ghc-version: '9.6.3'
+
+      - name: Install Nickel
+        run: |
+          curl -L https://github.com/tweag/nickel/releases/latest/download/nickel-x86_64-unknown-linux-gnu.tar.gz | tar xz
+          sudo mv nickel /usr/local/bin/
+
+      - name: Build
+        run: cabal build
+
+      - name: Run tests
+        run: cabal test
+
+      - name: Validate registry
+        run: just registry-validate
+
+      - name: Security scan
+        run: just scan-registry
+----
+
+== CD Pipeline
+
+**Staging:** Automatic on main branch
+**Production:** Manual approval + registry validation
+
+---
+
+_Last Updated: 2025-01-21 | Rhodium Standard 0.5_

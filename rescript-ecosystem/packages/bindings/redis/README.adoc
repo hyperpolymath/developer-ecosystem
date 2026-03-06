@@ -1,0 +1,618 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= rescript-redis
+:toc: macro
+:toc-title: Contents
+:toclevels: 3
+:icons: font
+:source-highlighter: rouge
+:experimental:
+
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/ReScript-11.x-red.svg[ReScript]
+image:https://img.shields.io/badge/Deno-2.x-black.svg[Deno]
+image:https://img.shields.io/badge/Redis-7.x-DC382D.svg[Redis]
+
+*Type-safe Redis client for ReScript using Deno's redis library.*
+
+Part of the https://github.com/hyperpolymath/rescript-full-stack[ReScript Full Stack] ecosystem.
+
+toc::[]
+
+== Overview
+
+`rescript-redis` provides comprehensive, type-safe bindings to Redis for ReScript applications running on Deno. It wraps the excellent https://deno.land/x/redis[deno.land/x/redis] library with idiomatic ReScript APIs and proper option types.
+
+=== Why rescript-redis?
+
+* **Type Safety** - Full ReScript type checking with proper `option` types for nullable responses
+* **Deno-First** - Built for Deno, using native ES modules and Deno's permissions model
+* **Complete Coverage** - Strings, Hashes, Lists, Sets, Sorted Sets, Pub/Sub, Streams, Sentinel, and Cluster
+* **Zero Runtime Dependencies** - Just ReScript and the Deno redis library
+* **Ecosystem Integration** - Works seamlessly with other rescript-full-stack packages
+
+== Features
+
+[cols="1,3"]
+|===
+|Feature |Description
+
+|**Core Operations**
+|Strings, Hashes, Lists, Sets, Sorted Sets with full CRUD support
+
+|**Pub/Sub**
+|Subscribe to channels with async iteration support
+
+|**JSON Helpers**
+|`getJson`/`setJson` for storing structured data
+
+|**Streams**
+|Full Redis Streams API with consumer groups (XADD, XREAD, XGROUP, etc.)
+
+|**Sentinel**
+|High availability with automatic failover support
+
+|**Cluster**
+|Horizontal scaling with Redis Cluster support
+
+|**Connection Management**
+|URL parsing, connection options, automatic reconnection
+|===
+
+== Installation
+
+=== From JSR (Recommended)
+
+[source,bash]
+----
+deno add jsr:@hyperpolymath/rescript-redis
+----
+
+=== From Source
+
+[source,bash]
+----
+git clone https://github.com/hyperpolymath/rescript-redis
+cd rescript-redis
+deno task build
+----
+
+== Quick Start
+
+=== Basic Usage
+
+[source,rescript]
+----
+// Connect to Redis
+let redis = await Redis.make()  // localhost:6379
+
+// String operations
+await redis->Redis.set("greeting", "Hello, ReScript!")
+let greeting = await redis->Redis.get("greeting")
+// greeting: option<string> = Some("Hello, ReScript!")
+
+// With expiration (60 seconds)
+await redis->Redis.setex("session", 60, "user123")
+
+// Clean up
+await redis->Redis.quit()
+----
+
+=== Connection Options
+
+[source,rescript]
+----
+// With explicit options
+let redis = await Redis.connect({
+  hostname: "redis.example.com",
+  port: 6379,
+  password: "secret",
+  db: 1,
+  tls: true,
+  maxRetryCount: 5,
+})
+
+// From connection string
+let redis = await Redis.makeFromUrl("redis://password@localhost:6379/0")
+----
+
+=== JSON Storage
+
+[source,rescript]
+----
+// Store structured data
+let user = {"id": 1, "name": "Alice", "active": true}->Obj.magic
+await redis->Redis.setJson("user:1", user)
+
+// Retrieve with automatic parsing
+let retrieved = await redis->Redis.getJson("user:1")
+// retrieved: option<JSON.t>
+
+// With expiration
+await redis->Redis.setJsonEx("cache:data", 300, someJsonValue)
+----
+
+== Data Structures
+
+=== Hashes
+
+[source,rescript]
+----
+// Set hash fields
+await redis->Redis.hset("user:1", "name", "Alice")
+await redis->Redis.hset("user:1", "email", "alice@example.com")
+
+// Get a field
+let name = await redis->Redis.hget("user:1", "name")
+
+// Get all fields as dictionary
+let user = await redis->Redis.hgetallAsDict("user:1")
+// user: Dict.t<string>
+
+// Atomic increment
+await redis->Redis.hincrby("user:1", "visits", 1)
+----
+
+=== Lists
+
+[source,rescript]
+----
+// Push to list
+await redis->Redis.lpush("queue", ["job1", "job2", "job3"])
+
+// Pop from list
+let job = await redis->Redis.rpop("queue")
+
+// Get range
+let items = await redis->Redis.lrange("queue", 0, -1)
+----
+
+=== Sets
+
+[source,rescript]
+----
+// Add members
+await redis->Redis.sadd("tags", ["rescript", "redis", "deno"])
+
+// Check membership
+let isMember = await redis->Redis.sismember("tags", "rescript")
+
+// Get all members
+let tags = await redis->Redis.smembers("tags")
+----
+
+=== Sorted Sets
+
+[source,rescript]
+----
+// Add with scores
+await redis->Redis.zadd("leaderboard", 100.0, "alice")
+await redis->Redis.zadd("leaderboard", 85.0, "bob")
+
+// Get top scores
+let top = await redis->Redis.zrevrange("leaderboard", 0, 9)
+
+// Get score
+let score = await redis->Redis.zscore("leaderboard", "alice")
+----
+
+== Pub/Sub
+
+[source,rescript]
+----
+// Subscriber
+let sub = await Redis.make()
+let subscription = await sub->Redis.subscribe(["events", "notifications"])
+
+// Async iteration over messages
+let iterator = subscription->Redis.receive()
+// Use with for-await or manual iteration
+
+// Publisher (separate connection)
+let pub = await Redis.make()
+await pub->Redis.publish("events", "user.created")
+----
+
+== Redis Streams
+
+Streams provide a log-like data structure for event sourcing and message queues.
+
+=== Basic Stream Operations
+
+[source,rescript]
+----
+open Redis.Streams
+
+// Add entries
+let id = await redis->add("events", Dict.fromArray([
+  ("type", "user.created"),
+  ("userId", "123"),
+]))
+
+// Read all entries
+let entries = await redis->rangeAll("events")
+entries->Array.forEach(entry => {
+  Console.log2("ID:", entry.id)
+  Console.log2("Fields:", entry.fields)
+})
+
+// Read range
+let recent = await redis->range("events", "-", "+")
+----
+
+=== Consumer Groups
+
+[source,rescript]
+----
+open Redis.Streams
+
+// Create consumer group
+await redis->groupCreateFromEnd("events", "processors")
+
+// Read as consumer
+let messages = await redis->readGroupNew(
+  "processors",   // group name
+  "worker-1",     // consumer name
+  "events"        // stream name
+)
+
+// Process and acknowledge
+switch messages {
+| Some(entries) =>
+  let ids = entries->Array.map(e => e.id)
+  await redis->ack("events", "processors", ids)
+| None => ()
+}
+----
+
+== High Availability
+
+=== Redis Sentinel
+
+[source,rescript]
+----
+open Redis.Sentinel
+
+let redis = await make({
+  masterName: "mymaster",
+  sentinels: [
+    {hostname: "sentinel1.example.com", port: 26379},
+    {hostname: "sentinel2.example.com", port: 26379},
+    {hostname: "sentinel3.example.com", port: 26379},
+  ],
+  password: "secret",
+})
+
+// Use redis normally - failover is automatic
+await redis->Redis.set("key", "value")
+----
+
+=== Redis Cluster
+
+[source,rescript]
+----
+open Redis.Cluster
+
+let redis = await make({
+  nodes: [
+    {hostname: "redis1.example.com", port: 6379},
+    {hostname: "redis2.example.com", port: 6379},
+    {hostname: "redis3.example.com", port: 6379},
+  ],
+  password: "secret",
+  maxRedirections: 16,
+})
+
+// Cluster operations
+let healthy = await redis->isHealthy()
+
+// Use redis normally - routing is automatic
+await redis->Redis.set("key", "value")
+----
+
+== API Reference
+
+=== Connection Functions
+
+[cols="1,2,1"]
+|===
+|Function |Description |Returns
+
+|`connect(options)`
+|Connect with explicit options
+|`promise<t>`
+
+|`make()`
+|Connect to localhost:6379
+|`promise<t>`
+
+|`makeFromUrl(url)`
+|Connect using connection string
+|`promise<t>`
+
+|`ping(redis)`
+|Ping the server
+|`promise<string>`
+
+|`quit(redis)`
+|Gracefully close connection
+|`promise<unit>`
+
+|`close(redis)`
+|Immediately close connection
+|`unit`
+|===
+
+=== String Operations
+
+[cols="1,2,1"]
+|===
+|Function |Description |Returns
+
+|`get(redis, key)`
+|Get value
+|`promise<option<string>>`
+
+|`set(redis, key, value)`
+|Set value
+|`promise<string>`
+
+|`setex(redis, key, seconds, value)`
+|Set with expiration
+|`promise<string>`
+
+|`setnx(redis, key, value)`
+|Set if not exists
+|`promise<int>`
+
+|`del(redis, keys)`
+|Delete keys
+|`promise<int>`
+
+|`exists(redis, keys)`
+|Check existence
+|`promise<int>`
+
+|`expire(redis, key, seconds)`
+|Set TTL
+|`promise<int>`
+
+|`ttl(redis, key)`
+|Get TTL
+|`promise<int>`
+
+|`incr(redis, key)`
+|Increment by 1
+|`promise<int>`
+
+|`incrby(redis, key, n)`
+|Increment by n
+|`promise<int>`
+
+|`decr(redis, key)`
+|Decrement by 1
+|`promise<int>`
+
+|`decrby(redis, key, n)`
+|Decrement by n
+|`promise<int>`
+|===
+
+=== Hash Operations
+
+[cols="1,2,1"]
+|===
+|Function |Description |Returns
+
+|`hget(redis, key, field)`
+|Get field value
+|`promise<option<string>>`
+
+|`hset(redis, key, field, value)`
+|Set field value
+|`promise<int>`
+
+|`hdel(redis, key, fields)`
+|Delete fields
+|`promise<int>`
+
+|`hgetall(redis, key)`
+|Get all (flat array)
+|`promise<array<string>>`
+
+|`hgetallAsDict(redis, key)`
+|Get all (dictionary)
+|`promise<Dict.t<string>>`
+
+|`hexists(redis, key, field)`
+|Check field exists
+|`promise<int>`
+
+|`hincrby(redis, key, field, n)`
+|Increment field
+|`promise<int>`
+
+|`hkeys(redis, key)`
+|Get field names
+|`promise<array<string>>`
+
+|`hvals(redis, key)`
+|Get all values
+|`promise<array<string>>`
+
+|`hlen(redis, key)`
+|Count fields
+|`promise<int>`
+|===
+
+=== List Operations
+
+[cols="1,2,1"]
+|===
+|Function |Description |Returns
+
+|`lpush(redis, key, values)`
+|Prepend values
+|`promise<int>`
+
+|`rpush(redis, key, values)`
+|Append values
+|`promise<int>`
+
+|`lpop(redis, key)`
+|Pop from head
+|`promise<option<string>>`
+
+|`rpop(redis, key)`
+|Pop from tail
+|`promise<option<string>>`
+
+|`lrange(redis, key, start, stop)`
+|Get range
+|`promise<array<string>>`
+
+|`llen(redis, key)`
+|Get length
+|`promise<int>`
+
+|`lindex(redis, key, index)`
+|Get by index
+|`promise<option<string>>`
+
+|`lset(redis, key, index, value)`
+|Set by index
+|`promise<string>`
+|===
+
+=== Set Operations
+
+[cols="1,2,1"]
+|===
+|Function |Description |Returns
+
+|`sadd(redis, key, members)`
+|Add members
+|`promise<int>`
+
+|`srem(redis, key, members)`
+|Remove members
+|`promise<int>`
+
+|`smembers(redis, key)`
+|Get all members
+|`promise<array<string>>`
+
+|`sismember(redis, key, member)`
+|Check membership
+|`promise<int>`
+
+|`scard(redis, key)`
+|Get cardinality
+|`promise<int>`
+|===
+
+=== Sorted Set Operations
+
+[cols="1,2,1"]
+|===
+|Function |Description |Returns
+
+|`zadd(redis, key, score, member)`
+|Add with score
+|`promise<int>`
+
+|`zrem(redis, key, members)`
+|Remove members
+|`promise<int>`
+
+|`zscore(redis, key, member)`
+|Get score
+|`promise<option<string>>`
+
+|`zrank(redis, key, member)`
+|Get rank (low to high)
+|`promise<option<int>>`
+
+|`zrange(redis, key, start, stop)`
+|Get range (ascending)
+|`promise<array<string>>`
+
+|`zrevrange(redis, key, start, stop)`
+|Get range (descending)
+|`promise<array<string>>`
+
+|`zcard(redis, key)`
+|Get cardinality
+|`promise<int>`
+|===
+
+== Development
+
+=== Prerequisites
+
+* https://deno.land/[Deno 2.x]
+* https://rescript-lang.org/[ReScript 11.x]
+* https://redis.io/[Redis 7.x] (for testing)
+
+=== Building
+
+[source,bash]
+----
+# Install dependencies and build
+deno task build
+
+# Watch mode
+deno task dev
+
+# Clean build artifacts
+deno task clean
+----
+
+=== Testing
+
+[source,bash]
+----
+# Run tests (requires Redis on localhost:6379)
+deno task test
+
+# Watch mode
+deno task test:watch
+----
+
+=== Project Structure
+
+----
+rescript-redis/
++-- src/
+|   +-- Redis.res       # Main implementation
+|   +-- Redis.resi      # Public interface
++-- tests/              # Test files
++-- examples/           # Example code
++-- docs/               # Additional documentation
++-- deno.json           # Deno configuration
++-- rescript.json       # ReScript configuration
+----
+
+== Related Packages
+
+The https://github.com/hyperpolymath/rescript-full-stack[ReScript Full Stack] ecosystem includes:
+
+* https://github.com/hyperpolymath/rescript-effect[rescript-effect] - Effect system
+* https://github.com/hyperpolymath/rescript-schema[rescript-schema] - Runtime validation
+* https://github.com/hyperpolymath/rescript-webapi[rescript-webapi] - Web API bindings
+* https://github.com/hyperpolymath/rescript-fetch[rescript-fetch] - HTTP client
+
+== Contributing
+
+See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc] for guidelines.
+
+== Changelog
+
+See link:docs/CHANGELOG.adoc[CHANGELOG.adoc] for version history.
+
+== License
+
+PMPL-1.0-or-later. See link:LICENSE.txt[LICENSE.txt] for details.
+
+Copyright (C) 2025 Hyperpolymath

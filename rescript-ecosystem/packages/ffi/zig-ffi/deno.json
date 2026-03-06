@@ -1,0 +1,15 @@
+{
+  "name": "@hyperpolymath/rescript-zig-ffi",
+  "version": "0.1.0",
+  "license": "AGPL-3.0-or-later",
+  "exports": {
+    ".": "./src/ZigFfi.res.js"
+  },
+  "tasks": {
+    "build:rescript": "npx rescript",
+    "build:zig": "cd zig-lib && zig build -Doptimize=ReleaseFast",
+    "build": "deno task build:rescript && deno task build:zig",
+    "test:zig": "cd zig-lib && zig build test",
+    "test": "deno task test:zig"
+  }
+}
