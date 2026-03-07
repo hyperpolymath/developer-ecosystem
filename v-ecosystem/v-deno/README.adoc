@@ -1,0 +1,124 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
+= v-deno
+:toc: macro
+:icons: font
+
+**V programming language FFI bridge for Deno.**
+
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/deno-runtime-green[Deno]
+image:https://img.shields.io/badge/vlang-FFI-blue[V Language]
+
+toc::[]
+
+== Overview
+
+v-deno provides seamless FFI integration between Deno and the V programming language. Write performance-critical code in V, call it from Deno with full type safety.
+
+== How It Works
+
+[source]
+----
+┌─────────────────┐         ┌─────────────────┐
+│      Deno       │  FFI    │   V Library     │
+│   TypeScript    │◄───────►│   (.so/.dll)    │
+└─────────────────┘ dlopen  └─────────────────┘
+----
+
+V compiles to C, producing shared libraries with C ABI. Deno's `Deno.dlopen()` loads these libraries directly.
+
+== Quick Start
+
+=== 1. Write V Code
+
+[source,v]
+----
+// math.v
+module math
+
+@[export: 'add']
+pub fn add(a int, b int) int {
+    return a + b
+}
+
+@[export: 'factorial']
+pub fn factorial(n int) int {
+    if n <= 1 { return 1 }
+    return n * factorial(n - 1)
+}
+----
+
+=== 2. Compile to Shared Library
+
+[source,bash]
+----
+v -shared -o libmath.so math.v
+----
+
+=== 3. Call from Deno
+
+[source,typescript]
+----
+import { VLibrary } from "v-deno";
+
+const math = await VLibrary.load("./libmath.so", {
+  add: { parameters: ["i32", "i32"], result: "i32" },
+  factorial: { parameters: ["i32"], result: "i32" },
+});
+
+console.log(math.add(2, 3));        // 5
+console.log(math.factorial(10));    // 3628800
+----
+
+== Features
+
+* **Type-Safe Bindings** — Generate TypeScript types from V signatures
+* **Callback Support** — Pass Deno functions to V code
+* **Memory Management** — Safe handling of V strings and arrays
+* **Build Integration** — Compile V libraries from Deno
+* **Cross-Platform** — Windows, macOS, Linux support
+
+== Callbacks (V → Deno)
+
+[source,typescript]
+----
+import { VLibrary, VCallback } from "v-deno";
+
+const lib = await VLibrary.load("./libprocessor.so", {
+  process_with_callback: {
+    parameters: ["pointer", "i32"],
+    result: "void"
+  }
+});
+
+const callback = VCallback.create((value: number) => {
+  console.log("V called back with:", value);
+}, { parameters: ["i32"], result: "void" });
+
+lib.process_with_callback(callback.pointer, 100);
+----
+
+== Roadmap
+
+* **v0.1** — Basic FFI wrapper, type mappings
+* **v0.2** — Callback support, memory utilities
+* **v0.3** — Build integration (compile V from Deno)
+* **v1.0** — Type generation, full V stdlib bindings
+
+== Why V?
+
+* **Fast compilation** — V compiles in <1 second
+* **Simple syntax** — Easy to learn, C-like
+* **No dependencies** — Self-contained binaries
+* **C interop** — Native C ABI output
+
+== Related Projects
+
+* https://vlang.io[V Programming Language]
+* https://github.com/hyperpolymath/bundeno[bundeno] — Deno/Bun portability
+* https://github.com/hyperpolymath/beamdeno[beamdeno] — BEAM connectivity
+
+== License
+
+PMPL-1.0-or-later

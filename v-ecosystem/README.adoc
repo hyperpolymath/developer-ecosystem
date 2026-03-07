@@ -1,0 +1,75 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= V Ecosystem
+Jonathan D.A. Jewell (hyperpolymath) <jonathan.jewell@open.ac.uk>
+
+== Overview
+
+Monorepo for V programming language ecosystem tools and bridges.
+
+== Projects
+
+=== v-rest (Standard)
+
+The canonical template for V-lang REST services.
+**Standard:** All REST services in this ecosystem are implemented in V-lang.
+
+=== v-grpc
+
+gRPC and Protobuf support for the V language.
+
+=== v-graphql
+
+GraphQL implementation and schema generation for V.
+
+=== v-zig-ffi
+
+Mandatory Zig FFI layer for all V-lang bridges to ensure header-less C ABI compatibility.
+
+=== v-idris-abi
+
+Mandatory Idris2 ABI verification layer for formally proven memory layouts.
+
+=== v-telemetry
+
+OpenTelemetry and observability support for V services.
+
+=== v-validator
+
+Type-safe validation and schema enforcement for V.
+
+=== v-middleware
+
+Authentication, CORS, and common request handlers for V services.
+
+=== v-benchmarks
+
+Performance testing suite for the V-lang stack.
+
+=== v-deno
+
+V Language FFI Bridge for Deno — call V shared libraries from Deno via `Deno.dlopen`.
+
+* Written in ReScript with Idris2 ABI definitions and Zig FFI layer
+* Provides V compilation, library loading, and type-safe FFI bindings
+* See `v-deno/README.adoc` for details
+
+== Structure
+
+----
+v-ecosystem/
+├── v-rest/           # Canonical REST standard
+├── v-grpc/           # gRPC support
+├── v-graphql/        # GraphQL support
+├── v-zig-ffi/        # Zig FFI seam (Mandatory)
+├── v-idris-abi/      # Idris2 ABI verification (Mandatory)
+├── v-telemetry/      # Observability
+├── v-validator/      # Schema validation
+├── v-middleware/     # Common handlers
+├── v-benchmarks/     # Performance testing
+├── v-deno/           # V ↔ Deno FFI bridge
+└── README.adoc       # This file
+----
+
+== License
+
+PMPL-1.0-or-later

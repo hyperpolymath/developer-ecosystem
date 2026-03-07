@@ -1,0 +1,8 @@
+= Documentation Layout
+
+Primary tracks:
+
+* `theory/` for formal and conceptual material
+* `practice/` for operational and implementation material
+* `whitepapers/academic/` for research-facing whitepapers
+* `whitepapers/industry/` for industry/outreach whitepapers
