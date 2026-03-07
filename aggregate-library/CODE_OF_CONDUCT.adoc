@@ -1,0 +1,227 @@
+= Code of Conduct
+:toc: left
+:toclevels: 3
+:sectnums:
+
+== Our Pledge
+
+We as members, contributors, and leaders pledge to make participation in the aggregate-library community a harassment-free, emotionally safe, and welcoming experience for everyone, regardless of:
+
+* Age, body size, visible or invisible disability, ethnicity, sex characteristics
+* Gender identity and expression, level of experience, education, socio-economic status
+* Nationality, personal appearance, race, caste, color, religion, or sexual identity and orientation
+* Technical skill level, programming language preference, or paradigm affiliation
+
+We pledge to act and interact in ways that contribute to an open, welcoming, diverse, inclusive, and healthy community that prioritizes *emotional safety* and *psychological well-being*.
+
+== Our Standards
+
+=== Expected Behavior
+
+Examples of behavior that contributes to a positive environment:
+
+* *Kindness and Empathy*: Treating others with compassion and understanding
+* *Respectful Disagreement*: Engaging constructively with differing opinions and experiences
+* *Constructive Feedback*: Providing helpful, specific, and actionable feedback
+* *Accountability*: Accepting responsibility and apologizing when mistakes are made
+* *Community Focus*: Prioritizing what is best for the overall community
+* *Emotional Safety*: Recognizing and respecting emotional boundaries
+* *Patience*: Understanding that people have different backgrounds and skill levels
+* *Celebration*: Acknowledging contributions and achievements of others
+* *Learning Mindset*: Approaching interactions with curiosity and openness
+
+=== Unacceptable Behavior
+
+Examples of unacceptable behavior:
+
+* *Harassment*: Trolling, insulting or derogatory comments, personal or political attacks
+* *Discrimination*: Discriminatory jokes, language, or imagery
+* *Invasion of Privacy*: Publishing others' private information without permission
+* *Unwelcome Conduct*: Sexual attention or advances of any kind
+* *Intimidation*: Threats of violence or violent language
+* *Disruption*: Sustained disruption of discussions or collaboration
+* *Gatekeeping*: Discouraging participation based on perceived skill level
+* *Dismissiveness*: Invalidating others' experiences or concerns
+* *Toxicity*: Creating or maintaining a hostile, uncomfortable, or unsafe environment
+* *Bad Faith*: Deliberately misrepresenting others' positions or intentions
+
+== Emotional Safety
+
+=== Our Commitment
+
+This project explicitly values *emotional safety* as a core principle:
+
+* *Low-Stress Environment*: We strive to minimize anxiety and stress in interactions
+* *Reversibility*: Mistakes are learning opportunities; contributions can be reverted
+* *Psychological Safety*: People should feel safe to experiment, ask questions, and fail
+* *No Shaming*: We never shame people for not knowing something or making mistakes
+* *Consent-Aware*: We respect boundaries and allow people to opt out
+* *Well-Being Priority*: Community member well-being takes precedence over project velocity
+
+=== Reducing Anxiety
+
+To maintain low anxiety levels:
+
+* *Clear Documentation*: Comprehensive guides reduce uncertainty
+* *Transparent Processes*: Predictable contribution workflows
+* *Supportive Feedback*: Focus on improvement, not criticism
+* *No Urgency Pressure*: Contributions happen at comfortable paces
+* *Safe Experimentation*: Sandbox branches and testing environments
+* *Respect for "No"*: Accepting when people decline tasks or need breaks
+
+== Enforcement Responsibilities
+
+=== Maintainers
+
+Community leaders and maintainers are responsible for:
+
+* Clarifying and enforcing standards of acceptable behavior
+* Taking appropriate and fair corrective action
+* Removing, editing, or rejecting comments, commits, code, issues, and contributions that violate this Code of Conduct
+* Communicating reasons for moderation decisions when appropriate
+* Prioritizing the emotional safety and well-being of community members
+
+=== Scope
+
+This Code of Conduct applies within all community spaces and when an individual is officially representing the community in public spaces. Examples include:
+
+* Project repositories (code, issues, PRs, discussions)
+* Official communication channels (email, chat, forums)
+* Social media accounts representing the project
+* Conferences, meetups, and events
+* Any other forums where community members interact
+
+== Enforcement
+
+=== Reporting
+
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement at:
+
+* *Email*: conduct@[project-domain] (when available)
+* *Private Issue*: Contact maintainers listed in link:MAINTAINERS.md[]
+
+*All complaints will be reviewed and investigated promptly and fairly.*
+
+=== Confidentiality
+
+All community leaders are obligated to:
+
+* Respect the privacy and security of the reporter
+* Keep details confidential unless necessary for investigation
+* Protect reporters from retaliation
+
+=== Investigation Process
+
+. *Acknowledgment*: Reporter receives confirmation within 72 hours
+. *Initial Review*: Maintainers assess the report (1 week)
+. *Investigation*: Gather context and perspectives as needed
+. *Decision*: Determine appropriate response
+. *Communication*: Inform involved parties of outcome
+. *Appeal*: Allow for appeal process if requested
+
+== Enforcement Guidelines
+
+Community leaders will follow these guidelines when determining consequences:
+
+=== 1. Correction
+
+*Community Impact*: Minor, isolated incident of inappropriate behavior
+
+*Consequence*:
+
+* Private written warning
+* Explanation of violation
+* Request for apology or behavior change
+
+=== 2. Warning
+
+*Community Impact*: Single significant violation or series of minor violations
+
+*Consequence*:
+
+* Warning with consequences for continued behavior
+* Temporary suspension from specific spaces or interactions
+* Required acknowledgment of behavior change
+
+*Duration*: Specified time period or until conditions met
+
+=== 3. Temporary Ban
+
+*Community Impact*: Serious violation or sustained inappropriate behavior
+
+*Consequence*:
+
+* Temporary ban from all community interaction
+* No public or private interaction with community members
+* May include ban from pull requests, issues, and discussions
+
+*Duration*: Specified time period (typically 30-90 days)
+
+=== 4. Permanent Ban
+
+*Community Impact*: Pattern of violations, severe violation, or harassment
+
+*Consequence*:
+
+* Permanent ban from all community spaces
+* Prohibited from all public interaction
+* Removal of contribution access
+
+== Appeals
+
+Individuals who receive enforcement actions may appeal by:
+
+. Emailing maintainers within 14 days of decision
+. Providing context or new information
+. Requesting reconsideration of penalty
+
+Appeals will be reviewed by maintainers not involved in original decision (when possible).
+
+== Restorative Justice
+
+Where appropriate, we favor *restorative justice* approaches:
+
+* *Understanding*: Helping violators understand impact of actions
+* *Repair*: Opportunities to make amends and rebuild trust
+* *Learning*: Growth and behavior change over punishment
+* *Community Healing*: Repairing harm done to community
+* *Reintegration*: Pathways back to good standing (when safe)
+
+Restorative justice is *not* appropriate for:
+
+* Severe harassment or threats
+* Repeated violations after multiple chances
+* Cases where victim/community requests otherwise
+
+== Attribution
+
+This Code of Conduct is adapted from:
+
+* https://www.contributor-covenant.org/[Contributor Covenant] v2.1
+* https://www.djangoproject.com/conduct/[Django Code of Conduct]
+* Emotional safety principles from developer well-being research
+* CCCP (Community-Centered Contribution Principles) framework
+
+== Living Document
+
+This Code of Conduct is a living document. Suggestions for improvements are welcome via:
+
+* GitHub/GitLab issues with label `code-of-conduct`
+* Email to maintainers
+* Pull requests with proposed changes
+
+Community input is valued in evolving these standards.
+
+== Contact
+
+For questions about this Code of Conduct:
+
+* Open an issue with label `question`
+* Email maintainers (see link:MAINTAINERS.md[])
+* Reference this document in discussions
+
+---
+
+*Version*: 1.0 +
+*Last Updated*: 2025-11-22 +
+*Next Review*: 2026-05-22 (6 months)

@@ -1,0 +1,14 @@
+/** Tests for RawFunction module. */
+open Aggregate;
+open Interop.RawFunction;
+
+module Tests = {
+  @react.component
+  let make = () => {
+    let merged = Example.safeMerge->RawFunction.call(
+      ~target={"a": 1},
+      ~sources=[{"b": 2}]
+    );
+    <div> {React.string("Merged: " ++ Js.Json.stringifyAny(merged))} </div>;
+  };
+};

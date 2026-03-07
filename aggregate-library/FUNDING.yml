@@ -1,0 +1,54 @@
+# Funding Information
+# aggregate-library (aLib) - Common Library Specification
+
+# This file enables the "Sponsor" button in GitHub/GitLab repositories
+# and provides transparent funding information for the project.
+
+# Currently, the project is in early stages and not yet seeking funding.
+# This file serves as a placeholder for future funding channels.
+
+# When the project is ready to accept funding, we will enable:
+# - OpenCollective for transparent, community-governed funding
+# - Liberapay for recurring donations
+# - GitHub Sponsors for per-maintainer support
+# - Custom funding URLs for institutional sponsors
+
+# Principles:
+# 1. Transparency: All income and expenses will be public
+# 2. Community Benefit: Funds serve project and contributors
+# 3. Sustainability: Long-term financial health prioritized
+# 4. Fair Compensation: Contributors compensated when possible
+
+# Future Funding Channels (not yet active):
+# open_collective: aggregate-library
+# liberapay: aggregate-library
+# github: [Hyperpolymath]
+# custom: ["https://fund.aggregate-library.org"]
+
+# Solidarity Economics:
+# We believe in solidarity economics and mutual aid. When funding becomes
+# available, it will support:
+# - Maintainer stipends
+# - Contributor bounties
+# - Conference travel
+# - Infrastructure costs
+# - Community initiatives
+
+# Contact:
+# For institutional sponsorship inquiries or questions about funding,
+# please open an issue with the 'funding' label or contact maintainers
+# via the channels listed in MAINTAINERS.md
+
+# Transparency Commitment:
+# When active, all financial information will be publicly available at:
+# - Budget: docs/finance/BUDGET.md (planned)
+# - Expenses: docs/finance/EXPENSES.md (planned)
+# - Income: docs/finance/INCOME.md (planned)
+# - OpenCollective dashboard (when active): https://opencollective.com/aggregate-library
+
+# Thank you for your interest in supporting aggregate-library!
+# For now, the best way to support is through contributions (see CONTRIBUTING.adoc)
+
+# Last Updated: 2025-11-22
+# Status: Funding not yet active
+# Next Review: When project reaches v0.5.0 and has 50+ contributors

@@ -1,0 +1,121 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Configuration for stdlib-merger tool
+
+# Quality criteria for ranking implementations
+quality_criteria:
+  api_clarity:
+    weight: 0.30
+    description: "How clear and intuitive is the API?"
+
+  performance:
+    weight: 0.20
+    description: "Time and space complexity"
+
+  error_handling:
+    weight: 0.25
+    description: "How well does it handle errors?"
+    scoring:
+      result_either: 1.0    # Result<T,E> or Either a b
+      maybe_option: 0.7     # Maybe a or Option<T>
+      exceptions: 0.3       # Throws exceptions
+      none: 0.0             # No error handling
+
+  unicode_support:
+    weight: 0.15
+    description: "Unicode and UTF-8 support (for string operations)"
+
+  memory_safety:
+    weight: 0.05
+    description: "Memory safety guarantees"
+
+  composability:
+    weight: 0.05
+    description: "Can it be easily composed with other functions?"
+
+# Pattern matching configuration
+matching:
+  name_similarity_threshold: 0.7
+    # Minimum Levenshtein similarity for name matching (0.0 - 1.0)
+
+  semantic_similarity_threshold: 0.8
+    # Minimum LLM semantic similarity score (0.0 - 1.0)
+
+  require_all_stlibs: true
+    # Only extract patterns that exist in ALL input stlibs
+
+  type_equivalence:
+    # Define equivalent types across languages
+    - ["{:ok, val} | {:error, reason}", "Result<T, E>", "Either a b"]
+    - ["nil", "Option<T>", "Maybe a"]
+    - ["List", "Vec", "[a]"]
+    - ["Map", "HashMap", "Map k v"]
+
+# Code extraction configuration
+extraction:
+  target_language: elixir
+    # Language to generate aggregate-library code in
+
+  normalize_api: true
+    # Normalize function names and argument order
+
+  add_docstrings: true
+    # Generate docstrings for extracted functions
+
+  preserve_comments: true
+    # Preserve comments from source implementation
+
+  spdx_header: "PMPL-1.0-or-later"
+    # SPDX license identifier for generated files
+
+# Stripping configuration
+stripping:
+  add_imports: true
+    # Add imports to aggregate-library in stripped stlibs
+
+  remove_empty_modules: true
+    # Remove modules that become empty after stripping
+
+  preserve_domain_logic: true
+    # Keep domain-specific functions (e.g., Phronesis policy logic)
+
+# LLM API configuration
+llm:
+  provider: anthropic
+    # LLM provider: anthropic, openai, etc.
+
+  model: claude-sonnet-4-5
+    # Model to use for semantic similarity
+
+  api_key_env: ANTHROPIC_API_KEY
+    # Environment variable containing API key
+
+  max_retries: 3
+    # Maximum number of retries on API failures
+
+  timeout_seconds: 30
+    # Request timeout in seconds
+
+  cache_responses: true
+    # Cache LLM responses for faster re-runs
+
+# Performance settings
+performance:
+  parallel: true
+    # Parse stlibs in parallel
+
+  cache_dir: /tmp/stdlib-merger-cache
+    # Directory for caching parsed ASTs and LLM responses
+
+  max_workers: 4
+    # Maximum number of parallel workers
+
+# Output settings
+output:
+  generate_reports: true
+    # Generate COMPOSITION-GUIDE.md, MIGRATION-GUIDE.md, etc.
+
+  verbose: true
+    # Print detailed progress information
+
+  dry_run: false
+    # Analyze without generating files

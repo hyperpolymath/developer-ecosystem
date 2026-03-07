@@ -1,0 +1,127 @@
+= aLib: aggregate-library
+:toc: macro
+:toclevels: 3
+:sectanchors:
+:icons: font
+
+A *methods* repository: demonstrating how to specify, test, and stress-test a tiny “overlap” library across wildly different systems — without implying that any one ecosystem should replace its standard library.
+
+toc::[]
+
+== Status
+Experimental / research / demonstration.
+
+== What this repo is
+This repository is a *stress-test and methods lab* for aLib.
+
+It exists to demonstrate:
+
+* How to identify a minimal overlap (“common”) between systems with very different constraints.
+* How to express that overlap as:
+  ** a stable spec surface,
+  ** semantics notes,
+  ** and a conformance test suite.
+* How “reversibility” and “safe iteration” can be enforced through disciplined boundaries and test vectors.
+
+This repo is intentionally allowed to be “weird” and “extreme” because its job is to break ideas early.
+
+NOTE: The “overlap” demonstrated here is intentionally chosen for stress-testing across *very different* designs.
+It is an illustrative demo of method under extreme diversity — not a claim that any ecosystem should adopt this overlap as its standard library.
+
+== What this repo is NOT
+To avoid confusion:
+
+* Not a replacement for any ecosystem’s standard library.
+* Not a proposal that “all languages should share one stdlib.”
+* Not a claim that the overlap shown here is the “correct” overlap for all projects.
+* Not a dependency that downstream implementations must import.
+
+This repo demonstrates a method. Implementations may borrow the method, not the code.
+
+== Two meanings of “Common”
+In the aLib universe there are two different “common” ideas:
+
+.Overlap Common (this repo)
+A demonstration overlap chosen to be stress-tested against extreme diversity.
+
+.Ecosystem Common (implementation repos)
+A practical shared layer for a specific ecosystem (example: ReScript + Melange + optional runtime validation).
+
+This repo covers only the first meaning.
+
+== Reference implementations and optional consumers
+Some projects may serve as *reference points* for semantics, verification approaches, or ecosystem-specific implementations.
+
+These relationships are *optional* and *non-binding*:
+
+* `proven` — a reference implementation that can inform semantics intent and verification style (not required).
+* `alib-for-rescript` — an ecosystem implementation proving ground (ReScript/Melange) that applies the aLib method (not required).
+* Implementation support repos (optional): conformance runners, codemods, interop pattern cookbooks.
+
+This repo should not become a “dependency magnet”; implementation repos should be able to adopt the method without importing code from here.
+
+== Design principles
+* Minimal surfaces, explicit semantics.
+* Conformance tests as the safety net.
+* Reversibility: changes must be easy to evaluate and to undo.
+* Ecosystem neutrality: no “blessed” implementation.
+
+== Composition Guide
+
+This repository demonstrates the extraction of universal patterns from the intersection of multiple language stlibs (Phronesis, Rust, Haskell), choosing the best implementation for each pattern.
+
+See link:COMPOSITION-GUIDE.md[COMPOSITION-GUIDE.md] for the complete methodology:
+
+----
+aggregate-library = (common elements of phronesis stdlib ∩ Rust stdlib ∩ Haskell stdlib)
+                  ∪ (compiler utilities)
+----
+
+This creates a *leaner library* with *no duplication* - a single source of truth for universal patterns.
+
+=== stdlib-merger Tool
+
+An automated tool for extracting common patterns from multiple stlibs is available in `tools/stdlib-merger/`.
+
+[source,bash]
+----
+cd tools/stdlib-merger
+julia cli.jl merge \
+  --stdlib phronesis:/path/to/phronesis/stdlib \
+  --stdlib rust:/path/to/rust/std \
+  --stdlib haskell:/path/to/haskell/base \
+  --output ../../lib/aggregate_library
+----
+
+See link:tools/stdlib-merger/README.md[stdlib-merger README] and link:tools/stdlib-merger/ARCHITECTURE.md[ARCHITECTURE] for details.
+
+== Contents
+
+Current implementation demonstrates:
+
+* `lib/aggregate_library/` — Universal stdlib patterns (Result, Collections, FileIO, Stream, Time)
+* `lib/a_lib/` — Compiler utilities (Token, Position, Error, AST.Traversal, StringUtils, ColorOutput)
+* `specs/` — Specifications (arithmetic, comparison, logical, collection, string operations)
+* `scripts/` — Validation tools (Deno)
+* `COMPOSITION-GUIDE.md` — Detailed methodology and integration examples
+
+== How to use this repo
+* Read the spec and the design notes.
+* Use conformance vectors to validate an implementation in your ecosystem.
+* Borrow the method for building your own proving-ground library.
+
+== Contributing
+Contributions should optimize for:
+
+* clarity of the overlap definition,
+* stronger tests,
+* stronger reversibility discipline,
+* and reduced ambiguity.
+
+If you are proposing new surface area, you must also propose:
+
+* semantics notes, and
+* tests that make regressions obvious.
+
+== License
+PLMP-1.0.0-or-later

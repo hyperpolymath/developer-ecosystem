@@ -1,0 +1,476 @@
+= Governance Model
+:toc: left
+:toclevels: 3
+:sectnums:
+
+== Overview
+
+The aggregate-library (aLib) project follows a transparent, community-centered governance model designed to ensure long-term sustainability, fair decision-making, and inclusive participation.
+
+== Governance Principles
+
+=== Core Values
+
+. *Transparency*: All decisions made publicly with documented rationale
+. *Inclusivity*: Multiple pathways for community participation
+. *Meritocracy*: Contributions and expertise guide influence
+. *Emotional Safety*: Well-being prioritized over velocity
+. *Reversibility*: Decisions can be revisited and reversed if needed
+. *Accountability*: Clear responsibility and mutual accountability (MAA)
+
+=== Decision-Making Philosophy
+
+We follow these principles:
+
+* *Consensus-seeking*: Prefer agreement over voting when possible
+* *Subsidiarity*: Decisions at the appropriate level (don't escalate unnecessarily)
+* *Proportionality*: Decision rigor matches impact (typo fix ≠ new operation)
+* *Timeliness*: Decisions made in reasonable timeframes
+* *Documentation*: All decisions recorded with context
+
+== Organizational Structure
+
+=== Tri-Perimeter Contribution Framework (TPCF)
+
+The project uses TPCF to balance openness with quality:
+
+==== Perimeter 1: Maintainer Core
+
+*Who*: Project maintainers (listed in link:MAINTAINERS.md[])
+
+*Scope*:
+
+* Governance decisions
+* Release management
+* Security response
+* Maintainer appointment/removal
+* Project direction and vision
+* Financial decisions (if applicable)
+
+*Decision Process*: Consensus among maintainers
+
+==== Perimeter 2: Trusted Contributors
+
+*Who*: Invited contributors with sustained track record
+
+*Criteria*:
+
+* 6+ months of quality contributions
+* Deep understanding of specification methodology
+* Demonstrated alignment with project values
+* Maintainer nomination
+
+*Scope*:
+
+* Core specification changes
+* New operation proposals
+* Architecture decisions
+* Review authority for Perimeter 3 contributions
+
+*Decision Process*: Majority approval + maintainer veto
+
+==== Perimeter 3: Community Sandbox
+
+*Who*: All community members (open participation)
+
+*Scope*:
+
+* Documentation improvements
+* Test case additions
+* Specification clarifications
+* Bug reports and feature requests
+* Community discussions
+
+*Decision Process*: Standard pull request review
+
+=== Roles and Responsibilities
+
+==== Maintainers
+
+*Responsibilities*:
+
+* Review and merge contributions
+* Ensure specification quality
+* Manage releases
+* Respond to security reports
+* Represent project in community
+* Uphold Code of Conduct
+* Mentor contributors
+
+*Rights*:
+
+* Commit access
+* Merge authority
+* Governance votes
+* Financial transparency (if funded)
+
+*Term*: Indefinite, voluntary
+
+==== Trusted Contributors
+
+*Responsibilities*:
+
+* High-quality contributions
+* Review Perimeter 3 contributions
+* Mentor new contributors
+* Participate in technical discussions
+
+*Rights*:
+
+* Fast-track review process
+* Consultation on major decisions
+* Recognition as trusted contributor
+
+*Term*: Based on continued participation
+
+==== Community Contributors
+
+*Responsibilities*:
+
+* Follow Code of Conduct
+* Respect contribution guidelines
+* Constructive engagement
+
+*Rights*:
+
+* Submit contributions
+* Participate in discussions
+* Voice opinions on decisions
+* Transparent decision processes
+
+== Decision-Making Processes
+
+=== Decision Categories
+
+==== Category A: Routine (Perimeter 3)
+
+*Examples*: Typo fixes, documentation clarifications, minor test additions
+
+*Process*:
+
+. Submit pull request
+. Automated checks pass
+. Maintainer review
+. Merge (1-3 days)
+
+*Authority*: Any maintainer
+
+==== Category B: Significant (Perimeter 2/3)
+
+*Examples*: New test cases, edge case additions, specification rewording
+
+*Process*:
+
+. Create issue for discussion (optional but recommended)
+. Submit pull request
+. Community feedback period (3-7 days)
+. Maintainer or trusted contributor review
+. Merge
+
+*Authority*: Maintainer + trusted contributor (or 2 maintainers)
+
+==== Category C: Major (Perimeter 1/2)
+
+*Examples*: New operations, breaking changes, architectural decisions
+
+*Process*:
+
+. RFC (Request for Comments) issue
+. Community discussion (minimum 2 weeks)
+. Trusted contributor consensus
+. Maintainer review and approval
+. Implementation
+. Final review and merge
+
+*Authority*: Maintainer consensus (all active maintainers must approve or abstain)
+
+==== Category D: Governance (Perimeter 1)
+
+*Examples*: Governance changes, maintainer changes, funding decisions, license changes
+
+*Process*:
+
+. Governance proposal document
+. Community feedback (minimum 30 days)
+. Maintainer discussion
+. Consensus decision
+. Documentation update
+. Public announcement
+
+*Authority*: Unanimous maintainer consensus (all maintainers must approve)
+
+=== Consensus vs. Voting
+
+*Preferred*: Consensus-seeking discussion
+
+*When to Vote*:
+
+* Time-sensitive decisions where consensus fails
+* Clear binary choices
+* After good-faith consensus attempts
+
+*Voting Rules*:
+
+* Maintainers: 1 vote each
+* Trusted contributors: Advisory votes (non-binding)
+* Quorum: 2/3 of active maintainers
+* Pass threshold: Simple majority (or unanimous for governance)
+* Tie-breaking: Re-discussion, or defer decision
+
+=== Veto Rights
+
+Maintainers may veto decisions for:
+
+* Code of Conduct violations
+* Security concerns
+* Legal/licensing issues
+* Fundamental architectural conflicts
+
+*Veto Process*:
+
+. Public veto with clear rationale
+. Alternative proposals encouraged
+. Community discussion
+. Veto stands unless unanimous override by other maintainers
+
+== Maintainer Management
+
+=== Becoming a Maintainer
+
+*Criteria*:
+
+* Sustained contributions over 12+ months
+* Deep understanding of project goals and architecture
+* Demonstrated leadership and mentorship
+* Community trust and respect
+* Alignment with project values
+* Technical expertise in specification methodology
+
+*Process*:
+
+. Nomination by existing maintainer (or self-nomination)
+. Discussion among maintainers
+. Background review: Contribution history, community interactions
+. Consensus decision (unanimous approval)
+. Invitation and onboarding
+. Public announcement
+. Update link:MAINTAINERS.md[]
+
+*Onboarding Includes*:
+
+* Commit access
+* Maintainer communication channels
+* Governance documentation
+* Mentorship from experienced maintainer
+* Introduction to community
+
+=== Maintainer Inactivity
+
+*Definition*: No activity for 6 months without notice
+
+*Process*:
+
+. Private check-in (life circumstances, burnout, etc.)
+. Offer transition to "maintainer emeritus" status
+. If no response after 30 days, move to emeritus
+. Remove commit access (can be restored)
+. Update link:MAINTAINERS.md[]
+
+*Return*: Former maintainers can return anytime with simple request
+
+=== Maintainer Removal
+
+*Grounds*:
+
+* Code of Conduct violations
+* Breach of trust
+* Abandonment without communication
+* Consistent failure to fulfill responsibilities
+
+*Process*:
+
+. Private discussion among other maintainers
+. Attempt to resolve concerns with affected maintainer
+. If unresolved: Unanimous consensus decision by other maintainers
+. Communication to removed maintainer
+. Public announcement (with appropriate privacy)
+. Access revocation
+. Update link:MAINTAINERS.md[]
+
+*Appeal*: Removed maintainer may appeal to community ombudsperson (if appointed)
+
+=== Maintainer Emeritus
+
+*Status*: Former maintainers who stepped down in good standing
+
+*Recognition*:
+
+* Listed in link:MAINTAINERS.md[]
+* May be consulted on important decisions
+* Credited in project history
+* Can return to active status
+
+*No*: Commit access, voting rights (advisory only)
+
+== Financial Governance
+
+_(Future - when project receives funding)_
+
+=== Principles
+
+* *Transparency*: All income and expenses public
+* *Community Benefit*: Funds serve project and community
+* *Contributor Support*: Compensate contributors when possible
+* *Sustainability*: Long-term financial health
+
+=== Fund Management
+
+. Collective decision-making (Open Collective or similar)
+. Transparent budgeting
+. Regular financial reports
+. Community input on major expenditures
+
+=== Compensation
+
+* Maintainers may receive stipends (if funded)
+* Contributors compensated for significant work (if funded)
+* Bounties for specific tasks (if funded)
+* Travel support for conferences (if funded)
+
+== Conflict Resolution
+
+=== Informal Resolution
+
+. Direct communication between parties
+. Mediation by trusted community member
+. Focus on understanding and repair
+
+=== Formal Resolution
+
+. Report to maintainers via conduct@[project-domain]
+. Investigation following link:CODE_OF_CONDUCT.adoc[]
+. Decision by uninvolved maintainers
+. Enforcement actions if needed
+. Appeal process available
+
+=== Governance Conflicts
+
+. Discussion in maintainer forum
+. Community input if appropriate
+. Consensus-seeking facilitation
+. Vote if consensus fails
+. Document decision and rationale
+
+== Amendment Process
+
+This governance document may be amended:
+
+*Process*:
+
+. Proposal via issue or pull request
+. Community feedback (minimum 30 days)
+. Maintainer discussion
+. Unanimous maintainer approval
+. Update this document
+. Announce changes
+
+*Minor Changes* (typos, clarifications): Single maintainer approval
+
+== Succession Planning
+
+To ensure project continuity:
+
+*Maintainer Diversity*:
+
+* Multiple active maintainers (target: 3-5)
+* Geographic and timezone diversity
+* Diverse expertise and backgrounds
+
+*Knowledge Transfer*:
+
+* Comprehensive documentation
+* Maintainer mentorship program
+* Regular governance reviews
+
+*Bus Factor Mitigation*:
+
+* No single point of failure
+* Clear succession process
+* Maintainer emeritus can step back in
+* Community can fork if needed (FOSS guarantee)
+
+== Transparency Commitments
+
+=== Public Records
+
+* All governance decisions documented
+* Maintainer meeting notes published (sensitive items redacted)
+* Financial records public (when applicable)
+* Contributor statistics visible
+
+=== Private Discussions
+
+Limited to:
+
+* Security vulnerabilities (coordinated disclosure)
+* Code of Conduct violations (privacy protection)
+* Personal conflicts (before formal process)
+* Maintainer nominations (until decided)
+
+*Default*: Public unless explicit reason for privacy
+
+== Accountability (MAA)
+
+=== Mutually Assured Accountability
+
+The project embeds MAA (Mutually Assured Accountability) principles:
+
+*RMR* (Reputation, Merit, Rights):
+
+* Reputation earned through contributions
+* Merit determines influence
+* Rights expand with responsibility
+
+*RMO* (Responsibility, Monitoring, Obligations):
+
+* Clear responsibilities for each role
+* Transparent monitoring of performance
+* Obligations to community and project
+
+=== Accountability Mechanisms
+
+* Public contribution history (Git)
+* Decision documentation (issues, PRs)
+* Community feedback channels
+* Annual governance review
+* Code of Conduct enforcement
+
+== Review and Evolution
+
+*Frequency*:
+
+* Quarterly: Maintainer governance check-in
+* Annual: Full governance review
+* As needed: Emergency governance changes
+
+*Process*:
+
+. Collect feedback from community
+. Maintainer discussion
+. Propose changes if needed
+. Follow amendment process
+
+== Contact
+
+For governance questions:
+
+* Open issue with `governance` label
+* Email maintainers (see link:MAINTAINERS.md[])
+* Request addition to governance discussions
+
+---
+
+*Version*: 1.0.0 +
+*Effective Date*: 2025-11-22 +
+*Last Amended*: 2025-11-22 +
+*Next Review*: 2026-02-22 (3 months)

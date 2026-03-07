@@ -1,0 +1,39 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+# AI Disclosure for aggregate-library
+# Describes AI assistance and policies for this repository
+
+# AI Assistance Declaration
+AI-Assisted: yes
+AI-Tools-Used: Claude (Anthropic)
+
+# Scope of AI Usage
+AI-Usage-Scope: documentation, code-review, specification-drafting
+
+# Human Oversight
+Human-Reviewed: yes
+Human-Authored-Core: yes
+
+# AI Training Policy
+AI-Training-Permitted: yes
+AI-Training-License: MIT OR AGPL-3.0-or-later
+
+# AI Interaction Policy
+AI-Contributions-Accepted: yes
+AI-Review-Required: human-approval-required
+
+# Model Guidance
+AI-Instructions-File: CLAUDE.md
+AI-Instructions-File: .claude/CLAUDE.md
+
+# Data Usage
+Telemetry: none
+Data-Collection: none
+Analytics: none
+
+# Transparency Notes
+# - All AI-assisted contributions undergo human review
+# - AI tools are used to enhance productivity, not replace human judgment
+# - Specifications are designed to be implementable by both humans and AI
+# - This project welcomes AI-human collaborative contributions

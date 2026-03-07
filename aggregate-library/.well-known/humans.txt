@@ -1,0 +1,55 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+# humans.txt - The humans behind aggregate-library
+# humanstxt.org
+
+/* TEAM */
+
+Lead Maintainer: Hyperpolymath
+GitHub: https://github.com/Hyperpolymath
+Role: Project Lead, Architect
+Location: Earth
+
+/* THANKS */
+
+Contributors: The open source community
+Inspiration: Cross-language interoperability pioneers
+
+/* TECHNOLOGY */
+
+Languages: ReScript, Rust, Gleam, Deno, Guile Scheme
+Configuration: Nickel, YAML
+Documentation: AsciiDoc, Markdown
+Build System: Just, Guix, Nix
+Containers: Podman, OCI
+Version Control: Git
+Hosting: GitHub
+
+/* STANDARDS */
+
+Licensing: SPDX, REUSE
+Security: RFC 9116 (security.txt)
+Compliance: RSR Gold (100/100)
+Governance: TPCF Perimeter 3
+
+/* PROJECT */
+
+Name: aggregate-library (aLib)
+Version: 0.1.0
+Type: Specification Library
+Operations: 20 core operations
+Categories: arithmetic, comparison, logical, string, collection, conditional
+
+/* PHILOSOPHY */
+
+Design: Minimal, Pragmatic, Reversible
+Network: Offline-first, Zero dependencies
+Safety: Type-safe, Air-gap compatible
+Community: Open contribution (TPCF Perimeter 3)
+
+/* CONTACT */
+
+Issues: https://github.com/Hyperpolymath/aggregate-library/issues
+Discussions: https://github.com/Hyperpolymath/aggregate-library/discussions
+Security: https://github.com/Hyperpolymath/aggregate-library/security

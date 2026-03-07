@@ -1,0 +1,87 @@
+/** aggregate-library/src/Interop/RawFunction.mres *
+   Type-safe wrapper for raw JS functions in ReScript/Melange externals.
+   Uses runtime validation (dev-only) to ensure type safety. */
+
+module type RawFunction = {
+  /** A raw JS function with input type 'b and output type 'a. */
+  type t<'a, 'b>;
+
+  /**
+   * Create a type-safe raw function.
+   *
+   * - `js`: The raw JS code to inline (as a string).
+   * - `validate`: A function to validate the JS output at runtime (dev-only).
+   * - `name`: Name for debugging/errors.
+   */
+  let make: (
+    ~js: string,
+    ~validate: ('b => option<'a>),
+    ~name: string
+  ) => t<'a, 'b>;
+
+  /** Call the raw function. Validates output in dev mode. */
+  let call: (t<'a, 'b>, 'b) => 'a;
+
+  /** Example: Type-safe Object.assign. */
+  module Example: {
+    @val external unsafeMerge: (
+      ~target: {'a},
+      ~sources: array<{'a}>
+    ) => {'a} = "Object.assign";
+
+    let safeMerge: t<{'a}, (~target: {'a}, ~sources: array<{'a}>)> =
+      make(
+        ~js: "(target, sources) => Object.assign(target, ...sources)",
+        ~validate: (result, _) => Some(result), // Simplified; replace with Proven in practice
+        ~name: "Object.assign"
+      );
+  };
+};
+
+// Implementation
+module RawFunction = {
+  type t<'a, 'b> = (~env: unit => 'b => 'a, string, ('b => option<'a>));
+
+  let make = (~js, ~validate, ~name) => (js, name, validate);
+
+  let call = (fn, arg) => {
+    #if dev
+    let (jsRef, name, validate) = fn;
+    let result = jsRef(~env=(), arg);
+    switch validate(result, arg) {
+    | Some(validated) => validated
+    | None =>
+      Js.Exn.raiseError(
+        "RawFunction validation failed for " ++ name ++
+        ". Output: " ++ Js.Json.stringifyAny(result)
+      )
+    }
+    #else
+    let (jsRef, _, _) = fn;
+    jsRef(~env=(), arg)
+    #endif
+  };
+
+  // Helper to create externals with raw JS
+  @val external makeExternal: (
+    ~js: string,
+    unit => 'b => 'a
+  ) => (unit => 'b => 'a) = "%identity";
+};
+
+module Example = {
+  // Safe wrapper for Object.assign
+  @val external unsafeMerge: (
+    ~target: {'a},
+    ~sources: array<{'a}>
+  ) => {'a} = "Object.assign";
+
+  let safeMerge = RawFunction.make(
+    ~js: "(target, sources) => Object.assign(target, ...sources)",
+    ~validate: (result, _) => Some(result), // TODO: Replace with Proven validation
+    ~name: "Object.assign"
+  );
+
+  // Usage:
+  // let merged = safeMerge->RawFunction.call(~target={"a": 1}, ~sources=[{"b": 2}]);
+};

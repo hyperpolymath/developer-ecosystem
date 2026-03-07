@@ -1,0 +1,281 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
+/** aggregate-library (aLib) - Core module
+ *
+ * Minimal overlap library demonstrating spec-driven, conformance-tested
+ * implementations across diverse systems.
+ *
+ * This module provides the reference ReScript implementation.
+ */
+
+module Arithmetic = {
+  /** add: Number, Number -> Number
+   * Computes the sum of two numbers.
+   *
+   * Properties:
+   * - Commutative: add(a, b) = add(b, a)
+   * - Associative: add(add(a, b), c) = add(a, add(b, c))
+   * - Identity element: add(a, 0) = a
+   */
+  let add = (a: float, b: float): float => a +. b
+
+  /** subtract: Number, Number -> Number
+   * Computes the difference of two numbers (a - b).
+   *
+   * Properties:
+   * - Not commutative: subtract(a, b) ≠ subtract(b, a) (in general)
+   * - Identity element: subtract(a, 0) = a
+   */
+  let subtract = (a: float, b: float): float => a -. b
+
+  /** multiply: Number, Number -> Number
+   * Computes the product of two numbers.
+   *
+   * Properties:
+   * - Commutative: multiply(a, b) = multiply(b, a)
+   * - Associative: multiply(multiply(a, b), c) = multiply(a, multiply(b, c))
+   * - Identity element: multiply(a, 1) = a
+   * - Zero element: multiply(a, 0) = 0
+   */
+  let multiply = (a: float, b: float): float => a *. b
+
+  /** divide: Number, Number -> Number
+   * Computes the quotient of two numbers (a / b).
+   *
+   * Properties:
+   * - Not commutative: divide(a, b) ≠ divide(b, a) (in general)
+   * - Identity element: divide(a, 1) = a
+   *
+   * Edge Cases:
+   * - Division by zero behavior is implementation-defined
+   */
+  let divide = (a: float, b: float): float => a /. b
+
+  /** modulo: Number, Number -> Number
+   * Computes the remainder of dividing a by b.
+   *
+   * Properties:
+   * - For positive integers: 0 ≤ modulo(a, b) < b
+   *
+   * Edge Cases:
+   * - Behavior with negative numbers is implementation-defined
+   * - Modulo by zero behavior is implementation-defined
+   */
+  let modulo = (a: float, b: float): float => mod_float(a, b)
+}
+
+module Comparison = {
+  /** equal: A, A -> Boolean
+   * Tests if two values are equal.
+   *
+   * Properties:
+   * - Reflexive: equal(a, a) = true
+   * - Symmetric: equal(a, b) = equal(b, a)
+   * - Transitive: if equal(a, b) and equal(b, c) then equal(a, c)
+   */
+  let equal = (a: 'a, b: 'a): bool => a == b
+
+  /** notEqual: A, A -> Boolean
+   * Tests if two values are not equal.
+   *
+   * Properties:
+   * - notEqual(a, b) = not(equal(a, b))
+   */
+  let notEqual = (a: 'a, b: 'a): bool => a != b
+
+  /** lessThan: Number, Number -> Boolean
+   * Tests if a is strictly less than b.
+   *
+   * Properties:
+   * - Asymmetric: if lessThan(a, b) then not lessThan(b, a)
+   * - Transitive: if lessThan(a, b) and lessThan(b, c) then lessThan(a, c)
+   */
+  let lessThan = (a: float, b: float): bool => a < b
+
+  /** lessEqual: Number, Number -> Boolean
+   * Tests if a is less than or equal to b.
+   *
+   * Properties:
+   * - Reflexive: lessEqual(a, a) = true
+   * - Transitive: if lessEqual(a, b) and lessEqual(b, c) then lessEqual(a, c)
+   */
+  let lessEqual = (a: float, b: float): bool => a <= b
+
+  /** greaterThan: Number, Number -> Boolean
+   * Tests if a is strictly greater than b.
+   *
+   * Properties:
+   * - greaterThan(a, b) = lessThan(b, a)
+   */
+  let greaterThan = (a: float, b: float): bool => a > b
+
+  /** greaterEqual: Number, Number -> Boolean
+   * Tests if a is greater than or equal to b.
+   *
+   * Properties:
+   * - greaterEqual(a, b) = lessEqual(b, a)
+   */
+  let greaterEqual = (a: float, b: float): bool => a >= b
+}
+
+module Logical = {
+  /** and: Boolean, Boolean -> Boolean
+   * Logical conjunction (AND operation).
+   *
+   * Properties:
+   * - Commutative: and(a, b) = and(b, a)
+   * - Associative: and(and(a, b), c) = and(a, and(b, c))
+   * - Identity element: and(a, true) = a
+   * - Zero element: and(a, false) = false
+   */
+  let and_ = (a: bool, b: bool): bool => a && b
+
+  /** or: Boolean, Boolean -> Boolean
+   * Logical disjunction (OR operation).
+   *
+   * Properties:
+   * - Commutative: or(a, b) = or(b, a)
+   * - Associative: or(or(a, b), c) = or(a, or(b, c))
+   * - Identity element: or(a, false) = a
+   * - Zero element: or(a, true) = true
+   */
+  let or_ = (a: bool, b: bool): bool => a || b
+
+  /** not: Boolean -> Boolean
+   * Logical negation (NOT operation).
+   *
+   * Properties:
+   * - Involution: not(not(a)) = a
+   * - Complement: not(true) = false, not(false) = true
+   */
+  let not_ = (a: bool): bool => !a
+}
+
+module Collection = {
+  /** map: Collection[A], Function[A -> B] -> Collection[B]
+   * Transforms each element of a collection by applying a function.
+   *
+   * Properties:
+   * - Preserves length: length(map(c, fn)) = length(c)
+   * - Preserves order
+   * - Identity: map(c, identity) = c
+   * - Composition: map(map(c, f), g) = map(c, compose(g, f))
+   */
+  let map = (collection: array<'a>, fn: 'a => 'b): array<'b> => {
+    Array.map(collection, fn)
+  }
+
+  /** filter: Collection[A], Function[A -> Boolean] -> Collection[A]
+   * Selects elements from a collection that satisfy a predicate.
+   *
+   * Properties:
+   * - Length: length(filter(c, fn)) ≤ length(c)
+   * - Preserves order
+   * - Empty result: filter([], fn) = []
+   */
+  let filter = (collection: array<'a>, predicate: 'a => bool): array<'a> => {
+    Array.keep(collection, predicate)
+  }
+
+  /** fold: Collection[A], B, Function[B, A -> B] -> B
+   * Reduces a collection to a single value by iteratively applying a function.
+   *
+   * Also known as: reduce, foldl, accumulate
+   *
+   * Properties:
+   * - Empty collection: fold([], initial, fn) = initial
+   * - Single element: fold([x], initial, fn) = fn(initial, x)
+   */
+  let fold = (collection: array<'a>, initial: 'b, fn: ('b, 'a) => 'b): 'b => {
+    Array.reduce(collection, initial, fn)
+  }
+
+  /** contains: Collection[A], A -> Boolean
+   * Tests if a collection contains a specific element.
+   *
+   * Properties:
+   * - Empty collection: contains([], x) = false
+   * - Commutative with respect to element order
+   */
+  let contains = (collection: array<'a>, element: 'a): bool => {
+    Array.some(collection, x => x == element)
+  }
+}
+
+module String = {
+  /** concat: String, String -> String
+   * Concatenates two strings.
+   *
+   * Properties:
+   * - Associative: concat(concat(a, b), c) = concat(a, concat(b, c))
+   * - Identity element: concat(a, "") = a, concat("", a) = a
+   * - Length: length(concat(a, b)) = length(a) + length(b)
+   */
+  let concat = (a: string, b: string): string => a ++ b
+
+  /** length: String -> Number
+   * Returns the number of characters in a string.
+   *
+   * Properties:
+   * - Non-negative: length(s) ≥ 0
+   * - Empty string: length("") = 0
+   */
+  let length = (s: string): int => String.length(s)
+
+  /** substring: String, Number, Number -> String
+   * Extracts a substring from index 'start' to index 'end' (exclusive).
+   *
+   * Parameters:
+   * - s: The source string
+   * - start: Starting index (inclusive)
+   * - end: Ending index (exclusive)
+   *
+   * Properties:
+   * - Length: length(substring(s, start, end)) = max(0, end - start)
+   * - Bounds: 0 ≤ start < end ≤ length(s) (ideal case)
+   *
+   * Edge Cases:
+   * - Out-of-bounds behavior is implementation-defined
+   */
+  let substring = (s: string, start: int, end_: int): string => {
+    let len = min(end_ - start, String.length(s) - start)
+    if len <= 0 {
+      ""
+    } else {
+      String.sub(s, start, len)
+    }
+  }
+}
+
+module Conditional = {
+  /** ifThenElse: Boolean, () -> A, () -> A -> A
+   * Evaluates one of two thunks based on a condition.
+   *
+   * Parameters:
+   * - condition: The boolean condition to test
+   * - thenBranch: Thunk to evaluate if condition is true
+   * - elseBranch: Thunk to evaluate if condition is false
+   *
+   * Properties:
+   * - Only evaluates one branch (lazy evaluation)
+   * - ifThenElse(true, t, e) = t()
+   * - ifThenElse(false, t, e) = e()
+   */
+  let ifThenElse = (condition: bool, thenBranch: unit => 'a, elseBranch: unit => 'a): 'a => {
+    if condition {
+      thenBranch()
+    } else {
+      elseBranch()
+    }
+  }
+}
+
+// Export all modules
+module ALib = {
+  module Arithmetic = Arithmetic
+  module Comparison = Comparison
+  module Logical = Logical
+  module Collection = Collection
+  module String = String
+  module Conditional = Conditional
+}
