@@ -422,11 +422,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@rescript/darwin-arm64@npm:12.2.0":
+  version: 12.2.0
+  resolution: "@rescript/darwin-arm64@npm:12.2.0"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
 "@rescript/darwin-arm64@workspace:packages/@rescript/darwin-arm64":
   version: 0.0.0-use.local
   resolution: "@rescript/darwin-arm64@workspace:packages/@rescript/darwin-arm64"
   languageName: unknown
   linkType: soft
+
+"@rescript/darwin-x64@npm:12.2.0":
+  version: 12.2.0
+  resolution: "@rescript/darwin-x64@npm:12.2.0"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
 
 "@rescript/darwin-x64@workspace:packages/@rescript/darwin-x64":
   version: 0.0.0-use.local
@@ -434,11 +448,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@rescript/linux-arm64@npm:12.2.0":
+  version: 12.2.0
+  resolution: "@rescript/linux-arm64@npm:12.2.0"
+  conditions: os=linux & cpu=arm64
+  languageName: node
+  linkType: hard
+
 "@rescript/linux-arm64@workspace:packages/@rescript/linux-arm64":
   version: 0.0.0-use.local
   resolution: "@rescript/linux-arm64@workspace:packages/@rescript/linux-arm64"
   languageName: unknown
   linkType: soft
+
+"@rescript/linux-x64@npm:12.2.0":
+  version: 12.2.0
+  resolution: "@rescript/linux-x64@npm:12.2.0"
+  conditions: os=linux & cpu=x64
+  languageName: node
+  linkType: hard
 
 "@rescript/linux-x64@workspace:packages/@rescript/linux-x64":
   version: 0.0.0-use.local
@@ -492,13 +520,27 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@rescript/runtime@npm:12.2.0":
+  version: 12.2.0
+  resolution: "@rescript/runtime@npm:12.2.0"
+  checksum: 10c0/59c0194ae52fbbaadc736bbf1cfac1ed6ffde92b2346e36b9f1a29bb136e38b7ef203c780647203912fa657d293eab5c4e208f04dd65ed4bf47d53843980f7e1
+  languageName: node
+  linkType: hard
+
 "@rescript/runtime@workspace:packages/@rescript/runtime":
   version: 0.0.0-use.local
   resolution: "@rescript/runtime@workspace:packages/@rescript/runtime"
   dependencies:
-    rescript: "workspace:^"
+    rescript: "npm:^12.0.0"
   languageName: unknown
   linkType: soft
+
+"@rescript/win32-x64@npm:12.2.0":
+  version: 12.2.0
+  resolution: "@rescript/win32-x64@npm:12.2.0"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
 
 "@rescript/win32-x64@workspace:packages/@rescript/win32-x64":
   version: 0.0.0-use.local
@@ -720,7 +762,7 @@ __metadata:
   resolution: "@tests/analysis@workspace:tests/analysis_tests/tests"
   dependencies:
     "@rescript/react": "link:../../dependencies/rescript-react"
-    rescript: "workspace:^"
+    rescript: "npm:^12.0.0"
   languageName: unknown
   linkType: soft
 
@@ -729,7 +771,7 @@ __metadata:
   resolution: "@tests/docstring-tests@workspace:tests/docstring_tests"
   dependencies:
     "@rescript/react": "link:../dependencies/rescript-react"
-    rescript: "workspace:^"
+    rescript: "npm:^12.0.0"
   languageName: unknown
   linkType: soft
 
@@ -737,7 +779,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tests/generic-jsx-transform@workspace:tests/analysis_tests/tests-generic-jsx-transform"
   dependencies:
-    rescript: "workspace:^"
+    rescript: "npm:^12.0.0"
   languageName: unknown
   linkType: soft
 
@@ -750,7 +792,7 @@ __metadata:
     "@types/react-dom": "npm:^18.3.0"
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
-    rescript: "workspace:^"
+    rescript: "npm:^12.0.0"
     typescript: "npm:5.9.3"
   languageName: unknown
   linkType: soft
@@ -759,7 +801,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tests/gentype-stdlib-no-shims@workspace:tests/gentype_tests/stdlib-no-shims"
   dependencies:
-    rescript: "workspace:^"
+    rescript: "npm:^12.0.0"
     typescript: "npm:5.9.3"
   languageName: unknown
   linkType: soft
@@ -768,7 +810,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tests/incremental-typechecking@workspace:tests/analysis_tests/tests-incremental-typechecking"
   dependencies:
-    rescript: "workspace:^"
+    rescript: "npm:^12.0.0"
   languageName: unknown
   linkType: soft
 
@@ -777,7 +819,7 @@ __metadata:
   resolution: "@tests/reanalyze-benchmark@workspace:tests/analysis_tests/tests-reanalyze/deadcode-benchmark"
   dependencies:
     "@rescript/react": "link:../../../dependencies/rescript-react"
-    rescript: "workspace:^"
+    rescript: "npm:^12.0.0"
   languageName: unknown
   linkType: soft
 
@@ -786,7 +828,7 @@ __metadata:
   resolution: "@tests/reanalyze-deadcode@workspace:tests/analysis_tests/tests-reanalyze/deadcode"
   dependencies:
     "@rescript/react": "link:../../../dependencies/rescript-react"
-    rescript: "workspace:^"
+    rescript: "npm:^12.0.0"
   languageName: unknown
   linkType: soft
 
@@ -794,7 +836,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@tests/reanalyze-termination@workspace:tests/analysis_tests/tests-reanalyze/termination"
   dependencies:
-    rescript: "workspace:^"
+    rescript: "npm:^12.0.0"
   languageName: unknown
   linkType: soft
 
@@ -803,7 +845,7 @@ __metadata:
   resolution: "@tests/tools@workspace:tests/tools_tests"
   dependencies:
     "@rescript/react": "link:../dependencies/rescript-react"
-    rescript: "workspace:^"
+    rescript: "npm:^12.0.0"
   languageName: unknown
   linkType: soft
 
@@ -875,7 +917,7 @@ __metadata:
   resolution: "@utils/scripts@workspace:scripts/res"
   dependencies:
     "@tests/docstring-tests": "workspace:^"
-    rescript: "workspace:^"
+    rescript: "npm:^12.0.0"
   languageName: unknown
   linkType: soft
 
@@ -2363,7 +2405,7 @@ __metadata:
     "@rescript/react": "npm:^0.14.0"
     "@rollup/plugin-node-resolve": "npm:^16.0.0"
     h3: "npm:2.0.1-rc.8"
-    rescript: "workspace:^"
+    rescript: "npm:^12.0.0"
     rollup: "npm:^4.32.0"
   languageName: unknown
   linkType: soft
@@ -2460,7 +2502,38 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rescript@workspace:., rescript@workspace:^":
+"rescript@npm:^12.0.0":
+  version: 12.2.0
+  resolution: "rescript@npm:12.2.0"
+  dependencies:
+    "@rescript/darwin-arm64": "npm:12.2.0"
+    "@rescript/darwin-x64": "npm:12.2.0"
+    "@rescript/linux-arm64": "npm:12.2.0"
+    "@rescript/linux-x64": "npm:12.2.0"
+    "@rescript/runtime": "npm:12.2.0"
+    "@rescript/win32-x64": "npm:12.2.0"
+  dependenciesMeta:
+    "@rescript/darwin-arm64":
+      optional: true
+    "@rescript/darwin-x64":
+      optional: true
+    "@rescript/linux-arm64":
+      optional: true
+    "@rescript/linux-x64":
+      optional: true
+    "@rescript/win32-x64":
+      optional: true
+  bin:
+    bsc: cli/bsc.js
+    bstracing: cli/bstracing.js
+    rescript: cli/rescript.js
+    rescript-legacy: cli/rescript-legacy.js
+    rescript-tools: cli/rescript-tools.js
+  checksum: 10c0/7650a77a66e2f2ba2523eac54fd930f0b70bad922e9b498678e701e842a56c7b6facd0daf1ef9c7b71d344d9483a0293d17db72a67515a22d07856bdfc34fb46
+  languageName: node
+  linkType: hard
+
+"rescript@workspace:.":
   version: 0.0.0-use.local
   resolution: "rescript@workspace:."
   dependencies:
@@ -2491,7 +2564,7 @@ __metadata:
       optional: true
   bin:
     bsc: cli/bsc.js
-    rescript: cli/rescript.js
+    rescript: ^12.0.0
     rescript-tools: cli/rescript-tools.js
   languageName: unknown
   linkType: soft
@@ -2903,15 +2976,15 @@ __metadata:
   linkType: hard
 
 "tar@npm:^7.4.3":
-  version: 7.5.9
-  resolution: "tar@npm:7.5.9"
+  version: 7.5.10
+  resolution: "tar@npm:7.5.10"
   dependencies:
     "@isaacs/fs-minipass": "npm:^4.0.0"
     chownr: "npm:^3.0.0"
     minipass: "npm:^7.1.2"
     minizlib: "npm:^3.1.0"
     yallist: "npm:^5.0.0"
-  checksum: 10c0/e870beb1b2477135ca2abe86b2d18f7b35d0a4e3a37bbc523d3b8f7adca268dfab543f26528a431d569897f8c53a7cac745cdfbc4411c2f89aeeacc652b81b0a
+  checksum: 10c0/ed905e4b33886377df6e9206e5d1bd34458c21666e27943f946799416f86348c938590d573d6a69312cb29c583b122647a64ec92782f2b7e24e68d985dd72531
   languageName: node
   linkType: hard
 
