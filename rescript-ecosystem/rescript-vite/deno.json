@@ -1,0 +1,14 @@
+{
+  "tasks": {
+    "res:build": "deno run -A npm:rescript build",
+    "res:clean": "deno run -A npm:rescript clean",
+    "res:watch": "deno run -A npm:rescript build -w",
+    "test": "deno test --no-check --allow-all tests/"
+  },
+  "nodeModulesDir": "auto",
+  "imports": {
+    "rescript": "npm:rescript@^12.0.0",
+    "@rescript/core": "npm:@rescript/core@^1.6.0",
+    "@rescript/runtime": "npm:@rescript/runtime@^12.0.0"
+  }
+}

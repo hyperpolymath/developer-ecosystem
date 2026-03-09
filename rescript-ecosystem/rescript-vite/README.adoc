@@ -1,154 +1,247 @@
-= RSR template repo - see RSR_OUTLINE.adoc in root for general background and specification
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 
-[TIP]
-====
-**AI-Assisted Install:** Just tell any AI assistant: +
-`Set up {{PROJECT_NAME}} from https://{{FORGE}}/{{OWNER}}/{{REPO}}` +
-The AI reads this repo, asks you a few questions, and handles everything. See <<ai-install,details below>>.
-====
+= rescript-vite
+:toc: macro
+:toclevels: 3
 
-== This is your repo - don't forget to rename me!
+A Vite plugin for first-class ReScript support with HMR, compiler integration,
+error overlay, and optional BoJ (Bundle of Joy) build orchestration via the
+ssg-mcp cartridge.
 
-== ABI/FFI Standards (Hyperpolymath Universal Standard)
+toc::[]
 
-**All repos with foreign function interfaces MUST follow this standard:**
+== What is rescript-vite?
 
-* **ABI (Application Binary Interface)** → **Idris2** (`src/abi/*.idr`)
-** Type definitions with dependent type proofs
-** Memory layout verification
-** Platform-specific ABIs with compile-time selection
-** Formal verification of interface correctness
+rescript-vite integrates the ReScript compiler into Vite's build pipeline.
+It automatically spawns the ReScript compiler in build or watch mode, tracks
+compiled `.res.js` output files for hot module replacement (HMR), and forwards
+compiler diagnostics to Vite's error overlay. When a BoJ server is available,
+it can delegate builds to the ssg-mcp cartridge for caching, telemetry, and
+orchestrated compilation.
 
-* **FFI (Foreign Function Interface)** → **Zig** (`ffi/zig/src/*.zig`)
-** C-compatible function implementations
-** Zero-cost abstractions
-** Memory-safe by default
-** Cross-compilation support
+=== Features
 
-* **Generated C Headers** → Auto-generated from Idris2 ABI (`generated/abi/*.h`)
-** Bridge between Idris2 and Zig
-** Consumed by any language via C ABI
+* *Automatic compiler management* -- spawns `rescript build` (one-shot) or
+  `rescript build -w` (watch mode) depending on whether Vite is in `build`
+  or `serve` mode.
+* *HMR for .res files* -- detects recompiled `.res.js` files and triggers
+  hot module replacement in the browser.
+* *Error overlay integration* -- pushes ReScript compiler errors to Vite's
+  built-in error overlay with file, line, and column info.
+* *Diagnostic parsing* -- parses ReScript compiler output including ANSI
+  escape codes, extracting structured diagnostic objects.
+* *Deno compatible* -- auto-detects the Deno runtime and adjusts compiler
+  invocation accordingly.
+* *BoJ build orchestration* -- optionally delegates builds to a running
+  BoJ ssg-mcp cartridge for incremental builds, caching, and telemetry.
+* *panic-attacker compatible* -- diagnostic format maps cleanly to SARIF-style
+  output used by panic-attacker weak-point scanning.
 
-**Directory Structure:**
-----
-project/
-├── src/abi/          # Idris2 ABI definitions (REQUIRED)
-├── ffi/zig/          # Zig FFI implementation (REQUIRED)
-├── generated/abi/    # Auto-generated C headers
-└── bindings/         # Language-specific wrappers (optional)
-----
+== Installation
 
-**See:** `ABI-FFI-README.md` for complete documentation
-
-== AI Gatekeeper Protocol (MANDATORY)
-
-**CRITICAL:** All repos MUST include an AI manifest.
-
-* **File:** `0-AI-MANIFEST.a2ml` (included in this template)
-* **Purpose:** Universal entry point for ALL AI agents (Claude, Gemini, OpenAI, etc.)
-* **Location:** Repository root (alphabetically first)
-* **Customize:** Update `[YOUR-REPO-NAME]` placeholders and repository structure section
-
-**The manifest declares:**
-
-* Canonical file locations (e.g., "machine-readable files ONLY in `.machine_readable/`")
-* Critical invariants (rules that must NEVER be violated)
-* Repository structure and organization
-* Lifecycle hooks (on-enter, on-exit) for session logging
-
-**Benefits:**
-
-* ✅ Prevents duplicate file errors (e.g., machine-readable files in wrong locations)
-* ✅ Context preserved across sessions and AI platforms
-* ✅ No repeated explanations - mechanical enforcement
-* ✅ Works universally (not just Claude)
-
-**See:** link:https://github.com/{{OWNER}}/0-ai-gatekeeper-protocol[AI Gatekeeper Protocol] for details
-
-**Enforcement:**
-
-* MCP server (mcp-repo-guardian) - Hard enforcement for Claude
-* FUSE wrapper (repo-guardian-fs) - Universal enforcement (coming soon)
-* CI/CD validation - Continuous compliance checking
-
-== TOPOLOGY.md (Architecture Map)
-
-Every repo should include a `TOPOLOGY.md` in its root — an ASCII architecture diagram combined with a completion dashboard. This gives any contributor (human or AI) an instant picture of the whole project.
-
-* **Template:** `TOPOLOGY.md` (included in this template)
-* **Guide:** `docs/TOPOLOGY-GUIDE.adoc` (includes AI prompt for generation, conventions, batch rollout)
-* **Sections:** System Architecture (ASCII diagram), Completion Dashboard (progress bars), Key Dependencies (critical path)
-
-See `docs/TOPOLOGY-GUIDE.adoc` for how to generate bespoke TOPOLOGY.md files for existing repos using an AI agent.
-
-== AI CLI standards
-
-- **FIRST:** Customize `0-AI-MANIFEST.a2ml` for your repo before any other work
-- All machine-readable content lives in `.machine_readable/` — state files (`*.a2ml`), `anchors/`, `bot_directives/`, `contractiles/`, and `ai/`.
-- Include `.machine_readable/` structure from this template in new repos.
-
-== Directory Structure Policy (Owner Override)
-
-The owner policy for this template family is:
-
-* Keep only essential entry-point files in root.
-* Put licensing materials in `licensing/` (retain root `LICENSE` for forge/license detection).
-* Put documentation under `docs/` with explicit tracks:
-** `docs/theory/`
-** `docs/practice/`
-** `docs/whitepapers/academic/`
-** `docs/whitepapers/industry/`
-* Keep test fixtures/outputs under `tests/`.
-* Keep AI-agent guidance in `.machine_readable/ai/`.
-* Prefer `Containerfile` (not `Dockerfile`) for container builds.
-
-== Maintenance Gate (Release)
-
-This template includes a maintenance workflow that is intended to be a release gate.
-
-- Scripted audit: `scripts/maintenance/run-maintenance.sh`
-- Permission lock/restore helper: `scripts/maintenance/perms-state.sh`
-- Checklist: `docs/maintenance/MAINTENANCE-CHECKLIST.md`
-
-Recommended release flow:
+=== Using Deno
 
 [source,bash]
 ----
-just maint-audit
-just maint-hard-pass
+deno add npm:rescript-vite
 ----
 
-Permission policy is audit-first by default. Use `just perms-lock` only when intentionally hardening local modes, and `just perms-restore` to restore your previous local permission state.
+=== Using npm (where Deno is not available)
 
-[[ai-install]]
-== AI-Assisted Installation
-
-**You don't need to read this README to get started.** Just say this to any AI:
-
-[source,text]
+[source,bash]
 ----
-Set up {{PROJECT_NAME}} from https://{{FORGE}}/{{OWNER}}/{{REPO}}
+npm install rescript-vite
 ----
 
-The URL is the spec. The AI fetches this repo, reads `docs/AI_INSTALLATION_GUIDE.adoc`, and handles everything -- prerequisites, build, config, verification. You answer a few questions and confirm the privacy notice. No commands, no installers, no forms.
+=== Peer dependencies
 
-If the AI already knows this project, shorter prompts work too. If it doesn't, the URL gives it everything.
+rescript-vite expects these as peer dependencies:
 
-**For developers:** Fill in `docs/AI_INSTALLATION_GUIDE.adoc` with your project-specific install recipe. Paste the highlight box from `docs/AI-INSTALL-README-SECTION.adoc` into your README. Run `just validate-ai-install` to check completeness. finishbot verifies this pre-release.
+* `rescript` ^12.0.0
+* `@rescript/core` ^1.0.0
+* `vite` ^6.0.0
 
-The normal installation instructions remain below for anyone who prefers to do things manually.
+== Usage
 
-== Standard Dependencies (Optional)
+=== Basic setup
 
-Add your project's standard dependencies here. Remove or customize this section
-for your ecosystem.
+[source,javascript]
+----
+// vite.config.js
+import rescriptPlugin from "rescript-vite";
 
-// Example:
-// [cols="1,2,1"]
-// |===
-// |Library |Purpose |Status
-//
-// |your-library
-// |Description
-// |Required / Recommended / Optional
-// |===
+export default {
+  plugins: [rescriptPlugin()],
+};
+----
+
+=== With options
+
+[source,javascript]
+----
+// vite.config.js
+import { make } from "rescript-vite";
+
+export default {
+  plugins: [
+    make({
+      useDeno: true,
+      logLevel: "verbose",
+      compilerFlags: ["-warn-error", "+a"],
+    }),
+  ],
+};
+----
+
+=== With BoJ build orchestration
+
+[source,javascript]
+----
+// vite.config.js
+import { make } from "rescript-vite";
+
+export default {
+  plugins: [
+    make({
+      boj: true,
+      bojEndpoint: "http://localhost:7077/mcp/ssg",
+      logLevel: "info",
+    }),
+  ],
+};
+----
+
+When `boj: true` is set, the plugin probes the BoJ ssg-mcp endpoint at
+build start. If the server is reachable, production builds are delegated to
+it. If unreachable, the plugin falls back to direct compiler invocation.
+
+== API Reference
+
+=== `make(options?)`
+
+Creates a Vite plugin instance. Returns a standard Vite plugin object with
+`name: "rescript-vite"` and `enforce: "pre"`.
+
+==== Options
+
+[cols="1,1,2,1"]
+|===
+|Option |Type |Description |Default
+
+|`boj`
+|`boolean`
+|Enable BoJ ssg-mcp build orchestration. The plugin probes the endpoint
+ at build start and falls back to direct compilation if unavailable.
+|`false`
+
+|`bojEndpoint`
+|`string`
+|URL of the BoJ ssg-mcp cartridge endpoint.
+|`http://localhost:7077/mcp/ssg`
+
+|`useDeno`
+|`boolean`
+|Use Deno to run the ReScript compiler (`deno run -A npm:rescript`).
+|Auto-detected
+
+|`rescriptBin`
+|`string`
+|Path to the rescript binary. When set, the plugin invokes this binary
+ directly instead of using `npx`.
+|`undefined` (uses `npx`)
+
+|`compilerFlags`
+|`string[]`
+|Extra flags passed to the ReScript compiler.
+|`[]`
+
+|`logLevel`
+|`"silent" \| "info" \| "verbose"`
+|Controls console output verbosity.
+|`"info"`
+|===
+
+=== Default export
+
+The module's default export is a plugin instance created with default options:
+
+[source,javascript]
+----
+import rescriptPlugin from "rescript-vite";
+// Equivalent to: make()
+----
+
+=== `rescript-vite/boj` (BojBridge)
+
+The BoJ bridge is available as a separate export for direct use:
+
+[source,javascript]
+----
+import { make, probe, requestBuild, recentEvents, disconnect } from "rescript-vite/boj";
+
+const bridge = make("http://localhost:7077/mcp/ssg");
+const connected = await probe(bridge);
+----
+
+==== BojBridge API
+
+* `make(endpoint?)` -- Create a bridge instance (disconnected by default).
+* `probe(bridge)` -- Attempt to connect; returns `true` on success.
+* `isConnected(bridge)` -- Check connection state.
+* `requestBuild(bridge, request)` -- Send a build request via JSON-RPC.
+* `recentEvents(bridge, limit?)` -- Get recent telemetry events (default limit: 20).
+* `disconnect(bridge)` -- Disconnect the bridge.
+
+== BoJ Integration
+
+The plugin integrates with the *BoJ (Bundle of Joy)* server's `ssg-mcp`
+cartridge. BoJ is a multi-cartridge build orchestration system; the ssg-mcp
+cartridge handles static site generation and ReScript compilation with:
+
+* *Build caching* -- avoids redundant recompilation when source files
+  have not changed.
+* *Telemetry* -- records build events (duration, file count, cache hit rate,
+  diagnostic count) for monitoring and analysis.
+* *MCP protocol* -- communicates via JSON-RPC 2.0 over HTTP, calling the
+  `tools/call` method with the `ssg_build` tool name.
+
+When `boj: true` is set:
+
+1. On `buildStart`, the plugin probes `{bojEndpoint}/health`.
+2. If healthy, production builds are sent as `ssg_build` requests.
+3. If the BoJ request fails, the plugin falls back to direct `rescript build`.
+4. Telemetry events are recorded in the bridge for later inspection.
+
+== Development
+
+=== Build
+
+[source,bash]
+----
+deno task res:build
+----
+
+=== Test
+
+[source,bash]
+----
+deno task test
+----
+
+=== Benchmarks
+
+[source,bash]
+----
+deno bench --no-check --allow-all tests/bench_test.js
+----
+
+== License
+
+PMPL-1.0-or-later (Palimpsest License).
+
+See link:LICENSE[LICENSE] for the full text.
+
+== Author
+
+Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>

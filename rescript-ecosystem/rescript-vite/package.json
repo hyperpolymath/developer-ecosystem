@@ -1,0 +1,19 @@
+{
+  "name": "rescript-vite",
+  "version": "0.1.0",
+  "description": "Vite plugin for ReScript — first-class .res support with HMR, compiler integration, and optional BoJ build orchestration",
+  "main": "src/VitePluginRescript.res.js",
+  "type": "module",
+  "exports": {
+    ".": "./src/VitePluginRescript.res.js",
+    "./boj": "./src/BojBridge.res.js"
+  },
+  "author": "Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>",
+  "license": "SEE LICENSE IN LICENSE",
+  "peerDependencies": {
+    "rescript": "^12.0.0",
+    "@rescript/core": "^1.0.0",
+    "vite": "^6.0.0"
+  },
+  "keywords": ["rescript", "vite", "vite-plugin", "hmr", "boj", "build-tool"]
+}
