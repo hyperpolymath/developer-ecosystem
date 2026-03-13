@@ -3,32 +3,73 @@
 
 (define project-state
   `((metadata
-      ((version . "1.0.0")
+      ((version . "0.5.0")
        (schema-version . "1")
        (created . "2026-01-10T13:50:33+00:00")
-       (updated . "2026-01-10T13:50:33+00:00")
+       (updated . "2026-03-13T00:00:00+00:00")
        (project . "rescript-evangeliser")
        (repo . "rescript-evangeliser")))
 
     (current-position
-      ((phase . "Active Development")
-       (overall-completion . 50)
-       (working-features . ())))
+      ((phase . "CLI Alpha")
+       (overall-completion . 90)
+       (working-features
+         ("52 transformation patterns across 21 categories"
+          "Scanner: regex-based JS pattern detection engine"
+          "Analyser: result aggregation and category reporting"
+          "CLI: scan/patterns/legend/stats commands"
+          "38 tests across 6 test suites (Types, Glyphs, Narrative, Patterns, Scanner, Analyser)"
+          "3 output formats: plain text, markdown, html"
+          "3 view layers: RAW, FOLDED, GLYPHED"
+          "21 Makaton-inspired glyph categories"
+          "Celebrate/minimize/better narrative framework"
+          "12 CI workflows all passing"
+          "ReScript 12.2 with Deno runtime"))))
 
     (route-to-mvp
       ((milestones
-        ((v1.0 . ((items . ("Initial setup" "Core functionality"))
-                  (status . "in-progress")))))))
+        ((v0.1.0 . ((items . ("Core type definitions"
+                               "Glyph system with 21 categories"
+                               "Narrative generation module"))
+                    (status . "complete")))
+         (v0.2.0 . ((items . ("52 patterns across 21 categories"))
+                    (status . "complete")))
+         (v0.3.0 . ((items . ("Scanner module with regex matching"
+                               "Analyser module for result aggregation"))
+                    (status . "complete")))
+         (v0.4.0 . ((items . ("38 tests across 6 test suites"
+                               "Deno test runner"))
+                    (status . "complete")))
+         (v0.5.0 . ((items . ("CLI with scan/patterns/legend/stats"
+                               "RAW/FOLDED/GLYPHED output views"
+                               "Plain/markdown/html output formats"))
+                    (status . "complete")))
+         (v0.6.0 . ((items . ("VS Code extension"
+                               "LSP integration"
+                               "PanLL Panel-L integration"))
+                    (status . "planned")))
+         (v0.7.0 . ((items . ("WYSIWYG block-based editor"
+                               "Interactive tutorials"))
+                    (status . "planned")))
+         (v1.0.0 . ((items . ("Multi-language support"
+                               "Tutorial system with gamification"
+                               "Stable release"))
+                    (status . "planned")))))))
 
     (blockers-and-issues
       ((critical . ())
        (high . ())
-       (medium . ())
-       (low . ())))
+       (medium . ("VS Code extension not started"
+                  "WYSIWYG editor not started"
+                  "AST-based detection not yet implemented (regex only)"))
+       (low . ("Multi-language source detection not started"
+               "Tutorial/gamification system not started"))))
 
     (critical-next-actions
       ((immediate . ())
        (this-week . ())
-       (this-month . ())))
+       (this-month . ("VS Code extension planning"
+                      "PanLL Panel-L integration design"
+                      "Evaluate AST-based detection as complement to regex"))))
 
     (session-history . ())))

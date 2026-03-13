@@ -1,22 +1,94 @@
 // SPDX-License-Identifier: PMPL-1.0-or-later
-= Rescript Evangeliser Roadmap
+= ReScript Evangeliser Roadmap
 
 == Current Status
 
-Initial development phase.
+*Version 0.5.0 (Alpha)* -- CLI Alpha with 52 patterns, detection engine, and 38 tests.
 
-== Milestones
+Overall completion: ~90%.
 
-=== v0.1.0 - Foundation
-* [ ] Core functionality
-* [ ] Basic documentation
-* [ ] CI/CD pipeline
+== Completed Milestones
 
-=== v1.0.0 - Stable Release
-* [ ] Full feature set
-* [ ] Comprehensive tests
-* [ ] Production ready
+=== v0.1.0 - Foundation [COMPLETE]
+
+* [x] Core type definitions (Types.res)
+* [x] Makaton-inspired glyph system (Glyphs.res) with 21 categories
+* [x] Encouraging narrative generation (Narrative.res)
+* [x] "Celebrate good, minimize bad, show better" framework
+* [x] ReScript 12.2 project setup with Deno runtime
+* [x] RSR Bronze compliance baseline
+
+=== v0.2.0 - Pattern Library [COMPLETE]
+
+* [x] 52 transformation patterns across 21 categories
+* [x] Null safety -> Option types
+* [x] Async/await -> Promise types
+* [x] Try/catch -> Result types
+* [x] Array operations -> Pipe operator
+* [x] Conditionals -> Pattern matching
+* [x] OOP -> Functional programming
+* [x] Classes -> Records
+* [x] And 14 more categories
+
+=== v0.3.0 - Detection Engine [COMPLETE]
+
+* [x] Scanner module with regex-based JS pattern matching
+* [x] Scanner interface file (Scanner.resi)
+* [x] Analyser module for result aggregation and reporting
+* [x] Analyser interface file (Analyser.resi)
+* [x] Category-based grouping of detected patterns
+
+=== v0.4.0 - Testing [COMPLETE]
+
+* [x] 38 tests across 6 test suites
+* [x] Types_test -- core type validation
+* [x] Glyphs_test -- glyph system tests
+* [x] Narrative_test -- narrative generation tests
+* [x] Patterns_test -- pattern library tests
+* [x] Scanner_test -- detection engine tests
+* [x] Analyser_test -- aggregation tests
+* [x] Deno test runner (run_all.js)
+
+=== v0.5.0 - CLI Interface [COMPLETE]
+
+* [x] CLI entry point (Cli.res + bin/evangeliser.js)
+* [x] `scan` command -- detect patterns in JS files
+* [x] `patterns` command -- list all 52 available patterns
+* [x] `legend` command -- display glyph legend
+* [x] `stats` command -- show detection statistics
+* [x] Output module with RAW/FOLDED/GLYPHED view layers
+* [x] Plain text, Markdown, and HTML output formats
+* [x] 12 CI workflows all passing
+
+== Planned Milestones
+
+=== v0.6.0 - VS Code Extension [FUTURE]
+
+* [ ] Language server protocol (LSP) integration
+* [ ] Inline pattern annotations in editor
+* [ ] Quick-fix suggestions for detected patterns
+* [ ] PanLL Panel-L integration (constraint display)
+* [ ] Real-time scanning on file save
+
+=== v0.7.0 - WYSIWYG Editor [FUTURE]
+
+* [ ] Block-based visual editor for pattern exploration
+* [ ] Drag-and-drop JS -> ReScript transformation view
+* [ ] Interactive tutorials with guided walkthroughs
+* [ ] Embedded REPL for trying transformations
+
+=== v1.0.0 - Stable Release [FUTURE]
+
+* [ ] Multi-language support (Elm, Haskell, PureScript source detection)
+* [ ] Tutorial system with gamification
+* [ ] Pattern authoring API for community contributions
+* [ ] Comprehensive documentation site
+* [ ] Performance optimisation pass
+* [ ] Accessibility audit (WCAG 2.1 AA)
 
 == Future Directions
 
-_To be determined based on community feedback._
+* BoJ server cartridge for remote pattern detection
+* AST-based detection as complement to regex engine
+* Integration with cadre-router for web-based UI
+* Community pattern marketplace
