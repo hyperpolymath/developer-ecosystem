@@ -1201,6 +1201,424 @@ switch response {
   ~bestPractices=["Use inline records for variant data"],
 )
 
+// ADDITIONAL MODULE PATTERNS
+let importToOpen = makePattern(
+  ~id="import-to-open",
+  ~name="Import to Open",
+  ~category=Modules,
+  ~difficulty=Beginner,
+  ~jsPattern=`import\\s*\\{[^}]+\\}\\s*from`,
+  ~confidence=0.85,
+  ~jsExample=`import { map, filter, reduce } from './utils';
+import { useState, useEffect } from 'react';`,
+  ~rescriptExample=`// Just use the module name directly - no imports needed!
+// Utils.map, Utils.filter, Utils.reduce
+
+// Or open the module to use unqualified names:
+open Utils
+map(data, fn)`,
+  ~narrative={
+    celebrate: "Good! Named imports keep your namespace clean!",
+    minimize: "Import lists can get long and need updating when APIs change...",
+    better: "ReScript modules are always available - no imports needed!",
+    safety: "The compiler resolves module references automatically - no stale imports.",
+    example: "No import statements, no circular dependency headaches!",
+  },
+  ~tags=["import", "module", "open"],
+  ~relatedPatterns=["namespace-to-module"],
+  ~learningObjectives=["Module auto-resolution", "open keyword"],
+  ~commonMistakes=["Overusing open (namespace pollution)"],
+  ~bestPractices=["Prefer qualified access, use open sparingly"],
+)
+
+// ADDITIONAL OOP TO FP PATTERNS
+let thisToModule = makePattern(
+  ~id="this-to-module",
+  ~name="This Binding to Module",
+  ~category=OopToFp,
+  ~difficulty=Intermediate,
+  ~jsPattern=`this\\.\\w+`,
+  ~confidence=0.5,
+  ~jsExample=`class Counter {
+  constructor() { this.count = 0; }
+  increment() { this.count++; return this; }
+  getCount() { return this.count; }
+}`,
+  ~rescriptExample=`type counter = {count: int}
+
+let make = () => {count: 0}
+let increment = c => {count: c.count + 1}
+let getCount = c => c.count
+
+// Usage: make()->increment->increment->getCount`,
+  ~narrative={
+    celebrate: "You understand method chaining with 'this' - fluent interface!",
+    minimize: "'this' binding is one of JavaScript's most confusing features...",
+    better: "ReScript passes data explicitly - no 'this', no binding confusion!",
+    safety: "Explicit data flow means no lost 'this' context in callbacks.",
+    example: "Pipe operator replaces method chaining without 'this'!",
+  },
+  ~tags=["this", "binding", "oop", "module"],
+  ~relatedPatterns=["class-method-to-function", "chain-to-pipe"],
+  ~learningObjectives=["Eliminating this", "Explicit data passing"],
+  ~commonMistakes=["Looking for 'this' in ReScript"],
+  ~bestPractices=["Pass state as first argument, use pipe for chaining"],
+)
+
+// ADDITIONAL CLASSES TO RECORDS PATTERNS
+let getterToField = makePattern(
+  ~id="getter-to-field",
+  ~name="Getter/Setter to Record Field",
+  ~category=ClassesToRecords,
+  ~difficulty=Beginner,
+  ~jsPattern=`get\\s+\\w+\\s*\\(\\)|set\\s+\\w+\\s*\\(`,
+  ~confidence=0.8,
+  ~jsExample=`class Person {
+  #name;
+  get name() { return this.#name; }
+  set name(value) { this.#name = value; }
+}`,
+  ~rescriptExample=`type person = {name: string}
+
+// Read: just access the field
+let getName = p => p.name
+
+// "Update": create a new record
+let setName = (p, name) => {...p, name}`,
+  ~narrative={
+    celebrate: "Encapsulation with getters/setters - you're protecting your data!",
+    minimize: "Getters and setters add boilerplate for what's essentially field access...",
+    better: "ReScript records have direct field access and immutable updates!",
+    safety: "Record fields are typed - no need for validation in getters/setters.",
+    example: "Direct field access + immutable updates = simpler code!",
+  },
+  ~tags=["getter", "setter", "record", "field"],
+  ~relatedPatterns=["class-to-record"],
+  ~learningObjectives=["Record field access", "Immutable record update"],
+  ~commonMistakes=["Trying to mutate record fields"],
+  ~bestPractices=["Use record update syntax for changes"],
+)
+
+// ADDITIONAL INHERITANCE TO COMPOSITION PATTERNS
+let mixinToModule = makePattern(
+  ~id="mixin-to-module",
+  ~name="Mixin to Module Include",
+  ~category=InheritanceToComposition,
+  ~difficulty=Advanced,
+  ~jsPattern=`Object\\.assign\\s*\\(|\\.\\.\\.[^,]+prototype`,
+  ~confidence=0.6,
+  ~jsExample=`const Serializable = {
+  serialize() { return JSON.stringify(this); }
+};
+const Loggable = {
+  log() { console.log(this.toString()); }
+};
+Object.assign(MyClass.prototype, Serializable, Loggable);`,
+  ~rescriptExample=`// Serializable.res
+let serialize = data => data->JSON.stringifyAny
+
+// Loggable.res
+let log = data => Console.log(data)
+
+// Usage: compose by calling module functions
+Serializable.serialize(myData)
+Loggable.log(myData)`,
+  ~narrative={
+    celebrate: "Mixins! You're composing behaviour from multiple sources!",
+    minimize: "Runtime mixins can conflict and have no compile-time checks...",
+    better: "ReScript modules compose statically - just call functions from different modules!",
+    safety: "No runtime prototype manipulation, no method name conflicts.",
+    example: "Module composition: explicit, type-safe, no surprises!",
+  },
+  ~tags=["mixin", "composition", "module", "prototype"],
+  ~relatedPatterns=["inheritance-to-composition", "namespace-to-module"],
+  ~learningObjectives=["Module composition", "Avoiding mixins"],
+  ~commonMistakes=["Trying to merge modules at runtime"],
+  ~bestPractices=["Compose by calling functions from multiple modules"],
+)
+
+// ADDITIONAL STATE MACHINE PATTERNS
+let reducerToVariant = makePattern(
+  ~id="reducer-to-variant",
+  ~name="Reducer to Variant Actions",
+  ~category=StateMachines,
+  ~difficulty=Intermediate,
+  ~jsPattern=`(?:case|action\\.type\\s*===?)\\s*['\"]\\w+['\"]`,
+  ~confidence=0.65,
+  ~jsExample=`function reducer(state, action) {
+  switch (action.type) {
+    case 'ADD_TODO': return {...state, todos: [...state.todos, action.payload]};
+    case 'REMOVE_TODO': return {...state, todos: state.todos.filter(t => t.id !== action.id)};
+    case 'TOGGLE_TODO': return {...state, todos: state.todos.map(t =>
+      t.id === action.id ? {...t, done: !t.done} : t)};
+    default: return state;
+  }
+}`,
+  ~rescriptExample=`type action =
+  | AddTodo(todo)
+  | RemoveTodo(int)
+  | ToggleTodo(int)
+
+let reducer = (state, action) =>
+  switch action {
+  | AddTodo(todo) => {...state, todos: state.todos->Array.concat([todo])}
+  | RemoveTodo(id) => {...state, todos: state.todos->Array.filter(t => t.id != id)}
+  | ToggleTodo(id) => {...state, todos: state.todos->Array.map(t =>
+      t.id == id ? {...t, done: !t.done} : t)}
+  }`,
+  ~narrative={
+    celebrate: "Redux-style reducer! You understand unidirectional data flow!",
+    minimize: "String action types are easy to typo and payloads aren't type-checked...",
+    better: "ReScript variant actions carry typed payloads - no string matching!",
+    safety: "Add a new action and the compiler shows every reducer that needs updating.",
+    example: "Variant-based reducers: the pattern Redux wishes it had!",
+  },
+  ~tags=["reducer", "state-machine", "variant", "action"],
+  ~relatedPatterns=["state-machine", "switch-to-match"],
+  ~learningObjectives=["Variant-based actions", "Type-safe reducers"],
+  ~commonMistakes=["Using strings for action types"],
+  ~bestPractices=["Model every action as a variant with typed payload"],
+)
+
+// ADDITIONAL VARIANT PATTERNS
+let typeGuardToVariant = makePattern(
+  ~id="type-guard-to-variant",
+  ~name="Type Guard to Variant",
+  ~category=Variants,
+  ~difficulty=Advanced,
+  ~jsPattern=`(?:typeof|instanceof)\\s+\\w+\\s*===?`,
+  ~confidence=0.6,
+  ~jsExample=`function formatValue(value) {
+  if (typeof value === 'string') return value.toUpperCase();
+  if (typeof value === 'number') return value.toFixed(2);
+  if (Array.isArray(value)) return value.join(', ');
+  return String(value);
+}`,
+  ~rescriptExample=`type value = String(string) | Number(float) | List(array<string>)
+
+let formatValue = v =>
+  switch v {
+  | String(s) => String.toUpperCase(s)
+  | Number(n) => Float.toFixed(n, ~digits=2)
+  | List(items) => items->Array.join(", ")
+  }`,
+  ~narrative={
+    celebrate: "Type guards! You're narrowing types at runtime - smart!",
+    minimize: "Runtime type checks can miss cases and aren't enforced by the compiler...",
+    better: "ReScript variants carry the type WITH the data - no runtime checks needed!",
+    safety: "Exhaustive matching means you handle every type, guaranteed.",
+    example: "Variants replace typeof/instanceof with compile-time safety!",
+  },
+  ~tags=["type-guard", "typeof", "instanceof", "variant"],
+  ~relatedPatterns=["enum-to-variant", "union-to-variant"],
+  ~learningObjectives=["Replacing runtime type checks", "Variant-based dispatch"],
+  ~commonMistakes=["Using typeof in ReScript"],
+  ~bestPractices=["Model data shapes as variants from the start"],
+)
+
+// ADDITIONAL TYPE SAFETY PATTERNS
+let typeGuardFnToVariant = makePattern(
+  ~id="type-guard-fn-to-variant",
+  ~name="Type Guard Function to Pattern Match",
+  ~category=TypeSafety,
+  ~difficulty=Advanced,
+  ~jsPattern=`function\\s+is\\w+\\s*\\(|:\\s*\\w+\\s+is\\s+\\w+`,
+  ~confidence=0.65,
+  ~jsExample=`function isError(result): result is Error {
+  return result instanceof Error;
+}
+if (isError(value)) {
+  console.error(value.message);
+}`,
+  ~rescriptExample=`type result<'a> = Ok('a) | Error(string)
+
+switch value {
+| Ok(data) => Console.log(data)
+| Error(msg) => Console.error(msg)
+}`,
+  ~narrative={
+    celebrate: "Type guard functions! You're bringing type safety to runtime checks!",
+    minimize: "Type predicates are powerful but rely on you writing them correctly...",
+    better: "ReScript's pattern matching IS the type narrowing - no guard functions needed!",
+    safety: "Pattern matching narrows types automatically and exhaustively.",
+    example: "Every switch arm narrows the type - no manual type guards!",
+  },
+  ~tags=["type-guard", "predicate", "pattern-matching", "type-safety"],
+  ~relatedPatterns=["type-assertion-to-type", "switch-to-match"],
+  ~learningObjectives=["Automatic type narrowing", "Pattern-based dispatch"],
+  ~commonMistakes=["Writing manual type predicates"],
+  ~bestPractices=["Let pattern matching narrow types automatically"],
+)
+
+// ADDITIONAL FUNCTIONAL PATTERNS
+let compose = makePattern(
+  ~id="function-compose",
+  ~name="Function Composition",
+  ~category=Functional,
+  ~difficulty=Intermediate,
+  ~jsPattern=`compose\\s*\\(|(?:const|let)\\s+\\w+\\s*=\\s*\\(\\.\\.\\.[^)]*\\)\\s*=>\\s*\\w+\\.reduce`,
+  ~confidence=0.55,
+  ~jsExample=`const compose = (...fns) => x => fns.reduceRight((acc, fn) => fn(acc), x);
+const transform = compose(capitalize, trim, toLowerCase);
+const result = transform(input);`,
+  ~rescriptExample=`// No compose needed - pipe operator IS composition!
+let result = input
+->String.toLowerCase
+->String.trim
+->String.capitalize`,
+  ~narrative={
+    celebrate: "Function composition! You're building complex operations from simple ones!",
+    minimize: "Compose utilities work but read right-to-left which is unnatural...",
+    better: "ReScript's pipe operator composes left-to-right - no utility needed!",
+    safety: "Each step in the pipe is type-checked individually.",
+    example: "Pipe operator: built-in composition that reads like English!",
+  },
+  ~tags=["compose", "functional", "pipe"],
+  ~relatedPatterns=["chain-to-pipe", "nested-calls-to-pipe", "higher-order-function"],
+  ~learningObjectives=["Pipe as composition", "Left-to-right data flow"],
+  ~commonMistakes=["Creating compose utilities in ReScript"],
+  ~bestPractices=["Use pipe operator instead of compose"],
+)
+
+// ADDITIONAL PIPE OPERATOR PATTERNS
+let callbackToPipe = makePattern(
+  ~id="callback-to-pipe",
+  ~name="Callback to Pipe",
+  ~category=PipeOperator,
+  ~difficulty=Intermediate,
+  ~jsPattern=`\\w+\\s*\\(\\s*function|\\w+\\s*\\(\\s*\\([^)]*\\)\\s*=>\\s*\\{[^}]*\\}\\s*\\)`,
+  ~confidence=0.5,
+  ~jsExample=`addEventListener('click', function(event) {
+  const target = getTarget(event);
+  const data = extractData(target);
+  const result = processData(data);
+  updateUI(result);
+});`,
+  ~rescriptExample=`addEventListener("click", event => {
+  event
+  ->getTarget
+  ->extractData
+  ->processData
+  ->updateUI
+})`,
+  ~narrative={
+    celebrate: "Callbacks for event handling - the foundation of interactive code!",
+    minimize: "Deeply nested operations inside callbacks can be hard to follow...",
+    better: "ReScript's pipe operator flattens callback internals into readable chains!",
+    safety: "Each function in the pipe is type-checked against the previous return type.",
+    example: "Pipe operator turns nested callback logic into linear flow!",
+  },
+  ~tags=["callback", "pipe", "event", "readability"],
+  ~relatedPatterns=["chain-to-pipe", "nested-calls-to-pipe"],
+  ~learningObjectives=["Pipe in callbacks", "Readable event handling"],
+  ~commonMistakes=["Deeply nested callback logic"],
+  ~bestPractices=["Use pipe to flatten callback internals"],
+)
+
+// ADDITIONAL IMMUTABILITY PATTERNS
+let freezeToRecord = makePattern(
+  ~id="freeze-to-record",
+  ~name="Object.freeze to Record",
+  ~category=Immutability,
+  ~difficulty=Beginner,
+  ~jsPattern=`Object\\.freeze\\s*\\(`,
+  ~confidence=0.9,
+  ~jsExample=`const config = Object.freeze({
+  apiUrl: 'https://api.example.com',
+  timeout: 5000,
+  retries: 3,
+});`,
+  ~rescriptExample=`type config = {
+  apiUrl: string,
+  timeout: int,
+  retries: int,
+}
+
+let config = {
+  apiUrl: "https://api.example.com",
+  timeout: 5000,
+  retries: 3,
+}
+// Already immutable - no freeze needed!`,
+  ~narrative={
+    celebrate: "Object.freeze for immutability - you value data integrity!",
+    minimize: "Object.freeze is shallow and only checked at runtime...",
+    better: "ReScript records are immutable by default - deeply and at compile time!",
+    safety: "Immutability is enforced by the compiler, not a runtime function.",
+    example: "Records: immutable by default, no Object.freeze needed!",
+  },
+  ~tags=["freeze", "immutable", "record", "const"],
+  ~relatedPatterns=["const-to-let", "spread-to-update"],
+  ~learningObjectives=["Default immutability", "Compile-time guarantees"],
+  ~commonMistakes=["Trying to freeze ReScript records (already immutable)"],
+  ~bestPractices=["Trust the type system - records are always immutable"],
+)
+
+// ADDITIONAL ARRAY OPERATION PATTERNS
+let forEachToIter = makePattern(
+  ~id="foreach-to-iter",
+  ~name="ForEach to Array.forEach",
+  ~category=ArrayOperations,
+  ~difficulty=Beginner,
+  ~jsPattern=`\\.forEach\\s*\\(\\s*(?:\\w+|\\([^)]*\\))\\s*=>`,
+  ~confidence=0.9,
+  ~jsExample=`users.forEach(user => {
+  console.log(user.name);
+  sendEmail(user.email);
+});`,
+  ~rescriptExample=`users->Array.forEach(user => {
+  Console.log(user.name)
+  sendEmail(user.email)
+})`,
+  ~narrative={
+    celebrate: "forEach for side effects - you know when NOT to use map!",
+    minimize: "Works great, ReScript's version is nearly identical...",
+    better: "ReScript's forEach with pipe operator reads cleanly left-to-right!",
+    safety: "forEach returns unit - the compiler prevents accidentally using a 'result'.",
+    example: "forEach returns unit, not undefined - type-safe side effects!",
+  },
+  ~tags=["foreach", "array", "side-effect"],
+  ~relatedPatterns=["array-map", "array-filter"],
+  ~learningObjectives=["Array.forEach", "Side effects vs transforms"],
+  ~commonMistakes=["Using map for side effects"],
+  ~bestPractices=["Use forEach for side effects, map for transforms"],
+)
+
+// ADDITIONAL CONDITIONAL PATTERNS
+let guardClause = makePattern(
+  ~id="guard-clause",
+  ~name="Guard Clause / Early Return",
+  ~category=Conditionals,
+  ~difficulty=Intermediate,
+  ~jsPattern=`if\\s*\\([^)]+\\)\\s*(?:return|throw)`,
+  ~confidence=0.7,
+  ~jsExample=`function processUser(user) {
+  if (!user) return null;
+  if (!user.active) return null;
+  if (!user.email) throw new Error('No email');
+  return sendWelcome(user.email);
+}`,
+  ~rescriptExample=`let processUser = user =>
+  switch user {
+  | None => None
+  | Some({active: false}) => None
+  | Some({email: None}) => Error("No email")
+  | Some({email: Some(email), active: true}) => Ok(sendWelcome(email))
+  }`,
+  ~narrative={
+    celebrate: "Guard clauses! Early returns keep your code flat and readable!",
+    minimize: "Multiple early returns can make the happy path hard to spot...",
+    better: "ReScript pattern matching handles all guards in one clear expression!",
+    safety: "Pattern matching ensures you've considered every case explicitly.",
+    example: "Pattern matching replaces guard clauses with exhaustive case analysis!",
+  },
+  ~tags=["guard", "early-return", "pattern-matching"],
+  ~relatedPatterns=["if-else-chain", "switch-to-match"],
+  ~learningObjectives=["Pattern matching for guards", "Exhaustive case analysis"],
+  ~commonMistakes=["Forgetting a guard case"],
+  ~bestPractices=["Use pattern matching to make all cases explicit"],
+)
+
 // PATTERN LIBRARY
 let patternLibrary: array<pattern> = [
   // Null Safety (3)
@@ -1239,31 +1657,47 @@ let patternLibrary: array<pattern> = [
   // Variants (2)
   enumToVariant,
   unionToVariant,
-  // Modules (1)
+  // Modules (2)
   namespaceToModule,
-  // Type Safety (2)
+  importToOpen,
+  // Type Safety (3)
   typeAssertionToType,
   anyToTyped,
-  // Immutability (2)
+  typeGuardFnToVariant,
+  // Immutability (3)
   constToLet,
   spreadToUpdate,
+  freezeToRecord,
   // Pattern Matching (2)
   switchToMatch,
   nestedTernaryToMatch,
-  // Pipe Operator (2)
+  // Pipe Operator (3)
   chainToPipe,
   nestedCallsToPipe,
-  // OOP to FP (1)
+  callbackToPipe,
+  // OOP to FP (2)
   classMethodToFunction,
-  // Classes to Records (1)
+  thisToModule,
+  // Classes to Records (2)
   classToRecord,
-  // Inheritance to Composition (1)
+  getterToField,
+  // Inheritance to Composition (2)
   inheritanceToComposition,
-  // State Machines (1)
+  mixinToModule,
+  // State Machines (2)
   stateMachine,
+  reducerToVariant,
   // Data Modeling (2)
   interfaceToType,
   nestedObjectToVariant,
+  // Additional Variants (1)
+  typeGuardToVariant,
+  // Additional Functional (1)
+  compose,
+  // Additional Array Operations (1)
+  forEachToIter,
+  // Additional Conditionals (1)
+  guardClause,
 ]
 
 // Get pattern by ID

@@ -11,8 +11,8 @@ let assert_ = (condition, message) => {
 
 let testPatternCount = () => {
   let count = Patterns.getPatternCount()
-  assert_(count >= 35, `Expected 35+ patterns, got ${Int.toString(count)}`)
-  Console.log(`PASS: Pattern count is ${Int.toString(count)} (target: 35+)`)
+  assert_(count >= 50, `Expected 50+ patterns, got ${Int.toString(count)}`)
+  Console.log(`PASS: Pattern count is ${Int.toString(count)} (target: 50+)`)
 }
 
 let testAllCategoriesHavePatterns = () => {
