@@ -40,3 +40,6 @@
 [submodule "satellites/developer-ux/nickel-config-reporter"]
 	path = satellites/developer-ux/nickel-config-reporter
 	url = git@github.com:hyperpolymath/nickel-config-reporter.git
+[submodule "julia-ecosystem"]
+	path = julia-ecosystem
+	url = git@github.com:hyperpolymath/julia-ecosystem.git

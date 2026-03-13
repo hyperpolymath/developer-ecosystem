@@ -81,7 +81,6 @@ htmlcov/
 # Crash recovery artifacts
 ai-cli-crash-capture/
 
-# Large directories (no standalone repos, too big to track)
-/julia-ecosystem/
+# Large directories (third-party forks, too big to track)
 /opam-repository/
 /package-publishers/
