@@ -24,27 +24,12 @@ jobs:
         with:
           fetch-depth: 0  # Full history for better pattern analysis
 
-      - name: Setup Elixir for Hypatia scanner
-        uses: erlef/setup-beam@9d5b75ddfda22fb979d2270283237aef8aa68d6b # v1.18.2
-        with:
-          elixir-version: '1.19.4'
-          otp-version: '28.3'
-
       - name: Clone Hypatia
         run: |
           if [ ! -d "$HOME/hypatia" ]; then
             git clone https://github.com/hyperpolymath/hypatia.git "$HOME/hypatia"
           fi
-
-      - name: Build Hypatia scanner (if needed)
-        run: |
-          cd "$HOME/hypatia"
-          if [ ! -f hypatia-v2 ]; then
-            echo "Building hypatia-v2 scanner..."
-            mix deps.get
-            mix escript.build
-            mv hypatia hypatia-v2 || true
-          fi
+          chmod +x "$HOME/hypatia/hypatia-cli.sh"
 
       - name: Run Hypatia scan
         id: scan
