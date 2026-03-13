@@ -11,20 +11,23 @@
        (repo . "rescript-evangeliser")))
 
     (current-position
-      ((phase . "CLI Alpha")
-       (overall-completion . 90)
+      ((phase . "v0.5.0 Complete + PanLL Integration")
+       (overall-completion . 100)
        (working-features
          ("52 transformation patterns across 21 categories"
           "Scanner: regex-based JS pattern detection engine"
           "Analyser: result aggregation and category reporting"
           "CLI: scan/patterns/legend/stats commands"
-          "38 tests across 6 test suites (Types, Glyphs, Narrative, Patterns, Scanner, Analyser)"
+          "37+ tests across 6 test suites (Types, Glyphs, Narrative, Patterns, Scanner, Analyser)"
           "3 output formats: plain text, markdown, html"
           "3 view layers: RAW, FOLDED, GLYPHED"
           "21 Makaton-inspired glyph categories"
           "Celebrate/minimize/better narrative framework"
           "12 CI workflows all passing"
-          "ReScript 12.2 with Deno runtime"))))
+          "ReScript 12.2 with Deno runtime"
+          "PanLL module: EvangeliserModel + EvangeliserEngine + Evangeliser component"
+          "PanLL three-panel: constraints (L), narratives (N), JS→ReScript results (W)"
+          "Satellite GitHub repo created and synced"))))
 
     (route-to-mvp
       ((milestones
@@ -44,9 +47,12 @@
                                "RAW/FOLDED/GLYPHED output views"
                                "Plain/markdown/html output formats"))
                     (status . "complete")))
+         (v0.5.1 . ((items . ("PanLL three-panel module integration"
+                               "52 patterns in PanLL EvangeliserEngine"
+                               "21 glyphs in PanLL glyph registry"))
+                    (status . "complete")))
          (v0.6.0 . ((items . ("VS Code extension"
-                               "LSP integration"
-                               "PanLL Panel-L integration"))
+                               "LSP integration"))
                     (status . "planned")))
          (v0.7.0 . ((items . ("WYSIWYG block-based editor"
                                "Interactive tutorials"))
@@ -69,7 +75,7 @@
       ((immediate . ())
        (this-week . ())
        (this-month . ("VS Code extension planning"
-                      "PanLL Panel-L integration design"
-                      "Evaluate AST-based detection as complement to regex"))))
+                      "Evaluate AST-based detection as complement to regex"
+                      "WYSIWYG editor prototype"))))
 
     (session-history . ())))
