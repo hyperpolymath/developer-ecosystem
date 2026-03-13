@@ -1,0 +1,84 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
+= bundeno Roadmap
+:icons: font
+
+== Current Status
+
+**Version:** 0.1.0-dev +
+**Phase:** Foundation
+
+== Milestones
+
+=== v0.1.0 — Foundation [IN PROGRESS]
+
+Core runtime compatibility layer.
+
+[cols="1,1,1"]
+|===
+| Feature | Status | Notes
+
+| Runtime detection | ✅ Done | `isDeno()`, `isBun()`, `RUNTIME`
+| File system | ✅ Done | read, write, stat, mkdir, etc.
+| Process/env | ✅ Done | env vars, subprocess, cwd
+| deno.json | ⏳ Pending | Package configuration
+| Test suite | ⏳ Pending | Dual-runtime tests
+| CI matrix | ⏳ Pending | GitHub Actions for Deno + Bun
+|===
+
+=== v0.2.0 — Extended APIs [PLANNED]
+
+Additional runtime-specific abstractions.
+
+[cols="1,1"]
+|===
+| Feature | Notes
+
+| SQLite | `bun:sqlite` vs `@std/sqlite`
+| HTTP server | Unified `Deno.serve` / `Bun.serve`
+| WebSocket | Already mostly compatible
+| Crypto | Web Crypto API (mostly compatible)
+| Path utilities | Cross-platform path handling
+|===
+
+=== v0.3.0 — Zig Native [PLANNED]
+
+Shared native code via Zig.
+
+[cols="1,1"]
+|===
+| Feature | Notes
+
+| Zig build setup | `build.zig` configuration
+| Shared FFI | Single `.so` for both runtimes
+| Deno.dlopen wrapper | Type-safe FFI bindings
+| Performance benchmarks | Compare native vs pure JS
+|===
+
+=== v1.0.0 — Stable [FUTURE]
+
+Production-ready release.
+
+* Stable API (no breaking changes)
+* 90%+ test coverage on both runtimes
+* Published to JSR and npm
+* Comprehensive documentation
+* Community feedback incorporated
+
+== Non-Goals
+
+Things bundeno will NOT do:
+
+* **Node.js compatibility** — Use Deno/Bun's built-in Node compat
+* **Polyfills** — We delegate to native APIs, not fake them
+* **Build tools** — Use Deno/Bun's native tooling
+* **Browser support** — Focus is server-side runtimes
+
+== Future Possibilities
+
+Ideas for post-1.0:
+
+* Edge runtime support (Cloudflare Workers, Deno Deploy)
+* WASM fallbacks for unsupported platforms
+* Plugin system for custom compat modules
+* Performance profiling tools

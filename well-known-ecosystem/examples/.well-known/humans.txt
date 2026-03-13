@@ -1,0 +1,19 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+#
+# Example humans.txt file
+
+/* TEAM */
+Name: hyperpolymath
+Role: Maintainer
+Location: Earth
+
+/* THANKS */
+Name: Open Source Community
+Role: Contributors
+
+/* SITE */
+Last update: 2025-12-27
+Language: English
+Doctype: HTML5
+Standards: RFC 8615, RFC 9116

@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Funding information for Synapse
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+
+# Solidarity Economics Framework
+# Synapse is free software. If you find it valuable, consider supporting
+# the broader ecosystem of tools that make it possible.
+
+# Platform-specific funding links
+github: []
+patreon:
+open_collective:
+ko_fi:
+tidelift:
+community_bridge:
+liberapay:
+issuehunt:
+otechie:
+lfx_crowdfunding:
+
+# Custom funding links
+custom:
+  - https://www.contributor-covenant.org/donate/
+  - https://ziglang.org/zsf/
+
+# Funding Philosophy
+# ------------------
+# This project follows solidarity economics principles:
+# 1. The software is free (as in freedom and beer)
+# 2. Contributions of time are valued equally to money
+# 3. Funds go to infrastructure and dependencies first
+# 4. No individual enrichment from community work
+#
+# If you want to support Synapse financially:
+# 1. Support the Zig Software Foundation
+# 2. Support Rust ecosystem maintainers
+# 3. Support Swift open source initiatives
+# 4. Donate to digital rights organizations (EFF, FSF)

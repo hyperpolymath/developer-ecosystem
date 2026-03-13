@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: MPL-2.0-or-later
+# SPDX-License-Identifier: PMPL-1.0-or-later
 # SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
 name: Mirror to Git Forges
 
@@ -139,6 +139,7 @@ jobs:
 
       - name: Mirror to Radicle
         run: |
+          mkdir -p ~/.radicle/keys
           echo "${{ secrets.RADICLE_KEY }}" > ~/.radicle/keys/radicle
           chmod 600 ~/.radicle/keys/radicle
           rad sync --announce || echo "Radicle sync attempted"

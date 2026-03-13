@@ -1,0 +1,19 @@
+{
+  "_comment": "SPDX-License-Identifier: PMPL-1.0 OR PMPL-1.0-or-later",
+  "_comment2": "NodeInfo for Fediverse servers",
+  "version": "2.1",
+  "software": {
+    "name": "{{SOFTWARE_NAME}}",
+    "version": "{{SOFTWARE_VERSION}}"
+  },
+  "protocols": ["activitypub"],
+  "usage": {
+    "users": {
+      "total": 0,
+      "activeMonth": 0,
+      "activeHalfyear": 0
+    },
+    "localPosts": 0
+  },
+  "openRegistrations": false
+}

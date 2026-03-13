@@ -1,0 +1,2 @@
+kith.adb:4:01: error: spec of this package does not allow a body
+kith.adb:4:01: error: either remove the body or add pragma Elaborate_Body in the spec

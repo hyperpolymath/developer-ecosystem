@@ -1,0 +1,56 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
+name: Language Policy Enforcement
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions: read-all
+
+jobs:
+  enforce-language-policy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+
+      - name: Check for banned TypeScript files
+        run: |
+          if find . -name "*.ts" -type f | grep -v node_modules | grep -q .; then
+            echo "ERROR: TypeScript files found. Use ReScript instead."
+            find . -name "*.ts" -type f | grep -v node_modules
+            exit 1
+          fi
+          echo "✓ No TypeScript files found"
+
+      - name: Check for banned Go files
+        run: |
+          if find . -name "*.go" -type f | grep -q .; then
+            echo "ERROR: Go files found. Use Rust instead."
+            find . -name "*.go" -type f
+            exit 1
+          fi
+          echo "✓ No Go files found"
+
+      - name: Check for banned Python files (except SaltStack)
+        run: |
+          if find . -name "*.py" -type f | grep -v salt | grep -v node_modules | grep -q .; then
+            echo "ERROR: Python files found outside salt/. Python only allowed for SaltStack."
+            find . -name "*.py" -type f | grep -v salt | grep -v node_modules
+            exit 1
+          fi
+          echo "✓ No unauthorized Python files found"
+
+      - name: Verify ReScript configuration exists
+        run: |
+          if [ ! -f rescript.json ]; then
+            echo "ERROR: rescript.json not found. ReScript is required."
+            exit 1
+          fi
+          echo "✓ rescript.json found"
+
+      - name: Allow Erlang/Elixir files (BEAM side)
+        run: |
+          echo "✓ Erlang (.erl) and Elixir (.ex, .exs) files are allowed for BEAM integration"

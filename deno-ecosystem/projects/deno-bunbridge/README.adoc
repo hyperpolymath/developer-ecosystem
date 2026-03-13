@@ -1,0 +1,74 @@
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
+= deno-bunbridge
+
+
+
+:toc: macro
+:icons: font
+
+**Access Bun-specific APIs and ecosystem from Deno.**
+
+image:https://img.shields.io/badge/deno-runtime-green[Deno]
+image:https://img.shields.io/badge/bun-ecosystem-orange[Bun Ecosystem]
+
+toc::[]
+
+== Overview
+
+deno-bunbridge provides Deno implementations of Bun-specific APIs, allowing code written for Bun to run on Deno, and giving Deno users access to Bun ecosystem patterns.
+
+== What This Bridges
+
+[cols="1,1,1"]
+|===
+| Bun API | deno-bunbridge Equivalent | Implementation
+
+| `bun:sqlite` | `bunbridge/sqlite` | FFI to libsqlite3 or better-sqlite3
+| `Bun.serve()` | `bunbridge/serve` | Wraps `Deno.serve()`
+| `Bun.file()` | `bunbridge/file` | Wraps Deno file APIs
+| `Bun.spawn()` | `bunbridge/spawn` | Wraps `Deno.Command`
+| `Bun.write()` | `bunbridge/write` | Wraps `Deno.writeFile`
+| Bun's Zig FFI | `bunbridge/ffi` | Maps to `Deno.dlopen`
+|===
+
+== Installation
+
+[source,typescript]
+----
+import { Database } from "jsr:@hyperpolymath/deno-bunbridge/sqlite";
+import { serve } from "jsr:@hyperpolymath/deno-bunbridge/serve";
+----
+
+== Quick Start
+
+[source,typescript]
+----
+// Code that looks like Bun, runs on Deno
+import { Database } from "deno-bunbridge/sqlite";
+
+const db = new Database(":memory:");
+db.run("CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT)");
+db.run("INSERT INTO users (name) VALUES (?)", ["Alice"]);
+
+const users = db.query("SELECT * FROM users").all();
+console.log(users);
+----
+
+== Roadmap
+
+* **v0.1** — SQLite bridge (`bun:sqlite` API on Deno)
+* **v0.2** — File and serve bridges
+* **v0.3** — FFI compatibility layer
+* **v1.0** — Full Bun API coverage
+
+== Related Projects
+
+* https://github.com/hyperpolymath/bundeno[bundeno] — Runtime portability layer
+* https://github.com/hyperpolymath/beamdeno[beamdeno] — BEAM connectivity
+* https://github.com/hyperpolymath/v-deno[v-deno] — V language FFI
+
+== License
+
+PMPL-1.0-or-later

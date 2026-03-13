@@ -1,0 +1,111 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+
+= Well-Known Ecosystem Validator
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+
+:author: hyperpolymath
+:toc: macro
+:toclevels: 2
+
+toc::[]
+
+== Overview
+
+`wke-validator` is a command-line tool for validating well-known resources against RFC standards and best practices.
+
+== Installation
+
+=== From Source
+
+[source,bash]
+----
+cd validator
+cargo build --release
+# Binary will be at target/release/wke-validator
+----
+
+== Usage
+
+=== Validate a Single File
+
+[source,bash]
+----
+wke-validator validate path/to/security.txt
+----
+
+=== Validate All Resources in a Directory
+
+[source,bash]
+----
+wke-validator validate-dir .well-known/
+----
+
+=== List Supported Resource Types
+
+[source,bash]
+----
+wke-validator list
+wke-validator list --detailed
+----
+
+=== Show Validation Rules
+
+[source,bash]
+----
+wke-validator rules security-txt
+wke-validator rules openid-configuration --severity error
+----
+
+== Output Formats
+
+The validator supports three output formats:
+
+* `text` (default) — Human-readable colored output
+* `json` — Machine-readable JSON
+* `sexp` — S-expression format (Scheme-compatible)
+
+[source,bash]
+----
+wke-validator validate security.txt --format json
+----
+
+== Exit Codes
+
+[cols="1,3", options="header"]
+|===
+| Code | Meaning
+
+| 0 | Valid
+| 1 | Validation errors found
+| 2 | Validation warnings (strict mode)
+| 3 | File not found
+| 4 | Unknown resource type
+| 5 | Parse error
+|===
+
+== Strict Mode
+
+Use `--strict` to treat warnings as errors:
+
+[source,bash]
+----
+wke-validator validate security.txt --strict
+----
+
+== Supported Resource Types
+
+* `security-txt` — RFC 9116 security.txt
+* `openid-configuration` — OpenID Connect Discovery
+* `webfinger` — RFC 7033 WebFinger
+* `assetlinks` — Google Digital Asset Links
+* `apple-app-site-association` — Apple Universal Links
+* `nodeinfo` — Fediverse NodeInfo
+* `matrix-server` — Matrix server discovery
+* `humans-txt` — humans.txt
+* `ai-txt` — AI policy disclosure (RSR)
+
+== License
+
+PMPL-1.0 OR PMPL-1.0-or-later

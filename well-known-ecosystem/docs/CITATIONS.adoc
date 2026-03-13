@@ -1,0 +1,36 @@
+= well-known-ecosystem - Citation Guide
+:toc:
+
+== BibTeX
+
+[source,bibtex]
+----
+@software{well-known-ecosystem_2025,
+  author = {Polymath, Hyper},
+  title = {well-known-ecosystem},
+  year = {2025},
+  url = {https://github.com/hyperpolymath/well-known-ecosystem},
+license = "PMPL-1.0"
+}
+----
+
+== Harvard Style
+
+Polymath, H. (2025) _well-known-ecosystem_ [Computer software]. Available at: https://github.com/hyperpolymath/well-known-ecosystem
+
+== OSCOLA
+
+Hyper Polymath, 'well-known-ecosystem' (2025) <https://github.com/hyperpolymath/well-known-ecosystem>
+
+== MLA
+
+Polymath, Hyper. "well-known-ecosystem." 2025, github.com/hyperpolymath/well-known-ecosystem.
+
+== APA 7
+
+Polymath, H. (2025). _well-known-ecosystem_ [Computer software]. GitHub. https://github.com/hyperpolymath/well-known-ecosystem
+
+== See Also
+
+* link:../CITATION.cff[CITATION.cff]
+* link:../codemeta.json[codemeta.json]

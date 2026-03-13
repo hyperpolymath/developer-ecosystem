@@ -1,0 +1,18 @@
+= deno-ecosystem
+// SPDX-License-Identifier: PMPL-1.0-or-later
+:author: Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>
+
+Deno runtime interoperability bridges and tools.
+
+== Projects
+
+Deno integration layers for cross-runtime and cross-language interop:
+
+* *beamdeno* — BEAM/Erlang ↔ Deno bridge (ETF serialisation, process messaging)
+* *bundeno* — Bun ↔ Deno compatibility layer (fs, process shims)
+* *deno-bunbridge* — Deno ↔ Bun bidirectional bridge (serve, spawn, file APIs)
+* *v-deno* — V language ↔ Deno FFI bridge (native compilation, V library bindings)
+
+== License
+
+PMPL-1.0-or-later

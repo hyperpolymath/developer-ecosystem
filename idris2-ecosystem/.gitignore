@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Idris2 build artifacts
+build/
+*/build/
+*/src/build/
+*/tests/build/
+*.ttc
+*.ttm

@@ -1,0 +1,49 @@
+# SPDX-License-Identifier: PMPL-1.0 OR PMPL-1.0-or-later
+# SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+#
+# Caddy snippet for well-known resources
+# Import this in your Caddyfile: import /path/to/well-known.snippet
+
+# Well-known content types snippet
+(well-known) {
+    # Text-based well-known files
+    @wk_txt path /.well-known/security.txt /.well-known/ai.txt /.well-known/humans.txt
+    header @wk_txt Content-Type "text/plain; charset=utf-8"
+
+    # JSON-based well-known files
+    @wk_json {
+        path /.well-known/assetlinks.json
+        path /.well-known/openid-configuration
+        path /.well-known/matrix/*
+        path /.well-known/nodeinfo
+    }
+    header @wk_json Content-Type "application/json"
+
+    # Apple App Site Association
+    @wk_aasa path /.well-known/apple-app-site-association
+    header @wk_aasa Content-Type "application/json"
+
+    # WebFinger
+    @wk_webfinger path /.well-known/webfinger
+    header @wk_webfinger Content-Type "application/jrd+json"
+    header @wk_webfinger Access-Control-Allow-Origin "*"
+
+    # Federation CORS headers
+    @wk_federation {
+        path /.well-known/matrix/*
+        path /.well-known/nodeinfo
+        path /.well-known/webfinger
+    }
+    header @wk_federation Access-Control-Allow-Origin "*"
+
+    # Redirect bare security.txt
+    redir /security.txt /.well-known/security.txt permanent
+}
+
+# Usage in your main Caddyfile:
+#
+# example.com {
+#     import well-known
+#     root * /var/www/example.com
+#     file_server
+# }

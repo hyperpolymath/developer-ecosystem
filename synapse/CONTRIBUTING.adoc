@@ -1,0 +1,186 @@
+= Contributing to Synapse
+:toc:
+:toclevels: 3
+
+== Welcome
+
+Thank you for considering contributing to Synapse! This document explains our contribution process and the Tri-Perimeter Contribution Framework (TPCF).
+
+== Tri-Perimeter Contribution Framework (TPCF)
+
+Synapse uses a three-tier contribution model to balance openness with security and quality.
+
+=== Perimeter 1: Core (Maintainers Only)
+
+*Access Level*: Full repository access
+
+*Who*: Listed in MAINTAINERS.md
+
+*Responsibilities*:
+
+* Final approval on all merges to `main`
+* Security vulnerability handling
+* Release management
+* Architecture decisions
+* Code of Conduct enforcement
+
+*How to become Core*: Sustained high-quality contributions over 12+ months, nomination by existing Core maintainer, unanimous approval.
+
+=== Perimeter 2: Expert (Trusted Contributors)
+
+*Access Level*: Direct push to feature branches, merge request approval
+
+*Who*: Contributors with proven track record
+
+*Responsibilities*:
+
+* Code review for Perimeter 3 contributions
+* Feature development
+* Documentation improvements
+* Bug triage
+
+*How to become Expert*:
+
+1. 10+ accepted merge requests
+2. Demonstrated expertise in Zig, Rust, or Swift
+3. Nomination by Core maintainer
+4. Majority Core approval
+
+=== Perimeter 3: Community (Open Sandbox)
+
+*Access Level*: Fork and merge request
+
+*Who*: Anyone
+
+*Responsibilities*:
+
+* Bug reports
+* Feature requests
+* Documentation fixes
+* Small improvements
+
+*Process*:
+
+1. Fork the repository
+2. Create a feature branch
+3. Make changes
+4. Submit merge request
+5. Address review feedback
+6. Await Expert/Core approval
+
+== Contribution Types
+
+=== Bug Reports
+
+1. Check existing issues first
+2. Use the bug report template
+3. Include:
+   * Zig version (`zig version`)
+   * Operating system
+   * Steps to reproduce
+   * Expected vs actual behavior
+   * Relevant logs/output
+
+=== Feature Requests
+
+1. Check ROADMAP.md for planned features
+2. Open a discussion issue first
+3. Describe the use case, not just the solution
+4. Be open to alternative approaches
+
+=== Code Contributions
+
+==== Before You Start
+
+1. Check for existing issues/MRs
+2. For large changes, open a discussion issue first
+3. Read the architecture documentation
+
+==== Development Setup
+
+[source,bash]
+----
+# Clone your fork
+git clone https://gitlab.com/YOUR_USERNAME/synapse.git
+cd synapse
+
+# Build
+zig build
+
+# Run tests
+zig build test
+
+# Run the generator
+just gen-ui
+----
+
+==== Code Standards
+
+* *SPDX Headers*: Every source file must have an SPDX license header
+* *Formatting*: Run `zig fmt src/` before committing
+* *Tests*: Add tests for new functionality
+* *Documentation*: Update relevant docs
+
+==== Commit Messages
+
+Follow conventional commits:
+
+[source]
+----
+type(scope): description
+
+[optional body]
+
+[optional footer]
+----
+
+Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
+
+Examples:
+
+* `feat(parser): add support for generic types`
+* `fix(templates): correct iOS 17 Observable syntax`
+* `docs(readme): add installation instructions`
+
+==== Merge Request Process
+
+1. Create MR against `main`
+2. Fill out the MR template completely
+3. Ensure CI passes
+4. Request review from appropriate perimeter
+5. Address all feedback
+6. Squash commits if requested
+7. Await merge
+
+== Developer Certificate of Origin (DCO)
+
+By contributing, you certify that:
+
+1. The contribution was created by you
+2. You have the right to submit it under the project license
+3. You understand the contribution is public and recorded
+
+Sign-off your commits:
+
+[source,bash]
+----
+git commit -s -m "feat: add feature"
+----
+
+This adds `Signed-off-by: Your Name <email@example.com>` to the commit.
+
+== Getting Help
+
+* *Questions*: Open a discussion issue
+* *Real-time*: See MAINTAINERS.md for contact info
+* *Security*: See SECURITY.md
+
+== Recognition
+
+Contributors are recognized in:
+
+* MAINTAINERS.md (for sustained contributions)
+* Release notes (for specific features/fixes)
+* The git history (forever)
+
+Thank you for contributing to Synapse!

@@ -1,0 +1,6 @@
+homepage: "https://github.com/hyperpolymath/opm-canonicalizer"
+language: rust
+main_repo: "https://github.com/hyperpolymath/opm-canonicalizer"
+sanitizers:
+  - address
+  - undefined

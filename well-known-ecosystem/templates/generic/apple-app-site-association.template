@@ -1,0 +1,16 @@
+{
+  "_comment": "SPDX-License-Identifier: PMPL-1.0 OR PMPL-1.0-or-later",
+  "_comment2": "Replace {{PLACEHOLDER}} values with your actual information",
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "{{TEAM_ID}}.{{BUNDLE_ID}}",
+        "paths": ["*"]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["{{TEAM_ID}}.{{BUNDLE_ID}}"]
+  }
+}

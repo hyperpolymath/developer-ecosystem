@@ -1,0 +1,177 @@
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
+= bundeno
+
+
+
+:toc: macro
+:toc-title: Contents
+:icons: font
+:source-highlighter: rouge
+
+**Write once, run on Deno and Bun.**
+
+image:https://img.shields.io/badge/deno-compatible-green[Deno]
+image:https://img.shields.io/badge/bun-compatible-orange[Bun]
+
+toc::[]
+
+== Overview
+
+bundeno is a runtime compatibility layer that enables JavaScript/TypeScript code to run seamlessly on both https://deno.land[Deno] and https://bun.sh[Bun] runtimes.
+
+Instead of polyfilling missing APIs, bundeno detects your runtime and delegates to native implementations—giving you the best of both worlds.
+
+== Features
+
+* **Runtime Detection** — Detect Deno, Bun, Node.js, or browser at runtime
+* **Unified File System** — `readTextFile`, `writeFile`, `readDir`, `stat`, etc.
+* **Process Abstraction** — Environment variables, subprocess execution, cwd
+* **Type-Safe** — Full TypeScript support with proper types
+* **Zero Dependencies** — No external packages required
+* **Future: Zig Native** — Performance-critical FFI via shared Zig libraries
+
+== Quick Start
+
+[source,typescript]
+----
+import { RUNTIME, isDeno, isBun } from "bundeno/runtime";
+import { readTextFile, writeTextFile } from "bundeno/fs";
+import { exec, getEnv } from "bundeno/process";
+
+// Works on both Deno and Bun!
+console.log(`Running on: ${RUNTIME}`);
+
+const content = await readTextFile("./config.json");
+const home = getEnv("HOME");
+const result = await exec(["git", "status"]);
+----
+
+== Installation
+
+=== Deno
+
+[source,typescript]
+----
+import { ... } from "jsr:@hyperpolymath/bundeno";
+----
+
+=== Bun
+
+[source,bash]
+----
+bun add @hyperpolymath/bundeno
+----
+
+== API Reference
+
+=== Runtime Detection
+
+[cols="1,2"]
+|===
+| Function | Description
+
+| `detectRuntime()` | Returns `"deno"`, `"bun"`, `"node"`, `"browser"`, or `"unknown"`
+| `isDeno()` | Returns `true` if running on Deno
+| `isBun()` | Returns `true` if running on Bun
+| `RUNTIME` | Cached runtime value (evaluated once at import)
+|===
+
+=== File System (`bundeno/fs`)
+
+[cols="1,2"]
+|===
+| Function | Description
+
+| `readTextFile(path)` | Read file as UTF-8 string
+| `readFile(path)` | Read file as `Uint8Array`
+| `writeTextFile(path, content)` | Write string to file
+| `writeFile(path, content)` | Write bytes to file
+| `exists(path)` | Check if file/directory exists
+| `stat(path)` | Get file stats (size, mtime, isFile, etc.)
+| `mkdir(path, options?)` | Create directory (recursive by default)
+| `remove(path, options?)` | Remove file or directory
+| `readDir(path)` | List directory contents
+| `copyFile(src, dest)` | Copy a file
+| `rename(src, dest)` | Rename/move a file
+|===
+
+=== Process (`bundeno/process`)
+
+[cols="1,2"]
+|===
+| Function | Description
+
+| `getEnv(key)` | Get environment variable
+| `setEnv(key, value)` | Set environment variable
+| `getAllEnv()` | Get all environment variables
+| `cwd()` | Get current working directory
+| `chdir(path)` | Change current working directory
+| `exit(code?)` | Exit the process
+| `args()` | Get command line arguments
+| `run(cmd, options?)` | Run command and get result
+| `exec(cmd, options?)` | Run command and return stdout as string
+|===
+
+== Why bundeno?
+
+The JavaScript runtime landscape is fragmented. Deno and Bun have different APIs for common operations:
+
+[cols="1,1,1"]
+|===
+| Operation | Deno | Bun
+
+| Read file | `Deno.readTextFile()` | `Bun.file().text()`
+| Write file | `Deno.writeTextFile()` | `Bun.write()`
+| Subprocess | `Deno.Command` | `Bun.spawn`
+| FFI | `Deno.dlopen` | Native Zig imports
+|===
+
+bundeno abstracts these differences so your code works everywhere.
+
+== Architecture
+
+[source]
+----
+┌─────────────────────────────────────────────┐
+│                Your Code                     │
+└─────────────────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────┐
+│              bundeno API                     │
+│  (fs, process, sqlite, ffi, ...)            │
+└─────────────────────────────────────────────┘
+                      │
+         ┌────────────┴────────────┐
+         ▼                         ▼
+┌─────────────────┐       ┌─────────────────┐
+│   Deno Native   │       │   Bun Native    │
+│   Deno.*        │       │   Bun.*         │
+└─────────────────┘       └─────────────────┘
+----
+
+== Roadmap
+
+See link:ROADMAP.adoc[ROADMAP.adoc] for planned features.
+
+* **v0.1** — Foundation (fs, process, runtime detection)
+* **v0.2** — Extended APIs (SQLite, WebSocket, Crypto)
+* **v0.3** — Zig Native (shared FFI libraries)
+* **v1.0** — Stable API, full test coverage
+
+== Contributing
+
+See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc] for guidelines.
+
+== License
+
+PMPL-1.0-or-later. See link:LICENSE.txt[LICENSE.txt].
+
+== Related Projects
+
+* https://deno.land[Deno] — Secure runtime for JavaScript and TypeScript
+* https://bun.sh[Bun] — Fast all-in-one JavaScript runtime
+* https://wintercg.org[WinterCG] — Web-interoperable Runtimes Community Group
+* https://github.com/hyperpolymath/bunsenite[bunsenite] — Nickel configuration parser (sibling project)

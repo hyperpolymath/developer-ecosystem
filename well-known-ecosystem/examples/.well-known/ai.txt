@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+#
+# Example ai.txt file (RSR Standard)
+# AI Policy Disclosure
+
+AI-Policy: https://example.com/ai-policy
+Training-Opt-Out: true
+Contact: mailto:ai@example.com
+
+# Additional Information
+# This file discloses our AI usage and data policies.
+# For more information, see the AI-Policy URL above.

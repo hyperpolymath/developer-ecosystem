@@ -1,0 +1,330 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+
+= Well-Known Ecosystem Templates
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+
+:author: hyperpolymath
+:toc: macro
+:toclevels: 3
+
+toc::[]
+
+== Overview
+
+This directory contains templates for integrating well-known resources into various technology stacks and web servers.
+
+== Template Categories
+
+[cols="2,3,2", options="header"]
+|===
+| Category | Description | Files
+
+| *Generic*
+| Platform-agnostic templates with placeholders
+| `*.template` files
+
+| *Deno/Fresh*
+| Middleware and plugin for Deno Fresh framework
+| TypeScript modules
+
+| *Rust/Axum*
+| Router extension for Axum web framework
+| Rust module
+
+| *Hugo*
+| Static site generator templates
+| Layouts and config
+
+| *Zola*
+| Static site generator templates
+| Tera templates and config
+
+| *Nginx*
+| Web server configuration
+| `.conf` files
+
+| *Caddy*
+| Web server configuration
+| `Caddyfile` snippets
+
+| *Docker*
+| Containerized well-known server
+| Dockerfile and compose
+|===
+
+== Quick Start
+
+=== Generic Templates
+
+Copy and customize the generic templates:
+
+[source,bash]
+----
+# Copy templates
+cp templates/generic/security.txt.template .well-known/security.txt
+
+# Replace placeholders
+sed -i 's/{{DOMAIN}}/example.com/g' .well-known/security.txt
+sed -i 's/{{SECURITY_EMAIL}}/security@example.com/g' .well-known/security.txt
+sed -i 's/{{EXPIRES_DATE}}/2026-12-31/g' .well-known/security.txt
+----
+
+=== Deno/Fresh Integration
+
+==== Option 1: Middleware
+
+[source,typescript]
+----
+// routes/_middleware.ts
+export { handler } from "../lib/well_known_middleware.ts";
+----
+
+==== Option 2: Plugin
+
+[source,typescript]
+----
+// main.ts
+import { wellKnownPlugin } from "./lib/well_known_plugin.ts";
+
+await start(manifest, {
+  plugins: [
+    wellKnownPlugin({
+      security: {
+        contact: ["mailto:security@example.com"],
+        expires: "2026-12-31T23:59:59Z",
+      },
+    }),
+  ],
+});
+----
+
+=== Rust/Axum Integration
+
+[source,rust]
+----
+use chrono::{Duration, Utc};
+use well_known::{WellKnownConfig, nest_well_known};
+
+let config = WellKnownConfig::new(
+    vec!["mailto:security@example.com".to_string()],
+    Utc::now() + Duration::days(365),
+);
+
+let app = Router::new()
+    .route("/", get(|| async { "Hello" }));
+
+let app = nest_well_known(app, config);
+----
+
+=== Hugo Integration
+
+. Copy templates to your Hugo site:
++
+[source,bash]
+----
+cp -r templates/hugo/layouts/.well-known layouts/
+cp -r templates/hugo/content/.well-known content/
+----
+
+. Add configuration to `hugo.toml`:
++
+[source,toml]
+----
+[params.security]
+contact = ["mailto:security@example.com"]
+expires = "2026-12-31T23:59:59Z"
+----
+
+=== Zola Integration
+
+. Copy templates:
++
+[source,bash]
+----
+cp -r templates/zola/templates/.well-known templates/
+----
+
+. Add configuration to `config.toml`:
++
+[source,toml]
+----
+[extra.security]
+contact = ["mailto:security@example.com"]
+expires = "2026-12-31T23:59:59Z"
+----
+
+=== Nginx Configuration
+
+==== Include Snippet
+
+[source,nginx]
+----
+server {
+    # ... your config ...
+    include /path/to/templates/nginx/well-known.conf;
+}
+----
+
+==== Full Configuration
+
+Copy and customize `well-known-full.conf` as your server block.
+
+=== Caddy Configuration
+
+==== Import Snippet
+
+[source,caddyfile]
+----
+example.com {
+    import /path/to/templates/caddy/Caddyfile.snippet
+    root * /var/www/html
+    file_server
+}
+----
+
+=== Docker Deployment
+
+[source,bash]
+----
+# Copy your well-known files
+mkdir -p .well-known
+cp templates/generic/security.txt.template .well-known/security.txt
+# ... customize ...
+
+# Copy Docker files
+cp templates/docker/* .
+
+# Build and run
+docker compose up -d
+----
+
+== Template Placeholders
+
+Generic templates use `{{PLACEHOLDER}}` syntax:
+
+[cols="2,3", options="header"]
+|===
+| Placeholder | Description
+
+| `{{DOMAIN}}`
+| Your domain name (e.g., example.com)
+
+| `{{SECURITY_EMAIL}}`
+| Security contact email
+
+| `{{EXPIRES_DATE}}`
+| Expiration date (YYYY-MM-DD)
+
+| `{{ANDROID_PACKAGE_NAME}}`
+| Android app package name
+
+| `{{SHA256_FINGERPRINT_1}}`
+| Android signing certificate fingerprint
+
+| `{{TEAM_ID}}`
+| Apple Team ID (10 characters)
+
+| `{{BUNDLE_ID}}`
+| iOS app bundle identifier
+
+| `{{MATRIX_SERVER_HOSTNAME}}`
+| Matrix homeserver hostname
+
+| `{{SOFTWARE_NAME}}`
+| Server software name (for NodeInfo)
+|===
+
+== Required Fields by Resource
+
+=== security.txt (RFC 9116)
+
+[source]
+----
+Contact: <required - at least one>
+Expires: <required - ISO 8601 datetime>
+----
+
+=== assetlinks.json (Android)
+
+[source,json]
+----
+{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "<required>",
+    "sha256_cert_fingerprints": ["<required>"]
+  }
+}
+----
+
+=== apple-app-site-association (iOS)
+
+[source,json]
+----
+{
+  "applinks": {
+    "apps": [],
+    "details": [{
+      "appID": "<TeamID>.<BundleID>",
+      "paths": ["*"]
+    }]
+  }
+}
+----
+
+== Validation
+
+After generating your well-known files, validate them:
+
+[source,bash]
+----
+# Using the validator CLI
+wke-validator validate .well-known/security.txt
+wke-validator validate-dir .well-known/
+----
+
+== Content Types
+
+Ensure your web server sends correct content types:
+
+[cols="2,2", options="header"]
+|===
+| Resource | Content-Type
+
+| security.txt, ai.txt, humans.txt
+| `text/plain; charset=utf-8`
+
+| assetlinks.json, openid-configuration
+| `application/json`
+
+| apple-app-site-association
+| `application/json`
+
+| webfinger
+| `application/jrd+json`
+
+| host-meta
+| `application/xrd+xml`
+|===
+
+== CORS Headers
+
+Federation resources need CORS headers:
+
+[source]
+----
+Access-Control-Allow-Origin: *
+----
+
+Required for:
+
+* `/.well-known/webfinger`
+* `/.well-known/nodeinfo`
+* `/.well-known/matrix/*`
+
+== License
+
+PMPL-1.0 OR PMPL-1.0-or-later

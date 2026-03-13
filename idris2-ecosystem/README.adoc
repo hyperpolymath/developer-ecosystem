@@ -1,0 +1,16 @@
+= idris2-ecosystem
+// SPDX-License-Identifier: PMPL-1.0-or-later
+:author: Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>
+
+Idris2 libraries and tools.
+
+== Components
+
+* `cno/` - CNO (Computational Narrative Ontology) for Idris2
+* `dyadt/` - Dyadic type theory implementation
+* `echidna/` - Echidna formal verification bindings
+* `xml-toolkit/` - XML 7.44 processing toolkit
+
+== License
+
+PMPL-1.0-or-later

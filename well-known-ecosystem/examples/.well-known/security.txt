@@ -1,0 +1,15 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+#
+# Example security.txt file (RFC 9116)
+# This is a template - replace values with your actual information
+
+Contact: mailto:security@example.com
+Contact: https://example.com/security/report
+Expires: 2026-12-31T23:59:59Z
+Encryption: https://example.com/.well-known/pgp-key.txt
+Acknowledgments: https://example.com/security/hall-of-fame
+Preferred-Languages: en
+Canonical: https://example.com/.well-known/security.txt
+Policy: https://example.com/security/policy
+Hiring: https://example.com/careers/security

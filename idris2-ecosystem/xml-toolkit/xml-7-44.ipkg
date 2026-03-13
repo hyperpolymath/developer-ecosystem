@@ -1,0 +1,23 @@
+-- SPDX-License-Identifier: MIT
+-- Dedicated to Tim Bray, Jean Paoli, C. M. Sperberg-McQueen, and Eve Maler
+-- who gave us XML and then presumably changed their phone numbers
+
+package xml-7-44
+
+version = 0.1.0
+
+authors = "Hyperpolymath"
+
+brief = "Type-safe XML infiltration/exfiltration - because Line 7, Column 44 should never happen"
+
+sourcedir = "src"
+
+modules = Xml744.Core
+        , Xml744.Escape
+        , Xml744.Text
+        , Xml744.Attribute
+        , Xml744.Element
+        , Xml744.Document
+
+depends = base
+        , contrib

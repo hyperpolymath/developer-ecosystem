@@ -1,0 +1,31 @@
+-- SPDX-License-Identifier: MPL-2.0
+-- Idris2 package file for compile-time verified claims
+
+package idris2-dyadt
+version = 0.1.0
+authors = "Jonathan D.A. Jewell"
+maintainers = "Jonathan D.A. Jewell"
+license = "MPL-2.0"
+brief = "Compile-time verified claims using dependent types - the proven version of did-you-actually-do-that"
+readme = "README.adoc"
+homepage = "https://github.com/hyperpolymath/idris2-dyadt"
+sourceloc = "https://github.com/hyperpolymath/idris2-dyadt"
+bugtracker = "https://github.com/hyperpolymath/idris2-dyadt/issues"
+
+sourcedir = "src"
+modules = Dyadt
+        , Dyadt.Claim
+        , Dyadt.Evidence
+        , Dyadt.Verdict
+        , Dyadt.Verifier
+        , Dyadt.Combinators
+        , Dyadt.Integration.Echidna
+        , Dyadt.Integration.CNO
+        , Dyadt.Examples
+
+depends = base >= 0.6.0
+        , contrib
+        , idris2-echidna
+        , idris2-cno
+
+-- opts = "--warnpartial"  -- Enable if desired

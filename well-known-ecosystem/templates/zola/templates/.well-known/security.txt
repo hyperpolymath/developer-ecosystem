@@ -1,0 +1,26 @@
+{#- SPDX-License-Identifier: MIT OR AGPL-3.0-or-later -#}
+{#- SPDX-FileCopyrightText: 2024-2025 hyperpolymath -#}
+{#- Zola template for security.txt - place in templates/.well-known/ -#}
+{%- set security = config.extra.security -%}
+{%- for contact in security.contact -%}
+Contact: {{ contact }}
+{% endfor -%}
+Expires: {{ security.expires }}
+{%- if security.encryption %}
+Encryption: {{ security.encryption }}
+{%- endif %}
+{%- if security.acknowledgments %}
+Acknowledgments: {{ security.acknowledgments }}
+{%- endif %}
+{%- if security.preferred_languages %}
+Preferred-Languages: {{ security.preferred_languages | join(sep=", ") }}
+{%- endif %}
+{%- if security.canonical %}
+Canonical: {{ security.canonical }}
+{%- endif %}
+{%- if security.policy %}
+Policy: {{ security.policy }}
+{%- endif %}
+{%- if security.hiring %}
+Hiring: {{ security.hiring }}
+{%- endif %}

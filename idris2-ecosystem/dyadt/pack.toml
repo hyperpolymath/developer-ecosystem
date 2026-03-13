@@ -1,0 +1,28 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Pack package manager configuration for idris2-dyadt
+# See: https://github.com/stefan-hoeck/idris2-pack
+
+[custom.all.idris2-dyadt]
+type   = "local"
+path   = "."
+ipkg   = "idris2-dyadt.ipkg"
+
+# Dependencies (install order matters)
+[custom.all.idris2-echidna]
+type   = "github"
+url    = "https://github.com/hyperpolymath/idris2-echidna"
+commit = "main"
+ipkg   = "idris2-echidna.ipkg"
+
+[custom.all.idris2-cno]
+type   = "github"
+url    = "https://github.com/hyperpolymath/idris2-cno"
+commit = "main"
+ipkg   = "idris2-cno.ipkg"
+
+# For pack-db registration, add to collections/HEAD.toml:
+# [db.idris2-dyadt]
+# type   = "github"
+# url    = "https://github.com/hyperpolymath/idris2-dyadt"
+# commit = "main"
+# ipkg   = "idris2-dyadt.ipkg"

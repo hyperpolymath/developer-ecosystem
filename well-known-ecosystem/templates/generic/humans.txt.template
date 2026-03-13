@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: PMPL-1.0 OR PMPL-1.0-or-later
+# SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+#
+# Generic humans.txt template
+# See https://humanstxt.org/ for specification
+# Replace {{PLACEHOLDER}} values with your actual information
+
+/* TEAM */
+Name: {{TEAM_MEMBER_NAME}}
+Role: {{TEAM_MEMBER_ROLE}}
+Location: {{TEAM_MEMBER_LOCATION}}
+Contact: {{TEAM_MEMBER_CONTACT}}
+
+/* THANKS */
+Name: {{CONTRIBUTOR_NAME}}
+Role: {{CONTRIBUTOR_ROLE}}
+
+/* SITE */
+Last update: {{LAST_UPDATE_DATE}}
+Language: {{SITE_LANGUAGE}}
+Doctype: HTML5
+Standards: RFC 8615, RFC 9116
+Software: {{SITE_SOFTWARE}}

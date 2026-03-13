@@ -1,0 +1,13 @@
+{#- SPDX-License-Identifier: MIT OR AGPL-3.0-or-later -#}
+{#- SPDX-FileCopyrightText: 2024-2025 hyperpolymath -#}
+{#- Zola template for ai.txt -#}
+{%- set ai = config.extra.ai -%}
+{%- if ai.policy -%}
+AI-Policy: {{ ai.policy }}
+{% endif -%}
+{%- if ai.training_opt_out is defined -%}
+Training-Opt-Out: {{ ai.training_opt_out }}
+{% endif -%}
+{%- if ai.contact -%}
+Contact: {{ ai.contact }}
+{% endif -%}

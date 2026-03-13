@@ -1,0 +1,26 @@
+{#- SPDX-License-Identifier: MIT OR AGPL-3.0-or-later -#}
+{#- SPDX-FileCopyrightText: 2024-2025 hyperpolymath -#}
+{#- Zola template for humans.txt -#}
+{%- set humans = config.extra.humans -%}
+/* TEAM */
+{% for member in humans.team -%}
+Name: {{ member.name }}
+Role: {{ member.role }}
+{%- if member.location %}
+Location: {{ member.location }}
+{%- endif %}
+
+{% endfor -%}
+{%- if humans.thanks %}
+/* THANKS */
+{% for t in humans.thanks -%}
+Name: {{ t.name }}
+{%- if t.role %}
+Role: {{ t.role }}
+{%- endif %}
+
+{% endfor -%}
+{%- endif %}
+/* SITE */
+Last update: {{ now() | date(format="%Y-%m-%d") }}
+Standards: RFC 8615, RFC 9116

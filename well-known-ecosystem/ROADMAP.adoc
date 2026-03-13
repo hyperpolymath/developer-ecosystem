@@ -1,0 +1,241 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+
+= Well-Known Ecosystem — Development Roadmap
+:author: hyperpolymath
+:revdate: 2025-12-26
+:toc: macro
+:toclevels: 2
+:icons: font
+
+toc::[]
+
+== Current State
+
+=== What Exists
+
+[cols="1,3,1", options="header"]
+|===
+| Category | Content | Status
+
+| Specification
+| Conceptual design for well-known URI toolkit
+| ✓ Complete
+
+| Language Policy
+| Hyperpolymath RSR standard (ReScript/Deno/Rust)
+| ✓ Complete
+
+| CI/CD Infrastructure
+| 13 policy enforcement workflows
+| ✓ Active
+
+| Project Config
+| EditorConfig, gitignore, gitattributes, justfile
+| ✓ Complete
+
+| Issue Templates
+| Bug, feature, docs, question, custom
+| ✓ Complete
+
+| Citation Formats
+| BibTeX, Harvard, OSCOLA, MLA, APA 7
+| ✓ Complete
+|===
+
+=== What Does Not Exist
+
+[cols="1,3", options="header"]
+|===
+| Category | Notes
+
+| *Core Implementation*
+| No source code — justfile tasks are all TODO
+
+| *Well-Known Templates*
+| Previously deleted; need recreation
+
+| *Package Definitions*
+| `guix.scm` / `flake.nix` previously deleted
+
+| *Metadata Files*
+| `CITATION.cff`, `codemeta.json` previously deleted
+
+| *State/Meta Definitions*
+| `STATE.scm`, `META.scm`, `ECOSYSTEM.scm` previously deleted
+|===
+
+== Phase 1: Foundation
+
+=== 1.1 Project Metadata
+* [ ] Recreate `CITATION.cff` — Software citation
+* [ ] Recreate `codemeta.json` — CodeMeta project metadata
+* [ ] Create `guix.scm` — GNU Guix package definition
+* [ ] Create `flake.nix` — Nix flake (fallback)
+
+=== 1.2 Guile Scheme State Files
+* [ ] Define `STATE.scm` — Project state tracking
+* [ ] Define `META.scm` — Project metadata
+* [ ] Define `ECOSYSTEM.scm` — Ecosystem definitions
+
+=== 1.3 Well-Known Resource Templates
+* [ ] `.well-known/security.txt` — RFC 9116 template
+* [ ] `.well-known/ai.txt` — AI policy disclosure
+* [ ] `.well-known/humans.txt` — Contributors
+* [ ] `.well-known/consent-required.txt` — Consent policy
+* [ ] `.well-known/dc.xml` — Dublin Core metadata
+* [ ] `.well-known/provenance.json` — Provenance info
+
+== Phase 2: Core Library
+
+=== 2.1 ReScript Core
+* [ ] Project setup with Deno
+* [ ] Well-known URI parser/builder
+* [ ] Resource type definitions
+* [ ] Validation primitives
+
+=== 2.2 Resource Validators
+* [ ] `security.txt` validator (RFC 9116)
+* [ ] `openid-configuration` validator
+* [ ] `webfinger` validator (RFC 7033)
+* [ ] `host-meta` validator (RFC 6415)
+* [ ] Generic JSON/XML validators
+
+=== 2.3 Template System
+* [ ] Template loader
+* [ ] Variable interpolation
+* [ ] Output formatters (JSON, XML, plain text)
+
+== Phase 3: CLI Tool
+
+=== 3.1 Rust CLI (`wke`)
+* [ ] Scaffold with Clap
+* [ ] `wke init` — Initialize well-known directory
+* [ ] `wke generate <resource>` — Generate from template
+* [ ] `wke validate [resource]` — Validate resources
+* [ ] `wke list` — List all well-known resources
+* [ ] `wke check <url>` — Check remote site
+
+=== 3.2 CLI Enhancements
+* [ ] Config file support (`wke.toml` / `wke.ncl`)
+* [ ] Batch operations
+* [ ] Output formats (JSON, table, plain)
+* [ ] Shell completions (bash, zsh, fish)
+
+== Phase 4: Framework Integrations
+
+=== 4.1 Deno/Fresh Integration
+* [ ] Middleware for serving well-known resources
+* [ ] Auto-generation from config
+* [ ] Fresh plugin
+
+=== 4.2 Rust/Axum Integration
+* [ ] Router extension
+* [ ] Tower middleware layer
+
+=== 4.3 Static Site Generation
+* [ ] Hugo integration
+* [ ] Zola integration
+* [ ] Generic SSG support
+
+== Phase 5: Advanced Features
+
+=== 5.1 Monitoring & Alerts
+* [ ] Expiration tracking (security.txt)
+* [ ] Validity monitoring
+* [ ] Notification system
+
+=== 5.2 Multi-Site Management
+* [ ] Site configuration database
+* [ ] Bulk operations
+* [ ] Dashboard (Dioxus or Tauri)
+
+=== 5.3 Plugin System
+* [ ] Custom resource type plugins
+* [ ] Validator plugins
+* [ ] Output format plugins
+
+== Technology Decisions
+
+=== Implementation Languages
+
+[cols="2,2,3", options="header"]
+|===
+| Component | Language | Rationale
+
+| Core Library
+| ReScript
+| Type-safe, compiles to JS, runs on Deno
+
+| CLI Tool
+| Rust
+| Performance, single binary distribution
+
+| Configuration
+| Nickel
+| Typed configuration language
+
+| State Files
+| Guile Scheme
+| Per Hyperpolymath standard
+
+| Desktop App
+| Tauri 2.0+ or Dioxus
+| Rust-first, cross-platform
+|===
+
+=== Package Distribution
+
+[cols="2,3", options="header"]
+|===
+| Channel | Notes
+
+| Guix
+| Primary — `guix.scm` package definition
+
+| Nix
+| Fallback — `flake.nix`
+
+| Deno
+| Library — `deno.json` imports
+
+| Cargo
+| CLI binary — `crates.io` (if published)
+|===
+
+== Success Criteria
+
+=== Phase 1 Complete When
+* All metadata files recreated
+* Guile Scheme state files defined
+* Well-known templates in place
+
+=== Phase 2 Complete When
+* ReScript library validates 5+ resource types
+* 80%+ test coverage
+* Documentation complete
+
+=== Phase 3 Complete When
+* CLI handles all common operations
+* Shell completions available
+* Published to package registries
+
+=== Phase 4 Complete When
+* Deno/Fresh integration working
+* At least one SSG integration
+* Integration tests passing
+
+=== Phase 5 Complete When
+* Monitoring functional
+* Multi-site dashboard usable
+* Plugin system documented
+
+== Contributing
+
+See link:README.adoc[README.adoc] for contribution guidelines.
+
+All contributions must comply with the Hyperpolymath RSR language policy.
+
+---
+
+_Last updated: 2025-12-26_

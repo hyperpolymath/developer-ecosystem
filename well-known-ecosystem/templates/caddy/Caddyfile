@@ -1,0 +1,60 @@
+# SPDX-License-Identifier: PMPL-1.0 OR PMPL-1.0-or-later
+# SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+#
+# Caddy configuration for well-known resources
+# Full site configuration with automatic HTTPS
+
+example.com {
+    # Document root
+    root * /var/www/example.com
+
+    # Security headers
+    header {
+        Strict-Transport-Security "max-age=63072000"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        X-XSS-Protection "1; mode=block"
+    }
+
+    # Well-known resources with proper content types
+    @wellknown path /.well-known/*
+
+    # Plain text well-known files
+    @wellknown_txt path /.well-known/security.txt /.well-known/ai.txt /.well-known/humans.txt /.well-known/dnt-policy.txt
+    header @wellknown_txt Content-Type "text/plain; charset=utf-8"
+
+    # JSON well-known files
+    @wellknown_json path /.well-known/assetlinks.json /.well-known/openid-configuration /.well-known/matrix/* /.well-known/nodeinfo
+    header @wellknown_json Content-Type "application/json"
+
+    # Apple App Site Association
+    @aasa path /.well-known/apple-app-site-association
+    header @aasa Content-Type "application/json"
+
+    # WebFinger with JRD content type
+    @webfinger path /.well-known/webfinger
+    header @webfinger Content-Type "application/jrd+json"
+    header @webfinger Access-Control-Allow-Origin "*"
+
+    # Matrix discovery CORS
+    @matrix path /.well-known/matrix/*
+    header @matrix Access-Control-Allow-Origin "*"
+
+    # NodeInfo CORS
+    @nodeinfo path /.well-known/nodeinfo
+    header @nodeinfo Access-Control-Allow-Origin "*"
+
+    # Redirect /security.txt to /.well-known/security.txt
+    redir /security.txt /.well-known/security.txt permanent
+
+    # Serve files
+    file_server
+
+    # Enable compression
+    encode gzip
+
+    # Logging
+    log {
+        output file /var/log/caddy/example.com.log
+    }
+}

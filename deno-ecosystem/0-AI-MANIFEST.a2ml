@@ -1,0 +1,19 @@
+# 0-AI-MANIFEST.a2ml
+# SPDX-License-Identifier: PMPL-1.0-or-later
+
+canonical_locations:
+  scm_files: .machine_readable/
+  projects: projects/
+
+invariants:
+  - SCM files ONLY in .machine_readable/ (never root)
+  - Each project lives in projects/<name>/
+  - Shared RSR template at root level
+
+structure:
+  type: monorepo
+  projects:
+    - projects/beamdeno
+    - projects/bundeno
+    - projects/deno-bunbridge
+    - projects/v-deno

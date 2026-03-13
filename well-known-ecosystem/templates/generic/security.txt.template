@@ -1,0 +1,35 @@
+# SPDX-License-Identifier: PMPL-1.0 OR PMPL-1.0-or-later
+# SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+#
+# Generic security.txt template (RFC 9116)
+# Replace {{PLACEHOLDER}} values with your actual information
+#
+# Required fields are marked with [REQUIRED]
+# Optional fields are marked with [OPTIONAL]
+
+# [REQUIRED] Security contact - at least one required
+# Use mailto: for email or https:// for web form
+Contact: mailto:{{SECURITY_EMAIL}}
+Contact: https://{{DOMAIN}}/security/report
+
+# [REQUIRED] Expiration date in ISO 8601 format
+# Must be in the future, recommended within 1 year
+Expires: {{EXPIRES_DATE}}T23:59:59Z
+
+# [OPTIONAL] URL to PGP public key for encrypted communications
+Encryption: https://{{DOMAIN}}/.well-known/pgp-key.txt
+
+# [OPTIONAL] URL to security acknowledgments/hall of fame
+Acknowledgments: https://{{DOMAIN}}/security/thanks
+
+# [OPTIONAL] Preferred languages for security reports (BCP 47 tags)
+Preferred-Languages: en
+
+# [OPTIONAL] Canonical URL for this security.txt file
+Canonical: https://{{DOMAIN}}/.well-known/security.txt
+
+# [OPTIONAL] URL to security policy
+Policy: https://{{DOMAIN}}/security/policy
+
+# [OPTIONAL] URL to security-related job listings
+Hiring: https://{{DOMAIN}}/careers/security

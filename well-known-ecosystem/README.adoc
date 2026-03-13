@@ -1,0 +1,251 @@
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+
+= Well-Known Ecosystem
+
+
+
+
+:author: hyperpolymath
+:revdate: 2025-12-26
+:toc: macro
+:toclevels: 3
+:icons: font
+:source-highlighter: rouge
+:experimental:
+:url-rfc8615: https://www.rfc-editor.org/rfc/rfc8615.html
+:url-rfc9116: https://www.rfc-editor.org/rfc/rfc9116.html
+:url-iana-wellknown: https://www.iana.org/assignments/well-known-uris/
+
+image:https://img.shields.io/badge/RFC-8615-blue.svg[RFC 8615, link={url-rfc8615}]
+image:https://img.shields.io/badge/RFC-9116-blue.svg[RFC 9116, link={url-rfc9116}]
+
+toc::[]
+
+== Overview
+
+*Well-Known Ecosystem* is a comprehensive toolkit for managing and implementing well-known URIs as defined in {url-rfc8615}[RFC 8615]. This project provides tools, validators, and infrastructure for creating, managing, and serving well-known resources that enable site-wide metadata, security policies, and service discovery.
+
+== Project Status
+
+[IMPORTANT]
+====
+*This repository currently contains the project specification and infrastructure.*
+
+The implementation is in the planning phase. See link:ROADMAP.adoc[ROADMAP.adoc] for development plans.
+====
+
+=== What Exists Now
+
+[cols="2,3", options="header"]
+|===
+| Component | Status
+
+| *Specification*
+| ✓ Conceptual design documented
+
+| *Language Policy*
+| ✓ Hyperpolymath RSR standard defined
+
+| *CI/CD Infrastructure*
+| ✓ 13 enforcement workflows active
+
+| *Issue Templates*
+| ✓ 5 templates configured
+
+| *Core Implementation*
+| ◯ Pending development
+|===
+
+== Conceptual Design
+
+The toolkit will provide:
+
+=== URI Management
+* Create, validate, and manage well-known URIs
+* Template system for common well-known resources
+* Auto-discovery and mapping of well-known resources
+
+=== Validation Engine
+* RFC 8615 compliance checking
+* Resource-specific standard validation
+* Batch validation across multiple resources
+
+=== Supported Well-Known Resources
+
+[cols="2,2,3", options="header"]
+|===
+| Resource | Standard | Purpose
+
+| `security.txt`
+| {url-rfc9116}[RFC 9116]
+| Security contact information
+
+| `openid-configuration`
+| OpenID Connect
+| Identity provider discovery
+
+| `webfinger`
+| RFC 7033
+| User/resource discovery
+
+| `change-password`
+| WICG Spec
+| Password change URL
+
+| `apple-app-site-association`
+| Apple
+| Universal links (iOS)
+
+| `assetlinks.json`
+| Google
+| Android app links
+
+| `dnt-policy.txt`
+| W3C
+| Do Not Track policy
+
+| `host-meta`
+| RFC 6415
+| Host metadata
+
+| `matrix`
+| Matrix Spec
+| Matrix homeserver discovery
+
+| `nodeinfo`
+| NodeInfo
+| Federated service info
+|===
+
+== Technology Stack
+
+This project follows the *Hyperpolymath RSR* (Rhodium Standard Rules) language policy.
+
+=== Allowed Technologies
+
+[cols="2,3", options="header"]
+|===
+| Technology | Use Case
+
+| *ReScript*
+| Primary application code
+
+| *Deno*
+| Runtime & package management
+
+| *Rust*
+| Performance-critical components, CLI tools
+
+| *Gleam*
+| Backend services (BEAM or JS target)
+
+| *Nickel*
+| Configuration language
+
+| *Guile Scheme*
+| State/meta definitions (`.scm` files)
+|===
+
+=== Explicitly Banned
+
+[WARNING]
+====
+The following are *not permitted* in this project:
+
+* TypeScript → Use ReScript
+* Node.js / npm / Bun / pnpm / yarn → Use Deno
+* Go → Use Rust
+* Python (except SaltStack) → Use ReScript/Rust
+====
+
+== Repository Structure
+
+----
+well-known-ecosystem/
+├── .claude/
+│   └── CLAUDE.md          # AI assistant language policy
+├── .github/
+│   ├── workflows/         # 13 CI/CD enforcement workflows
+│   └── ISSUE_TEMPLATE/    # 5 issue templates
+├── docs/
+│   └── CITATIONS.adoc     # Citation formats
+├── LICENSE.txt            # PMPL-1.0 OR PMPL-1.0-or-later
+├── README.adoc            # This file
+├── ROADMAP.adoc           # Development roadmap
+├── justfile               # Development tasks (TODO)
+├── .editorconfig          # Editor configuration
+├── .gitattributes         # Git attributes (RSR-compliant)
+└── .gitignore             # Git ignore (RSR-compliant)
+----
+
+== CI/CD Enforcement
+
+This repository includes comprehensive policy enforcement:
+
+[cols="2,3", options="header"]
+|===
+| Workflow | Purpose
+
+| `rsr-antipattern.yml`
+| Blocks TypeScript, Go, npm lockfiles; enforces RSR stack
+
+| `npm-bun-blocker.yml`
+| Blocks npm/bun artifacts
+
+| `guix-nix-policy.yml`
+| Enforces Guix/Nix package management
+
+| `wellknown-enforcement.yml`
+| RFC 9116 security.txt validation + RSR compliance
+
+| `security-policy.yml`
+| Weak crypto, HTTP, hardcoded secrets detection
+
+| `quality.yml`
+| File permissions, secret scanning, EditorConfig
+
+| `codeql.yml`
+| CodeQL security analysis
+
+| `scorecard.yml`
+| OSSF Scorecard security scoring
+
+| `instant-sync.yml`
+| Automatic forge propagation
+
+| `mirror.yml`
+| Mirror to GitLab and Bitbucket
+|===
+
+== License
+
+This project is dual-licensed under:
+
+* *Palimpsest-MPL License v1.0 (PMPL-1.0)* — Permissive option
+* *PMPL-1.0-or-later* — Copyleft option
+
+See link:LICENSE.txt[LICENSE.txt] for full text.
+
+== Contributing
+
+Contributions are welcome. Please note:
+
+1. All code must follow the RSR language policy
+2. CI/CD will reject non-compliant submissions
+3. See link:ROADMAP.adoc[ROADMAP.adoc] for current priorities
+
+== Resources
+
+* {url-rfc8615}[RFC 8615 — Well-Known URIs]
+* {url-rfc9116}[RFC 9116 — security.txt]
+* {url-iana-wellknown}[IANA Well-Known URIs Registry]
+* https://openid.net/specs/openid-connect-discovery-1_0.html[OpenID Connect Discovery]
+
+---
+
+_hyperpolymath_ — https://github.com/hyperpolymath

@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: MPL-2.0-or-later
+# SPDX-License-Identifier: PMPL-1.0-or-later
 # workflow-linter.yml - Validates GitHub workflows against RSR security standards
 # This workflow can be copied to other repos for consistent enforcement
 name: Workflow Security Linter
@@ -36,7 +36,7 @@ jobs:
             fi
           done
           if [ $failed -eq 1 ]; then
-            echo "Add '# SPDX-License-Identifier: AGPL-3.0-or-later' as first line"
+            echo "Add '# SPDX-License-Identifier: PMPL-1.0-or-later' as first line"
             exit 1
           fi
           echo "All workflows have SPDX headers"
@@ -63,9 +63,9 @@ jobs:
           echo "=== Checking Action Pinning ==="
           # Find any uses: lines that don't have @SHA format
           # Pattern: uses: owner/repo@<40-char-hex>
-          unpinned=$(grep -rn "uses:" .github/workflows/ | \
+          unpinned=$(grep -rn "^\s*uses:" .github/workflows/ | \
             grep -v "@[a-f0-9]\{40\}" | \
-            grep -v "uses: \./\|uses: docker://\|uses: actions/github-script" || true)
+            grep -v "uses: \./\|uses: docker://" || true)
 
           if [ -n "$unpinned" ]; then
             echo "ERROR: Found unpinned actions:"

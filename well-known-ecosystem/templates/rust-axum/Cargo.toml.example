@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: PMPL-1.0 OR PMPL-1.0-or-later
+# SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+#
+# Example Cargo.toml dependencies for well-known Axum integration
+
+[dependencies]
+axum = "0.7"
+chrono = { version = "0.4", features = ["serde"] }
+tokio = { version = "1", features = ["full"] }
+
+# Optional: for JSON well-known resources
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"

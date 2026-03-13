@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: PMPL-1.0 OR PMPL-1.0-or-later
+# SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+#
+# Generic ai.txt template (RSR Standard)
+# AI Policy Disclosure for web crawlers and AI systems
+# Replace {{PLACEHOLDER}} values with your actual information
+
+# URL to full AI policy document
+AI-Policy: https://{{DOMAIN}}/ai-policy
+
+# Whether to opt out of AI training data collection
+# true = request not to be used for training
+# false = allow use for training
+Training-Opt-Out: {{TRAINING_OPT_OUT}}
+
+# Contact for AI-related inquiries
+Contact: mailto:{{AI_CONTACT_EMAIL}}
+
+# Additional notes (optional, free-form)
+# This site's content is {{COPYRIGHT_STATUS}}.
+# For AI/ML usage inquiries, please contact us at the email above.

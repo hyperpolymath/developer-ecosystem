@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: PMPL-1.0-or-later
 # RSR-compliant .gitignore
 
 # OS & Editor
@@ -80,3 +80,8 @@ htmlcov/
 
 # Crash recovery artifacts
 ai-cli-crash-capture/
+
+# Large directories (no standalone repos, too big to track)
+/julia-ecosystem/
+/opam-repository/
+/package-publishers/

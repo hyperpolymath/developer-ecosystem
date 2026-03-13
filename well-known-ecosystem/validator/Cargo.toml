@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+
+[package]
+name = "wke-validator"
+version = "0.1.0"
+edition = "2021"
+authors = ["hyperpolymath"]
+description = "Well-Known Ecosystem validator CLI"
+license = "PMPL-1.0"
+repository = "https://github.com/hyperpolymath/well-known-ecosystem"
+keywords = ["well-known", "rfc8615", "rfc9116", "security-txt", "validator"]
+categories = ["command-line-utilities", "web-programming"]
+rust-version = "1.70"
+
+[dependencies]
+clap = { version = "4.4", features = ["derive", "env"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+regex = "1.10"
+thiserror = "1.0"
+anyhow = "1.0"
+colored = "2.1"
+url = "2.5"
+encoding_rs = "0.8"
+
+[dev-dependencies]
+tempfile = "3.10"
+
+[[bin]]
+name = "wke-validator"
+path = "src/main.rs"
+
+[profile.release]
+lto = true
+strip = true
+codegen-units = 1

@@ -1,0 +1,43 @@
+# SPDX-License-Identifier: PMPL-1.0
+# SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
+
+# Deno
+.deno/
+deno.lock
+
+# Erlang/OTP
+_build/
+deps/
+*.beam
+*.ez
+erl_crash.dump
+*.plt
+.rebar3/
+
+# Elixir
+_build/
+deps/
+.elixir_ls/
+
+# Build artifacts
+dist/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Coverage
+coverage/
+.coverage/
+cover/
+
+# Logs
+*.log
+logs/

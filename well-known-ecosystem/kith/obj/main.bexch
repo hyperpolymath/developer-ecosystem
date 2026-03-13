@@ -1,0 +1,21 @@
+[GENERATED OBJECT FILE]
+b__main.o
+[PROJECT FILES]
+/var/home/hyper/repos/kith/kith.gpr
+20251229114159 5ab2c71c19bdf0ab9692160e5d453f35
+[BOUND OBJECT FILES]
+/var/home/hyper/repos/kith/obj/aibdp_validation.o
+/var/home/hyper/repos/kith/obj/kith.o
+/var/home/hyper/repos/kith/obj/tui.o
+/var/home/hyper/repos/kith/obj/main.o
+[GENERATED SOURCE FILES]
+b__main.ads
+b__main.adb
+b__main.ali
+[RESULTING OPTIONS]
+-L/var/home/hyper/repos/kith/obj/
+-L/var/home/hyper/repos/kith/obj/
+-L/usr/lib/gcc/x86_64-redhat-linux/15/adalib/
+-static
+-lgnat
+-ldl

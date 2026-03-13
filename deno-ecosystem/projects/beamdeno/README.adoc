@@ -1,0 +1,94 @@
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
+= beamdeno
+
+
+
+:toc: macro
+:icons: font
+
+**Connect Deno to the BEAM ecosystem (Erlang, Elixir, Gleam).**
+
+image:https://img.shields.io/badge/deno-runtime-green[Deno]
+image:https://img.shields.io/badge/BEAM-ecosystem-purple[BEAM]
+
+toc::[]
+
+== Overview
+
+beamdeno enables Deno applications to communicate with BEAM-based systems (Erlang, Elixir, Gleam, LFE). Call Erlang functions, send messages to Elixir GenServers, and integrate with the actor model from JavaScript.
+
+== Architecture
+
+[source]
+----
+┌─────────────────┐         ┌─────────────────┐
+│      Deno       │  ETF    │      BEAM       │
+│   Application   │◄───────►│  Erlang/Elixir  │
+└─────────────────┘  Port   └─────────────────┘
+        │                           │
+        └───── beamdeno ────────────┘
+----
+
+== Connection Methods
+
+[cols="1,1,1,1"]
+|===
+| Method | Complexity | Performance | Use Case
+
+| **Erlang Ports** | Medium | Good | Most common, spawn erl process
+| **Distribution Protocol** | Hard | Best | Direct node communication
+| **HTTP/JSON** | Easy | Slower | Simple integration
+| **NIFs via Zig** | Hard | Best | Shared native code
+|===
+
+== Quick Start
+
+[source,typescript]
+----
+import { BeamConnection } from "beamdeno";
+
+// Connect to running BEAM node
+const beam = await BeamConnection.connect({
+  node: "myapp@localhost",
+  cookie: "secret_cookie"
+});
+
+// Call Erlang function
+const result = await beam.call("lists", "seq", [1, 10]);
+console.log(result); // [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+// Send message to GenServer
+await beam.cast("MyApp.Worker", { type: "process", data: "hello" });
+
+// Pattern match on messages
+beam.receive((msg) => {
+  console.log("Received from BEAM:", msg);
+});
+----
+
+== Features
+
+* **ETF Encoding/Decoding** — Native Erlang Term Format support
+* **Port Communication** — Spawn and manage Erlang processes
+* **Message Passing** — Send/receive with BEAM processes
+* **GenServer Integration** — Call, cast, and subscribe to GenServers
+* **Supervision Trees** — Monitor BEAM process health from Deno
+
+== Roadmap
+
+* **v0.1** — ETF encoder/decoder, basic port communication
+* **v0.2** — GenServer call/cast support
+* **v0.3** — Distribution protocol (direct node connection)
+* **v1.0** — Full bidirectional messaging
+
+== Related Projects
+
+* https://github.com/hyperpolymath/bundeno[bundeno] — Deno/Bun portability
+* https://github.com/hyperpolymath/deno-bunbridge[deno-bunbridge] — Bun ecosystem access
+* https://github.com/hyperpolymath/v-deno[v-deno] — V language FFI
+
+== License
+
+PMPL-1.0-or-later

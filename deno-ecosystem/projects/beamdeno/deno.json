@@ -1,0 +1,28 @@
+{
+  "$schema": "https://deno.land/x/deno/cli/schemas/config-file.v1.json",
+  "name": "@hyperpolymath/beamdeno",
+  "version": "1.0.0",
+  "license": "PMPL-1.0",
+  "exports": "./deno/mod.ts",
+  "tasks": {
+    "test": "deno test --allow-net --allow-run",
+    "test:integration": "deno test --allow-net --allow-run integration/",
+    "check": "deno check deno/mod.ts",
+    "fmt": "deno fmt",
+    "lint": "deno lint"
+  },
+  "fmt": {
+    "indentWidth": 2,
+    "singleQuote": false,
+    "proseWrap": "preserve"
+  },
+  "lint": {
+    "rules": {
+      "tags": ["recommended"]
+    }
+  },
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true
+  }
+}

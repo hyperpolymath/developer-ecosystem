@@ -1,0 +1,49 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# kith - Development Tasks
+set shell := ["bash", "-uc"]
+set dotenv-load := true
+
+project := "kith"
+
+# Show all recipes
+default:
+    @just --list --unsorted
+
+# Build with gprbuild (requires GNAT toolchain)
+build:
+    @echo "Building Kith..."
+    toolbox run gprbuild -j0 -p kith.gpr
+
+# Run the application
+run: build
+    @echo "Running Kith..."
+    toolbox run ./bin/main
+
+# Test the build
+test: build
+    @echo "Testing Kith..."
+    toolbox run ./bin/main
+
+# Clean build artifacts
+clean:
+    @echo "Cleaning build artifacts..."
+    rm -rf obj/*.o obj/*.ali bin/main
+    rm -f *.o *.ali b~*
+
+# Format Ada code (placeholder - gnatpp if available)
+fmt:
+    @echo "Formatting Ada source files..."
+    @if command -v gnatpp >/dev/null 2>&1; then \
+        find src/ada -name "*.adb" -o -name "*.ads" | xargs gnatpp -rnb; \
+    else \
+        echo "gnatpp not available - install GNAT Studio for formatting"; \
+    fi
+
+# Lint Ada code
+lint:
+    @echo "Linting Ada source files..."
+    toolbox run gprbuild -j0 -p -gnatc kith.gpr 2>&1 || true
+
+# Check syntax only
+check:
+    toolbox run gprbuild -j0 -p -gnatc kith.gpr

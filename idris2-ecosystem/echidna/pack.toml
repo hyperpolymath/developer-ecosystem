@@ -1,0 +1,15 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Pack package manager configuration for idris2-echidna
+# See: https://github.com/stefan-hoeck/idris2-pack
+
+[custom.all.idris2-echidna]
+type   = "local"
+path   = "."
+ipkg   = "idris2-echidna.ipkg"
+
+# For pack-db registration, add to collections/HEAD.toml:
+# [db.idris2-echidna]
+# type   = "github"
+# url    = "https://github.com/hyperpolymath/idris2-echidna"
+# commit = "main"
+# ipkg   = "idris2-echidna.ipkg"

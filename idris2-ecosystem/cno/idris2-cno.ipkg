@@ -1,0 +1,24 @@
+-- SPDX-License-Identifier: MPL-2.0
+package idris2-cno
+
+version = "0.1.0"
+authors = "hyperpolymath"
+license = "MPL-2.0"
+brief = "Certified Null Operations in Idris2 dependent types"
+readme = "README.adoc"
+
+sourcedir = "src"
+
+depends = contrib
+
+modules = CNO
+        , CNO.Core
+        , CNO.Proof
+        , CNO.Category
+        , CNO.Composition
+        , CNO.Reversible
+        , CNO.Verified
+        , CNO.Examples
+        -- Integration modules moved to idris2-dyadt to avoid circular deps:
+        -- , CNO.Integration.Dyadt
+        -- , CNO.Integration.Echidna

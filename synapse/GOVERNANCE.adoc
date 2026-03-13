@@ -1,0 +1,155 @@
+= Synapse Governance
+:toc:
+:toclevels: 2
+
+== Overview
+
+Synapse uses a lightweight governance model designed for a small, focused project. As the project grows, this model may evolve.
+
+== Decision Making
+
+=== Day-to-Day Decisions
+
+* Made by any Core maintainer
+* Documented in commit messages and issues
+* Reversible without process
+
+=== Significant Decisions
+
+Require discussion and consensus:
+
+* API changes
+* New dependencies
+* Architecture changes
+* Release schedules
+
+Process:
+
+1. Open an issue with `[RFC]` prefix
+2. Allow 7 days for discussion
+3. Core maintainers reach consensus
+4. Document decision in issue and relevant docs
+
+=== Breaking Changes
+
+Require:
+
+1. RFC issue with 14-day discussion period
+2. Unanimous Core maintainer approval
+3. Migration guide
+4. One version deprecation warning
+
+== Roles
+
+=== Core Maintainers
+
+*Current Core Maintainers*: See MAINTAINERS.md
+
+*Responsibilities*:
+
+* Final merge authority
+* Release management
+* Security response
+* Governance decisions
+* Code of Conduct enforcement
+
+*Selection*:
+
+* Nomination by existing Core maintainer
+* Demonstrated sustained contribution (12+ months)
+* Unanimous approval by existing Core
+
+*Removal*:
+
+* Voluntary resignation
+* 6+ months inactivity without notice
+* Code of Conduct violation (per enforcement guidelines)
+* Unanimous remaining Core decision
+
+=== Expert Contributors
+
+*Responsibilities*:
+
+* Code review
+* Mentoring new contributors
+* Feature development
+
+*Selection*:
+
+* 10+ accepted contributions
+* Nomination by Core maintainer
+* Majority Core approval
+
+=== Community Contributors
+
+*Responsibilities*:
+
+* Bug reports
+* Feature requests
+* Code contributions
+* Documentation
+
+*Selection*:
+
+* Anyone who contributes
+
+== Voting
+
+When consensus cannot be reached:
+
+1. Core maintainers vote
+2. Simple majority wins
+3. Ties broken by project founder (if active) or most senior maintainer
+
+Voting is rare and indicates a process failure. Prefer consensus.
+
+== Conflict Resolution
+
+1. Direct discussion between parties
+2. Mediation by uninvolved Core maintainer
+3. Core maintainer vote
+4. External mediation (last resort)
+
+See CODE_OF_CONDUCT.md for behavioral conflicts.
+
+== Financial Governance
+
+=== Current Status
+
+Synapse has no dedicated funding. Contributors donate their time.
+
+=== If Funding Is Received
+
+1. All funds held transparently (OpenCollective or similar)
+2. Expenditures require Core maintainer approval
+3. Priority: Infrastructure > Dependencies > Events > Swag
+4. No individual compensation without unanimous Core approval
+5. Annual financial report published
+
+== Changes to Governance
+
+1. Propose change via RFC issue
+2. 30-day discussion period
+3. Unanimous Core maintainer approval
+4. Update this document
+
+== Succession Planning
+
+If all Core maintainers become inactive:
+
+1. Most recent Expert contributor may assume Core role
+2. If no Experts, most prolific Community contributor
+3. Project may be archived if no successors
+
+== Contact
+
+* Governance questions: Open issue with `governance` label
+* Private matters: Contact maintainers per MAINTAINERS.md
+
+== History
+
+|===
+| Date | Change | Decision
+
+| 2024-01 | Initial governance | Founding decision
+|===

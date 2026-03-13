@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# justfile for deno-ecosystem monorepo
+
+# List all projects
+list:
+    @ls projects/
+
+# Run a command in all projects
+each cmd:
+    @for d in projects/*/; do echo "=== $(basename $d) ==="; (cd "$d" && {{cmd}}); done

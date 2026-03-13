@@ -1,0 +1,9 @@
+= deno-ecosystem Roadmap
+// SPDX-License-Identifier: PMPL-1.0-or-later
+:author: Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>
+
+== Goals
+
+* Unified Deno interop layer across runtimes and languages
+* Shared ABI definitions via Idris2
+* Zig FFI implementations for all bridges

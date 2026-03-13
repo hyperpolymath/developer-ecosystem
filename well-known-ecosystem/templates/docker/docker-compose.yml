@@ -1,0 +1,37 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+#
+# Docker Compose for well-known resources server
+
+services:
+  well-known:
+    build: .
+    ports:
+      - "8080:80"
+    volumes:
+      # Mount well-known files for easy updates
+      - ./.well-known:/usr/share/nginx/html/.well-known:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost/.well-known/security.txt"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  # Optional: Caddy reverse proxy with automatic HTTPS
+  # caddy:
+  #   image: caddy:alpine
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./Caddyfile:/etc/caddy/Caddyfile:ro
+  #     - caddy_data:/data
+  #     - caddy_config:/config
+  #   depends_on:
+  #     - well-known
+
+# volumes:
+#   caddy_data:
+#   caddy_config:

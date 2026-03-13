@@ -1,0 +1,41 @@
+-- SPDX-License-Identifier: MPL-2.0
+-- Idris2 package file for echidna bindings
+
+package idris2-echidna
+version = 0.1.0
+authors = "Jonathan D.A. Jewell"
+maintainers = "Jonathan D.A. Jewell"
+license = "MPL-2.0"
+brief = "Idris2 FFI bindings to the ECHIDNA neurosymbolic theorem proving platform"
+readme = "README.adoc"
+homepage = "https://github.com/hyperpolymath/idris2-echidna"
+sourceloc = "https://github.com/hyperpolymath/idris2-echidna"
+bugtracker = "https://github.com/hyperpolymath/idris2-echidna/issues"
+
+sourcedir = "src"
+modules = Echidna
+        , Echidna.Prover
+        , Echidna.Prover.Z3
+        , Echidna.Prover.CVC5
+        , Echidna.Prover.Lean
+        , Echidna.Prover.Coq
+        , Echidna.Prover.Agda
+        , Echidna.Prover.Isabelle
+        , Echidna.Prover.HOLLight
+        , Echidna.Prover.Mizar
+        , Echidna.Prover.Vampire
+        , Echidna.Prover.EProver
+        , Echidna.Prover.TLC
+        , Echidna.Prover.Alloy
+        , Echidna.Aspect
+        , Echidna.Neural
+        , Echidna.FFI
+        , Echidna.Integration.Dyadt
+        , Echidna.Integration.CNO
+        , Echidna.Examples
+
+depends = base >= 0.6.0
+        , contrib
+        , network
+
+-- opts = "--warn partial"  -- Enable if desired

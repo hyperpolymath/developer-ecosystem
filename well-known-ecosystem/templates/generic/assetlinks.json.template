@@ -1,0 +1,15 @@
+[
+  {
+    "_comment": "SPDX-License-Identifier: PMPL-1.0 OR PMPL-1.0-or-later",
+    "_comment2": "Replace {{PLACEHOLDER}} values with your actual information",
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "{{ANDROID_PACKAGE_NAME}}",
+      "sha256_cert_fingerprints": [
+        "{{SHA256_FINGERPRINT_1}}",
+        "{{SHA256_FINGERPRINT_2}}"
+      ]
+    }
+  }
+]

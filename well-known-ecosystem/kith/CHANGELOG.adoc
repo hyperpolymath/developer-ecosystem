@@ -1,0 +1,9 @@
+// SPDX-License-Identifier: MPL-2.0-or-later
+= Changelog
+
+All notable changes to this project will be documented in this file.
+
+== [Unreleased]
+
+=== Added
+- RSR compliance files

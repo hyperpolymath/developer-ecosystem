@@ -1,0 +1,26 @@
+{{- /* SPDX-License-Identifier: MIT OR AGPL-3.0-or-later */ -}}
+{{- /* SPDX-FileCopyrightText: 2024-2025 hyperpolymath */ -}}
+{{- /* Hugo template for security.txt - place in layouts/.well-known/ */ -}}
+{{- $security := .Site.Params.security -}}
+{{- range $security.contact -}}
+Contact: {{ . }}
+{{ end -}}
+Expires: {{ $security.expires }}
+{{- with $security.encryption }}
+Encryption: {{ . }}
+{{- end }}
+{{- with $security.acknowledgments }}
+Acknowledgments: {{ . }}
+{{- end }}
+{{- with $security.preferredLanguages }}
+Preferred-Languages: {{ delimit . ", " }}
+{{- end }}
+{{- with $security.canonical }}
+Canonical: {{ . }}
+{{- end }}
+{{- with $security.policy }}
+Policy: {{ . }}
+{{- end }}
+{{- with $security.hiring }}
+Hiring: {{ . }}
+{{- end }}
