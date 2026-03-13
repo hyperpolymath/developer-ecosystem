@@ -84,3 +84,4 @@ ai-cli-crash-capture/
 # Large directories (third-party forks, too big to track)
 /opam-repository/
 /package-publishers/
+/lib/
