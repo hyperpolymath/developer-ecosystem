@@ -39,14 +39,14 @@ jobs:
           # Run scanner (exits non-zero when findings exist, which is expected)
           HYPATIA_FORMAT=json "$HOME/hypatia/hypatia-cli.sh" scan . > hypatia-findings.json || true
 
-          # Count findings
-          FINDING_COUNT=$(jq '. | length' hypatia-findings.json 2>/dev/null || echo 0)
+          # Count findings (handle both flat array and nested structures)
+          FINDING_COUNT=$(jq 'if type == "array" then length else 0 end' hypatia-findings.json 2>/dev/null || echo 0)
           echo "findings_count=$FINDING_COUNT" >> $GITHUB_OUTPUT
 
-          # Extract severity counts
-          CRITICAL=$(jq '[.[] | select(.severity == "critical")] | length' hypatia-findings.json)
-          HIGH=$(jq '[.[] | select(.severity == "high")] | length' hypatia-findings.json)
-          MEDIUM=$(jq '[.[] | select(.severity == "medium")] | length' hypatia-findings.json)
+          # Extract severity counts (flatten if nested, filter by .severity)
+          CRITICAL=$(jq '[.. | objects | select(.severity? == "critical")] | length' hypatia-findings.json 2>/dev/null || echo 0)
+          HIGH=$(jq '[.. | objects | select(.severity? == "high")] | length' hypatia-findings.json 2>/dev/null || echo 0)
+          MEDIUM=$(jq '[.. | objects | select(.severity? == "medium")] | length' hypatia-findings.json 2>/dev/null || echo 0)
 
           echo "critical=$CRITICAL" >> $GITHUB_OUTPUT
           echo "high=$HIGH" >> $GITHUB_OUTPUT
