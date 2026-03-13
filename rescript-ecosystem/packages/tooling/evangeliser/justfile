@@ -41,7 +41,6 @@ rebuild: clean-all setup build
 # Install dependencies
 install:
     @echo "📦 Installing dependencies..."
-    deno cache scripts/*.ts
     deno install
 
 # First-time setup
@@ -72,7 +71,8 @@ test:
 # Run full validation
 validate:
     @echo "🔍 Validating project..."
-    deno task validate
+    @just validate-structure
+    @just validate-policy
 
 # Validate RSR compliance
 validate-rsr:
