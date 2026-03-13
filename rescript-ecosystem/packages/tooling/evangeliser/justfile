@@ -1,6 +1,6 @@
 # justfile for ReScript Evangeliser
 # https://github.com/casey/just
-# SPDX-License-Identifier: MIT OR Palimpsest-0.8
+# SPDX-License-Identifier: PMPL-1.0-or-later
 #
 # Per Hyperpolymath policy:
 # - Use Deno, not npm/bun
@@ -21,7 +21,7 @@ build:
 # Build in watch mode
 watch:
     @echo "👀 Watching for changes..."
-    npx rescript build -w
+    deno run -A npm:rescript build -w
 
 # Clean build artifacts
 clean:

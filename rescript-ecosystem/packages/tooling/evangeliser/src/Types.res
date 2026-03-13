@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT OR Palimpsest-0.8
+// SPDX-License-Identifier: PMPL-1.0-or-later
 // Core type definitions for ReScript Evangeliser
 // Philosophy: "Celebrate good, minimize bad, show better"
 
@@ -96,7 +96,7 @@ type analysisResult = {
 }
 
 // User's learning progress
-type learningProgress = {
+type rec learningProgress = {
   patternsCompleted: Set.t<string>,
   currentDifficulty: difficultyLevel,
   totalTransformations: int,
