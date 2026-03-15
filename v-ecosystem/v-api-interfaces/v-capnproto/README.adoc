@@ -1,0 +1,14 @@
+= v-capnproto
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Cap'n Proto-style zero-copy message builder for the V-Ecosystem API interfaces layer.
+Implements flat serialisation into contiguous word-aligned byte segments where deserialisation is a bounds check rather than a copy, following the core principle of the Cap'n Proto wire format.
+Provides a message builder with typed field writers/readers (u8 through u64, byte slices, length-prefixed text), struct allocation with data/pointer sections, and a simple RPC header format for request/response framing.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/capnproto.v`
