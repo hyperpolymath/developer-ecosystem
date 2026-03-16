@@ -4,7 +4,7 @@
 ============================================================================
 TEMPLATE INSTRUCTIONS (delete this block before publishing)
 ============================================================================
-Replace all {{PLACEHOLDER}} values with your information:
+Replace all idris2-ecosystem values with your information:
   language-bridges     - Your project name
   hyperpolymath            - GitHub username or org (e.g., hyperpolymath)
   language-bridges             - Repository name

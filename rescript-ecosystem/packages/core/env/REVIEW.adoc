@@ -90,7 +90,7 @@ The justfile (`.justfile:1`) contains many TODO placeholders:
 
 === Medium: SECURITY.md Template Not Customized
 
-File still contains `{{PLACEHOLDER}}` values:
+File still contains `env` values:
 
 * `Developer Ecosystem`
 * `hyperpolymath`

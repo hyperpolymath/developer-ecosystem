@@ -64,7 +64,7 @@
     ;; TODO: Add runtime dependencies
     ))
   (home-page "https://github.com/hyperpolymath/v-rest")
-  (synopsis "{{PROJECT_PURPOSE}}")
+  (synopsis "v-rest")
   (description "RSR-compliant project. See README.adoc for details.")
   (license (list
             ;; PMPL-1.0-or-later extends MPL-2.0

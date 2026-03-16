@@ -6,7 +6,7 @@
 [source,bibtex]
 ----
 @software{Developer Ecosystem_2026,
-  author = {{{AUTHOR_LAST}}, {{AUTHOR_FIRST}}},
+  author = {Jewell, Jonathan},
   title = {Developer Ecosystem},
   year = {2026},
   url = {https://github.com/hyperpolymath/Developer Ecosystem},
@@ -16,7 +16,7 @@
 
 == Harvard Style
 
-{{AUTHOR_LAST}}, {{AUTHOR_INITIALS}} (2026) _Developer Ecosystem_ [Computer software]. Available at: https://github.com/hyperpolymath/Developer Ecosystem
+Jewell, J.D.A. (2026) _Developer Ecosystem_ [Computer software]. Available at: https://github.com/hyperpolymath/Developer Ecosystem
 
 == OSCOLA
 
@@ -24,11 +24,11 @@ Jonathan D.A. Jewell, 'Developer Ecosystem' (2026) <https://github.com/hyperpoly
 
 == MLA
 
-{{AUTHOR_LAST}}, {{AUTHOR_FIRST}} "Developer Ecosystem." 2026, github.com/hyperpolymath/Developer Ecosystem.
+Jewell, Jonathan "Developer Ecosystem." 2026, github.com/hyperpolymath/Developer Ecosystem.
 
 == APA 7
 
-{{AUTHOR_LAST}}, {{AUTHOR_INITIALS}} (2026). _Developer Ecosystem_ [Computer software]. GitHub. https://github.com/hyperpolymath/Developer Ecosystem
+Jewell, J.D.A. (2026). _Developer Ecosystem_ [Computer software]. GitHub. https://github.com/hyperpolymath/Developer Ecosystem
 
 == See Also
 

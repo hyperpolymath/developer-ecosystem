@@ -202,7 +202,7 @@ docker compose up -d
 
 == Template Placeholders
 
-Generic templates use `{{PLACEHOLDER}}` syntax:
+Generic templates use `well-known-ecosystem` syntax:
 
 [cols="2,3", options="header"]
 |===
