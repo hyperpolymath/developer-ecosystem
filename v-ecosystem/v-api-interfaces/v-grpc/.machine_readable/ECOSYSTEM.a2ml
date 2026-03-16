@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: PMPL-1.0-or-later
-# Copyright (c) {{CURRENT_YEAR}} {{AUTHOR}} ({{OWNER}}) <{{AUTHOR_EMAIL}}>
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 #
 # ECOSYSTEM.a2ml — Project ecosystem position
 # Relationships, dependencies, integration points.
@@ -9,7 +9,7 @@ version = "0.1.0"
 last-updated = "{{CURRENT_DATE}}"
 
 [project]
-name = "{{PROJECT_NAME}}"
+name = "v-grpc"
 purpose = "{{PROJECT_PURPOSE}}"
 role = "{{PROJECT_ROLE}}"  # e.g. ffi-infrastructure, cli-tool, library, service
 

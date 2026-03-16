@@ -1,17 +1,17 @@
 # SPDX-License-Identifier: PMPL-1.0-or-later
-# Copyright (c) {{CURRENT_YEAR}} {{AUTHOR}} ({{OWNER}}) <{{AUTHOR_EMAIL}}>
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 #
 # STATE.a2ml — Project state checkpoint
-# Replace {{PROJECT_NAME}} and customize sections below.
+# Replace v-grpc and customize sections below.
 
 [metadata]
-project = "{{PROJECT_NAME}}"
+project = "v-grpc"
 version = "0.1.0"
 last-updated = "{{CURRENT_DATE}}"
 status = "active"  # active | paused | archived
 
 [project-context]
-name = "{{PROJECT_NAME}}"
+name = "v-grpc"
 purpose = "{{PROJECT_PURPOSE}}"
 completion-percentage = 0
 
