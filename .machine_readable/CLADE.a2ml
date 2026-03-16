@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Clade declaration — part of the gv-clade-index registry
+# See: https://github.com/hyperpolymath/gv-clade-index
+
+[identity]
+uuid = "d47185fd-2d65-537f-859d-02a295530153"
+primary-forge = "github"
+primary-owner = "hyperpolymath"
+canonical-name = "developer-ecosystem"
+prefixed-name = "dx-developer-ecosystem"
+
+[clade]
+primary = "dx"
+secondary = []
+assigned = "2026-03-16"
+rationale = ""
+
+[forges]
+github = "hyperpolymath/developer-ecosystem"
+gitlab = "hyperpolymath/developer-ecosystem"
+bitbucket = "hyperpolymath/developer-ecosystem"
+
+[lineage]
+type = "monorepo"
+parent = "Monorepo — julia/deno/zig/rescript/elixir/idris2/v-ecosystem, etc."
+born = "2026-03-16"
