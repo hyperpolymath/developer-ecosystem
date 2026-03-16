@@ -1,0 +1,39 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= ppx-proven-record
+Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+
+ReScript PPX for verified record subset destructuring.
+
+== Usage
+
+[source,rescript]
+----
+@rest let { className, ?children, ...otherProps } = props
+----
+
+Expands at compile time to explicit field extraction with a typed remainder.
+
+== How It Works
+
+The PPX implements the `computeComplement` algorithm from `proven/SafeRecord`,
+which is formally verified in Idris2 to produce exhaustive, disjoint partitions.
+The PPX is a direct transliteration — it does not call Idris2 at runtime, but
+implements the same algorithm the proofs guarantee correct.
+
+== Formal Foundation
+
+* Idris2 proofs: `proven/src/Proven/SafeRecord/`
+* Paper: `proven/docs/papers/safe-record-destructuring.adoc`
+* Ephapax linear spec: `nextgen-languages/ephapax/` (future)
+
+== Build
+
+[source,bash]
+----
+# The PPX is an OCaml binary (ReScript PPX convention)
+dune build
+----
+
+== Status
+
+Scaffolded. Implementation pending.
