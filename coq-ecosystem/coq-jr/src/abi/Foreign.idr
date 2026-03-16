@@ -185,11 +185,17 @@ export
 %foreign "C:{{project}}_register_callback, lib{{project}}"
 prim__registerCallback : Bits64 -> AnyPtr -> PrimIO Bits32
 
-||| Safe callback registration
+||| Foreign wrapper to marshal a callback function pointer via %foreign.
+||| The C layer receives a function pointer directly — no unsafe coercion needed.
+%foreign "C:{{project}}_register_callback, lib{{project}}"
+prim__registerCallbackFn : Bits64 -> (Bits64 -> Bits32 -> Bits32) -> PrimIO Bits32
+
+||| Safe callback registration using typed foreign function marshalling.
+||| Passes the callback as a typed function pointer rather than AnyPtr.
 export
 registerCallback : Handle -> Callback -> IO (Either Result ())
 registerCallback h cb = do
-  result <- primIO (prim__registerCallback (handlePtr h) (believe_me cb))
+  result <- primIO (prim__registerCallbackFn (handlePtr h) cb)
   pure $ case resultFromInt result of
     Just Ok => Right ()
     Just err => Left err

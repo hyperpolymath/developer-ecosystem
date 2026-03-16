@@ -60,13 +60,16 @@ exfiltrate s =
   where
     replaceAll : String -> String -> String -> String
     replaceAll from to str =
-      case break (== (assert_total $ strHead from)) (unpack str) of
-        (before, []) => str
-        (before, rest) =>
-          if isPrefixOf (unpack from) rest
-            then pack before ++ to ++ replaceAll from to (pack $ drop (length from) rest)
-            else pack before ++ singleton (assert_total $ head rest) ++
-                 replaceAll from to (pack $ assert_total $ tail rest)
+      case unpack from of
+        [] => str  -- empty search string, return unchanged
+        (fc :: _) =>
+          case break (== fc) (unpack str) of
+            (before, []) => str
+            (before, (r :: rs)) =>
+              if isPrefixOf (unpack from) (r :: rs)
+                then pack before ++ to ++ replaceAll from to (pack $ drop (length from) (r :: rs))
+                else pack before ++ singleton r ++
+                     replaceAll from to (pack rs)
 
 ||| Check if a string contains any unescaped dangerous characters
 export
