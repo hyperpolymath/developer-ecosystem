@@ -31,7 +31,7 @@ tui:
 
 # Install hooks to a target repository
 install-hooks REPO:
-    ./scripts/install-repo-hooks.sh {{REPO}}
+    ./scripts/install-repo-hooks.sh developer-ecosystem
 
 # Format Ada source code
 fmt:
