@@ -83,10 +83,10 @@ jobs:
           git config --system core.longpaths true
 
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Use Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@49933ea5288caeca8642195f2b846b8bbe245a93 # v4
         with:
           cache: yarn
           node-version-file: .nvmrc
@@ -105,7 +105,7 @@ jobs:
 
       - name: Restore rewatch build cache
         id: rewatch-build-cache
-        uses: actions/cache@v5
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
         with:
           path: rewatch/target
           key: rewatch-build-v3-${{ matrix.rust-target }}-${{ hashFiles('rewatch/src/**', 'rewatch/Cargo.lock') }}
