@@ -67,7 +67,7 @@ cp templates/generic/security.txt.template .well-known/security.txt
 
 # Replace placeholders
 sed -i 's/{{DOMAIN}}/example.com/g' .well-known/security.txt
-sed -i 's/{{SECURITY_EMAIL}}/security@example.com/g' .well-known/security.txt
+sed -i 's/6759885+hyperpolymath@users.noreply.github.com/security@example.com/g' .well-known/security.txt
 sed -i 's/{{EXPIRES_DATE}}/2026-12-31/g' .well-known/security.txt
 ----
 
@@ -211,7 +211,7 @@ Generic templates use `{{PLACEHOLDER}}` syntax:
 | `{{DOMAIN}}`
 | Your domain name (e.g., example.com)
 
-| `{{SECURITY_EMAIL}}`
+| `6759885+hyperpolymath@users.noreply.github.com`
 | Security contact email
 
 | `{{EXPIRES_DATE}}`

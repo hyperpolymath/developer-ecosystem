@@ -92,19 +92,19 @@ The justfile (`.justfile:1`) contains many TODO placeholders:
 
 File still contains `{{PLACEHOLDER}}` values:
 
-* `{{PROJECT_NAME}}`
-* `{{OWNER}}`
-* `{{REPO}}`
-* `{{SECURITY_EMAIL}}`
-* `{{PGP_FINGERPRINT}}`
+* `Developer Ecosystem`
+* `hyperpolymath`
+* `developer-ecosystem`
+* `6759885+hyperpolymath@users.noreply.github.com`
+* `[PGP fingerprint not set]`
 
 === Medium: CONTRIBUTING.md Template Not Customized
 
 Contains uncustomized placeholders:
-* `{{FORGE}}`
-* `{{OWNER}}`
-* `{{REPO}}`
-* `{{MAIN_BRANCH}}`
+* `github.com`
+* `hyperpolymath`
+* `developer-ecosystem`
+* `main`
 
 === Low: Empty STATE.adoc
 
