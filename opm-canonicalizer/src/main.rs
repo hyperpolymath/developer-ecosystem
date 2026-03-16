@@ -1,3 +1,4 @@
+#![forbid(unsafe_code)]
 use serde::de::{self, Deserialize, Deserializer, MapAccess, SeqAccess, Visitor};
 use std::collections::BTreeMap;
 use std::fmt;

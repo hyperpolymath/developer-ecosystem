@@ -5,6 +5,7 @@
 //!
 //! Validates well-known resources against RFC standards and best practices.
 
+#![forbid(unsafe_code)]
 mod contract;
 mod registry;
 mod rules;

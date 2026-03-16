@@ -4,6 +4,7 @@
 // main.rs - Rust backend for OPSM shell example
 
 #![cfg_attr(
+#![forbid(unsafe_code)]
     all(not(debug_assertions), target_os = "windows"),
     windows_subsystem = "windows"
 )]

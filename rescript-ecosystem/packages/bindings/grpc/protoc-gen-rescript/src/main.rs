@@ -5,6 +5,7 @@
 //! CodeGeneratorResponse to stdout, generating ReScript types and
 //! optional WASM codec bindings.
 
+#![forbid(unsafe_code)]
 use std::io::{self, Read, Write};
 
 use anyhow::{Context, Result};

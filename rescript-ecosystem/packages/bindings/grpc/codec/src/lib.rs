@@ -9,6 +9,7 @@
 //! - WASM returns base64-encoded protobuf binary
 //! - For decoding, WASM receives base64 binary and returns JSON
 
+#![forbid(unsafe_code)]
 use integer_encoding::{VarInt, VarIntWriter};
 use serde_json::{Map, Value};
 use std::io::Write;

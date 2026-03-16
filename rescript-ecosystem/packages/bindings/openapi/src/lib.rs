@@ -6,6 +6,7 @@
 //! This library provides the core functionality for parsing OpenAPI specs
 //! and generating ReScript code including types, validators, and HTTP clients.
 
+#![forbid(unsafe_code)]
 pub mod codegen;
 pub mod ir;
 pub mod parser;
