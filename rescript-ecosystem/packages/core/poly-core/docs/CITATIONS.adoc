@@ -13,7 +13,7 @@
   title = {rescript-poly-core: Shared Foundation Library for ReScript},
   year = {2025},
   url = {https://github.com/hyperpolymath/rescript-poly-core},
-  license = {AGPL-3.0-or-later},
+  license = {PMPL-1.0-or-later},
   version = {0.1.0}
 }
 ----

@@ -43,7 +43,7 @@ This document tracks compliance with the Rhodium Standard Repository (RSR) requi
 
 |`LICENSE` / `LICENCE`
 |✅ Present
-|AGPL-3.0-or-later
+|PMPL-1.0-or-later
 
 |`.well-known/security.txt`
 |✅ Present

@@ -17,14 +17,14 @@ If you use `rescript-poly-core` in academic work, please cite it appropriately.
   year = {2025},
   url = {https://github.com/hyperpolymath/rescript-poly-core},
   version = {0.1.0},
-  license = {AGPL-3.0-or-later},
+  license = {PMPL-1.0-or-later},
   note = {Part of the rescript-full-stack ecosystem}
 }
 ----
 
 == Harvard Style
 
-Hyperpolymath (2025) _rescript-poly-core: Shared Foundation Library for the Hyperpolymath ReScript Ecosystem_ [Computer software]. Version 0.1.0. Available at: https://github.com/hyperpolymath/rescript-poly-core (AGPL-3.0-or-later)
+Hyperpolymath (2025) _rescript-poly-core: Shared Foundation Library for the Hyperpolymath ReScript Ecosystem_ [Computer software]. Version 0.1.0. Available at: https://github.com/hyperpolymath/rescript-poly-core (PMPL-1.0-or-later)
 
 == OSCOLA
 
@@ -55,7 +55,7 @@ Hyperpolymath. 2025. rescript-poly-core: Shared Foundation Library for the Hyper
 rescript-poly-core v0.1.0 (2025)
 Hyperpolymath
 https://github.com/hyperpolymath/rescript-poly-core
-License: AGPL-3.0-or-later
+License: PMPL-1.0-or-later
 
 == Machine-Readable Formats
 
@@ -76,7 +76,7 @@ For CodeMeta format, use the following:
   "description": "Shared foundation library for the Hyperpolymath ReScript ecosystem",
   "version": "0.1.0",
   "datePublished": "2025-01-04",
-  "license": "https://spdx.org/licenses/AGPL-3.0-or-later",
+  "license": "https://spdx.org/licenses/PMPL-1.0-or-later",
   "codeRepository": "https://github.com/hyperpolymath/rescript-poly-core",
   "programmingLanguage": ["ReScript", "JavaScript"],
   "runtimePlatform": "Deno",

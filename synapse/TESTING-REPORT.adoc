@@ -171,7 +171,7 @@ The parser correctly:
 |File|Present|Notes
 
 |README.adoc|YES|Comprehensive project documentation
-|LICENSE.txt|YES|Dual MIT/AGPL-3.0-or-later
+|LICENSE.txt|YES|Dual MIT/PMPL-1.0-or-later
 |SECURITY.md|YES|Security policy with SLA
 |CODE_OF_CONDUCT.md|YES|Present
 |CONTRIBUTING.adoc|YES|Contribution guidelines
@@ -311,7 +311,7 @@ The Synapse project is in a functional state with successful compilation and cod
 2. GitHub workflow security hardening (SPDX headers, SHA-pinning, permissions)
 3. Extended test coverage for edge cases
 
-The project follows good Zig coding practices with proper memory management and error handling. The dual MIT/AGPL-3.0-or-later license provides flexibility for different use cases.
+The project follows good Zig coding practices with proper memory management and error handling. The dual MIT/PMPL-1.0-or-later license provides flexibility for different use cases.
 
 ---
 

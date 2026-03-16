@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!-- SPDX-License-Identifier: PMPL-1.0-or-later -->
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:dc="http://purl.org/dc/elements/1.1/"
          xmlns:dcterms="http://purl.org/dc/terms/">
@@ -16,7 +16,7 @@
     <dc:format>application/x-rescript</dc:format>
     <dc:identifier>https://github.com/hyperpolymath/rescript-tea</dc:identifier>
     <dc:language>en</dc:language>
-    <dc:rights>AGPL-3.0-or-later</dc:rights>
+    <dc:rights>PMPL-1.0-or-later</dc:rights>
     <dcterms:license rdf:resource="https://www.gnu.org/licenses/agpl-3.0"/>
     <dcterms:conformsTo rdf:resource="https://github.com/hyperpolymath/rhodium-standard-repositories"/>
   </rdf:Description>

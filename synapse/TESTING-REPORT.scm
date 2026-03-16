@@ -22,7 +22,7 @@
     (version "0.1.0-alpha")
     (language "zig")
     (language-version "0.13.0")
-    (license "MIT OR AGPL-3.0-or-later"))
+    (license "MIT OR PMPL-1.0-or-later"))
 
   (test-summary
     (overall-status 'pass-with-issues)
@@ -90,7 +90,7 @@
     (status 'partial)
     (required-files
       (file "README.adoc" #t "Comprehensive project documentation")
-      (file "LICENSE.txt" #t "Dual MIT/AGPL-3.0-or-later")
+      (file "LICENSE.txt" #t "Dual MIT/PMPL-1.0-or-later")
       (file "SECURITY.md" #t "Security policy with SLA")
       (file "CODE_OF_CONDUCT.md" #t "Present")
       (file "CONTRIBUTING.adoc" #t "Contribution guidelines")

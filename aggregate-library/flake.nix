@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: MIT OR AGPL-3.0-or-later
+# SPDX-License-Identifier: MIT OR PMPL-1.0-or-later
 # SPDX-FileCopyrightText: 2025 Hyperpolymath
 
 # flake.nix - Nix Flakes configuration for aggregate-library
@@ -130,7 +130,7 @@
               Labels = {
                 "org.opencontainers.image.title" = "aggregate-library";
                 "org.opencontainers.image.version" = "0.1.0";
-                "org.opencontainers.image.licenses" = "MIT OR AGPL-3.0-or-later";
+                "org.opencontainers.image.licenses" = "MIT OR PMPL-1.0-or-later";
                 "rsr.compliance" = "Gold";
                 "rsr.score" = "100/100";
               };

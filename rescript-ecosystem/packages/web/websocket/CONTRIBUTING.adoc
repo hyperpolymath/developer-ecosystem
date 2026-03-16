@@ -193,7 +193,7 @@ Please include:
 
 == Licence
 
-By contributing, you agree that your contributions will be licensed under AGPL-3.0-or-later.
+By contributing, you agree that your contributions will be licensed under PMPL-1.0-or-later.
 
 == Questions?
 

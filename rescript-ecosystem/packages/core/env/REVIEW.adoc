@@ -40,7 +40,7 @@ The `.machine_readable/` directory contains structured Scheme files:
 
 === 4. Dual Licensing Strategy
 
-MIT OR AGPL-3.0-or-later with Palimpsest philosophical overlay provides flexibility while encouraging consent-based practices.
+MIT OR PMPL-1.0-or-later with Palimpsest philosophical overlay provides flexibility while encouraging consent-based practices.
 
 == Issues and Gaps
 
@@ -114,7 +114,7 @@ Root `STATE.adoc` file is empty (0 bytes) while `.machine_readable/STATE.scm` co
 
 README.adoc and CLAUDE.md have some inconsistencies:
 * README.adoc mentions "AGPL + Palimpsest dual license"
-* LICENSE.txt states "MIT OR AGPL-3.0-or-later"
+* LICENSE.txt states "MIT OR PMPL-1.0-or-later"
 
 == Recommendations
 

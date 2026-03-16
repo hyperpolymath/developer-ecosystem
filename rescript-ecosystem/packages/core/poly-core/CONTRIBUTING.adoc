@@ -261,7 +261,7 @@ Remember to:
 
 == License
 
-By contributing to this project, you agree that your contributions will be licensed under the AGPL-3.0-or-later license.
+By contributing to this project, you agree that your contributions will be licensed under the PMPL-1.0-or-later license.
 
 == Questions?
 

@@ -81,7 +81,7 @@ Initial release of rescript-poly-core.
 ==== Project Structure
 - ReScript project setup with `rescript.json`
 - Deno project setup with `deno.json`
-- AGPL-3.0-or-later license
+- PMPL-1.0-or-later license
 - Comprehensive documentation in AsciiDoc
 - Machine-readable metadata in Scheme
 
