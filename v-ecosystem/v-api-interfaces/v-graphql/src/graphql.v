@@ -261,9 +261,19 @@ fn gnosis_health() GnosisHealthResult {
 
 // --- Helpers ---
 
+// validated_status converts an integer HTTP status code to http.Status
+// with bounds checking to avoid unsafe casts.
+fn validated_status(code int) http.Status {
+	// HTTP status codes are 100-599; default to 200 OK if out of range.
+	if code >= 100 && code <= 599 {
+		return unsafe { http.Status(code) }
+	}
+	return .ok
+}
+
 fn json_response(status_code int, body string) http.Response {
 	return http.new_response(
-		status: unsafe { http.Status(status_code) }
+		status: validated_status(status_code)
 		header: http.new_header(key: .content_type, value: 'application/json')
 		body: body
 	)

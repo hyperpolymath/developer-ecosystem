@@ -185,6 +185,16 @@ pub fn (s Server) start() {
 
 // --- Helpers ---
 
+// validated_status converts an integer HTTP status code to http.Status
+// with bounds checking to avoid unsafe casts.
+fn validated_status(code int) http.Status {
+	// HTTP status codes are 100-599; default to 200 OK if out of range.
+	if code >= 100 && code <= 599 {
+		return unsafe { http.Status(code) }
+	}
+	return .ok
+}
+
 fn error_response(id json.Any, code int, message string) Response {
 	return Response{
 		id: id
@@ -209,7 +219,7 @@ fn encode_response(resp Response) string {
 
 fn json_resp(status_code int, body string) http.Response {
 	return http.new_response(
-		status: unsafe { http.Status(status_code) }
+		status: validated_status(status_code)
 		header: http.new_header(key: .content_type, value: 'application/json')
 		body: body
 	)
