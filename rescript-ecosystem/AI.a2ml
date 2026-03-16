@@ -6,7 +6,7 @@
 name: rescript-ecosystem
 type: monorepo
 description: Consolidated monorepo for 26 hyperpolymath ReScript packages
-author: Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>
+author: Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 license: PMPL-1.0-or-later
 
 ## Structure

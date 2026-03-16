@@ -2,7 +2,7 @@
 
 # Aggregate Library Composition Guide
 
-**Author:** Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>
+**Author:** Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 **Date:** 2026-02-01
 
 ## The Formula

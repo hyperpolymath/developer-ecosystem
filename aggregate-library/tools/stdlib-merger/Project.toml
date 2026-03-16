@@ -2,7 +2,7 @@
 
 name = "StdlibMerger"
 uuid = "a1b2c3d4-e5f6-7890-1234-56789abcdef0"
-authors = ["Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>"]
+authors = ["Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>"]
 version = "0.1.0"
 
 [deps]

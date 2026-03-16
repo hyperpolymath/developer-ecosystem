@@ -762,7 +762,7 @@ The Hyperpolymath ecosystem offers ReScript a **unique showcase opportunity**:
 
 **Contact:**
 - **Maintainer:** Jonathan D.A. Jewell
-- **Email:** jonathan.jewell@open.ac.uk
+- **Email:** j.d.a.jewell@open.ac.uk
 - **Organization:** https://github.com/hyperpolymath
 - **This Repo:** https://github.com/hyperpolymath/rescript-full-stack
 

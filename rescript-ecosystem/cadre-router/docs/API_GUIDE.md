@@ -3,7 +3,7 @@
 **Version:** 0.2.0
 **Status:** Production Ready
 **License:** PMPL-1.0-or-later
-**Author:** Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>
+**Author:** Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 
 ## Table of Contents
 

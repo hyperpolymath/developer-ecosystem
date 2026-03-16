@@ -78,7 +78,7 @@ Best regards,
 
 **Jonathan D.A. Jewell**
 The Open University
-jonathan.jewell@open.ac.uk
+j.d.a.jewell@open.ac.uk
 
 GitHub: https://github.com/hyperpolymath
 Organization: https://github.com/hyperpolymath
@@ -108,7 +108,7 @@ Happy to discuss case studies, documentation, or conference talks.
 
 Best,
 Jonathan Jewell
-jonathan.jewell@open.ac.uk
+j.d.a.jewell@open.ac.uk
 
 ---
 

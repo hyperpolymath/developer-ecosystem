@@ -234,7 +234,7 @@ When working with this repository:
 3. **Testing**: Validate before committing
 4. **Documentation**: Keep specs, code, and docs in sync
 5. **License**: All new files use PMPL-1.0-or-later
-6. **Author**: Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>
+6. **Author**: Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 
 ## Related Projects
 

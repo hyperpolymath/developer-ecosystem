@@ -24,7 +24,7 @@ We take security seriously. We appreciate your efforts to responsibly disclose v
 
 ### Alternative: Email
 
-**Email:** jonathan.jewell@open.ac.uk
+**Email:** j.d.a.jewell@open.ac.uk
 
 > **⚠️ Important:** Do not report security vulnerabilities through public GitHub issues.
 

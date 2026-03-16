@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "type": "module",
   "description": "Type-safe URL routing for ReScript applications (framework-agnostic core + optional TEA integration)",
-  "author": "Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>",
+  "author": "Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>",
   "license": "PMPL-1.0-or-later",
   "dependencies": {
     "@rescript/react": "^0.13.0",

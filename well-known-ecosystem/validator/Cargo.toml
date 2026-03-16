@@ -5,7 +5,7 @@
 name = "wke-validator"
 version = "0.1.0"
 edition = "2021"
-authors = ["hyperpolymath"]
+authors = ["Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>"]
 description = "Well-Known Ecosystem validator CLI"
 license = "PMPL-1.0"
 repository = "https://github.com/hyperpolymath/well-known-ecosystem"

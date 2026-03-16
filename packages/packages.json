@@ -16298,7 +16298,7 @@
       "docker"
     ],
     "description": "Automatically send invitations regarding planned Zoom meetings.",
-    "license": "AGPL-3.0-or-later"
+    "license": "PMPL-1.0-or-later"
   },
   {
     "name": "couchdb",
@@ -32737,7 +32737,7 @@
       "threads"
     ],
     "description": "A thread safe logging library using Nim's own logging module",
-    "license": "AGPL-3.0-or-later",
+    "license": "PMPL-1.0-or-later",
     "web": "https://pswilde.codeberg.page/threadlogging_docs/threadlogging.html"
   },
   {
@@ -32990,7 +32990,7 @@
       "frontend"
     ],
     "description": "A simple pastebin, inspired by w4/bin",
-    "license": "AGPL-3.0-or-later",
+    "license": "PMPL-1.0-or-later",
     "web": "https://codeberg.org/pswilde/note"
   },
   {
@@ -34428,7 +34428,7 @@
       "restic"
     ],
     "description": "A portable wrapper for borg backup and restic inspired by borgmatic.",
-    "license": "AGPL-3.0-or-later",
+    "license": "PMPL-1.0-or-later",
     "web": "https://norgbackup.net",
     "doc": "https://norgbackup.net/usage/"
   },
@@ -35679,7 +35679,7 @@
       "media"
     ],
     "description": "Social networking library powering Onbox.",
-    "license": "AGPL-3.0-or-later",
+    "license": "PMPL-1.0-or-later",
     "web": "https://codeberg.org/onbox/amicus"
   },
   {
