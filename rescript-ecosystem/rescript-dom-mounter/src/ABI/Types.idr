@@ -6,7 +6,7 @@
 -- 3. No null pointer dereferences possible
 -- 4. Type-safe mounting operations
 --
--- @author Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>
+-- @author Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 
 module ABI.Types
 

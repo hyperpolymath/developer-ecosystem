@@ -9,7 +9,7 @@
 -- 3. Result codes map to ReScript variants
 -- 4. Memory ownership clear at interface boundary
 |||
--- @author Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>
+-- @author Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 
 module ABI.Foreign
 

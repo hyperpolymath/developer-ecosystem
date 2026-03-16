@@ -15,7 +15,7 @@
 -- 4. Memory layout matches C ABI across all platforms
 -- 5. Tag balancing is verified before mounting
 --
--- @author Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>
+-- @author Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 
 module ABI.SafeDOM
 

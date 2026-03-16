@@ -4,7 +4,7 @@
 // All types and layouts must match the Idris2 ABI definitions.
 //
 // SPDX-License-Identifier: PMPL-1.0-or-later
-// @author Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>
+// @author Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 
 const std = @import("std");
 

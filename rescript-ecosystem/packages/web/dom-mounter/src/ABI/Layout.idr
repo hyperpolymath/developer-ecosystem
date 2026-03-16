@@ -9,7 +9,7 @@
 -- 3. Padding is calculated correctly
 -- 4. No uninitialized memory
 |||
--- @author Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>
+-- @author Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 
 module ABI.Layout
 
