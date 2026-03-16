@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "ReScript bindings for Tauri 2.0 - Build native desktop and mobile apps with ReScript",
   "keywords": ["rescript", "tauri", "desktop", "mobile", "native", "bindings"],
-  "license": "AGPL-3.0-or-later",
+  "license": "PMPL-1.0-or-later",
   "repository": {
     "type": "git",
     "url": "https://github.com/hyperpolymath/rescript-tauri"

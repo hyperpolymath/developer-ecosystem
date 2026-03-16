@@ -33,7 +33,7 @@
     (description "Ethical .well-known Management TUI")
     (version "0.1.0")
     (language "Ada")
-    (license "AGPL-3.0-or-later"))
+    (license "PMPL-1.0-or-later"))
 
   (issues
     (issue

@@ -1,4 +1,4 @@
-;; SPDX-License-Identifier: AGPL-3.0-or-later
+;; SPDX-License-Identifier: PMPL-1.0-or-later
 ;; STATE.scm - Project state tracking for rescript-early-return
 ;; Media-Type: application/vnd.state+scm
 

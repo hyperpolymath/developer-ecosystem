@@ -1,5 +1,5 @@
 // The Elm Architecture (TEA) Interface
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: PMPL-1.0-or-later
 
 // Command type - represents side effects
 type cmd<'msg>
