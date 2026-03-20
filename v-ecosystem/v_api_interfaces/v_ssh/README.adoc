@@ -1,0 +1,22 @@
+= v_ssh
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+SSH protocol types, bastion server, and session management for the V-Ecosystem
+API interfaces layer. Maps to `proven-servers/protocols/proven-ssh-bastion`.
+
+Provides a bastion server abstraction with session tracking, port-forwarding
+rules, host key generation (Ed25519, RSA-4096, ECDSA-P256/P384), and SHA-256
+fingerprint computation. Supports authentication via public key, password,
+keyboard-interactive, and certificate methods.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/ssh.v`
+
+== Tests
+
+`tests/ssh_test.v`

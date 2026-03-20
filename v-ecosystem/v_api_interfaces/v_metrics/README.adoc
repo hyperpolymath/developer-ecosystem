@@ -1,0 +1,19 @@
+= v_metrics
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Metrics collection and exposition (Prometheus-compatible) for the V-Ecosystem API
+interfaces layer. Implements Counter, Gauge, Histogram, and Summary metric types with
+label support and Prometheus text exposition format output. Maps to
+`proven-servers/protocols/proven-metrics`.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/metrics.v`
+
+== Tests
+
+`tests/metrics_test.v`

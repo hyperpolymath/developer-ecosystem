@@ -1,0 +1,21 @@
+= v_dns
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+DNS protocol client and server types for the V-Ecosystem API interfaces layer.
+Implements DNS query construction, response parsing, record type handling, and a
+zone-based server with pluggable handlers. Maps to `proven-servers/protocols/proven-dns`.
+
+Supports record types A, AAAA, CNAME, MX, NS, PTR, SOA, SRV, TXT, and CAA with
+full query/response encoding and decoding via the DNS wire format (RFC 1035).
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/dns.v`
+
+== Tests
+
+`tests/dns_test.v`

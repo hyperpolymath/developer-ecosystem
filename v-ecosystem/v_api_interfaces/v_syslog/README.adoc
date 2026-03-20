@@ -1,0 +1,22 @@
+= v_syslog
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Syslog server (RFC 5424 and RFC 3164) for log collection in the V-Ecosystem
+API interfaces layer. Maps to `proven-servers/protocols/proven-syslog`.
+
+Implements RFC 5424 message parsing and formatting with structured data
+elements, legacy RFC 3164 (BSD syslog) parsing, priority/facility/severity
+encoding and decoding, and a configurable server with UDP/TCP/TLS transport
+and pluggable message handlers.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/syslog.v`
+
+== Tests
+
+`tests/syslog_test.v`

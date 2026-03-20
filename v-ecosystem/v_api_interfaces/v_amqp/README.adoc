@@ -1,0 +1,19 @@
+= v_amqp
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+AMQP 0-9-1 message broker protocol types for the V-Ecosystem API interfaces layer.
+Implements connection management, channel multiplexing, exchange/queue declaration,
+binding, publishing, and consuming with delivery acknowledgement. Maps to
+`proven-servers/protocols/proven-amqp`.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/amqp.v`
+
+== Tests
+
+`tests/amqp_test.v`

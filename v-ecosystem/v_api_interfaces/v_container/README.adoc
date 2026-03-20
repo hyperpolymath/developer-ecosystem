@@ -1,0 +1,23 @@
+= v_container
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+OCI container management protocol types for the V-Ecosystem API interfaces
+layer. Maps to `proven-servers/protocols/proven-container`.
+
+Provides container lifecycle management (create, start, stop, remove, inspect),
+image operations (pull, list), and a runtime abstraction that auto-detects
+Podman, Docker, and containerd via their Unix socket paths. Supports port
+mappings, volume mounts, environment variables, labels, restart policies,
+and resource limits (memory, CPU).
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/container.v`
+
+== Tests
+
+`tests/container_test.v`

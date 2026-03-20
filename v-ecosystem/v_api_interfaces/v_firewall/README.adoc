@@ -1,0 +1,22 @@
+= v_firewall
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Firewall rule management protocol types for the V-Ecosystem API interfaces
+layer. Maps to `proven-servers/protocols/proven-firewall`.
+
+Provides zone-based firewall rule management with packet evaluation, CIDR
+parsing, and priority-ordered rule matching. Supports TCP/UDP/ICMP protocols
+with accept, drop, reject, log, and redirect actions. Rules can be enabled,
+disabled, added, and removed per zone, with an audit log for tracking changes.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/firewall.v`
+
+== Tests
+
+`tests/firewall_test.v`

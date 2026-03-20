@@ -1,0 +1,19 @@
+= v_auth
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Authentication server protocol types for the V-Ecosystem API interfaces layer.
+Implements multi-method authentication (Password, Token, Certificate, OAuth2, SAML,
+WebAuthn, Kerberos), token issuance with claims, and password hashing via HMAC-SHA256.
+Maps to `proven-servers/protocols/proven-authserver`.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/auth.v`
+
+== Tests
+
+`tests/auth_test.v`
