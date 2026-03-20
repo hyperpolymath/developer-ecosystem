@@ -1,0 +1,14 @@
+= v-vpn
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+VPN protocol connector for the V-Ecosystem API interfaces layer.
+Supports WireGuard (userspace API) and OpenVPN (management socket) through a unified client interface.
+Provides peer lifecycle management, key generation and exchange, tunnel configuration, and real-time status monitoring.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/vpn.v`

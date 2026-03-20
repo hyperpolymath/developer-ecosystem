@@ -1,0 +1,14 @@
+= v-objectstore
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+S3-compatible object storage protocol connector for the V-Ecosystem API interfaces layer.
+Supports AWS S3, MinIO, and Ceph RADOS Gateway through a unified client interface.
+Provides bucket lifecycle, object CRUD, multipart upload, and presigned URL generation with AWS Signature V4 request signing.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/objectstore.v`

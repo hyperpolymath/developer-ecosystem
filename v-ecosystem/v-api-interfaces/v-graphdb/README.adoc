@@ -1,0 +1,14 @@
+= v-graphdb
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Multi-dialect graph database protocol connector for the V-Ecosystem API interfaces layer.
+Supports Neo4j Bolt (Cypher), Apache TinkerPop (Gremlin), and W3C SPARQL endpoints through a unified client interface.
+Provides node/edge CRUD, parameterised query execution, and explicit transaction management.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/graphdb.v`

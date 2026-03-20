@@ -1,0 +1,20 @@
+# Trustfile.a2ml -- v-graphdb
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# Contractile trust specification for the v-graphdb protocol module.
+# Evaluated by the contractile-cli (must/trust/dust/intend/k9) toolchain.
+
+[trust]
+post-quantum-keys = "pending"
+threat-model = "network-facing-query-engine"
+formal-verification = "idris2-abi"
+audit-status = "unaudited"
+
+[must]
+invariant-checks = ["input-validation", "query-parameterisation", "connection-lifecycle", "transaction-state-machine", "property-escaping"]
+build-contract = "v build src/"
+
+[dust]
+recovery = "rollback-and-reconnect"
+rollback = "abort-transaction-close-connection"

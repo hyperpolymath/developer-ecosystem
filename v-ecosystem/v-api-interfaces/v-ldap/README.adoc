@@ -1,0 +1,14 @@
+= v-ldap
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+LDAPv3 (RFC 4511) protocol connector for the V-Ecosystem API interfaces layer.
+Implements bind/unbind (simple and SASL), search (base/one-level/subtree), add/modify/delete entries, compare, and modify DN operations over raw TCP with BER-TLV encoding.
+Compatible with Active Directory, OpenLDAP, and 389 Directory Server.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/ldap.v`
