@@ -28,7 +28,7 @@ The **Hyperpolymath ecosystem** (500+ repositories) demonstrates ReScript's capa
 
 ### What A2ML Is
 
-**Repository:** https://github.com/hyperpolymath/a2ml
+**Repository:** https://github.com/hyperpolymath/standards/tree/main/a2ml
 
 A2ML (Attested Markup Language) is a **typed, formally verified markup format** with:
 - Lightweight Djot-like syntax
@@ -119,7 +119,7 @@ wasm-pack build --target web
 - "Building Parsers in ReScript" tutorial
 - WASM compilation guide
 
-**Repository Link:** https://github.com/hyperpolymath/a2ml
+**Repository Link:** https://github.com/hyperpolymath/standards/tree/main/a2ml
 
 ---
 
@@ -248,7 +248,7 @@ switch commits {
 
 ### What K9-SVC Is
 
-**Repository:** https://github.com/hyperpolymath/k9-svc
+**Repository:** https://github.com/hyperpolymath/standards/tree/main/k9-svc
 
 K9 is a **self-validating component format**:
 - Uses Nickel for validation (typed configuration language)
@@ -343,7 +343,7 @@ config | {
 - Blog post: "Type-Safe ReScript Configs with K9"
 - Add to ReScript tooling ecosystem
 
-**Repository Link:** https://github.com/hyperpolymath/k9-svc
+**Repository Link:** https://github.com/hyperpolymath/standards/tree/main/k9-svc
 
 ---
 
@@ -610,7 +610,7 @@ abi2res src/abi/Types.idr --output bindings/Git.res
 ### For ReScript Team
 
 **High Priority:**
-1. [ ] Review A2ML codebase (https://github.com/hyperpolymath/a2ml)
+1. [ ] Review A2ML codebase (https://github.com/hyperpolymath/standards/tree/main/a2ml)
 2. [ ] Feature A2ML on ReScript showcase
 3. [ ] Blog post: "ReScript for Language Tooling"
 4. [ ] Contact for case study interview
@@ -700,8 +700,8 @@ abi2res src/abi/Types.idr --output bindings/Git.res
 - **ReScript Full Stack:** https://github.com/hyperpolymath/rescript-full-stack
 
 ### Language Tooling
-- **A2ML:** https://github.com/hyperpolymath/a2ml (ReScript parser + WASM)
-- **K9-SVC:** https://github.com/hyperpolymath/k9-svc (config validation)
+- **A2ML:** https://github.com/hyperpolymath/standards/tree/main/a2ml (ReScript parser + WASM)
+- **K9-SVC:** https://github.com/hyperpolymath/standards/tree/main/k9-svc (config validation)
 
 ### ABI/FFI (8 repos)
 - **zig-container-ffi:** https://github.com/hyperpolymath/zig-container-ffi

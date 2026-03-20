@@ -22,7 +22,7 @@ I'm Jonathan Jewell from The Open University, maintainer of the Hyperpolymath ec
 ### Key Projects
 
 **1. A2ML (Attested Markup Language)**
-- Repository: https://github.com/hyperpolymath/a2ml
+- Repository: https://github.com/hyperpolymath/standards/tree/main/a2ml
 - ReScript-powered parser for typed markup with formal verification
 - WASM compilation for browser-native validation (45KB output)
 - Demonstrates ReScript for language tooling, not just web UIs
@@ -98,7 +98,7 @@ Hi ReScript Team,
 I maintain the Hyperpolymath ecosystem (500+ repos) and wanted to share our ReScript usage:
 
 **A2ML** - Type-safe markup language with ReScript parser + WASM compilation
-https://github.com/hyperpolymath/a2ml
+https://github.com/hyperpolymath/standards/tree/main/a2ml
 
 **Key Point:** We're using ReScript for language tooling and compilers, not just web apps. Would love to collaborate on showcasing these use cases!
 
