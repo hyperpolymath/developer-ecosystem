@@ -1,0 +1,22 @@
+= v_pop3
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+POP3 protocol types and server for the V-Ecosystem API interfaces layer.
+Implements message retrieval, deletion, stat, list, top, and unique-id
+listing per RFC 1939.
+
+Supports USER, PASS, STAT, LIST, RETR, DELE, NOOP, RSET, QUIT, TOP,
+and UIDL commands with the standard Authorization/Transaction/Update
+state machine.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/pop3.v`
+
+== Tests
+
+`tests/pop3_test.v`

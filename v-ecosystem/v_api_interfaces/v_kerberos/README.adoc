@@ -1,0 +1,22 @@
+= v_kerberos
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Kerberos authentication protocol types for the V-Ecosystem API interfaces
+layer. Maps to `proven-servers/protocols/proven-kerberos`.
+
+Provides a KDC (Key Distribution Centre) server abstraction with AS and TGS
+exchanges, ticket validation, and principal management. Supports AES-256-CTS-HMAC,
+AES-128-CTS-HMAC, and DES3-CBC-SHA1 encryption types. Implements the core
+Kerberos V5 message flow (AS-REQ/REP, TGS-REQ/REP, AP-REQ/REP).
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/kerberos.v`
+
+== Tests
+
+`tests/kerberos_test.v`

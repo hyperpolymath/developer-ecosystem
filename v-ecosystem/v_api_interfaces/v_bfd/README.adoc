@@ -1,0 +1,19 @@
+= v_bfd
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Bidirectional Forwarding Detection (BFD) session management and fast failure
+detection for the V-Ecosystem API interfaces layer. Implements session state
+machine, interval negotiation, and diagnostic codes per RFC 5880.
+Maps to `proven-servers/protocols/proven-bfd`.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/bfd.v`
+
+== Tests
+
+`tests/bfd_test.v`

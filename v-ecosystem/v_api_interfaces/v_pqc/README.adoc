@@ -1,0 +1,23 @@
+= v_pqc
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Post-Quantum Cryptography protocol types for the V-Ecosystem API interfaces
+layer. Maps to `proven-servers/protocols/proven-pqc`.
+
+Provides a PQC server abstraction with key encapsulation mechanism (KEM) and
+digital signature operations for post-quantum algorithms. Supports NIST
+standardised algorithms (ML-KEM/Kyber, ML-DSA/Dilithium, SLH-DSA/SPHINCS+)
+and candidates (BIKE, HQC, Falcon). Includes hybrid key exchange combining
+classical and post-quantum algorithms.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/pqc.v`
+
+== Tests
+
+`tests/pqc_test.v`

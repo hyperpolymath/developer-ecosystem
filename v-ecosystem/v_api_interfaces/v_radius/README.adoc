@@ -1,0 +1,23 @@
+= v_radius
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+RADIUS authentication and accounting protocol types for the V-Ecosystem API
+interfaces layer. Maps to `proven-servers/protocols/proven-radius`.
+
+Provides a RADIUS server abstraction with authentication, authorisation, and
+accounting (AAA). Implements RFC 2865 packet types including Access-Request,
+Access-Accept, Access-Reject, Access-Challenge, and Accounting-Request/Response.
+Supports standard RADIUS attributes and authenticator validation using MD5
+(as required by the protocol specification).
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/radius.v`
+
+== Tests
+
+`tests/radius_test.v`

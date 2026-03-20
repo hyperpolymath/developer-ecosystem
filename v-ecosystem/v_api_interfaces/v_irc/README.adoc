@@ -1,0 +1,22 @@
+= v_irc
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+IRC protocol types and server for the V-Ecosystem API interfaces layer.
+Implements user registration, channel management, message routing, topic
+setting, and kick/ban operations per RFC 2812.
+
+Supports NICK, USER, JOIN, PART, PRIVMSG, NOTICE, QUIT, PING, PONG,
+MODE, TOPIC, KICK, BAN, WHO, WHOIS, and LIST commands with IRC message
+prefix parsing and formatting.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/irc.v`
+
+== Tests
+
+`tests/irc_test.v`

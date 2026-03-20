@@ -1,0 +1,19 @@
+= v_loadbalancer
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Load balancer with multiple selection algorithms (round-robin, least-connections,
+weighted, IP hash, consistent hash), health checking, connection tracking, and
+pool management for the V-Ecosystem API interfaces layer.
+Maps to `proven-servers/protocols/proven-loadbalancer`.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/loadbalancer.v`
+
+== Tests
+
+`tests/loadbalancer_test.v`

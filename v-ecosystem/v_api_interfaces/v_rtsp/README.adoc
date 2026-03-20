@@ -1,0 +1,22 @@
+= v_rtsp
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+RTSP protocol types and server for the V-Ecosystem API interfaces layer.
+Implements streaming session management, transport negotiation, and
+request/response handling per RFC 7826.
+
+Supports DESCRIBE, ANNOUNCE, SETUP, PLAY, PAUSE, TEARDOWN, GET_PARAMETER,
+SET_PARAMETER, RECORD, and OPTIONS methods with transport specification
+parsing and session state management.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/rtsp.v`
+
+== Tests
+
+`tests/rtsp_test.v`

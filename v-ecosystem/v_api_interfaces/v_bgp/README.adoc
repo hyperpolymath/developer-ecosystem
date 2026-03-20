@@ -1,0 +1,19 @@
+= v_bgp
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Border Gateway Protocol (BGP-4) session management, route announcement, withdrawal,
+and best-path selection for the V-Ecosystem API interfaces layer. Implements path
+attribute handling, peer state tracking, and policy application per RFC 4271.
+Maps to `proven-servers/protocols/proven-bgp`.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/bgp.v`
+
+== Tests
+
+`tests/bgp_test.v`

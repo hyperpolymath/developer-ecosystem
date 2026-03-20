@@ -1,0 +1,22 @@
+= v_chat
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Real-time chat server types for the V-Ecosystem API interfaces layer.
+Implements room management, message history, presence tracking, message
+editing and deletion, and member management.
+
+Supports Text, Image, File, System, Typing, and Read message types with
+public and private rooms, message history retrieval, and online/offline
+presence tracking.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/chat.v`
+
+== Tests
+
+`tests/chat_test.v`

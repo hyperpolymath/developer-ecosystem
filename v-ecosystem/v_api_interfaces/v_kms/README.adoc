@@ -1,0 +1,23 @@
+= v_kms
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Key Management Service protocol types for the V-Ecosystem API interfaces
+layer. Maps to `proven-servers/protocols/proven-kms`.
+
+Provides a KMS server abstraction with key creation, encryption, decryption,
+signing, verification, rotation, and lifecycle management. Supports AES-128/256
+symmetric keys, RSA-2048/4096, ECDSA-P256, and Ed25519 asymmetric keys. Key
+states follow a lifecycle from active through disabled to pending-deletion and
+deleted.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/kms.v`
+
+== Tests
+
+`tests/kms_test.v`

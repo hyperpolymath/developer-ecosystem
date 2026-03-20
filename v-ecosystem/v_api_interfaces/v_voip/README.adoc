@@ -1,0 +1,22 @@
+= v_voip
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+VoIP protocol types and server for the V-Ecosystem API interfaces layer.
+Implements call signalling, RTP packet construction and parsing, codec
+negotiation, and call state management.
+
+Supports Opus, G.711u, G.711a, G.722, and PCM codecs with Invite, Ack,
+Bye, Cancel, Register, and Options signal types. Manages call lifecycle
+through Idle, Ringing, Connected, OnHold, Transferring, and Ended states.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/voip.v`
+
+== Tests
+
+`tests/voip_test.v`

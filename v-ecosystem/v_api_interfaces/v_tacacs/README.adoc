@@ -1,0 +1,22 @@
+= v_tacacs
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+TACACS+ authentication, authorisation, and accounting protocol types for the
+V-Ecosystem API interfaces layer. Maps to `proven-servers/protocols/proven-tacacs`.
+
+Provides a TACACS+ server abstraction with separate authentication, authorisation,
+and accounting flows as defined in RFC 8907. Supports ASCII, PAP, CHAP, and
+MS-CHAP authentication types. The protocol body is encrypted using a shared
+secret with MD5-based obfuscation (as required by the TACACS+ specification).
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/tacacs.v`
+
+== Tests
+
+`tests/tacacs_test.v`

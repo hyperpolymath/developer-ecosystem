@@ -1,0 +1,21 @@
+= v_smtp
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+SMTP protocol types and server for the V-Ecosystem API interfaces layer.
+Implements SMTP command processing, envelope handling, address validation,
+and response formatting per RFC 5321.
+
+Supports HELO/EHLO, MAIL FROM, RCPT TO, DATA, QUIT, RSET, VRFY, NOOP,
+STARTTLS, and AUTH commands with extension negotiation.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/smtp.v`
+
+== Tests
+
+`tests/smtp_test.v`

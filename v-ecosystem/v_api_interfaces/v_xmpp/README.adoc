@@ -1,0 +1,22 @@
+= v_xmpp
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+XMPP protocol types and server for the V-Ecosystem API interfaces layer.
+Implements stanza handling (message, presence, IQ), JID parsing, presence
+management, and multi-user chat per RFC 6120 and RFC 6121.
+
+Supports Message, Presence, and IQ stanza types with Chat, Groupchat,
+Normal, Headline, and Error message types. Handles Available, Unavailable,
+Subscribe, Subscribed, Unsubscribe, and Probe presence types.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/xmpp.v`
+
+== Tests
+
+`tests/xmpp_test.v`

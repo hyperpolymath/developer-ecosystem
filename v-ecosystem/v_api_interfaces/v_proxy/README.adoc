@@ -1,0 +1,18 @@
+= v_proxy
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Reverse proxy with configurable load balancing strategies, health checking, rule-based
+routing, and backend management for the V-Ecosystem API interfaces layer.
+Maps to `proven-servers/protocols/proven-proxy`.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/proxy.v`
+
+== Tests
+
+`tests/proxy_test.v`

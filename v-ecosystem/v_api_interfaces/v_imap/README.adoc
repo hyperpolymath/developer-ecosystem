@@ -1,0 +1,22 @@
+= v_imap
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+IMAP protocol types and server for the V-Ecosystem API interfaces layer.
+Implements mailbox management, message fetching, flag storage, search, and
+copy operations per RFC 3501.
+
+Supports LOGIN, SELECT, EXAMINE, CREATE, DELETE, RENAME, LIST, FETCH,
+STORE, SEARCH, COPY, EXPUNGE, and IDLE commands with full state machine
+(NotAuthenticated, Authenticated, Selected, Logout).
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/imap.v`
+
+== Tests
+
+`tests/imap_test.v`

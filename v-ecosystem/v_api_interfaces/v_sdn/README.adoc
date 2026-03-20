@@ -1,0 +1,19 @@
+= v_sdn
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Software-Defined Networking (SDN) controller with flow table management, priority-based
+packet matching, flow rule installation/removal, and topology discovery for the
+V-Ecosystem API interfaces layer.
+Maps to `proven-servers/protocols/proven-sdn`.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/sdn.v`
+
+== Tests
+
+`tests/sdn_test.v`

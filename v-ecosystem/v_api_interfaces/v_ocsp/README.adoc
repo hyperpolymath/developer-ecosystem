@@ -1,0 +1,22 @@
+= v_ocsp
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Online Certificate Status Protocol types for the V-Ecosystem API interfaces
+layer. Maps to `proven-servers/protocols/proven-ocsp`.
+
+Provides an OCSP responder server abstraction with certificate status checking,
+request creation, response processing, and response signing. Implements RFC 6960
+with support for good, revoked, and unknown certificate statuses and standard
+revocation reasons.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/ocsp.v`
+
+== Tests
+
+`tests/ocsp_test.v`

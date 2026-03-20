@@ -1,0 +1,19 @@
+= v_socks
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+SOCKS5 proxy protocol types, authentication method negotiation, connect/bind/UDP
+associate commands, and request/response handling for the V-Ecosystem API interfaces
+layer. Implements RFC 1928.
+Maps to `proven-servers/protocols/proven-socks`.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/socks.v`
+
+== Tests
+
+`tests/socks_test.v`

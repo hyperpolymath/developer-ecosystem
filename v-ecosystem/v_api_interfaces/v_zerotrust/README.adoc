@@ -1,0 +1,22 @@
+= v_zerotrust
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Zero Trust Architecture policy engine types for the V-Ecosystem API interfaces
+layer. Maps to `proven-servers/protocols/proven-zerotrust`.
+
+Provides a Zero Trust policy engine with identity verification, device posture
+assessment, trust score calculation, and access decision evaluation. Policies
+can require specific trust levels, enforce MFA, and quarantine non-compliant
+devices. All access decisions are logged for audit compliance.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/zerotrust.v`
+
+== Tests
+
+`tests/zerotrust_test.v`

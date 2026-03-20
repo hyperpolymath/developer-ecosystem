@@ -1,0 +1,19 @@
+= v_mdns
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Multicast DNS (mDNS) service discovery, registration, browsing, and name resolution
+for the V-Ecosystem API interfaces layer. Implements zero-configuration networking
+service advertisement and query per RFC 6762.
+Maps to `proven-servers/protocols/proven-mdns`.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/mdns.v`
+
+== Tests
+
+`tests/mdns_test.v`

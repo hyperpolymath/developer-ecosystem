@@ -1,0 +1,22 @@
+= v_ftp
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+FTP protocol types and server for the V-Ecosystem API interfaces layer.
+Implements file transfer, directory listing, directory management, and
+session state per RFC 959.
+
+Supports USER, PASS, CWD, PWD, LIST, RETR, STOR, DELE, MKD, RMD, TYPE,
+PASV, PORT, QUIT, SIZE, and MDTM commands with Active/Passive transfer
+modes and ASCII/Binary transfer types.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/ftp.v`
+
+== Tests
+
+`tests/ftp_test.v`

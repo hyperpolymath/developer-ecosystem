@@ -1,0 +1,19 @@
+= v_ospf
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Open Shortest Path First (OSPF) router with area management, link-state database,
+SPF (Dijkstra) calculation, and routing table generation for the V-Ecosystem API
+interfaces layer. Implements LSA types and packet types per RFC 2328.
+Maps to `proven-servers/protocols/proven-ospf`.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/ospf.v`
+
+== Tests
+
+`tests/ospf_test.v`

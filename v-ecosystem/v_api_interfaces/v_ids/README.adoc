@@ -1,0 +1,22 @@
+= v_ids
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Intrusion Detection System protocol types for the V-Ecosystem API interfaces
+layer. Maps to `proven-servers/protocols/proven-ids`.
+
+Provides an IDS engine abstraction with rule management, packet processing,
+alert generation, and statistics tracking. Supports signature-based, anomaly,
+stateful, and protocol-level detection. Rules can alert, drop, reject, log,
+or pass traffic and are matched by pattern, protocol, source, and destination.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/ids.v`
+
+== Tests
+
+`tests/ids_test.v`

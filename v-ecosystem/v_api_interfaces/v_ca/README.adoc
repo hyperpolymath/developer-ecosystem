@@ -1,0 +1,22 @@
+= v_ca
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Certificate Authority protocol types for the V-Ecosystem API interfaces layer.
+Maps to `proven-servers/protocols/proven-ca`.
+
+Provides a CA server abstraction with certificate issuance, revocation, CRL
+management, and chain verification. Supports RSA (2048/4096), ECDSA (P-256/P-384),
+and Ed25519 key algorithms. Certificate types include root, intermediate,
+end-entity, and code-signing.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/ca.v`
+
+== Tests
+
+`tests/ca_test.v`

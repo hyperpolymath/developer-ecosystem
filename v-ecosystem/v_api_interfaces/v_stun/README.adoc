@@ -1,0 +1,19 @@
+= v_stun
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Session Traversal Utilities for NAT (STUN) message construction, XOR address
+mapping, fingerprint computation, and binding request/response handling for the
+V-Ecosystem API interfaces layer. Implements RFC 5389.
+Maps to `proven-servers/protocols/proven-stun`.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/stun.v`
+
+== Tests
+
+`tests/stun_test.v`
