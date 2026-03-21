@@ -1,0 +1,220 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+//
+// socks_test -- Protocol conformance tests for v_socks.
+// Covers server creation, authentication negotiation, request processing,
+// wire-format encoding/decoding, and credential management.
+module v_socks
+
+// test_auth_method_to_string verifies human-readable labels for all
+// SOCKS5 authentication methods.
+fn test_auth_method_to_string() {
+	assert auth_method_to_string(.no_auth) == 'NO AUTHENTICATION'
+	assert auth_method_to_string(.gssapi) == 'GSSAPI'
+	assert auth_method_to_string(.username_password) == 'USERNAME/PASSWORD'
+}
+
+// test_command_to_string verifies human-readable labels for all
+// SOCKS5 commands.
+fn test_command_to_string() {
+	assert command_to_string(.connect) == 'CONNECT'
+	assert command_to_string(.bind) == 'BIND'
+	assert command_to_string(.udp_associate) == 'UDP ASSOCIATE'
+}
+
+// test_address_type_to_string verifies human-readable labels for all
+// SOCKS5 address types.
+fn test_address_type_to_string() {
+	assert address_type_to_string(.ipv4) == 'IPv4'
+	assert address_type_to_string(.domain) == 'DOMAIN'
+	assert address_type_to_string(.ipv6) == 'IPv6'
+}
+
+// test_reply_code_to_string verifies human-readable labels for all
+// SOCKS5 reply codes.
+fn test_reply_code_to_string() {
+	assert reply_code_to_string(.succeeded) == 'Succeeded'
+	assert reply_code_to_string(.general_failure) == 'General SOCKS server failure'
+	assert reply_code_to_string(.connection_refused) == 'Connection refused'
+	assert reply_code_to_string(.command_not_supported) == 'Command not supported'
+}
+
+// test_new_server_default_auth verifies that a server with no methods
+// defaults to NoAuth.
+fn test_new_server_default_auth() {
+	s := new_server(1080, [])
+	assert s.listen_port == 1080
+	assert s.allowed_methods.len == 1
+	assert s.allowed_methods[0] == .no_auth
+}
+
+// test_new_server_custom_auth verifies server creation with custom methods.
+fn test_new_server_custom_auth() {
+	s := new_server(1080, [.username_password, .no_auth])
+	assert s.allowed_methods.len == 2
+	assert s.allowed_methods[0] == .username_password
+}
+
+// test_negotiate_auth_success verifies successful auth negotiation.
+fn test_negotiate_auth_success() {
+	s := new_server(1080, [.username_password, .no_auth])
+	method := s.negotiate_auth([.no_auth])!
+	assert method == .no_auth
+}
+
+// test_negotiate_auth_prefer_server_order verifies that server preference
+// order is respected.
+fn test_negotiate_auth_prefer_server_order() {
+	s := new_server(1080, [.username_password, .no_auth])
+	method := s.negotiate_auth([.no_auth, .username_password])!
+	assert method == .username_password
+}
+
+// test_negotiate_auth_failure verifies error when no common method exists.
+fn test_negotiate_auth_failure() {
+	s := new_server(1080, [.username_password])
+	s.negotiate_auth([.no_auth]) or {
+		assert err.msg().contains('no acceptable')
+		return
+	}
+	assert false, 'expected error for no common method'
+}
+
+// test_add_and_verify_credentials verifies credential management.
+fn test_add_and_verify_credentials() {
+	mut s := new_server(1080, [.username_password])
+	s.add_credential('alice', 'pass123')
+	assert s.verify_credentials('alice', 'pass123') == true
+	assert s.verify_credentials('alice', 'wrong') == false
+	assert s.verify_credentials('bob', 'pass123') == false
+}
+
+// test_process_request_connect verifies CONNECT request handling.
+fn test_process_request_connect() {
+	mut s := new_server(1080, [.no_auth])
+	req := SocksRequest{
+		command: .connect
+		addr_type: .ipv4
+		dest_addr: '93.184.216.34'
+		dest_port: 80
+	}
+	resp := s.process_request(req)
+	assert resp.reply == .succeeded
+	assert resp.bind_addr == '93.184.216.34'
+	assert s.total_connections == 1
+}
+
+// test_process_request_bad_version verifies rejection of non-SOCKS5.
+fn test_process_request_bad_version() {
+	mut s := new_server(1080, [.no_auth])
+	req := SocksRequest{
+		version: 4 // SOCKS4 not supported
+		command: .connect
+		addr_type: .ipv4
+		dest_addr: '10.0.0.1'
+		dest_port: 80
+	}
+	resp := s.process_request(req)
+	assert resp.reply == .general_failure
+}
+
+// test_connect_target_ipv4 verifies target resolution for IPv4.
+fn test_connect_target_ipv4() {
+	req := SocksRequest{
+		command: .connect
+		addr_type: .ipv4
+		dest_addr: '10.0.0.1'
+		dest_port: 80
+	}
+	addr := connect_target(req)!
+	assert addr == '10.0.0.1'
+}
+
+// test_connect_target_domain verifies target resolution for domain names.
+fn test_connect_target_domain() {
+	req := SocksRequest{
+		command: .connect
+		addr_type: .domain
+		dest_addr: 'example.com'
+		dest_port: 443
+	}
+	addr := connect_target(req)!
+	assert addr == 'example.com'
+}
+
+// test_connect_target_empty_domain verifies error for empty domain.
+fn test_connect_target_empty_domain() {
+	req := SocksRequest{
+		command: .connect
+		addr_type: .domain
+		dest_addr: ''
+		dest_port: 443
+	}
+	connect_target(req) or {
+		assert err.msg().contains('empty domain')
+		return
+	}
+	assert false, 'expected error for empty domain'
+}
+
+// test_encode_request_ipv4 verifies wire-format encoding of an IPv4
+// connect request.
+fn test_encode_request_ipv4() {
+	req := SocksRequest{
+		command: .connect
+		addr_type: .ipv4
+		dest_addr: '10.0.0.1'
+		dest_port: 80
+	}
+	encoded := encode_request(req)
+	assert encoded[0] == 5 // version
+	assert encoded[1] == 1 // CONNECT
+	assert encoded[2] == 0 // reserved
+	assert encoded[3] == 1 // IPv4
+	assert encoded[4] == 10
+	assert encoded[5] == 0
+	assert encoded[6] == 0
+	assert encoded[7] == 1
+}
+
+// test_encode_request_domain verifies wire-format encoding of a domain
+// connect request.
+fn test_encode_request_domain() {
+	req := SocksRequest{
+		command: .connect
+		addr_type: .domain
+		dest_addr: 'example.com'
+		dest_port: 443
+	}
+	encoded := encode_request(req)
+	assert encoded[3] == 3 // domain
+	assert encoded[4] == 11 // "example.com" length
+}
+
+// test_parse_auth_negotiation verifies parsing of auth method selection.
+fn test_parse_auth_negotiation() {
+	// VER=5, NMETHODS=2, METHODS=[NO_AUTH, USERNAME_PASSWORD]
+	data := [u8(5), 2, 0, 2]
+	methods := parse_auth_negotiation(data)!
+	assert methods.len == 2
+	assert methods[0] == .no_auth
+	assert methods[1] == .username_password
+}
+
+// test_parse_auth_negotiation_too_short verifies error for truncated data.
+fn test_parse_auth_negotiation_too_short() {
+	parse_auth_negotiation([u8(5)]) or {
+		assert err.msg().contains('too short')
+		return
+	}
+	assert false, 'expected error for short data'
+}
+
+// test_parse_auth_negotiation_bad_version verifies error for wrong version.
+fn test_parse_auth_negotiation_bad_version() {
+	parse_auth_negotiation([u8(4), 1, 0]) or {
+		assert err.msg().contains('unsupported SOCKS version')
+		return
+	}
+	assert false, 'expected error for bad version'
+}

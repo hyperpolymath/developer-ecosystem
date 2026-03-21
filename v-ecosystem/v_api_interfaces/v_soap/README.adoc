@@ -1,0 +1,14 @@
+= v-soap
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+SOAP/XML envelope builder and parser for the V-Ecosystem API interfaces layer.
+Constructs well-formed SOAP 1.1 and 1.2 envelopes with optional header blocks, sends them to WSDL-described endpoints over HTTP with correct Content-Type and SOAPAction headers, and parses response XML to extract body content and detect SOAP Faults.
+Intended for integrating with legacy enterprise systems (banking, ERP, government) that still mandate SOAP as their service contract format.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/soap.v`

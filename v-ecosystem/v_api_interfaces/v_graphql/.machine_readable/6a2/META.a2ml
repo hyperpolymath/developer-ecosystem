@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# META.a2ml — Project meta-level information
+# Architecture decisions, design rationale, governance.
+
+[metadata]
+version = "0.1.0"
+last-updated = "{{CURRENT_DATE}}"
+
+[project-info]
+type = "{{PROJECT_TYPE}}"  # library | binary | monorepo | service | website
+languages = []             # e.g. ["rust", "zig", "idris2"]
+license = "PMPL-1.0-or-later"
+author = "Jonathan D.A. Jewell (hyperpolymath)"
+
+[architecture-decisions]
+# ADR format: status = proposed | accepted | deprecated | superseded | rejected
+# - { id = "ADR-001", title = "Use Zig for FFI", status = "accepted", date = "2026-02-14" }
+
+[development-practices]
+build-tool = "just"
+container-runtime = "podman"
+ci-platform = "github-actions"
+package-manager = "guix"  # guix | nix | cargo | mix
+
+[release-policy]
+maintenance-hard-pass-required = true
+maintenance-hard-pass-command = "just maint-hard-pass"
+maintenance-report-path = "reports/maintenance/latest.json"
+
+[maintenance-policy]
+permission-policy = "audit-first"
+permission-fix-mode = "opt-in"
+permission-ignore-file = ".maintenance-perms-ignore"
+
+[design-rationale]
+# Key design decisions and their reasoning

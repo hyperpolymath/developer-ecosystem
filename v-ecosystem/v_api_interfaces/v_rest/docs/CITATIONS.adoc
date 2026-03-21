@@ -1,0 +1,36 @@
+= Developer Ecosystem - Citation Guide
+:toc:
+
+== BibTeX
+
+[source,bibtex]
+----
+@software{Developer Ecosystem_2026,
+  author = {Jewell, Jonathan},
+  title = {Developer Ecosystem},
+  year = {2026},
+  url = {https://github.com/hyperpolymath/Developer Ecosystem},
+  license = {PMPL-1.0-or-later}
+}
+----
+
+== Harvard Style
+
+Jewell, J.D.A. (2026) _Developer Ecosystem_ [Computer software]. Available at: https://github.com/hyperpolymath/Developer Ecosystem
+
+== OSCOLA
+
+Jonathan D.A. Jewell, 'Developer Ecosystem' (2026) <https://github.com/hyperpolymath/Developer Ecosystem>
+
+== MLA
+
+Jewell, Jonathan "Developer Ecosystem." 2026, github.com/hyperpolymath/Developer Ecosystem.
+
+== APA 7
+
+Jewell, J.D.A. (2026). _Developer Ecosystem_ [Computer software]. GitHub. https://github.com/hyperpolymath/Developer Ecosystem
+
+== See Also
+
+* link:../CITATION.cff[CITATION.cff]
+* link:../codemeta.json[codemeta.json]

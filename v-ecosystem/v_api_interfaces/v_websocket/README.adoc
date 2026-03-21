@@ -1,0 +1,15 @@
+= v-websocket
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+WebSocket server runtime for the V-Ecosystem API interfaces layer.
+Provides a room-based message broker with client lifecycle management (connect, disconnect, join, broadcast) built on V's `net.websocket` module.
+Clients interact via text-frame commands (`/join <room>`, `/broadcast <room> <msg>`, `/health`) and receive JSON-formatted responses.
+Designed as the real-time transport complement to the REST and JSON-RPC interfaces in the same interface family.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/websocket.v`
