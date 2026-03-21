@@ -1,0 +1,20 @@
+# Trustfile.a2ml -- v-socks
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# Contractile trust specification for the v-socks protocol module.
+# Evaluated by the contractile-cli (must/trust/dust/intend/k9) toolchain.
+
+[trust]
+post-quantum-keys = "pending"
+threat-model = "proxy-abuse-credential-leak-dns-leak"
+formal-verification = "idris2-abi"
+audit-status = "unaudited"
+
+[must]
+invariant-checks = ["input-validation", "auth-method-negotiation", "address-type-validation", "reply-status-check", "udp-fragment-reassembly"]
+build-contract = "v build src/"
+
+[dust]
+recovery = "reconnect-through-alternate-proxy"
+rollback = "reset-and-reconnect"

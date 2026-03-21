@@ -1,0 +1,12 @@
+= v-rtsp
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+RTSP (RFC 7826) client for media stream control and playback
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/rtsp.v`

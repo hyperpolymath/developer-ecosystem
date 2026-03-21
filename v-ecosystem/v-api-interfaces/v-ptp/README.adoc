@@ -1,0 +1,12 @@
+= v-ptp
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+PTP (IEEE 1588) client for Precision Time Protocol clock synchronisation
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/ptp.v`

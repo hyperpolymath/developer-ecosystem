@@ -1,0 +1,20 @@
+# Trustfile.a2ml -- v-netconf
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# Contractile trust specification for the v-netconf protocol module.
+# Evaluated by the contractile-cli (must/trust/dust/intend/k9) toolchain.
+
+[trust]
+post-quantum-keys = "pending"
+threat-model = "config-injection-privilege-escalation-dos"
+formal-verification = "idris2-abi"
+audit-status = "unaudited"
+
+[must]
+invariant-checks = ["input-validation", "message-id-matching", "capability-negotiation", "xml-sanitisation", "lock-management"]
+build-contract = "v build src/"
+
+[dust]
+recovery = "close-and-reconnect-session"
+rollback = "reset-and-reconnect"

@@ -1,0 +1,20 @@
+# Trustfile.a2ml -- v-stun
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# Contractile trust specification for the v-stun protocol module.
+# Evaluated by the contractile-cli (must/trust/dust/intend/k9) toolchain.
+
+[trust]
+post-quantum-keys = "pending"
+threat-model = "amplification-spoofing-fingerprint-bypass"
+formal-verification = "idris2-abi"
+audit-status = "unaudited"
+
+[must]
+invariant-checks = ["input-validation", "transaction-id-matching", "magic-cookie-check", "message-integrity", "fingerprint-crc32"]
+build-contract = "v build src/"
+
+[dust]
+recovery = "retry-alternate-server"
+rollback = "reset-and-reconnect"

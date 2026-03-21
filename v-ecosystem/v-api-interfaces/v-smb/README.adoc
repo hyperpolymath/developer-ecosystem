@@ -1,0 +1,12 @@
+= v-smb
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+SMB3 client for Windows/Samba file sharing and network resource access
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/smb.v`

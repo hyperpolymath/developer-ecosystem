@@ -1,0 +1,12 @@
+= v-dns
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+DNS resolver client supporting A, AAAA, CNAME, MX, TXT, SRV lookups (RFC 1035)
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/dns.v`

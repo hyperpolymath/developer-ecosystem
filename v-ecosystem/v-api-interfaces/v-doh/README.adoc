@@ -1,0 +1,12 @@
+= v-doh
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+DNS-over-HTTPS (RFC 8484) client for encrypted DNS resolution
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/doh.v`

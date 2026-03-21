@@ -1,0 +1,12 @@
+= v-dds
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+DDS (OMG Data Distribution Service) client for real-time publish-subscribe
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/dds.v`

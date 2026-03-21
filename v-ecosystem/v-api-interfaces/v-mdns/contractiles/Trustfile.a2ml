@@ -1,0 +1,20 @@
+# Trustfile.a2ml -- v-mdns
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# Contractile trust specification for the v-mdns protocol module.
+# Evaluated by the contractile-cli (must/trust/dust/intend/k9) toolchain.
+
+[trust]
+post-quantum-keys = "pending"
+threat-model = "spoofing-cache-poisoning-amplification"
+formal-verification = "idris2-abi"
+audit-status = "unaudited"
+
+[must]
+invariant-checks = ["input-validation", "multicast-scope-check", "name-conflict-detection", "ttl-enforcement", "record-deduplication"]
+build-contract = "v build src/"
+
+[dust]
+recovery = "probe-and-announce"
+rollback = "reset-and-reconnect"

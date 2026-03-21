@@ -1,0 +1,12 @@
+= v-telnet
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Telnet (RFC 854) client for remote terminal access
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/telnet.v`

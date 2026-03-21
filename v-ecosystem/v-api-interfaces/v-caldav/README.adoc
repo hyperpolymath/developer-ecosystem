@@ -1,0 +1,12 @@
+= v-caldav
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+CalDAV (RFC 4791) client for calendar access and scheduling
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/caldav.v`

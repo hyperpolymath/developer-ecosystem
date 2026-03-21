@@ -1,0 +1,12 @@
+= v-tftp
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+TFTP (RFC 1350) client for trivial file transfer over UDP
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/tftp.v`

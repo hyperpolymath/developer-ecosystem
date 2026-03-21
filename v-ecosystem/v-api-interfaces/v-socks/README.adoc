@@ -1,0 +1,12 @@
+= v-socks
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+SOCKS5 (RFC 1928) client for proxied TCP/UDP connections
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/socks.v`

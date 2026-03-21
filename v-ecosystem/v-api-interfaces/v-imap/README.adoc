@@ -1,0 +1,12 @@
+= v-imap
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+IMAP4rev1 (RFC 3501) client for mailbox access and message retrieval
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/imap.v`

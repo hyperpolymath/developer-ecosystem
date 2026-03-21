@@ -1,0 +1,12 @@
+= v-netconf
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+NETCONF (RFC 6241) client for network device configuration management
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/netconf.v`

@@ -1,0 +1,20 @@
+# Trustfile.a2ml -- v-dds
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# Contractile trust specification for the v-dds protocol module.
+# Evaluated by the contractile-cli (must/trust/dust/intend/k9) toolchain.
+
+[trust]
+post-quantum-keys = "pending"
+threat-model = "data-injection-topic-flooding-dos"
+formal-verification = "idris2-abi"
+audit-status = "unaudited"
+
+[must]
+invariant-checks = ["input-validation", "topic-name-validation", "qos-policy-check", "partition-access-control", "deadline-monitoring"]
+build-contract = "v build src/"
+
+[dust]
+recovery = "rejoin-domain-with-backoff"
+rollback = "reset-and-reconnect"

@@ -1,0 +1,12 @@
+= v-syslog
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Syslog (RFC 5424) client for structured system log message transmission
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/syslog.v`

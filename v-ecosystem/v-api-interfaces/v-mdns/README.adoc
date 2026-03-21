@@ -1,0 +1,12 @@
+= v-mdns
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+mDNS (RFC 6762) client for multicast DNS service discovery on local networks
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/mdns.v`

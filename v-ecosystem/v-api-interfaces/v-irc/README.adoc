@@ -1,0 +1,12 @@
+= v-irc
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+IRC (RFC 2812) client for Internet Relay Chat communication
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/irc.v`

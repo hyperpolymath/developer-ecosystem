@@ -1,0 +1,12 @@
+= v-pop3
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+POP3 (RFC 1939) client for mailbox download and message retrieval
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/pop3.v`

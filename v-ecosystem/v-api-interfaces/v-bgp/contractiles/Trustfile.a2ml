@@ -1,0 +1,20 @@
+# Trustfile.a2ml -- v-bgp
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# Contractile trust specification for the v-bgp protocol module.
+# Evaluated by the contractile-cli (must/trust/dust/intend/k9) toolchain.
+
+[trust]
+post-quantum-keys = "pending"
+threat-model = "route-hijack-prefix-leak-session-reset"
+formal-verification = "idris2-abi"
+audit-status = "unaudited"
+
+[must]
+invariant-checks = ["input-validation", "marker-field-check", "as-path-validation", "prefix-length-check", "hold-timer-enforcement"]
+build-contract = "v build src/"
+
+[dust]
+recovery = "reconnect-and-resend-open"
+rollback = "reset-and-reconnect"
