@@ -1,0 +1,20 @@
+# Trustfile.a2ml -- v-snmp
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# Contractile trust specification for the v-snmp protocol module.
+# Evaluated by the contractile-cli (must/trust/dust/intend/k9) toolchain.
+
+[trust]
+post-quantum-keys = "pending"
+threat-model = "community-string-exposure-oid-traversal"
+formal-verification = "idris2-abi"
+audit-status = "unaudited"
+
+[must]
+invariant-checks = ["input-validation", "oid-encoding-bounds", "ber-length-validation", "community-string-sanitisation", "pdu-type-verification"]
+build-contract = "v build src/"
+
+[dust]
+recovery = "retry-with-timeout"
+rollback = "reconnect-agent"

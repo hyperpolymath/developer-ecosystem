@@ -1,0 +1,20 @@
+# Trustfile.a2ml -- v-radius
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# Contractile trust specification for the v-radius protocol module.
+# Evaluated by the contractile-cli (must/trust/dust/intend/k9) toolchain.
+
+[trust]
+post-quantum-keys = "pending"
+threat-model = "shared-secret-exposure-replay-attack"
+formal-verification = "idris2-abi"
+audit-status = "unaudited"
+
+[must]
+invariant-checks = ["input-validation", "authenticator-verification", "password-encryption-correctness", "attribute-length-bounds", "shared-secret-protection"]
+build-contract = "v build src/"
+
+[dust]
+recovery = "retry-alternate-server"
+rollback = "reset-session"

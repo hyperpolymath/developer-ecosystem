@@ -1,0 +1,14 @@
+= v-radius
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+RADIUS (RFC 2865/2866) AAA client for the V-Ecosystem API interfaces layer.
+Supports Access-Request/Accept/Reject/Challenge, Accounting Start/Stop, attribute-value pair encoding, and MD5-based User-Password encryption.
+Designed for network access authentication and accounting.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/radius.v`

@@ -1,0 +1,14 @@
+= v-backup
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Multi-backend backup client for the V-Ecosystem API interfaces layer.
+Supports Restic (REST API), BorgBackup (SSH), and rsync with a unified interface for snapshot creation, listing, restoration, pruning, and integrity checking.
+Handles encryption-at-rest, deduplication, and incremental backups.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/backup.v`

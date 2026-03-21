@@ -1,0 +1,14 @@
+= v-smtp
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+SMTP (RFC 5321) email client for the V-Ecosystem API interfaces layer.
+Supports EHLO/HELO, STARTTLS upgrade, PLAIN and LOGIN authentication, MIME multipart messages with attachments, and full envelope handling (MAIL FROM/RCPT TO/DATA).
+Designed for transactional email delivery.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/smtp.v`

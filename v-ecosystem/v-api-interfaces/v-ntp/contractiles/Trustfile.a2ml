@@ -1,0 +1,20 @@
+# Trustfile.a2ml -- v-ntp
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# Contractile trust specification for the v-ntp protocol module.
+# Evaluated by the contractile-cli (must/trust/dust/intend/k9) toolchain.
+
+[trust]
+post-quantum-keys = "pending"
+threat-model = "ntp-amplification-time-spoofing"
+formal-verification = "idris2-abi"
+audit-status = "unaudited"
+
+[must]
+invariant-checks = ["input-validation", "timestamp-overflow-prevention", "kod-handling", "stratum-validation", "udp-packet-size-bounds"]
+build-contract = "v build src/"
+
+[dust]
+recovery = "retry-alternate-server"
+rollback = "use-local-clock"

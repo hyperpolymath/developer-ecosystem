@@ -1,0 +1,14 @@
+= v-snmp
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+SNMPv2c/v3 (RFC 3416/3414) network monitoring client for the V-Ecosystem API interfaces layer.
+Supports GET, GETNEXT, GETBULK, SET, and WALK operations with BER-encoded ASN.1 PDUs.
+Implements USM (User-based Security Model) for SNMPv3 authentication and privacy.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/snmp.v`

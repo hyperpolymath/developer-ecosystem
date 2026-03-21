@@ -1,0 +1,14 @@
+= v-ntp
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+NTPv4 (RFC 5905) time synchronisation client for the V-Ecosystem API interfaces layer.
+Supports unicast time queries over UDP, clock offset and delay calculation, stratum inspection, and kiss-of-death handling.
+Implements the full 64-bit NTP timestamp format with sub-second precision.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/ntp.v`

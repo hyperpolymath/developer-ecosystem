@@ -1,0 +1,20 @@
+# Trustfile.a2ml -- v-triplestore
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# Contractile trust specification for the v-triplestore protocol module.
+# Evaluated by the contractile-cli (must/trust/dust/intend/k9) toolchain.
+
+[trust]
+post-quantum-keys = "pending"
+threat-model = "sparql-injection-http-endpoint"
+formal-verification = "idris2-abi"
+audit-status = "unaudited"
+
+[must]
+invariant-checks = ["input-validation", "sparql-injection-prevention", "iri-syntax-validation", "http-status-validation", "content-type-negotiation"]
+build-contract = "v build src/"
+
+[dust]
+recovery = "retry-with-backoff"
+rollback = "reconnect-endpoint"
