@@ -1,0 +1,15 @@
+= v-xmpp
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+XMPP protocol connector for the V-Ecosystem API interfaces layer.
+Implements the Extensible Messaging and Presence Protocol (RFC 6120 core, RFC 6121 IM and presence) over TCP with XML stream framing.
+Supports SASL PLAIN authentication, message send/receive, presence broadcast, roster management, and multi-user chat (XEP-0045).
+Compatible with ejabberd, Prosody, Openfire, and other XMPP-compliant servers.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/xmpp.v`

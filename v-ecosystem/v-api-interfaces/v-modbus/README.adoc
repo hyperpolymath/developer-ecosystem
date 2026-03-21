@@ -1,0 +1,15 @@
+= v-modbus
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Modbus protocol connector for the V-Ecosystem API interfaces layer.
+Implements Modbus TCP (MBAP framing over TCP/IP) with support for all four data object types: coils, discrete inputs, holding registers, and input registers.
+Covers function codes 01-06, 15, and 16 for reading/writing individual and multiple data points.
+Designed for PLC communication, SCADA integration, and IIoT edge gateway scenarios.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/modbus.v`

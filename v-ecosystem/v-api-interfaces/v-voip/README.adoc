@@ -1,0 +1,15 @@
+= v-voip
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+VoIP protocol connector for the V-Ecosystem API interfaces layer.
+Implements SIP (Session Initiation Protocol, RFC 3261) for call signalling and RTP (Real-time Transport Protocol, RFC 3550) for media transport.
+Supports REGISTER, INVITE, BYE, CANCEL, and OPTIONS methods with SDP offer/answer for codec negotiation.
+Designed for PBX integration, click-to-call applications, and voice automation within the V-Ecosystem API layer.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/voip.v`

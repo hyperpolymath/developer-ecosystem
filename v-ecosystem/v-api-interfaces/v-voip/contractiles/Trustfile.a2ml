@@ -1,0 +1,20 @@
+# Trustfile.a2ml -- v-voip
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# Contractile trust specification for the v-voip protocol module.
+# Evaluated by the contractile-cli (must/trust/dust/intend/k9) toolchain.
+
+[trust]
+post-quantum-keys = "pending"
+threat-model = "network-facing-realtime-media"
+formal-verification = "idris2-abi"
+audit-status = "unaudited"
+
+[must]
+invariant-checks = ["input-validation", "sip-header-validation", "sdp-parsing", "rtp-sequence-tracking", "call-state-machine"]
+build-contract = "v build src/"
+
+[dust]
+recovery = "re-register-reinvite"
+rollback = "send-bye-close-media"

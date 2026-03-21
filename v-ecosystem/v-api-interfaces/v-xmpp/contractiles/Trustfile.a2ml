@@ -1,0 +1,20 @@
+# Trustfile.a2ml -- v-xmpp
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# Contractile trust specification for the v-xmpp protocol module.
+# Evaluated by the contractile-cli (must/trust/dust/intend/k9) toolchain.
+
+[trust]
+post-quantum-keys = "pending"
+threat-model = "network-facing-messaging"
+formal-verification = "idris2-abi"
+audit-status = "unaudited"
+
+[must]
+invariant-checks = ["input-validation", "xml-injection-prevention", "jid-validation", "sasl-state-machine", "stanza-routing"]
+build-contract = "v build src/"
+
+[dust]
+recovery = "reconnect-rebind-rejoin"
+rollback = "close-stream-disconnect"

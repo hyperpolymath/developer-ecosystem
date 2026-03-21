@@ -1,0 +1,14 @@
+= v-opcua
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+OPC UA protocol connector for the V-Ecosystem API interfaces layer.
+Implements an OPC Unified Architecture (IEC 62541) client over TCP with UA Binary encoding.
+Supports session management, node browsing, attribute read/write, method calls, and monitored item subscriptions for industrial automation, SCADA, and IIoT integration.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/opcua.v`

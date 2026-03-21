@@ -1,0 +1,14 @@
+= v-webdav
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+WebDAV protocol connector for the V-Ecosystem API interfaces layer.
+Implements Web Distributed Authoring and Versioning (RFC 4918) over HTTP/HTTPS.
+Supports PROPFIND, PROPPATCH, MKCOL, COPY, MOVE, LOCK, UNLOCK, and standard GET/PUT/DELETE operations for remote file management against Nextcloud, Apache mod_dav, nginx-dav, and similar WebDAV servers.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/webdav.v`

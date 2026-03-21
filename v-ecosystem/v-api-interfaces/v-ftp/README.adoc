@@ -1,0 +1,14 @@
+= v-ftp
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+FTP/FTPS protocol connector for the V-Ecosystem API interfaces layer.
+Implements the File Transfer Protocol (RFC 959) with TLS upgrade via AUTH TLS (RFC 4217).
+Supports active and passive transfer modes, directory listing, file upload/download, rename, and delete operations over the FTP control/data channel architecture.
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/ftp.v`
