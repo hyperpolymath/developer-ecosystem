@@ -1,0 +1,12 @@
+= v-dot
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+DNS over TLS (DoT) connector for encrypted DNS resolution (RFC 7858)
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/dot.v`

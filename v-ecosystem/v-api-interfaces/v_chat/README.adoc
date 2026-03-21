@@ -1,0 +1,12 @@
+= v-chat
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Real-time chat protocol connector supporting IRC, Matrix, and webhook APIs
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/chat.v`

@@ -1,0 +1,12 @@
+= v-doq
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+DNS over QUIC (DoQ) connector for encrypted DNS resolution (RFC 9250)
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/doq.v`

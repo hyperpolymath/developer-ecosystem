@@ -1,0 +1,12 @@
+= v-dbserver
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Database server management connector for instance lifecycle and query routing
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/dbserver.v`

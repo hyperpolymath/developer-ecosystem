@@ -1,0 +1,12 @@
+= v-authserver
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Authentication server connector for identity, tokens, and session management
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/authserver.v`

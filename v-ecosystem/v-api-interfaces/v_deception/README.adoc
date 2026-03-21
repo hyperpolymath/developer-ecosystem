@@ -1,0 +1,12 @@
+= v-deception
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Cyber deception connector for honeypots, honeytokens, and decoy services
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/deception.v`

@@ -1,0 +1,12 @@
+= v-configmgmt
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Configuration management connector for declarative infrastructure state
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/configmgmt.v`

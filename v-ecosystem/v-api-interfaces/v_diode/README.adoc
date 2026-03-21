@@ -1,0 +1,12 @@
+= v-diode
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Data diode connector for unidirectional network transfer enforcement
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/diode.v`

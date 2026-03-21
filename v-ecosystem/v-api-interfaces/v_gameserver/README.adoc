@@ -1,0 +1,12 @@
+= v-gameserver
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Game server connector for multiplayer session, lobby, and match management
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/gameserver.v`

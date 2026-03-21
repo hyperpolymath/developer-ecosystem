@@ -1,0 +1,12 @@
+= v-federation
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Federation protocol connector for decentralised service-to-service identity and messaging
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/federation.v`

@@ -1,0 +1,20 @@
+# Trustfile.a2ml -- v-firewall
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# Contractile trust specification for the v-firewall protocol module.
+# Evaluated by the contractile-cli (must/trust/dust/intend/k9) toolchain.
+
+[trust]
+post-quantum-keys = "pending"
+threat-model = "rule-bypass-firewall-misconfiguration-lockout-denial-of-service"
+formal-verification = "idris2-abi"
+audit-status = "unaudited"
+
+[must]
+invariant-checks = ["input-validation", "rule-syntax-validation", "rollback-on-failure", "lockout-prevention", "dry-run-safety"]
+build-contract = "v build src/"
+
+[dust]
+recovery = "retry-with-backoff"
+rollback = "reset-and-reconnect"

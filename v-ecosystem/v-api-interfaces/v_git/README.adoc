@@ -1,0 +1,12 @@
+= v-git
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Git protocol connector for repository operations, ref management, and object transfer
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/git.v`

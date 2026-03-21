@@ -1,0 +1,20 @@
+# Trustfile.a2ml -- v-deception
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# Contractile trust specification for the v-deception protocol module.
+# Evaluated by the contractile-cli (must/trust/dust/intend/k9) toolchain.
+
+[trust]
+post-quantum-keys = "pending"
+threat-model = "deception-bypass-honeytoken-fingerprinting-alert-suppression"
+formal-verification = "idris2-abi"
+audit-status = "unaudited"
+
+[must]
+invariant-checks = ["input-validation", "alert-on-interaction", "decoy-isolation", "token-uniqueness", "stealth-verification"]
+build-contract = "v build src/"
+
+[dust]
+recovery = "retry-with-backoff"
+rollback = "reset-and-reconnect"

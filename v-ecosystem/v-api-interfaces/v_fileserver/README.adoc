@@ -1,0 +1,12 @@
+= v-fileserver
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+File server connector for remote file operations and directory browsing
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/fileserver.v`

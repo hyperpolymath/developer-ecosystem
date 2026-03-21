@@ -1,0 +1,12 @@
+= v-cli
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+CLI tool management connector for command dispatch, argument parsing, and subcommand routing
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/cli.v`
