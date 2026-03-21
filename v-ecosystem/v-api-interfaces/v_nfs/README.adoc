@@ -1,0 +1,12 @@
+= v-nfs
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Network File System v4 with Kerberos auth and delegations
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/nfs.v`

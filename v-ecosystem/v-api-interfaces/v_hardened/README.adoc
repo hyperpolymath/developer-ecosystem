@@ -1,0 +1,12 @@
+= v-hardened
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Hardened server baseline enforcement with CIS benchmark compliance
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/hardened.v`

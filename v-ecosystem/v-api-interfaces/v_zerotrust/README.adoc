@@ -1,0 +1,12 @@
+= v-zerotrust
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Zero-trust network architecture with continuous verification and microsegmentation
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/zerotrust.v`

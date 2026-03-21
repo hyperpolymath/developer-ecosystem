@@ -1,0 +1,12 @@
+= v-siem
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Security information and event management with correlation and incident response
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/siem.v`

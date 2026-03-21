@@ -1,0 +1,12 @@
+= v-pqc
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Post-quantum cryptography with hybrid key exchange and signature schemes
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/pqc.v`

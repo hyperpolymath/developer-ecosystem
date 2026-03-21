@@ -1,0 +1,12 @@
+= v-ids
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Intrusion detection with signature and anomaly-based rule engines
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/ids.v`

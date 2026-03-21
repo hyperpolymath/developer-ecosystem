@@ -1,0 +1,20 @@
+# Trustfile.a2ml -- v-honeypot
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# Contractile trust specification for the v-honeypot protocol module.
+# Evaluated by the contractile-cli (must/trust/dust/intend/k9) toolchain.
+
+[trust]
+post-quantum-keys = "pending"
+threat-model = "honeypot-fingerprinting-escape-lateral-movement"
+formal-verification = "idris2-abi"
+audit-status = "unaudited"
+
+[must]
+invariant-checks = ["input-validation", "type-safety", "error-handling", "resource-cleanup"]
+build-contract = "v build src/"
+
+[dust]
+recovery = "retry-with-backoff"
+rollback = "reset-and-reconnect"

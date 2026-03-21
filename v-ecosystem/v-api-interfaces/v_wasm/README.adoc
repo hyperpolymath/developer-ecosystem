@@ -1,0 +1,12 @@
+= v-wasm
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+WebAssembly runtime with module loading, WASI, and component model
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/wasm.v`

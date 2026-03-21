@@ -1,0 +1,12 @@
+= v-honeypot
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Honeypot deception traps with interaction logging and threat intelligence
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/honeypot.v`

@@ -1,0 +1,12 @@
+= v-logcollector
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Log aggregation with structured ingestion, filtering, and forwarding
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/logcollector.v`

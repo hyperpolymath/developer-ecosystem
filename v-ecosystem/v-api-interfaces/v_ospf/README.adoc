@@ -1,0 +1,12 @@
+= v-ospf
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Open Shortest Path First routing with area management and LSA handling
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/ospf.v`

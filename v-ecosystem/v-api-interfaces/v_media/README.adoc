@@ -1,0 +1,12 @@
+= v-media
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Media streaming with transcoding, adaptive bitrate, and format negotiation
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/media.v`

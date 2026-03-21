@@ -1,0 +1,12 @@
+= v-nesy
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Neurosymbolic reasoning with hybrid neural-symbolic inference pipelines
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/nesy.v`

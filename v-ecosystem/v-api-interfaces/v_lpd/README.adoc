@@ -1,0 +1,12 @@
+= v-lpd
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Line Printer Daemon protocol for print queue management
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/lpd.v`

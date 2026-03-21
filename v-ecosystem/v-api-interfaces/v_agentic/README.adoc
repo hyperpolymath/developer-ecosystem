@@ -1,0 +1,12 @@
+= v-agentic
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Autonomous agent orchestration with capability-based delegation and supervision
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/agentic.v`

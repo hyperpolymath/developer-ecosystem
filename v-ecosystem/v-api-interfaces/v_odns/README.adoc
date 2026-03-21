@@ -1,0 +1,12 @@
+= v-odns
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Oblivious DNS over HTTPS for privacy-preserving name resolution
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/odns.v`

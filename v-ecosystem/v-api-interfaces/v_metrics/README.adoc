@@ -1,0 +1,12 @@
+= v-metrics
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Metrics collection with dimensional tagging, aggregation, and export
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/metrics.v`

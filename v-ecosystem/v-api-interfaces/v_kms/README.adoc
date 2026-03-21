@@ -1,0 +1,12 @@
+= v-kms
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Key management with envelope encryption, key rotation, and HSM integration
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/kms.v`

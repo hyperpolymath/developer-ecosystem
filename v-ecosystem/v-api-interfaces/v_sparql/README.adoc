@@ -1,0 +1,12 @@
+= v-sparql
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+SPARQL query engine with federated endpoints and graph pattern matching
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/sparql.v`

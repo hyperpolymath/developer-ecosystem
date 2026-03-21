@@ -1,0 +1,12 @@
+= v-nts
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Network Time Security for authenticated NTP with AEAD encryption
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/nts.v`

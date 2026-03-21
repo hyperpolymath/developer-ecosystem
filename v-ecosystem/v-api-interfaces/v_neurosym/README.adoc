@@ -1,0 +1,12 @@
+= v-neurosym
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Neurosymbolic CI/CD intelligence with security scanning and policy enforcement
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/neurosym.v`

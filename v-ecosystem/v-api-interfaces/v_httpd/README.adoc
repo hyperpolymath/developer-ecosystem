@@ -1,0 +1,12 @@
+= v-httpd
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+HTTP server management with virtual hosts, TLS, and reverse proxy
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/httpd.v`

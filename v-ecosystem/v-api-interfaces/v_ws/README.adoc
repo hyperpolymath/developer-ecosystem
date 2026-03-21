@@ -1,0 +1,12 @@
+= v-ws
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+WebSocket protocol handling with frame management and connection upgrade
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/ws.v`

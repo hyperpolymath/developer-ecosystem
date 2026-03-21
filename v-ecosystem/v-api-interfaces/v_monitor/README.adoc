@@ -1,0 +1,12 @@
+= v-monitor
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+System monitoring with health checks, alerting, and escalation policies
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/monitor.v`

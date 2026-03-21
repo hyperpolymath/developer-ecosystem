@@ -1,0 +1,12 @@
+= v-tacacs
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+TACACS+ authentication, authorization, and accounting for network devices
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/tacacs.v`

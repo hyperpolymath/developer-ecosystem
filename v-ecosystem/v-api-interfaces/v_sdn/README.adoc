@@ -1,0 +1,12 @@
+= v-sdn
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Software-defined networking with flow table management and controller API
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/sdn.v`

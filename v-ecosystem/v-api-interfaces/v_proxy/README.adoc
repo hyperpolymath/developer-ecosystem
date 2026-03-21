@@ -1,0 +1,12 @@
+= v-proxy
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Forward and reverse proxy with connection pooling and header rewriting
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/proxy.v`

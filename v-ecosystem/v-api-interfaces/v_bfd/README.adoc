@@ -1,0 +1,12 @@
+= v-bfd
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Bidirectional Forwarding Detection for rapid link and path failure detection
+
+== Author
+
+Jonathan D.A. Jewell
+
+== Source
+
+`src/bfd.v`
