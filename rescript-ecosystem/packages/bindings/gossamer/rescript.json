@@ -1,0 +1,23 @@
+{
+  "name": "rescript-gossamer",
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    }
+  ],
+  "package-specs": [
+    {
+      "module": "esmodule",
+      "in-source": false
+    }
+  ],
+  "suffix": ".res.mjs",
+  "bs-dependencies": [
+    "@rescript/core"
+  ],
+  "bs-dev-dependencies": [],
+  "warnings": {
+    "number": "+A-48-42"
+  }
+}
