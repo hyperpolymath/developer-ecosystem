@@ -5,6 +5,14 @@
 :icons: font
 :source-highlighter: highlight.js
 
+[IMPORTANT]
+.DEPRECATED
+====
+This package is deprecated in favor of https://github.com/hyperpolymath/gossamer[@gossamer/api] (rescript-gossamer bindings).
+Gossamer is hyperpolymath's own webview shell with linear type safety.
+See the https://github.com/hyperpolymath/gossamer[Gossamer repo] for migration guide.
+====
+
 Type-safe ReScript bindings for https://tauri.app[Tauri 2.0] - Build native desktop and mobile apps with ReScript.
 
 image:https://img.shields.io/badge/ReScript-11.0+-blue[ReScript]

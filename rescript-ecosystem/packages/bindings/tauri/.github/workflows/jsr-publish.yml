@@ -1,6 +1,10 @@
 # SPDX-License-Identifier: PMPL-1.0-or-later
 # SPDX-FileCopyrightText: 2026 Hyperpolymath
 #
+# DEPRECATED: rescript-tauri is deprecated in favor of @gossamer/api
+# (rescript-gossamer). No further releases should be published.
+# See: https://github.com/hyperpolymath/gossamer
+#
 # JSR Publishing Workflow with Release Validation
 # Integrates finishing-bot validation concepts before publishing
 
