@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Ada/GNAT build artifacts
+obj/
+*.ali
+*.o
+b~*.adb
+b~*.ads
+b~*.ali

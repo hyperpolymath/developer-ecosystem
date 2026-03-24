@@ -257,7 +257,7 @@ cabal build --with-ghc wasm32-wasi-ghc
 * WASM_STATUS.adoc (✅ Ready)
 
 **Community:**
-* Repository: `/var/home/hyper/workspace/projects/to-git/_cccp/ada-loom-registry`
+* Repository: `https://github.com/hyperpolymath/ada-loom-registry`
 * License: PMPL-1.0
 * Contact: See CONTRIBUTING.adoc
 
