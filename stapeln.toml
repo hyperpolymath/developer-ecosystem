@@ -1,0 +1,886 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# stapeln.toml — Layer-based container build for developer-ecosystem
+#
+# stapeln builds containers as composable layers (German: "to stack").
+# Each layer is independently cacheable, verifiable, and signable.
+#
+# developer-ecosystem is a monorepo housing cross-language tooling,
+# language-specific ecosystems, satellite services, and shared FFI/ABI
+# infrastructure. This manifest defines containerised builds for every
+# deployable component.
+#
+# Author: Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+
+[metadata]
+name = "developer-ecosystem"
+version = "0.5.0"
+description = "Monorepo container builds for the hyperpolymath developer ecosystem"
+author = "Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>"
+license = "PMPL-1.0-or-later"
+registry = "ghcr.io/hyperpolymath"
+
+[build]
+containerfile = "Containerfile"
+context = "."
+runtime = "podman"
+
+# ══════════════════════════════════════════════════════════════════
+# Shared Base Layers
+# ══════════════════════════════════════════════════════════════════
+# These layers are referenced by multiple component builds. Stapeln
+# deduplicates them across images so the total pull size stays small.
+
+[layers.base]
+description = "Chainguard Wolfi minimal base — shared by every image"
+from = "cgr.dev/chainguard/wolfi-base:latest"
+cache = true
+verify = true
+
+[layers.base-static]
+description = "Chainguard static distroless — for artifact-only images"
+from = "cgr.dev/chainguard/static:latest"
+cache = true
+verify = true
+
+# ── Language Toolchain Layers ─────────────────────────────────────
+
+[layers.deno-toolchain]
+description = "Deno runtime layer"
+extends = "base"
+packages = ["deno"]
+cache = true
+
+[layers.rust-toolchain]
+description = "Rust stable toolchain + cargo"
+extends = "base"
+packages = ["rust", "cargo", "gcc", "musl-dev", "openssl-dev", "pkgconf"]
+cache = true
+
+[layers.zig-toolchain]
+description = "Zig compiler toolchain"
+extends = "base"
+packages = ["zig"]
+cache = true
+
+[layers.elixir-toolchain]
+description = "Elixir + Erlang/OTP runtime"
+extends = "base"
+packages = ["elixir", "erlang"]
+cache = true
+
+[layers.haskell-toolchain]
+description = "GHC + Cabal for Haskell components"
+extends = "base"
+packages = ["ghc", "cabal-install"]
+cache = true
+
+[layers.ada-toolchain]
+description = "GNAT Ada toolchain for techstack-enforcer"
+extends = "base"
+packages = ["gcc-gnat", "gprbuild"]
+cache = true
+
+[layers.idris2-toolchain]
+description = "Idris2 compiler for ABI definitions and ECHIDNA"
+extends = "base"
+packages = ["idris2"]
+cache = true
+
+[layers.julia-toolchain]
+description = "Julia runtime for batch/data packages"
+extends = "base"
+packages = ["julia"]
+cache = true
+
+[layers.vlang-toolchain]
+description = "V language compiler for v-ecosystem components"
+extends = "base"
+packages = ["vlang"]
+cache = true
+
+# ══════════════════════════════════════════════════════════════════
+# Component Build Layers
+# ══════════════════════════════════════════════════════════════════
+
+# ── aggregate-library (Deno + Elixir cross-language spec library) ─
+
+[layers.aggregate-library-build]
+description = "Build aggregate-library Deno deps + Elixir mix"
+extends = "deno-toolchain"
+workdir = "/build/aggregate-library"
+commands = [
+    "cp -r aggregate-library/ /build/aggregate-library/",
+    "deno cache --config deno.json lib/**/*.ts || true",
+]
+cache = true
+
+[layers.aggregate-library-elixir-build]
+description = "Compile aggregate-library Elixir components"
+extends = "elixir-toolchain"
+workdir = "/build/aggregate-library"
+commands = [
+    "mix local.hex --force",
+    "mix local.rebar --force",
+    "mix deps.get --only prod",
+    "MIX_ENV=prod mix compile",
+]
+cache = true
+
+[layers.aggregate-library-runtime]
+description = "aggregate-library production image"
+from = "cgr.dev/chainguard/wolfi-base:latest"
+packages = ["deno", "elixir", "erlang", "ca-certificates"]
+copy-from = [
+    { layer = "aggregate-library-build", src = "/build/aggregate-library/", dst = "/app/" },
+    { layer = "aggregate-library-elixir-build", src = "/build/aggregate-library/_build/prod/", dst = "/app/_build/prod/" },
+]
+workdir = "/app"
+entrypoint = ["deno", "run", "--allow-read", "--allow-net", "lib/main.ts"]
+user = "nonroot"
+
+# ── synapse (Zig inter-language bridge) ───────────────────────────
+
+[layers.synapse-build]
+description = "Build synapse Zig bridge"
+extends = "zig-toolchain"
+workdir = "/build/synapse"
+commands = [
+    "cp -r synapse/ /build/synapse/",
+    "zig build -Doptimize=ReleaseSafe",
+]
+cache = true
+
+[layers.synapse-runtime]
+description = "synapse production image — static binary"
+from = "cgr.dev/chainguard/static:latest"
+copy-from = [
+    { layer = "synapse-build", src = "/build/synapse/zig-out/bin/", dst = "/usr/local/bin/" },
+]
+entrypoint = ["synapse"]
+user = "nonroot"
+
+# ── techstack-enforcer (Ada/GNAT policy engine) ──────────────────
+
+[layers.techstack-enforcer-build]
+description = "Build techstack-enforcer Ada binary"
+extends = "ada-toolchain"
+workdir = "/build/techstack-enforcer"
+commands = [
+    "cp -r techstack-enforcer/ /build/techstack-enforcer/",
+    "gprbuild -P techstack_enforcer.gpr -XBUILD_MODE=release",
+]
+cache = true
+
+[layers.techstack-enforcer-runtime]
+description = "techstack-enforcer production image"
+from = "cgr.dev/chainguard/wolfi-base:latest"
+packages = ["ca-certificates", "libgnat"]
+copy-from = [
+    { layer = "techstack-enforcer-build", src = "/build/techstack-enforcer/bin/", dst = "/usr/local/bin/" },
+]
+entrypoint = ["techstack_main"]
+user = "nonroot"
+
+# ── opm-canonicalizer (Rust opam package tool) ────────────────────
+
+[layers.opm-canonicalizer-build]
+description = "Build opm-canonicalizer Rust binary"
+extends = "rust-toolchain"
+workdir = "/build/opm-canonicalizer"
+commands = [
+    "cp -r opm-canonicalizer/ /build/opm-canonicalizer/",
+    "cargo build --release",
+]
+cache = true
+
+[layers.opm-canonicalizer-runtime]
+description = "opm-canonicalizer production image — static Rust binary"
+from = "cgr.dev/chainguard/static:latest"
+copy-from = [
+    { layer = "opm-canonicalizer-build", src = "/build/opm-canonicalizer/target/release/opm-canonicalizer", dst = "/usr/local/bin/opm-canonicalizer" },
+]
+entrypoint = ["opm-canonicalizer"]
+user = "nonroot"
+
+# ── vext (Rust git extension tool) ────────────────────────────────
+
+[layers.vext-build]
+description = "Build vext Rust binary"
+extends = "rust-toolchain"
+workdir = "/build/vext"
+commands = [
+    "cp -r satellites/git-tools/vext/ /build/vext/",
+    "cargo build --release",
+]
+cache = true
+
+[layers.vext-runtime]
+description = "vext production image"
+from = "cgr.dev/chainguard/wolfi-base:latest"
+packages = ["ca-certificates", "git", "curl"]
+copy-from = [
+    { layer = "vext-build", src = "/build/vext/target/release/vext", dst = "/usr/local/bin/vext" },
+]
+expose = [6659]
+entrypoint = ["vext"]
+user = "nonroot"
+
+# ── gitvisor (Git repository supervisor) ──────────────────────────
+
+[layers.gitvisor-build]
+description = "Build gitvisor"
+extends = "deno-toolchain"
+workdir = "/build/gitvisor"
+commands = [
+    "cp -r satellites/git-tools/gitvisor/ /build/gitvisor/",
+    "deno cache src/main.ts || true",
+]
+cache = true
+
+[layers.gitvisor-runtime]
+description = "gitvisor production image"
+from = "cgr.dev/chainguard/wolfi-base:latest"
+packages = ["deno", "git", "ca-certificates"]
+copy-from = [
+    { layer = "gitvisor-build", src = "/build/gitvisor/", dst = "/app/" },
+]
+workdir = "/app"
+entrypoint = ["deno", "run", "--allow-read", "--allow-write", "--allow-run", "--allow-net", "src/main.ts"]
+user = "nonroot"
+
+# ── oikos (Repository management bot) ────────────────────────────
+
+[layers.oikos-build]
+description = "Build oikos bot"
+extends = "deno-toolchain"
+workdir = "/build/oikos"
+commands = [
+    "cp -r satellites/repo-management/oikos/ /build/oikos/",
+    "deno cache src/main.ts || true",
+]
+cache = true
+
+[layers.oikos-runtime]
+description = "oikos bot production image"
+from = "cgr.dev/chainguard/wolfi-base:latest"
+packages = ["deno", "git", "ca-certificates", "curl"]
+copy-from = [
+    { layer = "oikos-build", src = "/build/oikos/", dst = "/app/" },
+]
+workdir = "/app"
+expose = [3000]
+entrypoint = ["deno", "run", "--allow-read", "--allow-write", "--allow-run", "--allow-net", "--allow-env", "src/main.ts"]
+user = "nonroot"
+
+# ── robot-repo-automaton (Rust automated repo fixer) ──────────────
+
+[layers.robot-repo-automaton-build]
+description = "Build robot-repo-automaton Rust binary"
+extends = "rust-toolchain"
+workdir = "/build/robot-repo-automaton"
+commands = [
+    "cp -r satellites/repo-management/robot-repo-automaton/ /build/robot-repo-automaton/",
+    "cargo build --release",
+]
+cache = true
+
+[layers.robot-repo-automaton-runtime]
+description = "robot-repo-automaton production image"
+from = "cgr.dev/chainguard/wolfi-base:latest"
+packages = ["ca-certificates", "git", "curl"]
+copy-from = [
+    { layer = "robot-repo-automaton-build", src = "/build/robot-repo-automaton/target/release/robot-repo-automaton", dst = "/usr/local/bin/robot-repo-automaton" },
+]
+entrypoint = ["robot-repo-automaton"]
+user = "nonroot"
+
+# ── recon-silly-ation (Deno + Rust/WASM + Haskell reconciler) ────
+
+[layers.recon-silly-ation-deno-build]
+description = "Build recon-silly-ation Deno layer"
+extends = "deno-toolchain"
+workdir = "/build/recon-silly-ation"
+commands = [
+    "cp -r satellites/developer-ux/recon-silly-ation/ /build/recon-silly-ation/",
+    "deno cache src/main.ts || true",
+]
+cache = true
+
+[layers.recon-silly-ation-runtime]
+description = "recon-silly-ation production image"
+from = "cgr.dev/chainguard/wolfi-base:latest"
+packages = ["deno", "ca-certificates"]
+copy-from = [
+    { layer = "recon-silly-ation-deno-build", src = "/build/recon-silly-ation/", dst = "/app/" },
+]
+workdir = "/app"
+entrypoint = ["deno", "run", "--allow-read", "--allow-write", "--allow-net", "src/main.ts"]
+user = "nonroot"
+
+# ── scaffoldia (Haskell scaffolding CLI) ──────────────────────────
+
+[layers.scaffoldia-build]
+description = "Build scaffoldia Haskell binary"
+extends = "haskell-toolchain"
+workdir = "/build/scaffoldia"
+commands = [
+    "cp -r satellites/scaffolding/scaffoldia/ /build/scaffoldia/",
+    "cabal update",
+    "cabal build --enable-optimization=2",
+    "cp $(cabal list-bin scaffoldia) /build/scaffoldia/scaffoldia-bin",
+]
+cache = true
+
+[layers.scaffoldia-runtime]
+description = "scaffoldia production image — static Haskell binary"
+from = "cgr.dev/chainguard/static:latest"
+copy-from = [
+    { layer = "scaffoldia-build", src = "/build/scaffoldia/scaffoldia-bin", dst = "/usr/local/bin/scaffoldia" },
+]
+entrypoint = ["scaffoldia"]
+user = "nonroot"
+
+# ── greasy-rescripter (Deno ReScript migration tool) ──────────────
+
+[layers.greasy-rescripter-build]
+description = "Build greasy-rescripter Deno app"
+extends = "deno-toolchain"
+workdir = "/build/greasy-rescripter"
+commands = [
+    "cp -r rescript-ecosystem/packages/tooling/greasy-rescripter/ /build/greasy-rescripter/",
+    "deno cache --config deno.json src/main.ts || true",
+]
+cache = true
+
+[layers.greasy-rescripter-runtime]
+description = "greasy-rescripter production image"
+from = "cgr.dev/chainguard/wolfi-base:latest"
+packages = ["deno", "ca-certificates", "git"]
+copy-from = [
+    { layer = "greasy-rescripter-build", src = "/build/greasy-rescripter/", dst = "/app/" },
+]
+workdir = "/app"
+entrypoint = ["deno", "run", "--allow-read", "--allow-write", "--allow-run", "--allow-net", "src/main.ts"]
+user = "nonroot"
+
+# ── wasm-runtime (ReScript WASM FFI runtime) ──────────────────────
+
+[layers.wasm-runtime-build]
+description = "Build ReScript WASM runtime"
+extends = "deno-toolchain"
+workdir = "/build/wasm-runtime"
+commands = [
+    "cp -r rescript-ecosystem/packages/ffi/wasm-runtime/ /build/wasm-runtime/",
+    "deno cache src/main.ts || true",
+]
+cache = true
+
+[layers.wasm-runtime-runtime]
+description = "wasm-runtime production image"
+from = "cgr.dev/chainguard/wolfi-base:latest"
+packages = ["deno", "ca-certificates"]
+copy-from = [
+    { layer = "wasm-runtime-build", src = "/build/wasm-runtime/", dst = "/app/" },
+]
+workdir = "/app"
+entrypoint = ["deno", "run", "--allow-read", "--allow-net", "src/main.ts"]
+user = "nonroot"
+
+# ── well-known-ecosystem (Well-known resource server) ─────────────
+
+[layers.well-known-build]
+description = "Build well-known ecosystem server"
+extends = "deno-toolchain"
+workdir = "/build/well-known-ecosystem"
+commands = [
+    "cp -r well-known-ecosystem/ /build/well-known-ecosystem/",
+]
+cache = true
+
+[layers.well-known-runtime]
+description = "well-known-ecosystem production server"
+from = "cgr.dev/chainguard/wolfi-base:latest"
+packages = ["ca-certificates", "curl"]
+copy-from = [
+    { layer = "well-known-build", src = "/build/well-known-ecosystem/templates/", dst = "/srv/well-known/" },
+    { layer = "well-known-build", src = "/build/well-known-ecosystem/contracts/", dst = "/srv/contracts/" },
+]
+workdir = "/srv"
+user = "nonroot"
+
+# ── v-ecosystem API interfaces (V-lang triple) ───────────────────
+
+[layers.v-api-interfaces-build]
+description = "Build V-lang API interface suite (REST, GraphQL, gRPC)"
+extends = "vlang-toolchain"
+workdir = "/build/v-ecosystem"
+commands = [
+    "cp -r v-ecosystem/ /build/v-ecosystem/",
+    "cd v_api_interfaces/v_rest && v . -prod -o v_rest",
+    "cd v_api_interfaces/v_graphql && v . -prod -o v_graphql",
+    "cd v_api_interfaces/v_grpc && v . -prod -o v_grpc",
+]
+cache = true
+
+[layers.v-api-interfaces-runtime]
+description = "V-lang API interfaces production image"
+from = "cgr.dev/chainguard/wolfi-base:latest"
+packages = ["ca-certificates", "curl"]
+copy-from = [
+    { layer = "v-api-interfaces-build", src = "/build/v-ecosystem/v_api_interfaces/v_rest/v_rest", dst = "/usr/local/bin/v_rest" },
+    { layer = "v-api-interfaces-build", src = "/build/v-ecosystem/v_api_interfaces/v_graphql/v_graphql", dst = "/usr/local/bin/v_graphql" },
+    { layer = "v-api-interfaces-build", src = "/build/v-ecosystem/v_api_interfaces/v_grpc/v_grpc", dst = "/usr/local/bin/v_grpc" },
+]
+user = "nonroot"
+
+# ── v-ecosystem tools (validator, telemetry, middleware) ──────────
+
+[layers.v-tools-build]
+description = "Build V-lang ecosystem tools"
+extends = "vlang-toolchain"
+workdir = "/build/v-ecosystem"
+commands = [
+    "cp -r v-ecosystem/ /build/v-ecosystem/",
+    "cd v-validator && v . -prod -o v-validator",
+    "cd v-telemetry && v . -prod -o v-telemetry",
+    "cd v-middleware && v . -prod -o v-middleware",
+    "cd v-benchmarks && v . -prod -o v-benchmarks",
+]
+cache = true
+
+[layers.v-tools-runtime]
+description = "V-lang ecosystem tools production image"
+from = "cgr.dev/chainguard/wolfi-base:latest"
+packages = ["ca-certificates"]
+copy-from = [
+    { layer = "v-tools-build", src = "/build/v-ecosystem/v-validator/v-validator", dst = "/usr/local/bin/v-validator" },
+    { layer = "v-tools-build", src = "/build/v-ecosystem/v-telemetry/v-telemetry", dst = "/usr/local/bin/v-telemetry" },
+    { layer = "v-tools-build", src = "/build/v-ecosystem/v-middleware/v-middleware", dst = "/usr/local/bin/v-middleware" },
+    { layer = "v-tools-build", src = "/build/v-ecosystem/v-benchmarks/v-benchmarks", dst = "/usr/local/bin/v-benchmarks" },
+]
+user = "nonroot"
+
+# ── v-zig-ffi + v-idris-abi (V-lang ABI/FFI bridge) ──────────────
+
+[layers.v-abi-ffi-build]
+description = "Build V-lang Zig FFI and Idris2 ABI bridges"
+extends = "vlang-toolchain"
+workdir = "/build/v-ecosystem"
+commands = [
+    "cp -r v-ecosystem/ /build/v-ecosystem/",
+    "cd v-zig-ffi && v . -prod -o v-zig-ffi",
+    "cd v-idris-abi && v . -prod -o v-idris-abi",
+]
+cache = true
+
+[layers.v-abi-ffi-runtime]
+description = "V-lang ABI/FFI bridge production image"
+from = "cgr.dev/chainguard/wolfi-base:latest"
+packages = ["ca-certificates"]
+copy-from = [
+    { layer = "v-abi-ffi-build", src = "/build/v-ecosystem/v-zig-ffi/v-zig-ffi", dst = "/usr/local/bin/v-zig-ffi" },
+    { layer = "v-abi-ffi-build", src = "/build/v-ecosystem/v-idris-abi/v-idris-abi", dst = "/usr/local/bin/v-idris-abi" },
+]
+user = "nonroot"
+
+# ── idris2-echidna (ECHIDNA prover) ──────────────────────────────
+
+[layers.echidna-build]
+description = "Build ECHIDNA Idris2 prover tools"
+extends = "idris2-toolchain"
+workdir = "/build/echidna"
+commands = [
+    "cp -r idris2-ecosystem/echidna/ /build/echidna/",
+    "idris2 --build echidna.ipkg",
+]
+cache = true
+
+[layers.echidna-runtime]
+description = "ECHIDNA production image"
+from = "cgr.dev/chainguard/wolfi-base:latest"
+packages = ["idris2", "ca-certificates"]
+copy-from = [
+    { layer = "echidna-build", src = "/build/echidna/build/", dst = "/app/build/" },
+]
+workdir = "/app"
+entrypoint = ["idris2", "--exec", "main", "build/exec/echidna"]
+user = "nonroot"
+
+# ── Monorepo FFI layer (Zig shared FFI) ──────────────────────────
+
+[layers.ffi-zig-build]
+description = "Build shared Zig FFI layer for cross-language bindings"
+extends = "zig-toolchain"
+workdir = "/build/ffi"
+commands = [
+    "cp -r ffi/zig/ /build/ffi/",
+    "zig build -Doptimize=ReleaseSafe",
+]
+cache = true
+
+[layers.ffi-zig-runtime]
+description = "Shared FFI artifacts image"
+from = "cgr.dev/chainguard/static:latest"
+copy-from = [
+    { layer = "ffi-zig-build", src = "/build/ffi/zig-out/lib/", dst = "/usr/local/lib/" },
+    { layer = "ffi-zig-build", src = "/build/ffi/zig-out/include/", dst = "/usr/local/include/" },
+]
+
+# ── Idris2 ABI definitions (shared proofs) ───────────────────────
+
+[layers.abi-idris2-build]
+description = "Compile shared Idris2 ABI type proofs"
+extends = "idris2-toolchain"
+workdir = "/build/abi"
+commands = [
+    "cp -r src/abi/ /build/abi/",
+    "idris2 --check Types.idr Layout.idr Foreign.idr || true",
+]
+cache = true
+
+# ── deno-ecosystem projects ──────────────────────────────────────
+
+[layers.deno-ecosystem-build]
+description = "Build deno-ecosystem projects (beamdeno, bundeno, deno-bunbridge)"
+extends = "deno-toolchain"
+workdir = "/build/deno-ecosystem"
+commands = [
+    "cp -r deno-ecosystem/ /build/deno-ecosystem/",
+    "for proj in projects/*/; do (cd \"$proj\" && deno cache src/main.ts 2>/dev/null || true); done",
+]
+cache = true
+
+[layers.deno-ecosystem-runtime]
+description = "deno-ecosystem production image"
+from = "cgr.dev/chainguard/wolfi-base:latest"
+packages = ["deno", "ca-certificates"]
+copy-from = [
+    { layer = "deno-ecosystem-build", src = "/build/deno-ecosystem/", dst = "/app/" },
+]
+workdir = "/app"
+user = "nonroot"
+
+# ── julia-ecosystem batch runner ─────────────────────────────────
+
+[layers.julia-ecosystem-build]
+description = "Install Julia ecosystem packages"
+extends = "julia-toolchain"
+workdir = "/build/julia-ecosystem"
+commands = [
+    "cp -r julia-ecosystem/ /build/julia-ecosystem/",
+    "julia -e 'using Pkg; Pkg.instantiate()' || true",
+]
+cache = true
+
+[layers.julia-ecosystem-runtime]
+description = "Julia ecosystem production image"
+from = "cgr.dev/chainguard/wolfi-base:latest"
+packages = ["julia", "ca-certificates"]
+copy-from = [
+    { layer = "julia-ecosystem-build", src = "/build/julia-ecosystem/", dst = "/app/" },
+]
+workdir = "/app"
+user = "nonroot"
+
+# ── zig-ecosystem bridge-nginx ───────────────────────────────────
+
+[layers.bridge-nginx-zig-build]
+description = "Build Zig NGINX bridge module"
+extends = "zig-toolchain"
+workdir = "/build/bridge-nginx-zig"
+commands = [
+    "cp -r zig-ecosystem/bridge-nginx-zig/ /build/bridge-nginx-zig/",
+    "zig build -Doptimize=ReleaseSafe",
+]
+cache = true
+
+[layers.bridge-nginx-zig-runtime]
+description = "NGINX Zig bridge production image"
+from = "cgr.dev/chainguard/wolfi-base:latest"
+packages = ["nginx", "ca-certificates"]
+copy-from = [
+    { layer = "bridge-nginx-zig-build", src = "/build/bridge-nginx-zig/zig-out/", dst = "/usr/local/lib/nginx/" },
+]
+user = "nonroot"
+
+# ── rescript-ecosystem compiler source (dev container) ────────────
+
+[layers.rescript-compiler-build]
+description = "Build ReScript compiler development environment"
+extends = "deno-toolchain"
+workdir = "/build/rescript-compiler"
+commands = [
+    "cp -r rescript-ecosystem/packages/core/compiler-source/ /build/rescript-compiler/",
+]
+cache = true
+
+# ── devkit-risc-v (RISC-V development kit) ───────────────────────
+
+[layers.devkit-riscv-build]
+description = "Build RISC-V development kit"
+extends = "zig-toolchain"
+workdir = "/build/devkit-risc-v"
+commands = [
+    "cp -r devkit-risc-v/ /build/devkit-risc-v/",
+]
+cache = true
+
+# ── robot-vacuum-cleaner (multi-language repo cleaner) ────────────
+
+[layers.robot-vacuum-cleaner-build]
+description = "Build robot-vacuum-cleaner Rust component"
+extends = "rust-toolchain"
+workdir = "/build/robot-vacuum-cleaner"
+commands = [
+    "cp -r satellites/repo-management/robot-vacuum-cleaner/ /build/robot-vacuum-cleaner/",
+    "cd src/rust && cargo build --release || true",
+]
+cache = true
+
+[layers.robot-vacuum-cleaner-runtime]
+description = "robot-vacuum-cleaner production image"
+from = "cgr.dev/chainguard/wolfi-base:latest"
+packages = ["ca-certificates", "git", "julia"]
+copy-from = [
+    { layer = "robot-vacuum-cleaner-build", src = "/build/robot-vacuum-cleaner/", dst = "/app/" },
+]
+workdir = "/app"
+user = "nonroot"
+
+# ══════════════════════════════════════════════════════════════════
+# Security
+# ══════════════════════════════════════════════════════════════════
+
+[security]
+non-root = true
+read-only-root = true
+no-new-privileges = true
+cap-drop = ["ALL"]
+seccomp-profile = "default"
+
+[security.signing]
+algorithm = "ML-DSA-87"
+provider = "cerro-torre"
+
+[security.sbom]
+format = "spdx-json"
+output = "sbom.spdx.json"
+include-deps = true
+
+# ══════════════════════════════════════════════════════════════════
+# Verification
+# ══════════════════════════════════════════════════════════════════
+
+[verify]
+vordr = true
+svalinn = true
+scan-on-build = true
+fail-on = ["critical", "high"]
+
+# ══════════════════════════════════════════════════════════════════
+# Build Targets
+# ══════════════════════════════════════════════════════════════════
+# Each target assembles a subset of layers into a usable image.
+# `stapeln build --target <name>` selects which to build.
+
+# ── Per-Component Production Targets ─────────────────────────────
+
+[targets.aggregate-library]
+description = "Cross-language specification library"
+layers = ["aggregate-library-runtime"]
+env = { LOG_LEVEL = "info", MIX_ENV = "prod" }
+
+[targets.synapse]
+description = "Zig inter-language bridge"
+layers = ["synapse-runtime"]
+env = { LOG_LEVEL = "info" }
+
+[targets.techstack-enforcer]
+description = "Ada techstack policy engine"
+layers = ["techstack-enforcer-runtime"]
+env = { LOG_LEVEL = "info" }
+
+[targets.opm-canonicalizer]
+description = "Rust opam package canonicaliser"
+layers = ["opm-canonicalizer-runtime"]
+env = { LOG_LEVEL = "info" }
+
+[targets.vext]
+description = "Rust git extension service"
+layers = ["vext-runtime"]
+env = { LOG_LEVEL = "info", VEXT_PORT = "6659" }
+
+[targets.gitvisor]
+description = "Git repository supervisor"
+layers = ["gitvisor-runtime"]
+env = { LOG_LEVEL = "info" }
+
+[targets.oikos]
+description = "Repository management bot"
+layers = ["oikos-runtime"]
+env = { LOG_LEVEL = "info" }
+
+[targets.robot-repo-automaton]
+description = "Automated repository fixer"
+layers = ["robot-repo-automaton-runtime"]
+env = { LOG_LEVEL = "info" }
+
+[targets.recon-silly-ation]
+description = "Deno/Rust/Haskell reconciliation tool"
+layers = ["recon-silly-ation-runtime"]
+env = { LOG_LEVEL = "info" }
+
+[targets.scaffoldia]
+description = "Haskell scaffolding CLI"
+layers = ["scaffoldia-runtime"]
+env = { LOG_LEVEL = "info" }
+
+[targets.greasy-rescripter]
+description = "ReScript migration tooling"
+layers = ["greasy-rescripter-runtime"]
+env = { LOG_LEVEL = "info" }
+
+[targets.wasm-runtime]
+description = "ReScript WASM FFI runtime"
+layers = ["wasm-runtime-runtime"]
+env = { LOG_LEVEL = "info" }
+
+[targets.well-known-ecosystem]
+description = "Well-known resource server"
+layers = ["well-known-runtime"]
+env = { LOG_LEVEL = "info" }
+
+[targets.v-api-interfaces]
+description = "V-lang REST/GraphQL/gRPC API triple"
+layers = ["v-api-interfaces-runtime"]
+env = { LOG_LEVEL = "info" }
+
+[targets.v-tools]
+description = "V-lang ecosystem tools (validator, telemetry, middleware, benchmarks)"
+layers = ["v-tools-runtime"]
+env = { LOG_LEVEL = "info" }
+
+[targets.v-abi-ffi]
+description = "V-lang Zig FFI and Idris2 ABI bridges"
+layers = ["v-abi-ffi-runtime"]
+env = { LOG_LEVEL = "info" }
+
+[targets.echidna]
+description = "ECHIDNA Idris2 prover"
+layers = ["echidna-runtime"]
+env = { LOG_LEVEL = "info" }
+
+[targets.ffi-zig]
+description = "Shared Zig FFI artifacts"
+layers = ["ffi-zig-runtime"]
+
+[targets.deno-ecosystem]
+description = "Deno ecosystem projects (beamdeno, bundeno, deno-bunbridge)"
+layers = ["deno-ecosystem-runtime"]
+env = { LOG_LEVEL = "info" }
+
+[targets.julia-ecosystem]
+description = "Julia ecosystem batch runner"
+layers = ["julia-ecosystem-runtime"]
+env = { LOG_LEVEL = "info" }
+
+[targets.bridge-nginx-zig]
+description = "Zig NGINX bridge module"
+layers = ["bridge-nginx-zig-runtime"]
+env = { LOG_LEVEL = "info" }
+
+[targets.robot-vacuum-cleaner]
+description = "Multi-language repository cleaner"
+layers = ["robot-vacuum-cleaner-runtime"]
+env = { LOG_LEVEL = "info" }
+
+# ── Grouped Development Targets ──────────────────────────────────
+
+[targets.development]
+description = "Full monorepo development environment — all toolchains"
+layers = [
+    "base",
+    "deno-toolchain",
+    "rust-toolchain",
+    "zig-toolchain",
+    "elixir-toolchain",
+    "haskell-toolchain",
+    "ada-toolchain",
+    "idris2-toolchain",
+    "julia-toolchain",
+    "vlang-toolchain",
+]
+env = { LOG_LEVEL = "debug" }
+
+[targets.git-tools]
+description = "All git satellite tools (vext + gitvisor)"
+layers = ["vext-runtime", "gitvisor-runtime"]
+env = { LOG_LEVEL = "info" }
+
+[targets.repo-management]
+description = "All repo management tools (oikos + robot-repo-automaton + robot-vacuum-cleaner)"
+layers = ["oikos-runtime", "robot-repo-automaton-runtime", "robot-vacuum-cleaner-runtime"]
+env = { LOG_LEVEL = "info" }
+
+[targets.rescript-tools]
+description = "All ReScript ecosystem tools (greasy-rescripter + wasm-runtime + compiler)"
+layers = ["greasy-rescripter-runtime", "wasm-runtime-runtime", "rescript-compiler-build"]
+env = { LOG_LEVEL = "info" }
+
+[targets.v-ecosystem-all]
+description = "Complete V-lang ecosystem (API triple + tools + ABI/FFI bridges)"
+layers = ["v-api-interfaces-runtime", "v-tools-runtime", "v-abi-ffi-runtime"]
+env = { LOG_LEVEL = "info" }
+
+[targets.abi-ffi]
+description = "Shared ABI/FFI infrastructure (Idris2 proofs + Zig bindings)"
+layers = ["abi-idris2-build", "ffi-zig-runtime"]
+
+[targets.test]
+description = "Test environment — all build layers for running test suites"
+layers = [
+    "base",
+    "deno-toolchain",
+    "rust-toolchain",
+    "zig-toolchain",
+    "elixir-toolchain",
+    "haskell-toolchain",
+    "idris2-toolchain",
+    "julia-toolchain",
+    "vlang-toolchain",
+    "aggregate-library-build",
+    "synapse-build",
+    "opm-canonicalizer-build",
+    "vext-build",
+    "robot-repo-automaton-build",
+    "echidna-build",
+]
+env = { LOG_LEVEL = "debug" }
+
+[targets.production]
+description = "All production runtime images — full ecosystem deploy"
+layers = [
+    "aggregate-library-runtime",
+    "synapse-runtime",
+    "techstack-enforcer-runtime",
+    "opm-canonicalizer-runtime",
+    "vext-runtime",
+    "gitvisor-runtime",
+    "oikos-runtime",
+    "robot-repo-automaton-runtime",
+    "recon-silly-ation-runtime",
+    "scaffoldia-runtime",
+    "greasy-rescripter-runtime",
+    "wasm-runtime-runtime",
+    "well-known-runtime",
+    "v-api-interfaces-runtime",
+    "v-tools-runtime",
+    "v-abi-ffi-runtime",
+    "echidna-runtime",
+    "ffi-zig-runtime",
+    "deno-ecosystem-runtime",
+    "julia-ecosystem-runtime",
+    "bridge-nginx-zig-runtime",
+    "robot-vacuum-cleaner-runtime",
+]
+env = { LOG_LEVEL = "info" }
