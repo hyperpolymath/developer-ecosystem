@@ -8,10 +8,10 @@
 // No npm, no node_modules (unless --node-modules-dir is needed for ReScript).
 //
 // Usage:
-//   deno run -A jsr:@hyperpolymath/rescript-deno init my-app
-//   deno run -A jsr:@hyperpolymath/rescript-deno build
-//   deno run -A jsr:@hyperpolymath/rescript-deno dev
-//   deno run -A jsr:@hyperpolymath/rescript-deno clean
+//   deno run --allow-run --allow-read --allow-write --allow-env --allow-net jsr:@hyperpolymath/rescript-deno init my-app
+//   deno run --allow-run --allow-read --allow-write --allow-env --allow-net jsr:@hyperpolymath/rescript-deno build
+//   deno run --allow-run --allow-read --allow-write --allow-env --allow-net jsr:@hyperpolymath/rescript-deno dev
+//   deno run --allow-run --allow-read --allow-write --allow-env --allow-net jsr:@hyperpolymath/rescript-deno clean
 
 const VERSION = "1.0.0";
 
