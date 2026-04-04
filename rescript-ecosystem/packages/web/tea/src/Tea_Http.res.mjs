@@ -2,8 +2,8 @@
 
 import * as Tea_Cmd from "./Tea_Cmd.res.mjs";
 import * as Tea_Json from "./Tea_Json.res.mjs";
-import * as Belt_Array from "rescript/lib/es6/belt_Array.js";
-import * as Core__Promise from "@rescript/core/src/Core__Promise.res.mjs";
+import * as Belt_Array from "/node_modules/@rescript/runtime/lib/es6/Belt_Array.js";
+import * as Core__Promise from "/node_modules/@rescript/core/src/Core__Promise.res.mjs";
 
 var getHeaders = (function(response) {
       const headers = {};
