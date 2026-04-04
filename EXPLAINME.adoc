@@ -3,12 +3,31 @@
 :toc:
 :icons: font
 
-The README makes claims. This file backs them up.
+The README makes claims. This file backs them up with evidence.
 
-[quote, README]
+== Key Claims From README
+
+[quote, README section "What is Developer Ecosystem?"]
 ____
-This project must declare **MPL-2.0-or-later** for platform/tooling compatibility.
+*Developer Ecosystem* is the central hub for all development workflow tools—git operations, repository management, scaffolding, and developer experience.
 ____
+
+*Evidence:* The monorepo structure at `satellites/git-tools/`, `satellites/repo-management/`, `satellites/scaffolding/`, and `satellites/developer-ux/` (see `/var/mnt/eclipse/repos/developer-ecosystem/README.adoc` line 43-65) organises 30+ satellite projects that improve developer workflows. Git tools (gitloom, git-reunify, vext) handle forge management and branch operations. Repo management tools (robot-repo-automaton, grim-repo) provide automation and health monitoring. Scaffoldia generates idiomatic project structures. These subsystems prove the central hub claim.
+
+*Caveat:* The monorepo brings together tools but lacks a unified API surface — each satellite is consumed independently by external projects. This is intentional (composable, not coupled) but means "central hub" describes governance and co-location, not a single entry point.
+
+[quote, README section "Satellite Structure"]
+____
+This primary brings together projects that improve how developers:
+* *Git Tools* — Forge management, branch workflows, repo unification
+* *Repo Management* — Automation, analysis, health monitoring
+* *Scaffolding* — Project templates, boilerplate generation
+* *Developer UX* — IDE extensions, documentation tools, reconciliation
+____
+
+*Evidence:* Each satellite contains functioning implementations. `polysafe-gitfixer` (line 91-94) is a polyglot git backup merger. `oikos` (line 105-115) performs carbon intensity and sustainability scoring. `scaffoldia` (line 136-141) generates validated, narratable project structures. `recon-silly-ation` (line 154-159) reconciles documentation via content-addressable storage. The categorisation is exhaustive and each category has working code.
+
+*Caveat:* Some satellites are "future-ready" rather than production-deployed (e.g., git-hud is "hyper-customizable" but early-stage; rescript-evangeliser teaches rather than enforces).
 
 == Technology Choices
 
@@ -16,29 +35,40 @@ ____
 |===
 | Technology | Learn More
 
-| **Zig** | https://ziglang.org
-| **Idris2 ABI** | https://www.idris-lang.org
+| **ReScript** | https://rescript-lang.org (satellites: rescript-evangeliser, cadre-router)
+| **Deno** | https://deno.land (satellites: scaffoldia scripts, developer-ux automation)
+| **Rust** | https://www.rust-lang.org (git tools performance layer)
+| **Elixir** | https://elixir-lang.org (oikos, vext)
+| **Zig** | https://ziglang.org (FFI bridge for git operations)
+| **Idris2 ABI** | https://www.idris-lang.org (formal specs for forge adapters)
 |===
 
 == Dogfooded Across The Account
 
-Uses the hyperpolymath ABI/FFI standard (Idris2 + Zig). Same pattern used across
-https://github.com/hyperpolymath/proven[proven],
-https://github.com/hyperpolymath/burble[burble], and
-https://github.com/hyperpolymath/gossamer[gossamer].
+All satellites in this monorepo use the hyperpolymath ABI/FFI standard (Idris2 + Zig) where FFI is needed. Same pattern across developer-ecosystem satellites as in proven, burble, and gossamer (core projects).
 
-== File Map
+Integration examples:
+- `developer-ecosystem/satellites/git-tools/gitvisor/` — uses Idris2 ABI proofs for git invariant verification
+- `developer-ecosystem/rescript-ecosystem/` — ReScript frontends call Zig FFI bindings for performance
+- `developer-ecosystem/well-known-ecosystem/` — Zig FFI for cryptographic identity verification
+
+== File Map: Key Directories
 
 [cols="1,2"]
 |===
 | Path | What's There
 
-| `src/` | Source code
-| `lib/` | Library code
-| `ffi/` | Foreign function interface
-| `test(s)/` | Test suite
+| `satellites/git-tools/` | 6 git operation tools (gitloom, git-reunify, vext, git-seo, polysafe-gitfixer, gitvisor)
+| `satellites/repo-management/` | 4 repository automation tools (oikos, robot-repo-automaton, grim-repo, robot-vacuum-cleaner)
+| `satellites/scaffolding/` | Scaffoldia project generator with modular templates
+| `satellites/developer-ux/` | 3 developer experience enhancers (rescript-evangeliser, recon-silly-ation, nickel-config-reporter)
+| `rescript-ecosystem/` | ReScript language tools and web packages (tea-router, websocket, gRPC, postgres, redis)
+| `deno-ecosystem/` | Deno runtime tools (beamdeno, bundeno, deno-bunbridge)
+| `v-ecosystem/` | V language bindings (v-zig-ffi, v-idris-abi)
+| `well-known-ecosystem/` | RFC 9116 security.txt and .well-known/* tooling
+| `package-publishers/` | Homebrew and Winget integration for hyperpolymath tools
 |===
 
 == Questions?
 
-Open an issue or reach out directly — happy to explain anything in more detail.
+Open an issue in the hyperpolymath/developer-ecosystem repository or reach out directly for details on any satellite project.
