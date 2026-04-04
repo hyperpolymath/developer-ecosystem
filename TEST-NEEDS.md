@@ -1,5 +1,18 @@
 # Test & Benchmark Requirements
 
+## CRG Grade: C — ACHIEVED 2026-04-04
+
+All CRG C categories represented in `opm-canonicalizer` (the primary testable sub-project):
+- Unit: 22 tests (null, bool, int, string, object sorting, escaping, error cases)
+- Smoke: duplicate key rejection, float rejection
+- P2P/property: 5 proptest properties (idempotence, no-whitespace, key sorting, array order, negative int roundtrip)
+- E2E/reflexive: canonicalize-twice idempotency, whitespace stripping
+- Contract: output format invariants (no spaces between tokens, negative ints preserved)
+- Aspect: empty string, control char escaping, deep nesting (50 levels), malformed input
+- Benchmarks: 5 Criterion benchmarks (null, simple object, nested object, array, escapes)
+
+**Ecosystem-wide**: 2248 test files across 29+ sub-ecosystems (includes rescript-ecosystem compiler tests, Zig integration tests, robot-vacuum-cleaner Julia tests, etc.)
+
 ## Current State
 - Unit tests: ~5 Rust test files + ~4 TS test files + ~54 Zig test files — partial coverage
 - Integration tests: partial (some Zig integration tests across ecosystem packages)

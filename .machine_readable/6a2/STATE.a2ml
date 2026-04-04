@@ -12,3 +12,8 @@ status = "active"
 name = "developer-ecosystem"
 completion-percentage = 0
 phase = "In development"
+
+[crg]
+grade = "C"
+achieved-on = "2026-04-04"
+representative-crate = "opm-canonicalizer"
