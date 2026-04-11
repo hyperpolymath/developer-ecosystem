@@ -19,8 +19,12 @@ ecosystem-fit decision — too many parallel systems languages — not a
 judgement on V as a language.
 
 All work listed here is offered to the V community under
-**PMPL-1.0-or-later** (or **MPL-2.0** if an OSI-approved licence is
-required). The code is functional, documented, and tested where noted.
+**PMPL-1.0-or-later**. PMPL-1.0-or-later is the primary stated licence;
+until it achieves formal legal recognition, MPL-2.0 is the automatic
+operative fallback — no separate request is needed. If an explicit
+OSI-approved licence identifier is required for your package registry,
+MPL-2.0 is available on request. The code is functional, documented, and
+tested where noted.
 
 == Fully Implemented Protocol Runtimes
 
@@ -54,11 +58,21 @@ yet connected. Protobuf binary framing not yet implemented.
 
 *Repo:* https://github.com/hyperpolymath/v-rest
 
-REST API server for the same Gnosis backend. Implements four endpoints:
-`POST /render`, `GET /context`, `GET /health`, `GET /` (API discovery).
-Same Idris2 ABI + Zig FFI architecture as v-grpc.
+Conventional REST/JSON server for the same Gnosis backend. Four endpoints:
+`POST /render`, `GET /context?scm=path`, `GET /health`, `GET /` (API
+discovery). Notable detail: `/health` returns HTTP 200 (Gnosis reachable)
+or HTTP 503 (Gnosis unavailable) — status-code semantics that load
+balancers and container health checks can act on directly.
 
-*Status:* Transport complete and working. Zig FFI scaffold present.
+ABI layer (`src/abi/`) is identical in structure to v-grpc: same `Handle`
+non-null proof, `Result` round-trips, `ptrSize` dependent on `Platform`,
+`%default total`. Zig FFI scaffold (`ffi/zig/`) is present.
+
+Main difference from v-grpc: conventional REST (GET/POST with query params
+and `application/json`) rather than gRPC-Web path-based dispatch.
+
+*Status:* Transport complete and working. Zig FFI scaffold present but not
+yet connected.
 
 == Monorepo: developer-ecosystem/v-ecosystem
 
