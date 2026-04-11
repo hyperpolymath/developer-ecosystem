@@ -1,0 +1,131 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= V Ecosystem — Community Transfer Bundle
+Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+:toc:
+:toc-placement: preamble
+
+This document describes all V-lang work in the hyperpolymath estate that is
+offered to the V community, following the ecosystem consolidation decision of
+2026-04-10.
+
+== Background
+
+V-lang was seriously explored as the API transport layer of the hyperpolymath
+ABI/FFI standard (Idris2 ABI → Zig FFI → V transport). Significant work was
+produced: 107 connectors, 3 fully implemented protocol runtimes, 11 service
+connectors, and a complete `v-ecosystem` monorepo directory within
+`developer-ecosystem`. The decision to retire V from this estate was an
+ecosystem-fit decision — too many parallel systems languages — not a
+judgement on V as a language.
+
+All work listed here is offered to the V community under
+**PMPL-1.0-or-later** (or **MPL-2.0** if an OSI-approved licence is
+required). The code is functional, documented, and tested where noted.
+
+== Fully Implemented Protocol Runtimes
+
+These are the most complete and transferable pieces. Each is a standalone
+GitHub repo with Idris2 ABI proofs, Zig FFI scaffold, and a working V-lang
+transport layer.
+
+=== v-grpc
+
+*Repo:* https://github.com/hyperpolymath/v-grpc
+
+gRPC-Web style JSON-over-HTTP server. Implements three RPC methods over
+V's `net.http`: `Render`, `Context`, `Health` (dispatches to the Gnosis
+CLI backend). Also includes `v-protoc` (`src/generator.v`) — a stub
+generator that reads `.proto` files and emits V-lang service stubs.
+
+ABI layer (`src/abi/`):
+
+* Idris2 `Types.idr` — `Handle` with `So (ptr /= 0)`, `Result` with
+  round-trip proofs, platform-aware `ptrSize`, `%default total`
+* `Layout.idr` — memory layout verification
+* `Foreign.idr` — `%foreign` C bindings for Zig FFI upgrade
+
+Zig FFI scaffold (`ffi/zig/`) is present for the planned HTTP/2 +
+Protobuf upgrade path — the Idris2 ABI layer is already wired for it.
+
+*Status:* Transport complete and working. Zig FFI scaffold present but not
+yet connected. Protobuf binary framing not yet implemented.
+
+=== v-rest
+
+*Repo:* https://github.com/hyperpolymath/v-rest
+
+REST API server for the same Gnosis backend. Implements four endpoints:
+`POST /render`, `GET /context`, `GET /health`, `GET /` (API discovery).
+Same Idris2 ABI + Zig FFI architecture as v-grpc.
+
+*Status:* Transport complete and working. Zig FFI scaffold present.
+
+== Monorepo: developer-ecosystem/v-ecosystem
+
+*Repo:* https://github.com/hyperpolymath/developer-ecosystem (subdirectory `v-ecosystem/`)
+
+=== Service Connectors (11)
+
+V-lang bridge stubs connecting to hyperpolymath services. RSR-structured
+with README, source scaffold, and ABI/FFI directories. Each connector
+wraps a service with a V-lang client interface.
+
+[cols="1,3"]
+|===
+| Connector | Service
+
+| `v-ambientops` | AmbientOps container orchestration
+| `v-boj` | BoJ MCP server
+| `v-burble` | Burble WebRTC media platform
+| `v-echidna` | Echidna formal verification orchestrator
+| `v-gossamer` | Gossamer window management
+| `v-groove-bridge` | Groove inter-service protocol bridge
+| `v-hypatia` | Hypatia CI/CD neurosymbolic engine
+| `v-idaptik` | IDApTIK adaptive tutoring system
+| `v-reposystem` | Reposystem repository automation
+| `v-stapeln` | Stapeln container platform
+| `v-verisimdb` | VeriSimDB formal verification database
+|===
+
+=== Infrastructure Modules
+
+[cols="1,3"]
+|===
+| Module | Purpose
+
+| `v-zig-ffi` | Mandatory Zig FFI layer for all V-lang bridges (header-less C ABI)
+| `v-idris-abi` | Mandatory Idris2 ABI verification layer (formally proven memory layouts)
+| `v-telemetry` | OpenTelemetry and observability support
+| `v-validator` | Type-safe validation and schema enforcement
+| `v-middleware` | Authentication, CORS, common request handlers
+| `v-benchmarks` | Performance testing suite
+| `v-deno` | V ↔ Deno FFI bridge (ReScript + Idris2 ABI + Zig FFI)
+|===
+
+=== API Interface Scaffolds (95)
+
+`v-api-interfaces/` contains 95 connector scaffolds covering the full
+API protocol surface: WebSocket, JSON-RPC, MQTT, tRPC, SOAP, Cap'n Proto,
+GraphQL, and 88 others. Each scaffold has:
+
+* `README.adoc` — protocol description
+* `TOPOLOGY.md` — architecture diagram
+* `src/*.v` — V-lang stub (to be implemented)
+* `ffi/zig/` — Zig FFI scaffold
+* `.machine_readable/` — A2ML state files
+
+These are clean RSR-structure starting points ready for V implementation.
+
+== Transfer Terms
+
+* Licence: **PMPL-1.0-or-later** on all hyperpolymath-original code
+* MPL-2.0 available on request if an OSI-approved licence is required for
+  distribution on V package registries
+* Attribution: Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+* No support obligation — this is a community gift, not a maintained fork
+* The Idris2 ABI + Zig FFI layers are reusable independently of V
+
+== Contact
+
+Open an issue on any of the repos above, or reach out via GitHub:
+https://github.com/hyperpolymath
