@@ -54,6 +54,9 @@ Protobuf upgrade path — the Idris2 ABI layer is already wired for it.
 *Status:* Transport complete and working. Zig FFI scaffold present but not
 yet connected. Protobuf binary framing not yet implemented.
 
+Already listed in https://github.com/vlang/awesome-v[awesome-v] under
+*Networking*.
+
 === v-rest
 
 *Repo:* https://github.com/hyperpolymath/v-rest
@@ -73,6 +76,9 @@ and `application/json`) rather than gRPC-Web path-based dispatch.
 
 *Status:* Transport complete and working. Zig FFI scaffold present but not
 yet connected.
+
+Already listed in https://github.com/vlang/awesome-v[awesome-v] under
+*Utilities*.
 
 == Monorepo: developer-ecosystem/v-ecosystem
 
