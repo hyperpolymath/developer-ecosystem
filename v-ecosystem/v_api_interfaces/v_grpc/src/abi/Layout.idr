@@ -1,5 +1,5 @@
 -- SPDX-License-Identifier: PMPL-1.0-or-later
--- Copyright (c) {{CURRENT_YEAR}} {{AUTHOR}} (hyperpolymath) <{{AUTHOR_EMAIL}}>
+-- Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 --
 ||| Memory Layout Proofs
 |||
@@ -138,6 +138,10 @@ public export
 checkCABI : (layout : StructLayout) -> Either String (CABICompliant layout)
 checkCABI layout =
   -- Verify C ABI rules
+  -- PROOF OBLIGATION: decidable field alignment checker needed.
+  -- Needs: FieldsAligned layout.fields for arbitrary layout.
+  -- Approach: fold over layout.fields, checking Divides f.alignment f.offset at each step.
+  -- Cannot be closed without an interactive Idris2 session.
   Right (CABIOk layout ?fieldsAlignedProof)
 
 --------------------------------------------------------------------------------
@@ -159,6 +163,11 @@ exampleLayout =
 ||| Proof that example layout is valid
 export
 exampleLayoutValid : CABICompliant exampleLayout
+-- PROOF OBLIGATION (constructive — provable by hand):
+  -- ConsField (MkField "x" 0 4 4) _ (DivideBy 0 Refl) $
+  -- ConsField (MkField "y" 8 8 8) _ (DivideBy 1 Refl) $
+  -- ConsField (MkField "z" 16 8 8) _ (DivideBy 2 Refl) NoFields
+  -- Requires idris2 to normalize 0*4=0, 1*8=8, 2*8=16 via Refl.
 exampleLayoutValid = CABIOk exampleLayout ?exampleFieldsAligned
 
 --------------------------------------------------------------------------------
@@ -176,4 +185,8 @@ fieldOffset layout name =
 ||| Proof that field offset is within struct bounds
 public export
 offsetInBounds : (layout : StructLayout) -> (f : Field) -> So (f.offset + f.size <= layout.totalSize)
+-- PROOF OBLIGATION: requires well-formedness invariant on StructLayout.
+  -- NOTE: this function signature claims SO for ALL layouts/fields — too strong.
+  -- Suggest: change return type to Maybe (So ...) and use decSo.
+  -- Or: add a WellFormed constraint to StructLayout guaranteeing field offsets.
 offsetInBounds layout f = ?offsetInBoundsProof
