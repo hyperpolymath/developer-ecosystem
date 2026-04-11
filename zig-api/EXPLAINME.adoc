@@ -1,0 +1,173 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+= unified-zig-api — EXPLAINME
+:toc:
+:toc-placement: preamble
+:doctype: article
+
+== What this is
+
+`unified-zig-api` is the Idris2 ABI + Zig FFI replacement for all V-lang API
+and connector code in the hyperpolymath estate.  It produces a single shared
+library (`libzig_api.so`) and static library (`libzig_api.a`) that expose a
+stable C ABI consumed by any language (Idris2, Rust, ReScript, Julia, etc.).
+
+V-lang was banned estate-wide on 2026-04-10.  This library is the designated
+replacement for the 10 repos that still had V-lang connector or API server code.
+
+== Why it's built this way
+
+=== Idris2 ABI layer (`src/abi/`)
+
+Idris2's dependent types let us _prove_ things about the interface at
+compile time:
+
+* **Tag round-trips**: every `Result`, `ServiceId`, `ConnectorState`, and
+  `Method` tag encodes and decodes back to the same value, proved by exhaustive
+  `Refl` cases.
+* **Safe-path soundness**: `IsSafePath path allowlist` is a structural proof
+  that `path` starts with an allowlist prefix.  The `GnosisRenderCmd` record
+  carries this proof as an auto-implicit argument — you cannot construct a
+  render command for an unsafe path without discharging the proof.
+* **ABI injective**: `resultTagInjective` proves that equal Bits8 tags imply
+  equal Result values, so the decode side cannot silently alias two variants.
+
+=== Zig FFI layer (`ffi/zig/src/`)
+
+Zig gives us native C ABI compatibility without overhead, comptime generics
+(the `Pool(T, capacity)` in `core.zig`), and `std.process.Child` for safe
+subprocess management.
+
+The four modules:
+
+[cols="1,3"]
+|===
+| Module | Responsibility
+
+| `core.zig`
+| `Result` enum, thread-local error storage, generic `Pool(T, N)` with mutex
+
+| `process.zig`
+| Safe-path validation, `runProcess`, `runGnosis` (shells out to the `gnosis` binary)
+
+| `gnosis.zig`
+| HTTP/1.1 server pool (replaces `v-grpc` + `v-rest`).  Handles `/render`,
+  `/context`, `/health`, `/`, and gRPC-style `/gnosis.GnosisService/*` paths.
+
+| `connector.zig`
+| 64-slot HTTP connector pool for all 11 hyperpolymath services.
+  `uapi_connector_call` is the universal request dispatcher.
+|===
+
+== Routes served by the gnosis server
+
+[cols="2,1,3"]
+|===
+| Path | Method | Description
+
+| `/render`                       | POST | Render a template via the `gnosis` binary
+| `/gnosis.GnosisService/Render`  | POST | gRPC-style compat alias
+| `/context`                      | GET/POST | Retrieve SCM context
+| `/gnosis.GnosisService/Context` | POST | gRPC-style compat alias
+| `/health`                       | GET | 200 if serving, 503 if not
+| `/gnosis.GnosisService/Health`  | POST | gRPC-style compat alias
+| `/`                             | GET  | Service discovery JSON
+|===
+
+== What it replaces
+
+`developer-ecosystem/v-grpc/` — gRPC server calling the gnosis binary +
+`developer-ecosystem/v-rest/` — REST server calling the gnosis binary
+
+Both upstream callers call the same `gnosis` binary.  A single HTTP interface
+with both path families covers all existing call sites.
+
+== Directory layout
+
+----
+zig-api/
+├── src/abi/              Idris2 ABI definitions (proofs live here)
+│   ├── Types.idr         Result codes, Handle, Slot
+│   ├── Http.idr          Method, ServerState, HealthStatus, RouteDescriptor
+│   ├── Process.idr       IsSafePath, ExecResult, GnosisRenderCmd
+│   ├── Connector.idr     ServiceId, ConnectorState, GrooveManifest
+│   └── Foreign.idr       %foreign declarations + IO wrappers
+├── ffi/zig/
+│   ├── build.zig         Produces shared + static libs, test runner
+│   └── src/
+│       ├── lib.zig       Root entry point, uapi_init / teardown / version
+│       ├── core.zig      Result, error storage, Pool(T, N)
+│       ├── process.zig   runProcess, runGnosis, safe-path validation
+│       ├── gnosis.zig    HTTP/1.1 server pool (uapi_gnosis_*)
+│       └── connector.zig Service connector pool (uapi_connector_*)
+├── generated/abi/
+│   └── zig_api.h         C header (installed alongside the libraries)
+└── Justfile              Build, test, and ABI-check recipes
+----
+
+== Quick start
+
+[source,bash]
+----
+# Build shared + static library
+just build
+
+# Run all unit tests
+just test
+
+# Check Idris2 proofs
+just check-abi
+
+# Run integration tests (requires gnosis binary on $PATH)
+just test-integration
+----
+
+== Consuming from Idris2
+
+[source,idris]
+----
+import ZigApi.ABI.Foreign
+
+main : IO ()
+main = do
+  Ok <- uapiInit | _ => putStrLn "init failed"
+  h  <- gnosisCreate 8091
+  Ok <- gnosisStart h | _ => putStrLn "start failed"
+  -- ... use the server ...
+  gnosisStop h
+  gnosisDestroy h
+  uapiTeardown
+----
+
+== Consuming from C
+
+[source,c]
+----
+#include "zig_api.h"
+
+int main(void) {
+    uapi_init();
+    uint64_t h = uapi_gnosis_create(8091);
+    uapi_gnosis_start(h);
+    /* ... */
+    uapi_gnosis_stop(h);
+    uapi_gnosis_destroy(h);
+    uapi_teardown();
+    return 0;
+}
+----
+
+== V-lang estate migration status
+
+Repos to migrate from V-lang to this library:
+
+* `developer-ecosystem/v-grpc` — replaced by `gnosis.zig` server
+* `developer-ecosystem/v-rest` — replaced by `gnosis.zig` server
+* `ambientops/` connectors — replace with `uapi_connector_create(UAPI_SERVICE_AMBIENT_OPS, ...)`
+* `nextgen-databases/verisimdb/` connectors — `UAPI_SERVICE_VERISIMDB`
+* `proven/` V connector stubs — replace with connector pool calls
+* `007/` V helper modules — replace with `uapi_connector_*` or process calls
+* `standards/lol/` V stubs — replace per sub-project
+* `odds-and-sods-package-manager/opsm_ex/` — replace V HTTP client
+
+See `.machine_readable/6a2/STATE.a2ml` for detailed migration tracking.

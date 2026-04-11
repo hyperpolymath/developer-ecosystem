@@ -1,0 +1,105 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+//
+// build.zig — unified-zig-api build configuration (Zig 0.15.2)
+//
+// Produces:
+//   libzig_api.so   — shared library (runtime linking)
+//   libzig_api.a    — static library (embed in binaries)
+//   unit tests      — all modules under zig build test
+//   integration     — spawns a local gnosis server (zig build test-integration)
+
+const std = @import("std");
+
+pub fn build(b: *std.Build) void {
+    const target   = b.standardTargetOptions(.{});
+    const optimize = b.standardOptimizeOption(.{});
+
+    // -------------------------------------------------------------------------
+    // Root module — shared by both library artifacts and the test runner
+    // -------------------------------------------------------------------------
+    const root_mod = b.createModule(.{
+        .root_source_file = b.path("src/lib.zig"),
+        .target           = target,
+        .optimize         = optimize,
+        .link_libc        = true,
+    });
+
+    // -------------------------------------------------------------------------
+    // Shared library — libzig_api.so / libzig_api.dylib / libzig_api.dll
+    // -------------------------------------------------------------------------
+    const shared = b.addLibrary(.{
+        .name     = "zig_api",
+        .root_module = root_mod,
+        .linkage  = .dynamic,
+        .version  = .{ .major = 0, .minor = 1, .patch = 0 },
+    });
+    b.installArtifact(shared);
+
+    // -------------------------------------------------------------------------
+    // Static library — libzig_api.a
+    // -------------------------------------------------------------------------
+    const static_mod = b.createModule(.{
+        .root_source_file = b.path("src/lib.zig"),
+        .target           = target,
+        .optimize         = optimize,
+        .link_libc        = true,
+    });
+    const static = b.addLibrary(.{
+        .name        = "zig_api",
+        .root_module = static_mod,
+        .linkage     = .static,
+    });
+    b.installArtifact(static);
+
+    // -------------------------------------------------------------------------
+    // Install C header alongside the libraries
+    // -------------------------------------------------------------------------
+    const install_header = b.addInstallHeaderFile(
+        b.path("../../generated/abi/zig_api.h"),
+        "zig_api.h",
+    );
+    b.getInstallStep().dependOn(&install_header.step);
+
+    // -------------------------------------------------------------------------
+    // Unit test runner — covers all modules via lib.zig's `test { refAllDecls }`
+    // -------------------------------------------------------------------------
+    const test_mod = b.createModule(.{
+        .root_source_file = b.path("src/lib.zig"),
+        .target           = target,
+        .optimize         = optimize,
+        .link_libc        = true,
+    });
+    const unit_tests = b.addTest(.{
+        .root_module = test_mod,
+    });
+
+    const run_unit_tests = b.addRunArtifact(unit_tests);
+    const test_step = b.step("test", "Run all unified-zig-api unit tests");
+    test_step.dependOn(&run_unit_tests.step);
+
+    // -------------------------------------------------------------------------
+    // Integration test — spawns a local gnosis server and probes it
+    // -------------------------------------------------------------------------
+    const integration_mod = b.createModule(.{
+        .root_source_file = b.path("test/integration_test.zig"),
+        .target           = target,
+        .optimize         = optimize,
+        .link_libc        = true,
+    });
+    // Make `@import("zig_api")` available inside the integration test.
+    integration_mod.addAnonymousImport("zig_api", .{
+        .root_source_file = b.path("src/lib.zig"),
+        .target           = target,
+        .optimize         = optimize,
+        .link_libc        = true,
+    });
+
+    const integration_tests = b.addTest(.{
+        .root_module = integration_mod,
+    });
+
+    const run_integration = b.addRunArtifact(integration_tests);
+    const integration_step = b.step("test-integration", "Run integration tests");
+    integration_step.dependOn(&run_integration.step);
+}

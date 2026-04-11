@@ -1,0 +1,52 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# Justfile — Build recipes for unified-zig-api
+#
+# Requires:
+#   zig >= 0.15.2
+#   idris2 (for ABI proof checking)
+
+zig_dir := "ffi/zig"
+
+# Default: build everything
+default: build
+
+# Build shared + static libraries
+build:
+    cd {{zig_dir}} && zig build
+
+# Build with release optimisation
+build-release:
+    cd {{zig_dir}} && zig build -Doptimize=ReleaseSafe
+
+# Run unit tests (core, process, gnosis, connector)
+test:
+    cd {{zig_dir}} && zig build test
+
+# Run integration tests (spawns a local gnosis server)
+test-integration:
+    cd {{zig_dir}} && zig build test-integration
+
+# Run all tests (unit + integration)
+test-all: test test-integration
+
+# Check Idris2 ABI proofs (requires idris2 on PATH)
+check-abi:
+    idris2 --check src/abi/Types.idr
+    idris2 --check src/abi/Http.idr
+    idris2 --check src/abi/Process.idr
+    idris2 --check src/abi/Connector.idr
+    idris2 --check src/abi/Foreign.idr
+
+# Build + check everything
+ci: check-abi test
+
+# Remove build artefacts
+clean:
+    rm -rf {{zig_dir}}/zig-out {{zig_dir}}/.zig-cache
+
+# Show the ABI version embedded in the library
+version:
+    cd {{zig_dir}} && zig build && ./zig-out/bin/zig_api_version 2>/dev/null || \
+        strings zig-out/lib/libzig_api.so | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | head -1

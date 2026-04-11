@@ -1,0 +1,47 @@
+;; SPDX-License-Identifier: PMPL-1.0-or-later
+;; unified-zig-api STATE.a2ml
+;; Updated: 2026-04-11
+
+(state
+  (version "0.1.0")
+  (project "unified-zig-api")
+  (phase "initial-implementation")
+  (status "in-progress")
+
+  (completed
+    (item "Idris2 ABI layer — Types, Http, Process, Connector, Foreign")
+    (item "Zig FFI — core.zig (Result, Pool, error storage)")
+    (item "Zig FFI — process.zig (runProcess, runGnosis, safe-path)")
+    (item "Zig FFI — gnosis.zig (HTTP/1.1 server pool, uapi_gnosis_*)")
+    (item "Zig FFI — connector.zig (64-slot connector pool, uapi_connector_*)")
+    (item "Zig FFI — lib.zig (root entry, uapi_init/teardown/version)")
+    (item "Integration test — ffi/zig/test/integration_test.zig")
+    (item "C header — generated/abi/zig_api.h")
+    (item "Justfile")
+    (item "EXPLAINME.adoc"))
+
+  (pending
+    (item "src/abi/Layout.idr — memory layout proofs")
+    (item "src/abi/Proofs.idr — combined roundtrip proof entry point")
+    (item "V-lang estate sweep — aerie, ambientops, verisimdb connectors, proven, 007, standards/lol, opsm_ex")
+    (item "First compile + test run — zig build test in ffi/zig/"))
+
+  (blockers
+    (item "gnosis binary must be on PATH for integration tests"))
+
+  (v-lang-migration
+    (repos-to-migrate
+      "developer-ecosystem/v-grpc"
+      "developer-ecosystem/v-rest"
+      "ambientops connectors"
+      "nextgen-databases/verisimdb connectors"
+      "proven V connector stubs"
+      "007 V helper modules"
+      "standards/lol V stubs"
+      "odds-and-sods-package-manager/opsm_ex"))
+
+  (session-history
+    (session
+      (date "2026-04-11")
+      (author "Jonathan D.A. Jewell + Claude")
+      (work "Initial implementation: all Idris2 ABI files, all Zig FFI files, C header, integration tests, Justfile, EXPLAINME"))))
