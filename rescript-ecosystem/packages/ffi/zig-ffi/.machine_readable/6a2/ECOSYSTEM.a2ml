@@ -1,20 +1,20 @@
-;; SPDX-License-Identifier: PMPL-1.0-or-later
-;; ECOSYSTEM.scm - Project relationship mapping
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# ECOSYSTEM.a2ml — Zig Ffi ecosystem position
+[metadata]
+version = "1.0"
+last-updated = "2026-04-11"
 
-(ecosystem
-  (version "1.0")
-  (name "rescript-zig-ffi")
-  (type "project")
-  (purpose "ReScript bindings for calling Zig libraries via the C ABI.")
+[project]
+name = "Zig Ffi"
+purpose = "ReScript bindings for calling Zig libraries via the C ABI."
+role = "project"
 
-  (position-in-ecosystem
-    (role "component")
-    (layer "application")
-    (description "ReScript bindings for calling Zig libraries via the C ABI."))
+[position-in-ecosystem]
+category = ""
 
-  (related-projects . ())
-
-  (what-this-is
-    "ReScript bindings for calling Zig libraries via the C ABI.")
-
-  (what-this-is-not . ()))
+[related-projects]
+projects = [
+  # No related projects recorded
+]

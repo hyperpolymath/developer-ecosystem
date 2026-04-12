@@ -1,30 +1,27 @@
-;; SPDX-License-Identifier: PMPL-1.0-or-later
-;; META.scm - Meta-level information for rescript-websocket
-;; Media-Type: application/meta+scheme
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# META.a2ml — Websocket meta-level information
+[metadata]
+version = "0.1.0"
+last-updated = "2026-04-11"
 
-(meta
-  (architecture-decisions
-    (("Zero-cost FFI" . "Direct bindings to WebSocket API with no wrapper overhead")
-     ("Type-safe ready states" . "Enum for connection states instead of magic numbers")
-     ("Deno-first" . "Designed for Deno runtime, not Node.js")
-     ("Pipe-first API" . "Functions designed for -> operator")))
+[project-info]
+license = "PMPL-1.0-or-later"
+author = "Jonathan D.A. Jewell (hyperpolymath)"
 
-  (development-practices
-    (code-style
-      ("@@uncurried for all modules"
-       "Pipe-first syntax preferred"
-       "Doc comments on public API"))
-    (security
-      (principle "Secure by default")
-      (notes "WSS preferred, no credential storage"))
-    (testing
-      ("Deno test runner"
-       "Integration tests with real WebSocket"))
-    (versioning "SemVer")
-    (documentation "AsciiDoc")
-    (branching "main for stable"))
+[architecture-decisions]
+decisions = [
+  # No ADRs recorded
+]
 
-  (design-rationale
-    (("External bindings" . "Use @external for direct JS interop")
-     ("Callback-based events" . "Match WebSocket API semantics")
-     ("Optional server" . "Client works standalone without server module"))))
+[development-practices]
+versioning = "SemVer"
+documentation = "AsciiDoc"
+build-tool = "just"
+
+[maintenance-axes]
+scoping-first = true
+axis-1 = "must > intend > like"
+axis-2 = "corrective > adaptive > perfective"
+axis-3 = "systems > compliance > effects"

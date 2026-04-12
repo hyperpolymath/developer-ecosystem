@@ -1,61 +1,26 @@
-;; SPDX-License-Identifier: PMPL-1.0-or-later
-;; PLAYBOOK.scm - Operational runbook for rescript-http-server
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# PLAYBOOK.a2ml — Operational playbook
+[metadata]
+version = "0.1.0"
+last-updated = "2026-04-11"
 
-(define playbook
-  `((version . "1.0.0")
-    (project . "rescript-http-server")
+[deployment]
+# method = "gitops"  # gitops | manual | ci-triggered
+# target = "container"  # container | binary | library | wasm
 
-    (procedures
-      ((build
-         (steps
-           (("compile" . "deno task build")
-            ("verify" . "Check src/HttpServer.res.js exists")))
-         (success-criteria . "No compiler errors, .res.js file generated"))
+[incident-response]
+# 1. Check .machine_readable/STATE.a2ml for current status
+# 2. Review recent commits and CI results
+# 3. Run `just validate` to check compliance
+# 4. Run `just security` to audit for vulnerabilities
 
-       (test
-         (steps
-           (("unit" . "deno test tests/")
-            ("integration" . "deno test --allow-net tests/integration/")))
-         (success-criteria . "All tests pass"))
+[release-process]
+# 1. Update version in STATE.a2ml, META.a2ml
+# 2. Run `just release-preflight` (validate + quality + security + maint-hard-pass)
+# 3. Tag and push
 
-       (release
-         (steps
-           (("version" . "Update version in deno.json and STATE.scm")
-            ("changelog" . "Update ROADMAP.adoc with completed features")
-            ("tag" . "git tag v$VERSION")
-            ("push" . "git push origin main --tags")))
-         (success-criteria . "Tag pushed, version updated"))
-
-       (dev-server
-         (steps
-           (("watch" . "deno task dev")
-            ("example" . "deno run --allow-net examples/basic.res.js")))
-         (notes . "Watch mode rebuilds on file changes"))
-
-       (clean
-         (steps
-           (("artifacts" . "deno task clean")
-            ("cache" . "rm -rf lib/")))
-         (notes . "Removes compiled JavaScript and build cache"))))
-
-    (common-issues
-      ((issue . "Compiler error: Unbound module Fetch")
-       (cause . "Missing @rescript/core dependency")
-       (fix . "Add @rescript/core to bs-dependencies in rescript.json"))
-
-      ((issue . "Runtime error: Deno is not defined")
-       (cause . "Running with Node.js instead of Deno")
-       (fix . "Use deno run instead of node"))
-
-      ((issue . "Type error in handler")
-       (cause . "Handler not returning promise<response>")
-       (fix . "Ensure handler is async or returns promise explicitly")))
-
-    (alerts
-      ((security . "Monitor Deno security advisories")
-       (dependencies . "Check @rescript/core updates monthly")))
-
-    (contacts
-      ((maintainer . "hyperpolymath")
-       (issues . "github.com/hyperpolymath/rescript-http-server/issues")
-       (ecosystem . "github.com/hyperpolymath/rescript-full-stack")))))
+[maintenance-operations]
+# Baseline audit: just maint-audit
+# Hard release gate: just maint-hard-pass

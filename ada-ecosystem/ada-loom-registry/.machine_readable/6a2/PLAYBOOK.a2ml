@@ -1,31 +1,26 @@
-;; SPDX-License-Identifier: PMPL-1.0-or-later
-;; PLAYBOOK.scm - Operational runbook for ada-loom-registry (Spindle)
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# PLAYBOOK.a2ml — Operational playbook
+[metadata]
+version = "0.1.0"
+last-updated = "2026-04-11"
 
-(define playbook
-  `((version . "1.0.0")
-    (procedures
-      ((build
-         (("update-deps" . "cabal update")
-          ("build-all" . "just build")
-          ("build-release" . "just build-release")))
-       (test
-         (("run-tests" . "just test")
-          ("run-lint" . "just lint")
-          ("check-format" . "just check")))
-       (deploy
-         (("generate-docs" . "just docs")
-          ("release" . "cabal sdist")))
-       (rollback
-         (("git-revert" . "git revert HEAD")
-          ("clean-build" . "just clean")))
-       (debug
-         (("check-registry" . "cat .spindle/registry.json")
-          ("parse-test" . "cabal run spindle -- parse config/build.ncl")
-          ("list-entries" . "cabal run spindle -- list")))))
-    (alerts
-      ((build-failure . "Check GHC version compatibility")
-       (test-failure . "Review hlint suggestions")
-       (parse-error . "Validate Nickel syntax with nickel check")))
-    (contacts
-      ((maintainer . "hyperpolymath@users.noreply.github.com")
-       (issues . "https://github.com/hyperpolymath/ada-loom-registry/issues")))))
+[deployment]
+# method = "gitops"  # gitops | manual | ci-triggered
+# target = "container"  # container | binary | library | wasm
+
+[incident-response]
+# 1. Check .machine_readable/STATE.a2ml for current status
+# 2. Review recent commits and CI results
+# 3. Run `just validate` to check compliance
+# 4. Run `just security` to audit for vulnerabilities
+
+[release-process]
+# 1. Update version in STATE.a2ml, META.a2ml
+# 2. Run `just release-preflight` (validate + quality + security + maint-hard-pass)
+# 3. Tag and push
+
+[maintenance-operations]
+# Baseline audit: just maint-audit
+# Hard release gate: just maint-hard-pass

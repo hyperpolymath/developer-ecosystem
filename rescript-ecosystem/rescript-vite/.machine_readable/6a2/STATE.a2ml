@@ -7,12 +7,12 @@
 [metadata]
 project = "rescript-vite"
 version = "0.1.0"
-last-updated = "{{CURRENT_DATE}}"
+last-updated = "2026-04-11"
 status = "active"  # active | paused | archived
 
 [project-context]
 name = "rescript-vite"
-purpose = "{{PROJECT_PURPOSE}}"
+purpose = ""  # TODO: describe project purpose
 completion-percentage = 0
 
 [position]

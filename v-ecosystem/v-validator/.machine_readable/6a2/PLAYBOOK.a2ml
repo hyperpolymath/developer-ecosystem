@@ -6,7 +6,7 @@
 
 [metadata]
 version = "0.1.0"
-last-updated = "{{CURRENT_DATE}}"
+last-updated = "2026-04-11"
 
 [deployment]
 # method = "gitops"  # gitops | manual | ci-triggered

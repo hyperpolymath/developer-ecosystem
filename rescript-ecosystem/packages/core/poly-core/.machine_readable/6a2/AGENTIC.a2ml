@@ -1,45 +1,34 @@
-;; SPDX-License-Identifier: PMPL-1.0-or-later
-;; AGENTIC.scm - AI agent interaction patterns for rescript-poly-core
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# AGENTIC.a2ml — AI agent constraints and capabilities
+[metadata]
+version = "0.1.0"
+last-updated = "2026-04-11"
 
-(define agentic-config
-  `((version . "1.0.0")
-    (claude-code
-      ((model . "claude-opus-4-5-20251101")
-       (tools . ("read" "edit" "bash" "grep" "glob"))
-       (permissions . "read-all")))
-    (patterns
-      ((code-review . "thorough")
-       (refactoring . "conservative")
-       (testing . "comprehensive")
-       (documentation . "inline-comments")))
-    (constraints
-      ((languages . ("rescript" "bash"))
-       (banned . ("typescript" "go" "python" "makefile" "npm" "node"))))
-    (project-specific
-      ((module-pattern . "src/{Category}/{Module}.res")
-       (test-pattern . "tests/{Module}_test.res")
-       (naming . "camelCase for functions, PascalCase for modules")
-       (error-handling . "Result types, not exceptions")
-       (async-pattern . "async/await with Promise")))))
+[agent-permissions]
+can-edit-source = true
+can-edit-tests = true
+can-edit-docs = true
+can-edit-config = true
+can-create-files = true
 
-;; Agent guidance for this project
-(define agent-guidance
-  `((when-adding-features
-      ("Add to appropriate Core or MCP submodule"
-       "Follow existing patterns in similar modules"
-       "Update PolyCore.res to re-export if public"
-       "Add tests in tests/ directory"
-       "Update README.adoc with usage examples"))
-    (when-fixing-bugs
-      ("Reproduce with test first"
-       "Fix with minimal changes"
-       "Ensure backwards compatibility"))
-    (when-refactoring
-      ("Preserve public API"
-       "Update all call sites"
-       "Run full test suite"))
-    (code-generation-preferences
-      ("Prefer pattern matching over if/else"
-       "Use pipe operator for chaining"
-       "Explicit type annotations on public functions"
-       "Doc comments with /** */ syntax"))))
+[agent-constraints]
+# What AI agents must NOT do:
+# - Never use banned language patterns (believe_me, unsafeCoerce, etc.)
+# - Never commit secrets or credentials
+# - Never use banned languages (TypeScript, Python, Go, etc.)
+# - Never place state files in repository root (must be in .machine_readable/)
+# - Never use AGPL license (use PMPL-1.0-or-later)
+
+[maintenance-integrity]
+fail-closed = true
+require-evidence-per-step = true
+allow-silent-skip = false
+require-rerun-after-fix = true
+release-claim-requires-hard-pass = true
+
+[automation-hooks]
+# on-enter: Read 0-AI-MANIFEST.a2ml, then STATE.a2ml
+# on-exit: Update STATE.a2ml with session outcomes
+# on-commit: Run just validate-rsr

@@ -1,34 +1,21 @@
-;; SPDX-License-Identifier: PMPL-1.0-or-later
-;; NEUROSYM.scm - Neurosymbolic integration config for rescript-env
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# NEUROSYM.a2ml — Neurosymbolic integration metadata
+[metadata]
+version = "0.1.0"
+last-updated = "2026-04-11"
 
-(define neurosym-config
-  `((version . "1.0.0")
+[hypatia-config]
+scan-enabled = true
+scan-depth = "standard"  # quick | standard | deep
+report-format = "logtalk"
 
-    (project . "rescript-env")
+[symbolic-rules]
+# Custom symbolic rules for this project
+# - { name = "no-unsafe-ffi", pattern = "believe_me|unsafeCoerce", severity = "critical" }
 
-    (symbolic-layer
-      ((type . "scheme")
-       (reasoning . "deductive")
-       (verification . "type-system")
-       (artifacts . (".machine_readable/*.scm"))))
-
-    (neural-layer
-      ((embeddings . false)
-       (fine-tuning . false)
-       (inference . "claude-opus-4-5-20251101")))
-
-    (integration
-      ((code-generation
-        ((style . "functional")
-         (language . "ReScript")
-         (patterns . ("option-types" "pattern-matching" "pipe-operators"))))
-
-       (documentation
-        ((format . "asciidoc")
-         (api-style . "jsdoc-comments")
-         (examples . "required")))
-
-       (quality-assurance
-        ((type-checking . "rescript-compiler")
-         (runtime-testing . "deno-test")
-         (static-analysis . "compiler-warnings")))))))
+[neural-config]
+# Neural pattern detection settings
+# confidence-threshold = 0.85
+# model = "hypatia-v2"

@@ -1,38 +1,26 @@
-;; SPDX-License-Identifier: PMPL-1.0-or-later
-;; PLAYBOOK.scm - Operational runbook for rescript-poly-core
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# PLAYBOOK.a2ml — Operational playbook
+[metadata]
+version = "0.1.0"
+last-updated = "2026-04-11"
 
-(define playbook
-  `((version . "1.0.0")
-    (project . "rescript-poly-core")
-    (procedures
-      ((setup
-         (("install-deno" . "curl -fsSL https://deno.land/install.sh | sh")
-          ("clone" . "git clone https://github.com/hyperpolymath/rescript-poly-core.git")
-          ("build" . "deno task build")))
-       (develop
-         (("watch" . "deno task dev")
-          ("test" . "deno task test")
-          ("lint" . "deno task lint")))
-       (release
-         (("version-bump" . "Update version in deno.json and rescript.json")
-          ("changelog" . "Update CHANGELOG.adoc")
-          ("build" . "deno task build")
-          ("test" . "deno task test")
-          ("tag" . "git tag -s v<version>")
-          ("publish" . "deno publish")))
-       (debug
-         (("check-types" . "deno task build")
-          ("run-specific-test" . "deno test tests/<file>.ts")
-          ("verbose-build" . "rescript build -verbose")))))
-    (common-issues
-      (("rescript-compile-error"
-        (symptoms . "Build fails with type error")
-        (diagnosis . "Check ReScript error message")
-        (resolution . "Fix type annotations or logic"))
-       ("import-error"
-        (symptoms . "Module not found at runtime")
-        (diagnosis . "Check .res.js file exists")
-        (resolution . "Run deno task build first"))))
-    (contacts
-      ((maintainer . "hyperpolymath")
-       (issues . "https://github.com/hyperpolymath/rescript-poly-core/issues")))))
+[deployment]
+# method = "gitops"  # gitops | manual | ci-triggered
+# target = "container"  # container | binary | library | wasm
+
+[incident-response]
+# 1. Check .machine_readable/STATE.a2ml for current status
+# 2. Review recent commits and CI results
+# 3. Run `just validate` to check compliance
+# 4. Run `just security` to audit for vulnerabilities
+
+[release-process]
+# 1. Update version in STATE.a2ml, META.a2ml
+# 2. Run `just release-preflight` (validate + quality + security + maint-hard-pass)
+# 3. Tag and push
+
+[maintenance-operations]
+# Baseline audit: just maint-audit
+# Hard release gate: just maint-hard-pass

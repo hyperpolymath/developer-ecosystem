@@ -1,110 +1,307 @@
 // SPDX-License-Identifier: PMPL-1.0-or-later
-// V-Ecosystem Zero-trust network architecture with continuous verification and microsegmentation Connector
-// Author: Jonathan D.A. Jewell
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 //
-// Zero-trust network architecture with continuous verification and microsegmentation.
-// Provides typed client bindings for the proven-zerotrust protocol.
-
+// v_zerotrust — Zero Trust Architecture policy engine types.
+// Maps to proven-servers/protocols/proven-zerotrust.
+//
+// Provides identity verification, device posture assessment, trust
+// score calculation, policy evaluation, and audit logging. Network
+// I/O is stubbed with TODO markers; all type definitions and logic
+// are real.
 module zerotrust
 
-import os
 import time
-import net
 
-// --- Trust level ---
-
-// TrustLevel classifies the assessed trust.
+// TrustLevel represents the calculated trust level for an identity
+// and device combination.
 pub enum TrustLevel {
-	untrusted
-	conditional
-	verified
-	elevated
+	none
+	low
+	medium
+	high
+	full
 }
 
-// --- Verification type ---
-
-// VerificationType identifies the verification method.
-pub enum VerificationType {
-	identity     // User identity
-	device       // Device posture
-	context      // Access context
-	continuous   // Continuous assessment
+// AccessDecision represents the outcome of a policy evaluation.
+pub enum AccessDecision {
+	allow
+	deny
+	challenge
+	quarantine
 }
 
-// --- Data structures ---
-
-// ZtPolicy defines a zero-trust access policy.
-pub struct ZtPolicy {
+// DevicePosture holds the security posture assessment of a device.
+pub struct DevicePosture {
 pub:
-	name              string
-	required_trust    TrustLevel
-	verifications     []VerificationType
-	max_session_mins  int = 60
-	microsegment      bool = true
+	// compliant indicates whether the device meets baseline security.
+	compliant bool
+	// os_version is the device's operating system version string.
+	os_version string
+	// encrypted indicates whether disk encryption is enabled.
+	encrypted bool
+	// antivirus indicates whether antivirus is installed and active.
+	antivirus bool
+	// last_checkin is the time of the last posture check.
+	last_checkin time.Time
 }
 
-// ZtSubject represents an entity requesting access.
-pub struct ZtSubject {
+// Identity represents an authenticated user with their associated
+// attributes and device posture.
+pub struct Identity {
 pub:
-	subject_id    string
-	identity      string
-	device_id     string
-	src_addr      string
-	trust_level   TrustLevel
+	// subject is the unique identifier for this identity (e.g. email).
+	subject string
+	// roles lists the roles assigned to this identity.
+	roles []string
+	// groups lists the groups this identity belongs to.
+	groups []string
+	// mfa_verified indicates whether multi-factor auth was completed.
+	mfa_verified bool
+	// device_posture is the security posture of the identity's device.
+	device_posture DevicePosture
 }
 
-// ZtConfig holds zero-trust gateway parameters.
-pub struct ZtConfig {
+// Policy defines an access control policy for a resource.
+pub struct Policy {
 pub:
-	gateway_addr   string = "0.0.0.0"
-	gateway_port   int = 443
-	verify_interval_secs int = 30
+	// name is a human-readable name for this policy.
+	name string
+	// resource identifies the protected resource (e.g. URL path, service).
+	resource string
+	// required_trust is the minimum trust level needed for access.
+	required_trust TrustLevel
+	// conditions are additional conditions that must be satisfied.
+	// Format: "key=value" strings evaluated against identity attributes.
+	conditions []string
+	// action is the decision to apply when conditions are not met.
+	action AccessDecision
+	// require_mfa specifies whether MFA is mandatory for this resource.
+	require_mfa bool
 }
 
-// ZtGateway manages zero-trust policies and verification.
-pub struct ZtGateway {
-mut:
-	config    ZtConfig
-	policies  []ZtPolicy
-	subjects  []ZtSubject
+// AuditEntry records a single access decision for audit compliance.
+pub struct AuditEntry {
+pub:
+	// timestamp is when the decision was made.
+	timestamp time.Time
+	// subject is the identity that requested access.
+	subject string
+	// resource is the resource that was requested.
+	resource string
+	// decision is the access decision that was made.
+	decision AccessDecision
+	// trust_score is the calculated trust score at decision time.
+	trust_score int
+	// reason explains why the decision was made.
+	reason string
 }
 
-// --- Gateway lifecycle ---
+// PolicyEngine is the Zero Trust policy engine. It manages policies,
+// evaluates access requests, and maintains an audit log.
+pub struct PolicyEngine {
+pub:
+	// name identifies this policy engine instance.
+	name string
+pub mut:
+	// policies is the list of access control policies.
+	policies []Policy
+	// audit_log records all access decisions.
+	audit_log []AuditEntry
+}
 
-// new_zt_gateway creates a new zero-trust gateway.
-pub fn new_zt_gateway(config ZtConfig) &ZtGateway {
-	return &ZtGateway{
-		config:   config
-		policies: []ZtPolicy{}
-		subjects: []ZtSubject{}
+// new_engine creates a new Zero Trust policy engine.
+pub fn new_engine(name string) &PolicyEngine {
+	return &PolicyEngine{
+		name: name
+		policies: []Policy{}
+		audit_log: []AuditEntry{}
 	}
 }
 
-// add_policy registers a zero-trust policy.
-pub fn (mut g ZtGateway) add_policy(policy ZtPolicy) ! {
+// add_policy registers a new access control policy. Returns an error
+// if a policy with the same name already exists.
+pub fn (mut e PolicyEngine) add_policy(policy Policy) ! {
 	if policy.name.len == 0 {
-		return error("policy name must not be empty")
+		return error('policy name must not be empty')
 	}
-	g.policies << policy
-	println("[zerotrust] added policy: ${policy.name} (trust=${policy.required_trust})")
+	for existing in e.policies {
+		if existing.name == policy.name {
+			return error('duplicate policy name: ${policy.name}')
+		}
+	}
+	e.policies << policy
 }
 
-// verify assesses a subject's trust level.
-pub fn (g &ZtGateway) verify(subject ZtSubject) !TrustLevel {
-	if subject.subject_id.len == 0 {
-		return error("subject_id must not be empty")
+// evaluate_access evaluates whether an identity should be granted
+// access to a resource. Returns the access decision and logs the
+// result.
+pub fn (mut e PolicyEngine) evaluate_access(identity Identity, resource string) AccessDecision {
+	trust_score := calculate_trust_score(identity)
+	trust_level := score_to_level(trust_score)
+	// Find applicable policies for this resource.
+	mut decision := AccessDecision.deny
+	mut reason := 'no matching policy'
+	for policy in e.policies {
+		if policy.resource != resource {
+			continue
+		}
+		// Check MFA requirement.
+		if policy.require_mfa && !identity.mfa_verified {
+			decision = .challenge
+			reason = 'MFA required for ${resource}'
+			break
+		}
+		// Check trust level.
+		if trust_level_value(trust_level) < trust_level_value(policy.required_trust) {
+			decision = policy.action
+			reason = 'insufficient trust level: ${trust_level} < ${policy.required_trust}'
+			break
+		}
+		// Check conditions.
+		conditions_met := evaluate_conditions(identity, policy.conditions)
+		if !conditions_met {
+			decision = policy.action
+			reason = 'policy conditions not met'
+			break
+		}
+		// All checks passed.
+		decision = .allow
+		reason = 'policy ${policy.name} satisfied'
+		break
 	}
-	println("[zerotrust] verifying ${subject.identity} from ${subject.src_addr}")
-	return subject.trust_level
+	// Log the decision.
+	e.audit_log << AuditEntry{
+		timestamp: time.now()
+		subject: identity.subject
+		resource: resource
+		decision: decision
+		trust_score: trust_score
+		reason: reason
+	}
+	return decision
 }
 
-// --- Tests ---
-
-fn test_empty_policy_name_rejected() {
-	mut gw := new_zt_gateway(ZtConfig{})
-	gw.add_policy(ZtPolicy{ name: "", required_trust: .verified, verifications: [], max_session_mins: 60 }) or {
-		assert err.str().contains("must not be empty")
-		return
+// verify_identity checks whether an identity's attributes are valid
+// and consistent. Returns an error describing any issues.
+pub fn verify_identity(identity Identity) ! {
+	if identity.subject.len == 0 {
+		return error('identity subject must not be empty')
 	}
-	assert false
+	if identity.roles.len == 0 {
+		return error('identity must have at least one role')
+	}
+	// TODO: Verify identity against an external IdP (e.g. OIDC, SAML).
+	// This requires network I/O to the identity provider.
+}
+
+// assess_device evaluates a device's security posture and returns
+// whether it meets the baseline compliance requirements.
+pub fn assess_device(posture DevicePosture) bool {
+	if !posture.compliant {
+		return false
+	}
+	if !posture.encrypted {
+		return false
+	}
+	// Check that the last checkin was within 24 hours.
+	now := time.now()
+	hours_since := (now.unix() - posture.last_checkin.unix()) / 3600
+	if hours_since > 24 {
+		return false
+	}
+	return true
+}
+
+// calculate_trust_score computes a numerical trust score (0-100) from
+// an identity's attributes and device posture.
+pub fn calculate_trust_score(identity Identity) int {
+	mut score := 0
+	// MFA adds significant trust.
+	if identity.mfa_verified {
+		score += 30
+	}
+	// Device posture contributes to trust.
+	if identity.device_posture.compliant {
+		score += 20
+	}
+	if identity.device_posture.encrypted {
+		score += 15
+	}
+	if identity.device_posture.antivirus {
+		score += 10
+	}
+	// Having roles demonstrates authorisation.
+	if identity.roles.len > 0 {
+		score += 15
+	}
+	// Group membership adds trust.
+	if identity.groups.len > 0 {
+		score += 10
+	}
+	// Cap at 100.
+	if score > 100 {
+		score = 100
+	}
+	return score
+}
+
+// audit_log returns a copy of the policy engine's audit log.
+pub fn (e PolicyEngine) get_audit_log() []AuditEntry {
+	return e.audit_log
+}
+
+// score_to_level converts a numerical trust score to a TrustLevel.
+fn score_to_level(score int) TrustLevel {
+	if score >= 90 {
+		return .full
+	}
+	if score >= 70 {
+		return .high
+	}
+	if score >= 50 {
+		return .medium
+	}
+	if score >= 25 {
+		return .low
+	}
+	return .none
+}
+
+// trust_level_value converts a TrustLevel to a comparable integer.
+fn trust_level_value(level TrustLevel) int {
+	return match level {
+		.none { 0 }
+		.low { 1 }
+		.medium { 2 }
+		.high { 3 }
+		.full { 4 }
+	}
+}
+
+// evaluate_conditions checks whether an identity satisfies all
+// policy conditions. Conditions are "key=value" strings matched
+// against identity roles and groups.
+fn evaluate_conditions(identity Identity, conditions []string) bool {
+	for condition in conditions {
+		parts := condition.split('=')
+		if parts.len != 2 {
+			continue
+		}
+		key := parts[0]
+		value := parts[1]
+		match key {
+			'role' {
+				if value !in identity.roles {
+					return false
+				}
+			}
+			'group' {
+				if value !in identity.groups {
+					return false
+				}
+			}
+			else {}
+		}
+	}
+	return true
 }

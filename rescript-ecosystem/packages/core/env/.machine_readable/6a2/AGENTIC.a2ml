@@ -1,51 +1,34 @@
-;; SPDX-License-Identifier: PMPL-1.0-or-later
-;; AGENTIC.scm - AI agent interaction patterns for rescript-env
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# AGENTIC.a2ml — AI agent constraints and capabilities
+[metadata]
+version = "0.1.0"
+last-updated = "2026-04-11"
 
-(define agentic-config
-  `((version . "1.0.0")
+[agent-permissions]
+can-edit-source = true
+can-edit-tests = true
+can-edit-docs = true
+can-edit-config = true
+can-create-files = true
 
-    (project-context
-      ((type . "library")
-       (language . "ReScript")
-       (runtime . ("Deno" "Node.js" "Bun"))
-       (purpose . "Type-safe environment variable access")))
+[agent-constraints]
+# What AI agents must NOT do:
+# - Never use banned language patterns (believe_me, unsafeCoerce, etc.)
+# - Never commit secrets or credentials
+# - Never use banned languages (TypeScript, Python, Go, etc.)
+# - Never place state files in repository root (must be in .machine_readable/)
+# - Never use AGPL license (use PMPL-1.0-or-later)
 
-    (claude-code
-      ((model . "claude-opus-4-5-20251101")
-       (tools . ("read" "edit" "bash" "grep" "glob" "write"))
-       (permissions . "read-write")))
+[maintenance-integrity]
+fail-closed = true
+require-evidence-per-step = true
+allow-silent-skip = false
+require-rerun-after-fix = true
+release-claim-requires-hard-pass = true
 
-    (patterns
-      ((code-review
-        ((focus . ("type-safety" "runtime-compatibility" "error-handling"))
-         (style . "thorough")))
-       (refactoring
-        ((approach . "conservative")
-         (preserve . ("public-api" "type-signatures"))))
-       (testing
-        ((framework . "deno-test")
-         (coverage . "comprehensive")
-         (style . "behavior-driven")))
-       (documentation
-        ((format . "asciidoc")
-         (examples . "required")
-         (api-docs . "jsdoc-style-comments")))))
-
-    (constraints
-      ((languages-allowed . ("ReScript" "JavaScript"))
-       (languages-banned . ("TypeScript" "Go" "Python"))
-       (frameworks-allowed . ("Deno" "Node.js"))
-       (package-managers . ("Deno" "JSR"))
-       (package-managers-banned . ("npm" "yarn" "pnpm" "bun"))))
-
-    (code-generation
-      ((style . "functional")
-       (prefer . ("option-types" "pattern-matching" "pipe-operators"))
-       (avoid . ("mutation" "any-types" "exceptions-for-control-flow"))))
-
-    (file-patterns
-      ((source . "src/**/*.res")
-       (interface . "src/**/*.resi")
-       (tests . "tests/**/*.res")
-       (config . ("deno.json" "rescript.json"))
-       (docs . ("*.adoc" "*.md"))))))
+[automation-hooks]
+# on-enter: Read 0-AI-MANIFEST.a2ml, then STATE.a2ml
+# on-exit: Update STATE.a2ml with session outcomes
+# on-commit: Run just validate-rsr

@@ -1,33 +1,26 @@
-;; SPDX-License-Identifier: MPL-2.0-or-later
-;; PLAYBOOK.scm - Operational runbook for techstack-enforcer
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# PLAYBOOK.a2ml — Operational playbook
+[metadata]
+version = "0.1.0"
+last-updated = "2026-04-11"
 
-(define playbook
-  `((version . "1.0.0")
-    (procedures
-      ((build
-         (("debug" . "gprbuild -P techstack_enforcer.gpr -XMODE=debug")
-          ("release" . "gprbuild -P techstack_enforcer.gpr -XMODE=release")
-          ("verify" . "gnatprove -P techstack_enforcer.gpr --level=2")))
-       (deploy
-         (("install-hooks" . "./scripts/install-repo-hooks.sh <repo-path>")
-          ("install-all" . "./scripts/install.sh")
-          ("audit-repo" . "./bin/techstack_main audit <repo-path>")
-          ("audit-ecosystem" . "for repo in ~/Documents/hyperpolymath-repos/*/; do ./bin/techstack_main audit \"$repo\"; done")))
-       (test
-         (("spark-proofs" . "gnatprove -P techstack_enforcer.gpr --level=2")
-          ("hook-flow" . "cd /tmp/test-repo && git init && ln -sf $(pwd)/scripts/hooks/pre-commit .git/hooks/ && touch test.py && git add . && git commit -m test")))
-       (tui
-         (("launch" . "./bin/techstack_tui_main")
-          ("learning-mode" . "./bin/techstack_tui_main --mode=learning")))
-       (rollback
-         (("remove-hooks" . "rm .git/hooks/pre-commit .git/hooks/pre-push .git/hooks/commit-msg")))
-       (debug
-         (("verbose-audit" . "./bin/techstack_main --mode=learning audit . 2>&1 | tee techstack.log")
-          ("json-decisions" . "./bin/techstack_main decide <file> | jq .")))))
-    (alerts
-      ((violation
-         (("desktop" . "notify-send -u critical 'TECHSTACK BLOCKED' '<details>'")
-          ("log" . "techstack.log")
-          ("webhook" . "configurable in techstack.toml")))))
-    (contacts
-      ((maintainer . "Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>")))))
+[deployment]
+# method = "gitops"  # gitops | manual | ci-triggered
+# target = "container"  # container | binary | library | wasm
+
+[incident-response]
+# 1. Check .machine_readable/STATE.a2ml for current status
+# 2. Review recent commits and CI results
+# 3. Run `just validate` to check compliance
+# 4. Run `just security` to audit for vulnerabilities
+
+[release-process]
+# 1. Update version in STATE.a2ml, META.a2ml
+# 2. Run `just release-preflight` (validate + quality + security + maint-hard-pass)
+# 3. Tag and push
+
+[maintenance-operations]
+# Baseline audit: just maint-audit
+# Hard release gate: just maint-hard-pass

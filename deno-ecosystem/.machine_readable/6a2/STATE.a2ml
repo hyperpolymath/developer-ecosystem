@@ -1,47 +1,38 @@
-;; SPDX-License-Identifier: PMPL-1.0-or-later
-;; STATE.scm - Project state for deno-ecosystem
-;; Media-Type: application/vnd.state+scm
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# STATE.a2ml — Deno Ecosystem project state
+[metadata]
+project = "deno-ecosystem"
+version = "0.1.0"
+last-updated = "2026-02-08"
+status = "active"
+session = "converted from scheme — 2026-04-11"
 
-(state
-  (metadata
-    (version "0.1.0")
-    (schema-version "1.0")
-    (created "2026-02-08")
-    (updated "2026-02-08")
-    (project "deno-ecosystem")
-    (repo "github.com/hyperpolymath/deno-ecosystem"))
+[project-context]
+name = "Deno Ecosystem"
+purpose = """Deno runtime interoperability bridges and tools"""
+completion-percentage = 30
 
-  (project-context
-    (name "deno-ecosystem")
-    (tagline "Deno runtime interoperability bridges and tools")
-    (tech-stack ("ReScript" "Idris2" "Zig" "Deno")))
+[position]
+phase = "consolidation"   # design | implementation | testing | maintenance | archived
+maturity = "experimental"  # experimental | alpha | beta | production | lts
 
-  (current-position
-    (phase "consolidation")
-    (overall-completion 30)
-    (components
-      ("beamdeno" "BEAM/Erlang to Deno bridge")
-      ("bundeno" "Bun to Deno compatibility layer")
-      ("deno-bunbridge" "Deno to Bun bidirectional bridge")
-      ("v-deno" "V language to Deno FFI bridge"))
-    (working-features ()))
+[route-to-mvp]
+milestones = [
+  # No milestones recorded
+]
 
-  (route-to-mvp
-    (milestones
-      ("Monorepo consolidation" "complete")
-      ("Shared ABI definitions" "planned")
-      ("Integration tests" "planned")))
+[blockers-and-issues]
+issues = [
+  # No blockers recorded
+]
 
-  (blockers-and-issues
-    (critical)
-    (high)
-    (medium)
-    (low))
+[critical-next-actions]
+actions = [
+  # No actions recorded
+]
 
-  (critical-next-actions
-    (immediate)
-    (this-week)
-    (this-month))
-
-  (session-history
-    ("2026-02-08" "Consolidated from 4 individual repos into monorepo")))
+[maintenance-status]
+last-run-utc = "2026-02-08T00:00:00Z"
+last-result = "unknown"  # unknown | pass | warn | fail

@@ -1,26 +1,20 @@
-;; SPDX-License-Identifier: PMPL-1.0-or-later
-;; ECOSYSTEM.scm - Ecosystem position for deno-ecosystem
-;; Media-Type: application/vnd.ecosystem+scm
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# ECOSYSTEM.a2ml — Deno Ecosystem ecosystem position
+[metadata]
+version = "1.0"
+last-updated = "2026-04-11"
 
-(ecosystem
-  (version "1.0")
-  (name "deno-ecosystem")
-  (type "monorepo")
-  (purpose "Deno runtime interoperability bridges and tools")
+[project]
+name = "Deno Ecosystem"
+purpose = "Deno runtime interoperability bridges and tools"
+role = "monorepo"
 
-  (position-in-ecosystem
-    (category "runtime-interop")
-    (subcategory "deno-bridges")
-    (unique-value ("Cross-runtime bridges" "Idris2 ABI + Zig FFI")))
+[position-in-ecosystem]
+category = "runtime-interop"
 
-  (related-projects
-    ("language-bridges" sibling-standard "Zig FFI bridges for other languages")
-    ("polystack" sibling-standard "Poly-* component collection"))
-
-  (what-this-is
-    ("Bridges between Deno and other runtimes/languages")
-    ("BEAM, Bun, and V language interop layers"))
-
-  (what-this-is-not
-    ("Not a Deno framework or application")
-    ("Not a replacement for native Deno APIs")))
+[related-projects]
+projects = [
+  { name = "Cross-runtime bridges", relationship = "Idris2 ABI + Zig FFI" },
+]

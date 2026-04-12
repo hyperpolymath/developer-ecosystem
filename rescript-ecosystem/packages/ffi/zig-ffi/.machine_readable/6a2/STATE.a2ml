@@ -1,34 +1,38 @@
-;; SPDX-License-Identifier: PMPL-1.0-or-later
-;; STATE.scm - Current project state
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# STATE.a2ml — Zig Ffi project state
+[metadata]
+project = "rescript-zig-ffi"
+version = "1.0.0"
+last-updated = "2026-01-10T13:50:43+00:00"
+status = "active"
+session = "converted from scheme — 2026-04-11"
 
-(define project-state
-  `((metadata
-      ((version . "1.0.0")
-       (schema-version . "1")
-       (created . "2026-01-10T13:50:43+00:00")
-       (updated . "2026-01-10T13:50:43+00:00")
-       (project . "rescript-zig-ffi")
-       (repo . "rescript-zig-ffi")))
+[project-context]
+name = "Rescript Zig Ffi"
+purpose = """"""
+completion-percentage = 50
 
-    (current-position
-      ((phase . "Active Development")
-       (overall-completion . 50)
-       (working-features . ())))
+[position]
+phase = "Active Development"   # design | implementation | testing | maintenance | archived
+maturity = "experimental"  # experimental | alpha | beta | production | lts
 
-    (route-to-mvp
-      ((milestones
-        ((v1.0 . ((items . ("Initial setup" "Core functionality"))
-                  (status . "in-progress")))))))
+[route-to-mvp]
+milestones = [
+  # No milestones recorded
+]
 
-    (blockers-and-issues
-      ((critical . ())
-       (high . ())
-       (medium . ())
-       (low . ())))
+[blockers-and-issues]
+issues = [
+  # No blockers recorded
+]
 
-    (critical-next-actions
-      ((immediate . ())
-       (this-week . ())
-       (this-month . ())))
+[critical-next-actions]
+actions = [
+  # No actions recorded
+]
 
-    (session-history . ())))
+[maintenance-status]
+last-run-utc = "2026-01-10T13:50:43+00:00T00:00:00Z"
+last-result = "unknown"  # unknown | pass | warn | fail

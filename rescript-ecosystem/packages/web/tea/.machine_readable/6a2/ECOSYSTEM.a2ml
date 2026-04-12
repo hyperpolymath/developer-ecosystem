@@ -1,13 +1,20 @@
-;; SPDX-License-Identifier: PMPL-1.0-or-later
-;; ECOSYSTEM.scm - Ecosystem positioning
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# ECOSYSTEM.a2ml — Tea ecosystem position
+[metadata]
+version = "1.0.0"
+last-updated = "2026-04-11"
 
-(ecosystem
-  ((version . "1.0.0")
-   (name . "rescript-tea")
-   (type . "application")
-   (purpose . "Hyperpolymath project")
-   (position-in-ecosystem . "supporting")
-   (related-projects
-     ((palimpsest-license . "license-framework")))
-   (what-this-is . ("Hyperpolymath project"))
-   (what-this-is-not . ())))
+[project]
+name = "Tea"
+purpose = "Hyperpolymath project"
+role = "application"
+
+[position-in-ecosystem]
+category = ""
+
+[related-projects]
+projects = [
+  # No related projects recorded
+]
