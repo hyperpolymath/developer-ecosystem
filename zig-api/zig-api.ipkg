@@ -1,0 +1,25 @@
+-- SPDX-License-Identifier: PMPL-1.0-or-later
+-- Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+package zigapi
+
+version = 0.1.0
+authors = "Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>"
+license = "PMPL-1.0-or-later"
+brief = "unified-zig-api — Idris2 ABI + Zig FFI replacing V-lang connectors"
+readme = "EXPLAINME.adoc"
+
+sourcedir = "src"
+builddir  = "build"
+
+modules = ZigApi.ABI.Types
+        , ZigApi.ABI.Http
+        , ZigApi.ABI.Process
+        , ZigApi.ABI.Connector
+        , ZigApi.ABI.Foreign
+        , ZigApi.ABI.Layout
+        , ZigApi.ABI.Proofs
+
+depends = base >= 0.6.0
+        , contrib
+
+opts = "--total"
