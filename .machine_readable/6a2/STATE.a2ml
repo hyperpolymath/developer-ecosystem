@@ -5,13 +5,18 @@
 [metadata]
 project = "developer-ecosystem"
 version = "0.1.0"
-last-updated = "2026-03-15"
+last-updated = "2026-04-12"
 status = "active"
 
 [project-context]
 name = "developer-ecosystem"
-completion-percentage = 0
-phase = "In development"
+completion-percentage = 45
+phase = "V-lang estate retired; zig-api Phase 1+2 complete; v-ecosystem connectors expanded for community handoff"
+
+[session-2026-04-12-v-ecosystem-connectors]
+summary = "All 95 v-api-interfaces connectors expanded to ≥201 lines. 45 stubs (previously 100–185 lines) given protocol constants, 5–8 public methods, helpers, and 3–5 tests. Batches: network-protocols (14), app/infra (15), specialized/security (14), imap (1). Commit d98a18c. V-lang work complete for TRANSFER.adoc community handoff to alex@vlang.io."
+files-changed = 49
+insertions = 8426
 
 [crg]
 grade = "C"
