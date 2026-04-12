@@ -11,7 +11,9 @@ module ZigApi.ABI.Process
 
 import Data.Bits
 import Data.List
+import Data.List.Elem
 import Data.String
+import Decidable.Equality
 import ZigApi.ABI.Types
 
 %default total
@@ -21,14 +23,11 @@ import ZigApi.ABI.Types
 -- ============================================================================
 
 ||| A path is safe if it starts with at least one element of the allowlist.
+||| Constructor SafeByPrefix provides a direct witness: pfx is in allowlist
+||| and is a prefix of path. (Note: "prefix" is an Idris2 keyword — use pfx.)
 public export
-data IsSafePath : (path : String) -> (allowlist : List String) -> Type where
-  ||| Direct witness: `prefix` is in `allowlist` and is a prefix of `path`.
-  SafeByPrefix :
-    (prefix : String) ->
-    Elem prefix allowlist ->
-    (isPrefixOf prefix path = True) ->
-    IsSafePath path allowlist
+data IsSafePath : String -> List String -> Type where
+  SafeByPrefix : {pfx : String} -> {allowlist : List String} -> {path : String} -> Elem pfx allowlist -> isPrefixOf pfx path = True -> IsSafePath path allowlist
 
 ||| Decision procedure: check whether any allowlist prefix matches.
 ||| Returns Left (proof of safety) or Right (no match found).
@@ -38,13 +37,11 @@ checkSafePath :
   (allowlist : List String) ->
   Either (IsSafePath path allowlist) String
 checkSafePath path [] = Right "path denied: allowlist is empty"
-checkSafePath path (p :: ps) =
-  if isPrefixOf p path
-    then Left (SafeByPrefix p Here Refl)
-    else case checkSafePath path ps of
-      Left (SafeByPrefix q qElem qPrf) =>
-        Left (SafeByPrefix q (There qElem) qPrf)
-      Right msg => Right msg
+checkSafePath path (p :: ps) with (decEq (isPrefixOf p path) True)
+  _ | Yes prf = Left (SafeByPrefix Here prf)
+  _ | No  _   = case checkSafePath path ps of
+    Left (SafeByPrefix qElem qPrf) => Left (SafeByPrefix (There qElem) qPrf)
+    Right msg => Right msg
 
 -- ============================================================================
 -- Standard allowlist (matches Zig DEFAULT_ALLOWLIST)
@@ -126,12 +123,12 @@ record GnosisRenderCmd where
   template_path : String
   scm_path      : String
   mode          : RenderMode
-  {auto 0 tpSafe : IsSafePath template_path defaultAllowlist}
-  {auto 0 spSafe : IsSafePath scm_path      defaultAllowlist}
+  {auto 0 tpSafe : IsSafePath template_path ZigApi.ABI.Process.defaultAllowlist}
+  {auto 0 spSafe : IsSafePath scm_path      ZigApi.ABI.Process.defaultAllowlist}
 
 ||| A validated gnosis context dump command.
 public export
 record GnosisContextCmd where
   constructor MkContextCmd
   scm_path : String
-  {auto 0 spSafe : IsSafePath scm_path defaultAllowlist}
+  {auto 0 spSafe : IsSafePath scm_path ZigApi.ABI.Process.defaultAllowlist}

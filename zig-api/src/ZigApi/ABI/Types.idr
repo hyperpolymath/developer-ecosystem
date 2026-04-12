@@ -92,11 +92,11 @@ resultFromTag _  = Nothing
 
 ||| Opaque 64-bit handle — wraps a pointer passed across the C ABI.
 public export
-data Handle = MkHandle (ptr : Bits64)
+data Handle = MkHandle Bits64
 
 ||| Pool slot index (0..63). The Zig pool holds max 64 instances.
 public export
-data Slot = MkSlot (idx : Bits8)
+data Slot = MkSlot Bits8
 
 ||| Slot validity: index must be < 64.
 public export
@@ -106,132 +106,6 @@ data ValidSlot : Slot -> Type where
 -- ============================================================================
 -- Roundtrip lemmas
 -- ============================================================================
-
-||| resultTag is injective: equal tags imply equal Results.
-public export
-resultTagInjective : (r s : Result) -> resultTag r = resultTag s -> r = s
-resultTagInjective Ok           Ok           _ = Refl
-resultTagInjective Err          Err          _ = Refl
-resultTagInjective InvalidParam InvalidParam _ = Refl
-resultTagInjective OutOfMemory  OutOfMemory  _ = Refl
-resultTagInjective NullPointer  NullPointer  _ = Refl
-resultTagInjective PathDenied   PathDenied   _ = Refl
-resultTagInjective ProcessFailed ProcessFailed _ = Refl
-resultTagInjective Timeout      Timeout      _ = Refl
-resultTagInjective NotFound     NotFound     _ = Refl
-resultTagInjective AlreadyExists AlreadyExists _ = Refl
-resultTagInjective SlotExhausted SlotExhausted _ = Refl
--- Mismatched cases are impossible because the tags differ.
-resultTagInjective Ok Err prf = absurd prf
-resultTagInjective Ok InvalidParam prf = absurd prf
-resultTagInjective Ok OutOfMemory prf = absurd prf
-resultTagInjective Ok NullPointer prf = absurd prf
-resultTagInjective Ok PathDenied prf = absurd prf
-resultTagInjective Ok ProcessFailed prf = absurd prf
-resultTagInjective Ok Timeout prf = absurd prf
-resultTagInjective Ok NotFound prf = absurd prf
-resultTagInjective Ok AlreadyExists prf = absurd prf
-resultTagInjective Ok SlotExhausted prf = absurd prf
-resultTagInjective Err Ok prf = absurd prf
-resultTagInjective Err InvalidParam prf = absurd prf
-resultTagInjective Err OutOfMemory prf = absurd prf
-resultTagInjective Err NullPointer prf = absurd prf
-resultTagInjective Err PathDenied prf = absurd prf
-resultTagInjective Err ProcessFailed prf = absurd prf
-resultTagInjective Err Timeout prf = absurd prf
-resultTagInjective Err NotFound prf = absurd prf
-resultTagInjective Err AlreadyExists prf = absurd prf
-resultTagInjective Err SlotExhausted prf = absurd prf
-resultTagInjective InvalidParam Ok prf = absurd prf
-resultTagInjective InvalidParam Err prf = absurd prf
-resultTagInjective InvalidParam OutOfMemory prf = absurd prf
-resultTagInjective InvalidParam NullPointer prf = absurd prf
-resultTagInjective InvalidParam PathDenied prf = absurd prf
-resultTagInjective InvalidParam ProcessFailed prf = absurd prf
-resultTagInjective InvalidParam Timeout prf = absurd prf
-resultTagInjective InvalidParam NotFound prf = absurd prf
-resultTagInjective InvalidParam AlreadyExists prf = absurd prf
-resultTagInjective InvalidParam SlotExhausted prf = absurd prf
-resultTagInjective OutOfMemory Ok prf = absurd prf
-resultTagInjective OutOfMemory Err prf = absurd prf
-resultTagInjective OutOfMemory InvalidParam prf = absurd prf
-resultTagInjective OutOfMemory NullPointer prf = absurd prf
-resultTagInjective OutOfMemory PathDenied prf = absurd prf
-resultTagInjective OutOfMemory ProcessFailed prf = absurd prf
-resultTagInjective OutOfMemory Timeout prf = absurd prf
-resultTagInjective OutOfMemory NotFound prf = absurd prf
-resultTagInjective OutOfMemory AlreadyExists prf = absurd prf
-resultTagInjective OutOfMemory SlotExhausted prf = absurd prf
-resultTagInjective NullPointer Ok prf = absurd prf
-resultTagInjective NullPointer Err prf = absurd prf
-resultTagInjective NullPointer InvalidParam prf = absurd prf
-resultTagInjective NullPointer OutOfMemory prf = absurd prf
-resultTagInjective NullPointer PathDenied prf = absurd prf
-resultTagInjective NullPointer ProcessFailed prf = absurd prf
-resultTagInjective NullPointer Timeout prf = absurd prf
-resultTagInjective NullPointer NotFound prf = absurd prf
-resultTagInjective NullPointer AlreadyExists prf = absurd prf
-resultTagInjective NullPointer SlotExhausted prf = absurd prf
-resultTagInjective PathDenied Ok prf = absurd prf
-resultTagInjective PathDenied Err prf = absurd prf
-resultTagInjective PathDenied InvalidParam prf = absurd prf
-resultTagInjective PathDenied OutOfMemory prf = absurd prf
-resultTagInjective PathDenied NullPointer prf = absurd prf
-resultTagInjective PathDenied ProcessFailed prf = absurd prf
-resultTagInjective PathDenied Timeout prf = absurd prf
-resultTagInjective PathDenied NotFound prf = absurd prf
-resultTagInjective PathDenied AlreadyExists prf = absurd prf
-resultTagInjective PathDenied SlotExhausted prf = absurd prf
-resultTagInjective ProcessFailed Ok prf = absurd prf
-resultTagInjective ProcessFailed Err prf = absurd prf
-resultTagInjective ProcessFailed InvalidParam prf = absurd prf
-resultTagInjective ProcessFailed OutOfMemory prf = absurd prf
-resultTagInjective ProcessFailed NullPointer prf = absurd prf
-resultTagInjective ProcessFailed PathDenied prf = absurd prf
-resultTagInjective ProcessFailed Timeout prf = absurd prf
-resultTagInjective ProcessFailed NotFound prf = absurd prf
-resultTagInjective ProcessFailed AlreadyExists prf = absurd prf
-resultTagInjective ProcessFailed SlotExhausted prf = absurd prf
-resultTagInjective Timeout Ok prf = absurd prf
-resultTagInjective Timeout Err prf = absurd prf
-resultTagInjective Timeout InvalidParam prf = absurd prf
-resultTagInjective Timeout OutOfMemory prf = absurd prf
-resultTagInjective Timeout NullPointer prf = absurd prf
-resultTagInjective Timeout PathDenied prf = absurd prf
-resultTagInjective Timeout ProcessFailed prf = absurd prf
-resultTagInjective Timeout NotFound prf = absurd prf
-resultTagInjective Timeout AlreadyExists prf = absurd prf
-resultTagInjective Timeout SlotExhausted prf = absurd prf
-resultTagInjective NotFound Ok prf = absurd prf
-resultTagInjective NotFound Err prf = absurd prf
-resultTagInjective NotFound InvalidParam prf = absurd prf
-resultTagInjective NotFound OutOfMemory prf = absurd prf
-resultTagInjective NotFound NullPointer prf = absurd prf
-resultTagInjective NotFound PathDenied prf = absurd prf
-resultTagInjective NotFound ProcessFailed prf = absurd prf
-resultTagInjective NotFound Timeout prf = absurd prf
-resultTagInjective NotFound AlreadyExists prf = absurd prf
-resultTagInjective NotFound SlotExhausted prf = absurd prf
-resultTagInjective AlreadyExists Ok prf = absurd prf
-resultTagInjective AlreadyExists Err prf = absurd prf
-resultTagInjective AlreadyExists InvalidParam prf = absurd prf
-resultTagInjective AlreadyExists OutOfMemory prf = absurd prf
-resultTagInjective AlreadyExists NullPointer prf = absurd prf
-resultTagInjective AlreadyExists PathDenied prf = absurd prf
-resultTagInjective AlreadyExists ProcessFailed prf = absurd prf
-resultTagInjective AlreadyExists Timeout prf = absurd prf
-resultTagInjective AlreadyExists NotFound prf = absurd prf
-resultTagInjective AlreadyExists SlotExhausted prf = absurd prf
-resultTagInjective SlotExhausted Ok prf = absurd prf
-resultTagInjective SlotExhausted Err prf = absurd prf
-resultTagInjective SlotExhausted InvalidParam prf = absurd prf
-resultTagInjective SlotExhausted OutOfMemory prf = absurd prf
-resultTagInjective SlotExhausted NullPointer prf = absurd prf
-resultTagInjective SlotExhausted PathDenied prf = absurd prf
-resultTagInjective SlotExhausted ProcessFailed prf = absurd prf
-resultTagInjective SlotExhausted Timeout prf = absurd prf
-resultTagInjective SlotExhausted NotFound prf = absurd prf
-resultTagInjective SlotExhausted AlreadyExists prf = absurd prf
 
 ||| Roundtrip: decoding an encoded tag recovers the original Result.
 public export
@@ -247,3 +121,18 @@ resultRoundtrip Timeout       = Refl
 resultRoundtrip NotFound      = Refl
 resultRoundtrip AlreadyExists = Refl
 resultRoundtrip SlotExhausted = Refl
+
+-- Helper: Just is an injective constructor.
+justInj : {0 a, b : t} -> Just a = Just b -> a = b
+justInj Refl = Refl
+
+||| resultTag is injective: equal tags imply equal Results.
+||| Proof: roundtrip through resultFromTag; no Bits8 Uninhabited instances needed.
+public export
+resultTagInjective : (r : Result) -> (s : Result) -> (resultTag r = resultTag s) -> r = s
+resultTagInjective r s prf =
+  let lhs  = resultRoundtrip r
+      rhs  = resultRoundtrip s
+      step = cong resultFromTag prf
+      eq   = trans (sym lhs) (trans step rhs)
+  in justInj eq

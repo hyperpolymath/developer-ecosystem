@@ -23,12 +23,32 @@ module ZigApi.ABI.Proofs
 
 import Data.Bits
 import Data.List
+import Data.List.Elem
 import Data.So
+import Data.String
+import Decidable.Equality
 import ZigApi.ABI.Types
 import ZigApi.ABI.Http
 import ZigApi.ABI.Process
 import ZigApi.ABI.Connector
 import ZigApi.ABI.Layout
+
+-- IsLeft / IsRight proof predicates (not in Idris2 0.8 stdlib).
+public export
+data IsLeft : Either a b -> Type where
+  ItIsLeft : IsLeft (Left x)
+
+public export
+data IsRight : Either a b -> Type where
+  ItIsRight : IsRight (Right x)
+
+export
+Uninhabited (IsLeft (Right x)) where
+  uninhabited ItIsLeft impossible
+
+export
+Uninhabited (IsRight (Left x)) where
+  uninhabited ItIsRight impossible
 
 %default total
 
@@ -54,17 +74,17 @@ validSlotIndexNotSentinel :
   (idx : Bits8) ->
   ValidSlot (MkSlot idx) ->
   Not (idx = 255)
-validSlotIndexNotSentinel idx (IsValid idx prf) eq =
-  sentinelCannotBeValidSlot (rewrite eq in prf)
+validSlotIndexNotSentinel idx (IsValid _ prf) eq =
+  sentinelCannotBeValidSlot (replace {p = \x => So (x < 64)} eq prf)
 
-||| The pool is non-empty.
+||| The pool is non-empty (capacity = 64 ≥ 1).
 public export
-poolNonEmpty : Nat.lte 1 poolCapacity = True
+poolNonEmpty : Nat.lte 1 64 = True
 poolNonEmpty = Refl
 
-||| The failure sentinel (255) is strictly above the pool capacity (64 < 255).
+||| The failure sentinel (255) is strictly above the pool capacity (65 ≤ 255).
 public export
-sentinelAboveCapacity : Nat.lte (S poolCapacity) connectorFailureSentinel = True
+sentinelAboveCapacity : Nat.lte 65 255 = True
 sentinelAboveCapacity = Refl
 
 -- ============================================================================
@@ -104,7 +124,7 @@ execResultRoundtrip' = execResultRoundtrip
 
 ||| Result tag is injective (equal tags → equal constructors).
 public export
-resultTagInjective' : (r s : Result) -> resultTag r = resultTag s -> r = s
+resultTagInjective' : (r : Result) -> (s : Result) -> (resultTag r = resultTag s) -> r = s
 resultTagInjective' = resultTagInjective
 
 -- ---- Cross-enum tag coincidence (informational) ----
@@ -138,28 +158,29 @@ public export
 checkSafePathEmptyDenies : (path : String) -> IsRight (checkSafePath path [])
 checkSafePathEmptyDenies _ = ItIsRight
 
-||| The default allowlist is non-empty.
+||| The default allowlist is non-empty (it has four entries).
 public export
-defaultAllowlistNonEmpty : NonEmpty defaultAllowlist
+defaultAllowlistNonEmpty : NonEmpty ZigApi.ABI.Process.defaultAllowlist
 defaultAllowlistNonEmpty = IsNonEmpty
 
 ||| checkSafePath returns Left (accepted) when the head of the allowlist is a
 ||| prefix of the path.
 |||
-||| Proof: with-pattern on `isPrefixOf prefix path`.  In the True branch,
-||| checkSafePath returns `Left (SafeByPrefix prefix Here Refl)`, so
+||| Proof: with-pattern on `isPrefixOf pfx path`.  In the True branch,
+||| checkSafePath returns `Left (SafeByPrefix pfx Here Refl)`, so
 ||| `IsLeft (Left ...)` = `ItIsLeft`.  In the False branch the assumption
-||| `isPrefixOf prefix path = True` contradicts, so `absurd prf` closes it.
+||| `isPrefixOf pfx path = True` contradicts, so `absurd prf` closes it.
+||| (Note: "prefix" is an Idris2 keyword — pfx is used instead.)
 public export
 checkSafePathHeadMatch :
   (path : String) ->
-  (prefix : String) ->
+  (pfx : String) ->
   (rest : List String) ->
-  isPrefixOf prefix path = True ->
-  IsLeft (checkSafePath path (prefix :: rest))
-checkSafePathHeadMatch path prefix rest prf with (isPrefixOf prefix path)
-  checkSafePathHeadMatch path prefix rest Refl | True  = ItIsLeft
-  checkSafePathHeadMatch path prefix rest prf  | False = absurd prf
+  isPrefixOf pfx path = True ->
+  IsLeft (checkSafePath path (pfx :: rest))
+checkSafePathHeadMatch path pfx rest prf with (decEq (isPrefixOf pfx path) True)
+  _ | Yes _     = ItIsLeft
+  _ | No  noPrf = absurd (noPrf prf)
 
 ||| Acceptance is safety: if checkSafePath returns Left, its payload IS an
 ||| IsSafePath proof.
@@ -193,9 +214,10 @@ notServingIs503 : healthHttpStatus NotServing = 503
 notServingIs503 = Refl
 
 ||| The two health codes are distinct.
+||| Proof: cong (== 200) converts the equality to True = False, which is absurd.
 public export
 healthCodesDistinct : healthHttpStatus Serving = healthHttpStatus NotServing -> Void
-healthCodesDistinct prf = absurd prf
+healthCodesDistinct prf = absurd (the (True = False) (cong (== 200) prf))
 
 ||| Serving's code equals the Success class base (200 = baseStatus Success).
 public export
@@ -210,10 +232,11 @@ notServingCodeIn5xx :
 notServingCodeIn5xx = Refl
 
 ||| Health codes are strictly positive (not the zero/null sentinel).
+||| Proof: cong (== 200) / cong (== 503) converts equality to True = False.
 public export
 servingCodeNonZero : Not (healthHttpStatus Serving = 0)
-servingCodeNonZero prf = absurd prf
+servingCodeNonZero prf = absurd (the (True = False) (cong (== 200) prf))
 
 public export
 notServingCodeNonZero : Not (healthHttpStatus NotServing = 0)
-notServingCodeNonZero prf = absurd prf
+notServingCodeNonZero prf = absurd (the (True = False) (cong (== 503) prf))

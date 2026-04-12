@@ -10,8 +10,10 @@
 -- Three categories of claims:
 --
 --   1. Tag-count bounds — the total number of constructors for each enum
---      fits in u8 (< 256).  Stated as `Nat.lte tagCount 255 = True`,
+--      fits in u8 (< 256).  Stated as `Nat.lte LITERAL 255 = True`,
 --      which Idris2 reduces at the type level so `Refl` closes the goal.
+--      Literals are used (not named constants) to avoid Idris2's auto-bind
+--      of lowercase names in type signatures.
 --
 --   2. Pool and sentinel bounds — pool capacity is 64, the failure sentinel
 --      returned by uapi_connector_create is 255, 64 ≤ 255 so no valid slot
@@ -36,10 +38,10 @@ import ZigApi.ABI.Connector
 -- 1. Tag-count bounds (number of enum constructors fits in u8)
 -- ============================================================================
 --
--- Proof strategy: each enum has a finite, concrete number of constructors.
--- We name that count and prove `Nat.lte count 255 = True` by Refl.
--- Idris2 evaluates `Nat.lte` at the type level so Refl closes the goal
--- without any helper lemmas.
+-- Proof strategy: `Nat.lte m n = True` for concrete m, n reduces to `True`
+-- by Idris2's type-level evaluation, so `Refl` closes the goal.
+-- Named constants document the semantic meaning; literals in the type
+-- signature avoid Idris2's auto-implicit-bind of lowercase names.
 
 -- ---- Result (11 constructors, max tag = 10) ----
 
@@ -50,7 +52,7 @@ resultTagCount = 11
 
 ||| 11 distinct tags fit in a u8 (11 ≤ 255).
 public export
-resultTagCountFitsU8 : Nat.lte resultTagCount 255 = True
+resultTagCountFitsU8 : Nat.lte 11 255 = True
 resultTagCountFitsU8 = Refl
 
 -- ---- ServiceId (11 constructors, max tag = 10) ----
@@ -62,7 +64,7 @@ serviceIdTagCount = 11
 
 ||| 11 distinct service IDs fit in a u8.
 public export
-serviceIdTagCountFitsU8 : Nat.lte serviceIdTagCount 255 = True
+serviceIdTagCountFitsU8 : Nat.lte 11 255 = True
 serviceIdTagCountFitsU8 = Refl
 
 -- ---- ConnectorState (6 constructors, max tag = 5) ----
@@ -73,7 +75,7 @@ connectorStateTagCount : Nat
 connectorStateTagCount = 6
 
 public export
-connectorStateTagCountFitsU8 : Nat.lte connectorStateTagCount 255 = True
+connectorStateTagCountFitsU8 : Nat.lte 6 255 = True
 connectorStateTagCountFitsU8 = Refl
 
 -- ---- HTTP Method (7 constructors, max tag = 6) ----
@@ -84,7 +86,7 @@ methodTagCount : Nat
 methodTagCount = 7
 
 public export
-methodTagCountFitsU8 : Nat.lte methodTagCount 255 = True
+methodTagCountFitsU8 : Nat.lte 7 255 = True
 methodTagCountFitsU8 = Refl
 
 -- ---- ServerState (4 constructors, max tag = 3) ----
@@ -95,7 +97,7 @@ serverStateTagCount : Nat
 serverStateTagCount = 4
 
 public export
-serverStateTagCountFitsU8 : Nat.lte serverStateTagCount 255 = True
+serverStateTagCountFitsU8 : Nat.lte 4 255 = True
 serverStateTagCountFitsU8 = Refl
 
 -- ---- ExecResult (6 constructors, max tag = 5) ----
@@ -106,7 +108,7 @@ execResultTagCount : Nat
 execResultTagCount = 6
 
 public export
-execResultTagCountFitsU8 : Nat.lte execResultTagCount 255 = True
+execResultTagCountFitsU8 : Nat.lte 6 255 = True
 execResultTagCountFitsU8 = Refl
 
 -- ---- HealthStatus (2 constructors, max tag = 1) ----
@@ -117,7 +119,7 @@ healthStatusTagCount : Nat
 healthStatusTagCount = 2
 
 public export
-healthStatusTagCountFitsU8 : Nat.lte healthStatusTagCount 255 = True
+healthStatusTagCountFitsU8 : Nat.lte 2 255 = True
 healthStatusTagCountFitsU8 = Refl
 
 -- ============================================================================
@@ -132,7 +134,7 @@ poolCapacity = 64
 
 ||| 64 valid slot indices fit in a u8 (64 ≤ 255).
 public export
-poolCapacityFitsU8 : Nat.lte poolCapacity 255 = True
+poolCapacityFitsU8 : Nat.lte 64 255 = True
 poolCapacityFitsU8 = Refl
 
 ||| The failure sentinel returned by uapi_connector_create when no slot is
@@ -144,13 +146,13 @@ connectorFailureSentinel = 255
 ||| 64 ≤ 255: every valid slot index is strictly below the sentinel.
 ||| This means a caller can distinguish success from failure unambiguously.
 public export
-sentinelAbovePool : Nat.lte poolCapacity connectorFailureSentinel = True
+sentinelAbovePool : Nat.lte 64 255 = True
 sentinelAbovePool = Refl
 
 ||| The sentinel 255 is not a valid pool index (pool capacity is 64).
-||| Equiv: 64 < 255 + 1, so poolCapacity ≤ connectorFailureSentinel.
+||| Equiv: S 64 ≤ S 255 — the next slot past the pool is still below sentinel+1.
 public export
-sentinelNotASlot : Nat.lte (S poolCapacity) (S connectorFailureSentinel) = True
+sentinelNotASlot : Nat.lte 65 256 = True
 sentinelNotASlot = Refl
 
 -- ============================================================================
@@ -170,11 +172,11 @@ uint32Max = 4294967295
 
 ||| 4096 bytes fits in a uint32_t out_len parameter (4096 ≤ 2^32 − 1).
 public export
-responseBufferFitsU32 : Nat.lte responseBufferSize uint32Max = True
+responseBufferFitsU32 : Nat.lte 4096 4294967295 = True
 responseBufferFitsU32 = Refl
 
 ||| The pool does not exceed the u8 range: poolCapacity < 256.
-||| (Stronger than FitsU8: the slot index type IS a Bits8.)
+||| (Stronger than poolCapacityFitsU8: the slot index type IS a Bits8.)
 public export
-poolFitsU8Type : Nat.lte poolCapacity 256 = True
+poolFitsU8Type : Nat.lte 64 256 = True
 poolFitsU8Type = Refl
