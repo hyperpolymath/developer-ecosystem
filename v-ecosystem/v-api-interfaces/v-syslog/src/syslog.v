@@ -21,6 +21,28 @@ const syslog_tls_port = 6514   // TLS (RFC 5425)
 // Syslog protocol version (RFC 5424).
 const syslog_version = 1
 
+// RFC 5424 NILVALUE placeholder for absent optional fields.
+const nil_value = "-"
+
+// Maximum RFC 5424 message length (informational; transports may differ).
+const max_msg_len = 65536
+
+// Facility numeric values — index matches RFC 5424 Table 1.
+const facility_kern_val   = 0
+const facility_user_val   = 1
+const facility_mail_val   = 2
+const facility_daemon_val = 3
+const facility_auth_val   = 4
+const facility_syslog_val = 5
+const facility_lpr_val    = 6
+const facility_news_val   = 7
+const facility_uucp_val   = 8
+const facility_cron_val   = 9
+const facility_authpriv_val = 10
+const facility_ftp_val    = 11
+// local0-local7 are 16-23
+const facility_local0_val = 16
+
 // --- Severity levels (RFC 5424 Section 6.2.1) ---
 
 // Severity classifies the urgency of a log message.
@@ -170,6 +192,44 @@ pub fn (mut c Client) log(severity Severity, message string) ! {
 	c.send(msg)!
 }
 
+// --- Additional operations ---
+
+// format_rfc5424 builds a complete RFC 5424 syslog message string
+// from individual fields. The structured data section is set to
+// NILVALUE when sd_elements is empty.
+pub fn format_rfc5424(facility int, severity int, hostname string, appname string, msg string) string {
+	pri := facility * 8 + severity
+	ts := time.now().format_rfc3339()
+	proc_id := nil_value
+	msg_id  := nil_value
+	sd_part := nil_value
+	return '<${pri}>${syslog_version} ${ts} ${hostname} ${appname} ${proc_id} ${msg_id} ${sd_part} ${msg}'
+}
+
+// send_udp formats and transmits a pre-formatted syslog string over UDP.
+pub fn (mut c Client) send_udp(formatted_msg string) ! {
+	addr := '${c.config.host}:${c.config.port}'
+	mut conn := net.dial_udp(addr)!
+	defer { conn.close() or {} }
+	conn.write(formatted_msg.bytes())!
+	println('[syslog] UDP sent ${formatted_msg.len} bytes to ${addr}')
+}
+
+// log_emergency sends an Emergency-severity message under the user facility.
+pub fn (mut c Client) log_emergency(message string) ! {
+	c.log(.emergency, message)!
+}
+
+// log_error sends an Error-severity message under the user facility.
+pub fn (mut c Client) log_error(message string) ! {
+	c.log(.err, message)!
+}
+
+// log_info sends an Informational message under the user facility.
+pub fn (mut c Client) log_info(message string) ! {
+	c.log(.informational, message)!
+}
+
 // --- Tests ---
 
 fn test_severity_val() {
@@ -181,3 +241,24 @@ fn test_facility_val() {
 	assert facility_val(.kern) == 0
 	assert facility_val(.local7) == 23
 }
+
+fn test_format_rfc5424_starts_with_pri() {
+	msg := format_rfc5424(1, 6, "myhost", "myapp", "hello")
+	// facility=1 (user), severity=6 (info) -> PRI = 1*8+6 = 14
+	assert msg.starts_with('<14>')
+}
+
+fn test_format_rfc5424_contains_fields() {
+	msg := format_rfc5424(3, 3, "srv01", "myapp", "test message")
+	assert msg.contains("srv01")
+	assert msg.contains("myapp")
+	assert msg.contains("test message")
+}
+
+fn test_pri_calculation() {
+	// kern(0) + emergency(0) = 0
+	assert facility_val(.kern) * 8 + severity_val(.emergency) == 0
+	// user(1) + debug(7) = 15
+	assert facility_val(.user) * 8 + severity_val(.debug) == 15
+}
+

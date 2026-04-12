@@ -24,6 +24,19 @@ const ns_dav     = "DAV:"
 // vCard content type.
 const content_type_vcard = "text/vcard; charset=utf-8"
 
+// CardDAV XML content types and MIME types for REPORT bodies.
+const content_type_xml = "application/xml; charset=utf-8"
+
+// CardDAV REPORT names.
+const report_addressbook_query    = "addressbook-query"
+const report_addressbook_multiget = "addressbook-multiget"
+
+// CardDAV property names used in PROPFIND and REPORT requests.
+const prop_address_data  = "address-data"
+const prop_getetag       = "getetag"
+const prop_display_name  = "displayname"
+const prop_ctag          = "getctag"
+
 // --- Data structures ---
 
 // Contact represents a vCard contact record.
@@ -82,15 +95,33 @@ pub fn (mut c Client) get_contacts(book_href string) ![]Contact {
 	return []Contact{}
 }
 
-// create_contact adds a new contact to an address book.
+// create_contact adds a new contact to an address book via PUT.
 pub fn (mut c Client) create_contact(book_href string, contact Contact) ! {
 	vcard := encode_vcard(contact)
 	println('[carddav] PUT ${book_href}/${contact.uid}.vcf (${vcard.len} bytes)')
 }
 
-// delete_contact removes a contact from an address book.
+// delete_contact removes a contact from an address book via DELETE.
 pub fn (mut c Client) delete_contact(contact_href string) ! {
 	println('[carddav] DELETE ${contact_href}')
+}
+
+// update_contact replaces an existing contact resource via PUT.
+pub fn (mut c Client) update_contact(contact_href string, contact Contact) ! {
+	if contact_href.len == 0 {
+		return error("contact href must not be empty")
+	}
+	vcard := encode_vcard(contact)
+	println('[carddav] PUT (update) ${contact_href} (${vcard.len} bytes)')
+}
+
+// get_contact_by_href retrieves a single contact using addressbook-multiget REPORT.
+pub fn (mut c Client) get_contact_by_href(book_href string, contact_href string) !Contact {
+	if contact_href.len == 0 {
+		return error("contact href must not be empty")
+	}
+	println('[carddav] ${report_addressbook_multiget} ${contact_href}')
+	return Contact{}
 }
 
 // --- vCard encoding ---
@@ -119,6 +150,19 @@ fn encode_vcard(contact Contact) string {
 	return lines.join('\r\n')
 }
 
+// encode_addressbook_query builds a CardDAV addressbook-query REPORT XML body
+// that requests address-data and getetag properties for all contacts.
+pub fn encode_addressbook_query() string {
+	return '<?xml version="1.0" encoding="utf-8"?>' +
+		'<C:addressbook-query xmlns:D="${ns_dav}" xmlns:C="${ns_carddav}">' +
+		'<D:prop>' +
+		'<D:${prop_getetag}/>' +
+		'<C:${prop_address_data}/>' +
+		'</D:prop>' +
+		'<C:filter/>' +
+		'</C:addressbook-query>'
+}
+
 // --- Tests ---
 
 fn test_encode_vcard() {
@@ -132,4 +176,27 @@ fn test_encode_vcard() {
 	vcard := encode_vcard(c)
 	assert vcard.contains('BEGIN:VCARD')
 	assert vcard.contains('FN:Jane Doe')
+}
+
+fn test_encode_addressbook_query_structure() {
+	xml := encode_addressbook_query()
+	assert xml.contains('addressbook-query')
+	assert xml.contains(ns_carddav)
+	assert xml.contains(ns_dav)
+}
+
+fn test_encode_addressbook_query_contains_props() {
+	xml := encode_addressbook_query()
+	assert xml.contains(prop_getetag)
+	assert xml.contains(prop_address_data)
+	assert xml.contains('<C:filter/>')
+}
+
+fn test_update_contact_empty_href_rejected() {
+	mut client := new_client(Config{ base_url: "https://cards.example.com" })
+	client.update_contact("", Contact{ uid: "u1" }) or {
+		assert err.str().contains("must not be empty")
+		return
+	}
+	assert false
 }

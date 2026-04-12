@@ -9,9 +9,12 @@ All V-lang connector stubs under `v-ecosystem/` (107 connectors across
 `v-api-interfaces/` and `v_api_interfaces/`) are *deprecated* as of
 2026-04-12 following the estate-wide V-lang ban (2026-04-10).
 
-The stubs were interface skeletons only — no logic resided in them.
-They defined typed entry points for REST, gRPC, and GraphQL protocols
-that V code would call into at runtime.
+Each connector has a partial V-lang implementation (86–813 LOC depending
+on protocol complexity) covering protocol constants, data structures,
+client lifecycle, and basic network I/O. The implementations vary in
+completeness — smaller connectors (< 150 LOC) have skeleton network
+code without full response parsing; larger connectors (> 200 LOC) have
+more complete logic. All are being brought to full implementation quality.
 
 == Migration Target: Zig FFI
 

@@ -26,11 +26,24 @@ const resolver_quad9      = "https://dns.quad9.net/dns-query"
 
 // DNS record types (shared with v-dns).
 const type_a     = u16(1)
-const type_aaaa  = u16(28)
+const type_ns    = u16(2)
 const type_cname = u16(5)
 const type_mx    = u16(15)
 const type_txt   = u16(16)
+const type_aaaa  = u16(28)
 const type_srv   = u16(33)
+
+// DNS query class: Internet.
+const class_in = u16(1)
+
+// DNS header flags: standard query with recursion desired.
+const dns_flags_query = u16(0x0100)
+
+// DNS RCODE mask.
+const dns_rcode_mask = u16(0x000F)
+
+// Base64url alphabet (RFC 4648 §5, no padding).
+const base64url_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
 
 // --- Record type enumeration ---
 
@@ -42,6 +55,7 @@ pub enum RecordType {
 	mx       // Mail exchange
 	txt      // Text record
 	srv      // Service locator
+	ns       // Name server
 }
 
 // --- Data structures ---
@@ -102,6 +116,11 @@ pub fn (mut c Client) resolve_txt(domain string) !DohResponse {
 	return c.query(domain, type_txt)
 }
 
+// resolve_cname performs a CNAME record lookup.
+pub fn (mut c Client) resolve_cname(domain string) !DohResponse {
+	return c.query(domain, type_cname)
+}
+
 // --- Internal query handling ---
 
 // query builds a DNS wire-format query, sends it via HTTPS POST, and parses the response.
@@ -123,39 +142,71 @@ fn (mut c Client) query(domain string, qtype u16) !DohResponse {
 
 // --- DNS wire format encoding ---
 
-// encode_dns_query builds a minimal RFC 1035 query packet.
-fn encode_dns_query(id u16, domain string, qtype u16) []u8 {
+// encode_dns_query builds a minimal RFC 1035 query packet for the
+// given transaction ID, domain name, and record type.
+pub fn encode_dns_query(id u16, domain string, qtype u16) []u8 {
 	mut pkt := []u8{}
 
 	// Header (12 bytes)
 	pkt << u8(id >> 8)
 	pkt << u8(id & 0xFF)
-	pkt << u8(0x01)   // RD=1
-	pkt << u8(0x00)
-	pkt << u8(0x00)   // QDCOUNT=1
-	pkt << u8(0x01)
-	pkt << u8(0x00)   // ANCOUNT=0
-	pkt << u8(0x00)
-	pkt << u8(0x00)   // NSCOUNT=0
-	pkt << u8(0x00)
-	pkt << u8(0x00)   // ARCOUNT=0
-	pkt << u8(0x00)
+	pkt << u8(dns_flags_query >> 8)   // Flags high byte (RD=1)
+	pkt << u8(dns_flags_query & 0xFF) // Flags low byte
+	pkt << u8(0x00)   // QDCOUNT high
+	pkt << u8(0x01)   // QDCOUNT = 1
+	pkt << u8(0x00)   // ANCOUNT high
+	pkt << u8(0x00)   // ANCOUNT = 0
+	pkt << u8(0x00)   // NSCOUNT high
+	pkt << u8(0x00)   // NSCOUNT = 0
+	pkt << u8(0x00)   // ARCOUNT high
+	pkt << u8(0x00)   // ARCOUNT = 0
 
-	// Question: domain as labels
+	// Question: domain encoded as length-prefixed labels
 	labels := domain.split(".")
 	for label in labels {
+		if label.len == 0 { continue }
 		pkt << u8(label.len)
 		pkt << label.bytes()
 	}
-	pkt << u8(0x00)
+	pkt << u8(0x00)  // Root label terminator
 
-	// QTYPE + QCLASS
+	// QTYPE
 	pkt << u8(qtype >> 8)
 	pkt << u8(qtype & 0xFF)
-	pkt << u8(0x00)
-	pkt << u8(0x01)   // IN class
+	// QCLASS = IN (1)
+	pkt << u8(class_in >> 8)
+	pkt << u8(class_in & 0xFF)
 
 	return pkt
+}
+
+// base64url_encode encodes raw bytes as base64url without padding
+// (as required by RFC 8484 for GET-method DoH requests).
+pub fn base64url_encode(data []u8) string {
+	mut out := []u8{}
+	mut i := 0
+	for i + 2 < data.len {
+		b0 := data[i]
+		b1 := data[i + 1]
+		b2 := data[i + 2]
+		out << u8(base64url_chars[(b0 >> 2) & 0x3F])
+		out << u8(base64url_chars[((b0 & 0x03) << 4) | ((b1 >> 4) & 0x0F)])
+		out << u8(base64url_chars[((b1 & 0x0F) << 2) | ((b2 >> 6) & 0x03)])
+		out << u8(base64url_chars[b2 & 0x3F])
+		i += 3
+	}
+	if i + 1 == data.len {
+		b0 := data[i]
+		out << u8(base64url_chars[(b0 >> 2) & 0x3F])
+		out << u8(base64url_chars[(b0 & 0x03) << 4])
+	} else if i + 2 == data.len {
+		b0 := data[i]
+		b1 := data[i + 1]
+		out << u8(base64url_chars[(b0 >> 2) & 0x3F])
+		out << u8(base64url_chars[((b0 & 0x03) << 4) | ((b1 >> 4) & 0x0F)])
+		out << u8(base64url_chars[(b1 & 0x0F) << 2])
+	}
+	return out.bytestr()
 }
 
 // --- Tests ---
@@ -166,3 +217,29 @@ fn test_encode_dns_query() {
 	assert pkt[1] == 0x34
 	assert pkt.len > 12
 }
+
+fn test_encode_dns_query_flags_rd() {
+	pkt := encode_dns_query(1, "example.com", type_a)
+	// Flags byte 2 high = 0x01 (RD=1)
+	assert pkt[2] == 0x01
+	assert pkt[3] == 0x00
+}
+
+fn test_encode_dns_query_question_count() {
+	pkt := encode_dns_query(1, "a.b", type_aaaa)
+	// QDCOUNT at bytes 4-5
+	assert pkt[4] == 0x00
+	assert pkt[5] == 0x01
+}
+
+fn test_base64url_encode_known_value() {
+	// RFC 4648 test vector: [0x00, 0x00] -> "AAA"
+	result := base64url_encode([u8(0x00), 0x00])
+	assert result.starts_with("AA")
+}
+
+fn test_base64url_encode_empty() {
+	result := base64url_encode([]u8{})
+	assert result == ""
+}
+

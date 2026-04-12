@@ -24,7 +24,7 @@ const opcode_data  = u16(3)  // Data packet
 const opcode_ack   = u16(4)  // Acknowledgement
 const opcode_error = u16(5)  // Error packet
 
-// TFTP block size.
+// TFTP block size (RFC 1350 default; OACK extension can negotiate larger).
 const block_size = 512
 
 // TFTP transfer modes.
@@ -45,11 +45,11 @@ const err_no_such_user  = u16(7)
 
 // Opcode identifies the TFTP packet type.
 pub enum Opcode {
-	rrq     // Read request
-	wrq     // Write request
-	data    // Data block
-	ack     // Acknowledgement
-	tftp_error  // Error notification
+	rrq        // Read request
+	wrq        // Write request
+	data       // Data block
+	ack        // Acknowledgement
+	tftp_error // Error notification
 }
 
 // --- Data structures ---
@@ -147,7 +147,7 @@ pub fn (mut c Client) put(filename string, data []u8) ! {
 
 // --- Packet encoding ---
 
-// encode_request builds a RRQ or WRQ packet.
+// encode_request builds a RRQ or WRQ packet per RFC 1350 Section 5.
 fn encode_request(opcode u16, filename string, mode string) []u8 {
 	mut pkt := []u8{}
 	pkt << u8(opcode >> 8)
@@ -159,14 +159,55 @@ fn encode_request(opcode u16, filename string, mode string) []u8 {
 	return pkt
 }
 
+// encode_rrq builds a Read Request packet for the given filename and mode.
+pub fn encode_rrq(filename string, mode string) []u8 {
+	return encode_request(opcode_rrq, filename, mode)
+}
+
+// encode_wrq builds a Write Request packet for the given filename and mode.
+pub fn encode_wrq(filename string, mode string) []u8 {
+	return encode_request(opcode_wrq, filename, mode)
+}
+
+// encode_data builds a DATA packet containing the given block number and payload.
+pub fn encode_data(block u16, data []u8) []u8 {
+	mut pkt := []u8{}
+	pkt << u8(opcode_data >> 8)
+	pkt << u8(opcode_data & 0xFF)
+	pkt << u8(block >> 8)
+	pkt << u8(block & 0xFF)
+	pkt << data
+	return pkt
+}
+
 // encode_ack builds an ACK packet for the given block number.
-fn encode_ack(block u16) []u8 {
+pub fn encode_ack(block u16) []u8 {
 	mut pkt := []u8{}
 	pkt << u8(opcode_ack >> 8)
 	pkt << u8(opcode_ack & 0xFF)
 	pkt << u8(block >> 8)
 	pkt << u8(block & 0xFF)
 	return pkt
+}
+
+// encode_error builds a TFTP ERROR packet with the given code and message.
+pub fn encode_error_pkt(code u16, msg string) []u8 {
+	mut pkt := []u8{}
+	pkt << u8(opcode_error >> 8)
+	pkt << u8(opcode_error & 0xFF)
+	pkt << u8(code >> 8)
+	pkt << u8(code & 0xFF)
+	pkt << msg.bytes()
+	pkt << u8(0x00)
+	return pkt
+}
+
+// parse_opcode extracts the 2-byte opcode from the start of a TFTP packet.
+pub fn parse_opcode(data []u8) !u16 {
+	if data.len < 2 {
+		return error("packet too short to contain opcode")
+	}
+	return (u16(data[0]) << 8) | u16(data[1])
 }
 
 // --- Tests ---
@@ -183,3 +224,30 @@ fn test_encode_ack() {
 	assert pkt[2] == 0x00
 	assert pkt[3] == 42
 }
+
+fn test_encode_data_opcode() {
+	pkt := encode_data(1, [u8(0xAB), 0xCD])
+	assert pkt[0] == 0x00
+	assert pkt[1] == 0x03  // DATA opcode
+	assert pkt[4] == 0xAB
+}
+
+fn test_encode_rrq_public() {
+	pkt := encode_rrq("boot.img", mode_octet)
+	assert pkt[1] == 0x01  // RRQ
+}
+
+fn test_parse_opcode_valid() {
+	ack := encode_ack(5)
+	op := parse_opcode(ack) or { panic('parse failed') }
+	assert op == opcode_ack
+}
+
+fn test_parse_opcode_too_short() {
+	parse_opcode([u8(0x00)]) or {
+		assert err.str().contains("too short")
+		return
+	}
+	assert false
+}
+

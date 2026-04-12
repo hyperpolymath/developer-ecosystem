@@ -34,6 +34,16 @@ pub enum ConvergeResult {
 	skipped     // Skipped (dry-run or conditional)
 }
 
+// --- Config format ---
+
+// ConfigFormat identifies the serialisation format of a configuration store.
+pub enum ConfigFormat {
+	yaml   // YAML (human-friendly, superset of JSON)
+	json   // JSON (machine-readable)
+	toml   // TOML (INI-like with types)
+	ini    // INI (classic key=value sections)
+}
+
 // --- Data structures ---
 
 // Resource represents a managed infrastructure resource.
@@ -63,11 +73,20 @@ pub:
 	duration_ms   i64
 }
 
+// ConfigStore represents a remote or local key-value configuration store.
+pub struct ConfigStore {
+pub:
+	name   string
+	format ConfigFormat
+	path   string   // File path or URL
+}
+
 // ConfigMgr manages configuration convergence.
 pub struct ConfigMgr {
 mut:
 	resources []Resource
 	dry_run   bool
+	kv_store  map[string]string
 }
 
 // --- Manager lifecycle ---
@@ -77,6 +96,7 @@ pub fn new_config_mgr(dry_run bool) &ConfigMgr {
 	return &ConfigMgr{
 		resources: []Resource{}
 		dry_run: dry_run
+		kv_store: map[string]string{}
 	}
 }
 
@@ -115,6 +135,71 @@ pub fn (m &ConfigMgr) detect_drift() []DriftReport {
 	return reports
 }
 
+// get retrieves a value by key from the in-memory configuration store.
+pub fn (m &ConfigMgr) get(key string) !string {
+	if key.len == 0 {
+		return error("config key must not be empty")
+	}
+	if key !in m.kv_store {
+		return error("config key '${key}' not found")
+	}
+	return m.kv_store[key]
+}
+
+// set stores or updates a configuration key-value pair.
+pub fn (mut m ConfigMgr) set(key string, value string) ! {
+	if key.len == 0 {
+		return error("config key must not be empty")
+	}
+	m.kv_store[key] = value
+	println("[configmgmt] SET ${key}=${value}")
+}
+
+// delete removes a configuration key from the store.
+pub fn (mut m ConfigMgr) delete(key string) ! {
+	if key.len == 0 {
+		return error("config key must not be empty")
+	}
+	if key !in m.kv_store {
+		return error("config key '${key}' not found")
+	}
+	m.kv_store.delete(key)
+	println("[configmgmt] DELETE ${key}")
+}
+
+// list_keys returns all keys in the store that begin with the given prefix.
+// Pass an empty prefix to list all keys.
+pub fn (m &ConfigMgr) list_keys(prefix string) ![]string {
+	mut keys := []string{}
+	for k in m.kv_store.keys() {
+		if prefix.len == 0 || k.starts_with(prefix) {
+			keys << k
+		}
+	}
+	return keys
+}
+
+// --- Parsing helpers ---
+
+// parse_kv_line parses a single "key=value" line (INI/env-file style).
+// Lines starting with '#' are treated as comments and return an error.
+// Surrounding whitespace on both key and value is trimmed.
+pub fn parse_kv_line(line string) !(string, string) {
+	trimmed := line.trim_space()
+	if trimmed.len == 0 || trimmed.starts_with('#') {
+		return error("line is a comment or empty")
+	}
+	idx := trimmed.index('=') or {
+		return error("no '=' separator found in line: '${trimmed}'")
+	}
+	key := trimmed[..idx].trim_space()
+	value := trimmed[idx + 1..].trim_space()
+	if key.len == 0 {
+		return error("key must not be empty")
+	}
+	return key, value
+}
+
 // --- Tests ---
 
 fn test_dry_run_skips() {
@@ -123,4 +208,39 @@ fn test_dry_run_skips() {
 	results := mgr.converge()
 	assert results.len == 1
 	assert results[0].result == .skipped
+}
+
+fn test_parse_kv_line_simple() {
+	key, val := parse_kv_line("host = 127.0.0.1") or { panic(err) }
+	assert key == "host"
+	assert val == "127.0.0.1"
+}
+
+fn test_parse_kv_line_comment_rejected() {
+	parse_kv_line("# this is a comment") or {
+		assert err.str().contains("comment")
+		return
+	}
+	assert false
+}
+
+fn test_parse_kv_line_no_separator_rejected() {
+	parse_kv_line("nodivider") or {
+		assert err.str().contains("no '=' separator")
+		return
+	}
+	assert false
+}
+
+fn test_get_set_delete_roundtrip() {
+	mut mgr := new_config_mgr(false)
+	mgr.set("timeout", "30") or { panic(err) }
+	val := mgr.get("timeout") or { panic(err) }
+	assert val == "30"
+	mgr.delete("timeout") or { panic(err) }
+	mgr.get("timeout") or {
+		assert err.str().contains("not found")
+		return
+	}
+	assert false
 }

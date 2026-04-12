@@ -20,18 +20,34 @@ const ptp_primary_addr = "224.0.1.129"
 const ptp_event_port   = 319
 const ptp_general_port = 320
 
-// PTP message types.
-const msg_sync        = u8(0x0)
-const msg_delay_req   = u8(0x1)
-const msg_follow_up   = u8(0x8)
-const msg_delay_resp  = u8(0x9)
-const msg_announce    = u8(0xB)
+// PTP message types (lower nibble of the messageType field).
+const msg_sync          = u8(0x0)   // Sync event
+const msg_delay_req     = u8(0x1)   // Delay_Req event
+const msg_pdelay_req    = u8(0x2)   // Pdelay_Req event
+const msg_pdelay_resp   = u8(0x3)   // Pdelay_Resp event
+const msg_follow_up     = u8(0x8)   // Follow_Up general
+const msg_delay_resp    = u8(0x9)   // Delay_Resp general
+const msg_pdelay_follow = u8(0xA)   // Pdelay_Resp_Follow_Up general
+const msg_announce      = u8(0xB)   // Announce general
+const msg_signaling     = u8(0xC)   // Signaling general
+const msg_management    = u8(0xD)   // Management general
 
 // PTP version.
 const ptp_version = u8(2)  // IEEE 1588-2019
 
-// PTP header length.
+// PTP header length in bytes (IEEE 1588-2019 Table 18).
 const ptp_header_len = 34
+
+// PTP flag field bit positions.
+const flag_alternate_master  = u16(0x0001)
+const flag_two_step          = u16(0x0200)
+const flag_unicast           = u16(0x0400)
+const flag_ptp_timescale     = u16(0x2000)
+const flag_time_traceable    = u16(0x4000)
+const flag_freq_traceable    = u16(0x8000)
+
+// PTP transport domain default.
+const default_domain = u8(0)
 
 // --- Clock class enumeration ---
 
@@ -67,14 +83,17 @@ pub:
 	port_number    u16
 }
 
-// PtpHeader represents the common PTP message header.
+// PtpHeader represents the common PTP message header (IEEE 1588-2019 §13.3).
 pub struct PtpHeader {
 pub:
 	msg_type        u8
 	version         u8
 	message_length  u16
 	domain_number   u8
+	flags           u16
+	correction      i64    // Correction field (nanoseconds * 2^16)
 	sequence_id     u16
+	log_msg_interval i8   // Log2 of the message interval
 	source_port     PortIdentity
 }
 
@@ -110,7 +129,8 @@ pub fn (mut c Client) start_sync() ! {
 // send_delay_request sends a Delay_Req message to measure path delay.
 pub fn (mut c Client) send_delay_request() ! {
 	c.sequence_id++
-	println('[ptp] Delay_Req seq=${c.sequence_id}')
+	pkt := encode_delay_req(c.sequence_id)
+	println('[ptp] Delay_Req seq=${c.sequence_id} (${pkt.len} bytes)')
 }
 
 // compute_offset calculates the clock offset from sync timestamps.
@@ -127,6 +147,93 @@ pub fn (mut c Client) compute_offset(t1 Timestamp, t2 Timestamp, t3 Timestamp, t
 	return c.offset_ns
 }
 
+// --- Encoding ---
+
+// encode_ptp_header serialises the common PTP header portion (34 bytes)
+// for the given message type and sequence ID.
+fn encode_ptp_header(msg_type u8, seq_id u16, domain u8, two_step bool) []u8 {
+	mut hdr := []u8{}
+	// messageType (4 bits) | transportSpecific (4 bits)
+	hdr << (msg_type & 0x0F)
+	// versionPTP
+	hdr << ptp_version
+	// messageLength (2 bytes) — filled in per-message
+	hdr << u8(0x00)
+	hdr << u8(0x00)
+	// domainNumber
+	hdr << domain
+	// minorVersionPTP (1 byte)
+	hdr << u8(0x00)
+	// flagField (2 bytes)
+	flags := if two_step { flag_two_step | flag_ptp_timescale } else { flag_ptp_timescale }
+	hdr << u8(flags >> 8)
+	hdr << u8(flags & 0xFF)
+	// correctionField (8 bytes) = 0
+	for _ in 0 .. 8 { hdr << u8(0x00) }
+	// messageTypeSpecific (4 bytes) = 0
+	for _ in 0 .. 4 { hdr << u8(0x00) }
+	// sourcePortIdentity (10 bytes) = zeros (placeholder)
+	for _ in 0 .. 10 { hdr << u8(0x00) }
+	// sequenceId (2 bytes)
+	hdr << u8(seq_id >> 8)
+	hdr << u8(seq_id & 0xFF)
+	// controlField (1 byte) — 0 for Sync/Delay_Req/Delay_Resp
+	hdr << u8(0x00)
+	// logMessageInterval (1 byte)
+	hdr << u8(0x00)
+	return hdr
+}
+
+// encode_sync builds a PTP Sync message for the given sequence ID.
+// The message body appends a 10-byte originTimestamp of all zeros
+// (used in two-step mode; actual timestamp carried by Follow_Up).
+pub fn encode_sync(seq_id u16) []u8 {
+	mut pkt := encode_ptp_header(msg_sync, seq_id, default_domain, true)
+	// originTimestamp: 10 bytes (seconds_msb(2) + seconds(4) + ns(4))
+	for _ in 0 .. 10 { pkt << u8(0x00) }
+	// Patch messageLength field at bytes 2-3
+	total := u16(pkt.len)
+	pkt[2] = u8(total >> 8)
+	pkt[3] = u8(total & 0xFF)
+	return pkt
+}
+
+// encode_delay_req builds a PTP Delay_Req message for the given sequence ID.
+pub fn encode_delay_req(seq_id u16) []u8 {
+	mut pkt := encode_ptp_header(msg_delay_req, seq_id, default_domain, false)
+	// originTimestamp: 10 bytes of zeros
+	for _ in 0 .. 10 { pkt << u8(0x00) }
+	total := u16(pkt.len)
+	pkt[2] = u8(total >> 8)
+	pkt[3] = u8(total & 0xFF)
+	return pkt
+}
+
+// parse_header deserialises the first 34 bytes of a PTP packet into
+// a PtpHeader struct.
+pub fn parse_header(data []u8) !PtpHeader {
+	if data.len < ptp_header_len {
+		return error("PTP header requires ${ptp_header_len} bytes, got ${data.len}")
+	}
+	msg_type  := data[0] & 0x0F
+	version   := data[1]
+	msg_len   := (u16(data[2]) << 8) | u16(data[3])
+	domain    := data[4]
+	flags     := (u16(data[6]) << 8) | u16(data[7])
+	seq_id    := (u16(data[30]) << 8) | u16(data[31])
+	return PtpHeader{
+		msg_type:       msg_type
+		version:        version
+		message_length: msg_len
+		domain_number:  domain
+		flags:          flags
+		correction:     0
+		sequence_id:    seq_id
+		log_msg_interval: i8(data[33])
+		source_port:    PortIdentity{}
+	}
+}
+
 // --- Tests ---
 
 fn test_compute_offset_zero() {
@@ -135,3 +242,35 @@ fn test_compute_offset_zero() {
 	offset := c.compute_offset(ts, ts, ts, ts)
 	assert offset == 0
 }
+
+fn test_encode_sync_length() {
+	pkt := encode_sync(1)
+	// header(34) + originTimestamp(10) = 44
+	assert pkt.len == 44
+}
+
+fn test_encode_sync_message_type() {
+	pkt := encode_sync(1)
+	assert (pkt[0] & 0x0F) == msg_sync
+}
+
+fn test_encode_delay_req_message_type() {
+	pkt := encode_delay_req(3)
+	assert (pkt[0] & 0x0F) == msg_delay_req
+}
+
+fn test_parse_header_valid_sync() {
+	pkt := encode_sync(42)
+	hdr := parse_header(pkt) or { panic('parse failed: ${err}') }
+	assert hdr.msg_type == msg_sync
+	assert hdr.sequence_id == 42
+}
+
+fn test_parse_header_too_short() {
+	parse_header([u8(0x00), 0x02]) or {
+		assert err.str().contains("requires")
+		return
+	}
+	assert false
+}
+

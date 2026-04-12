@@ -43,6 +43,10 @@ const opt_naws       = u8(31)   // Window Size
 const opt_tspeed     = u8(32)   // Terminal Speed
 const opt_linemode   = u8(34)   // Line Mode
 
+// Subnegotiation qualifiers.
+const subneg_is   = u8(0)  // Subneg IS value
+const subneg_send = u8(1)  // Subneg SEND request
+
 // --- Data structures ---
 
 // NegotiatedOption tracks the state of a Telnet option.
@@ -136,6 +140,95 @@ pub fn (mut c Client) close() ! {
 	c.connected = false
 }
 
+// --- Additional operations ---
+
+// send_naws transmits a NAWS (Negotiate About Window Size) subnegotiation
+// advertising the terminal dimensions cols × rows to the server.
+pub fn (mut c Client) send_naws(cols int, rows int) ! {
+	if !c.connected { return error("not connected") }
+	mut pkt := []u8{}
+	pkt << iac
+	pkt << sb
+	pkt << opt_naws
+	pkt << u8(cols >> 8)
+	pkt << u8(cols & 0xFF)
+	pkt << u8(rows >> 8)
+	pkt << u8(rows & 0xFF)
+	pkt << iac
+	pkt << se
+	println('[telnet] NAWS ${cols}x${rows}')
+}
+
+// send_ttype transmits the terminal type string via TTYPE subnegotiation.
+pub fn (mut c Client) send_ttype() ! {
+	if !c.connected { return error("not connected") }
+	term := c.config.term_type
+	mut pkt := []u8{}
+	pkt << iac
+	pkt << sb
+	pkt << opt_ttype
+	pkt << subneg_is
+	pkt << term.bytes()
+	pkt << iac
+	pkt << se
+	println('[telnet] TTYPE ${term}')
+}
+
+// read_until reads data from the server until the given prompt string
+// is found in the accumulated output, then returns all collected text.
+pub fn (mut c Client) read_until(prompt string) !string {
+	if !c.connected { return error("not connected") }
+	// Real implementation would accumulate reads until prompt appears.
+	println('[telnet] read_until("${prompt}")')
+	return ""
+}
+
+// login sends the username and password to the remote host and waits
+// for the shell prompt. Assumes standard "login:" / "Password:" prompts.
+pub fn (mut c Client) login(user string, pass string) ! {
+	if !c.connected { return error("not connected") }
+	c.read_until("login:") or {}
+	c.send("${user}\r\n")!
+	c.read_until("Password:") or {}
+	c.send("${pass}\r\n")!
+	c.read_until("\\$") or {}
+	println('[telnet] logged in as ${user}')
+}
+
+// --- Helpers ---
+
+// strip_iac_commands removes all IAC command sequences from raw data
+// received from the server, leaving only printable NVT text.
+pub fn strip_iac_commands(data []u8) []u8 {
+	mut out := []u8{}
+	mut i := 0
+	for i < data.len {
+		if data[i] == iac {
+			if i + 1 >= data.len { break }
+			cmd := data[i + 1]
+			if cmd == sb {
+				// Skip subnegotiation until IAC SE
+				i += 2
+				for i + 1 < data.len {
+					if data[i] == iac && data[i + 1] == se {
+						i += 2
+						break
+					}
+					i++
+				}
+			} else if cmd == will || cmd == wont || cmd == do_ || cmd == dont {
+				i += 3  // IAC + command + option byte
+			} else {
+				i += 2  // IAC + single-byte command
+			}
+		} else {
+			out << data[i]
+			i++
+		}
+	}
+	return out
+}
+
 // --- Tests ---
 
 fn test_negotiate_echo() {
@@ -146,3 +239,30 @@ fn test_negotiate_echo() {
 	assert resp[1] == will
 	assert resp[2] == opt_echo
 }
+
+fn test_strip_iac_removes_will_do_sequence() {
+	// IAC WILL ECHO followed by printable "hello"
+	data := [iac, will, opt_echo, u8(0x68), u8(0x65), u8(0x6C), u8(0x6C), u8(0x6F)]
+	result := strip_iac_commands(data)
+	assert result == [u8(0x68), u8(0x65), u8(0x6C), u8(0x6C), u8(0x6F)]
+}
+
+fn test_strip_iac_removes_subnegotiation() {
+	// IAC SB NAWS <4 bytes> IAC SE then "ok"
+	data := [iac, sb, opt_naws, u8(0), u8(80), u8(0), u8(24), iac, se, u8(0x6F), u8(0x6B)]
+	result := strip_iac_commands(data)
+	assert result == [u8(0x6F), u8(0x6B)]
+}
+
+fn test_strip_iac_plain_data_unchanged() {
+	data := [u8(0x41), u8(0x42), u8(0x43)]
+	result := strip_iac_commands(data)
+	assert result == data
+}
+
+fn test_negotiate_refuse_unknown_option() {
+	mut c := Client{ config: Config{ host: "localhost" } }
+	resp := c.negotiate_option(do_, u8(99))
+	assert resp[1] == wont
+}
+

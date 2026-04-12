@@ -34,6 +34,17 @@ pub enum MfaMethod {
 	email      // Email verification code
 }
 
+// --- Auth scheme ---
+
+// AuthScheme classifies the HTTP/protocol authentication mechanism.
+pub enum AuthScheme {
+	basic    // HTTP Basic Authentication (RFC 7617)
+	bearer   // Bearer token (RFC 6750)
+	digest   // HTTP Digest Authentication (RFC 7616)
+	oauth2   // OAuth 2.0 authorisation flow
+	saml     // SAML 2.0 assertion
+}
+
 // --- Data structures ---
 
 // TokenClaims represents JWT token claims.
@@ -59,6 +70,16 @@ pub mut:
 	ip_addr     string
 }
 
+// AuthToken holds an issued token and its associated metadata.
+pub struct AuthToken {
+pub:
+	token_value string    // The raw token string (JWT, opaque, etc.)
+	token_type  TokenType
+	subject     string    // Subject (user) the token was issued for
+	issued_at   i64       // Unix timestamp of issuance
+	expires_at  i64       // Unix timestamp of expiry
+}
+
 // AuthConfig holds authentication server parameters.
 pub struct AuthConfig {
 pub:
@@ -74,6 +95,7 @@ pub struct AuthClient {
 mut:
 	config   AuthConfig
 	sessions map[string]Session
+	tokens   map[string]AuthToken
 }
 
 // --- Client lifecycle ---
@@ -83,6 +105,7 @@ pub fn new_auth_client(config AuthConfig) &AuthClient {
 	return &AuthClient{
 		config: config
 		sessions: map[string]Session{}
+		tokens: map[string]AuthToken{}
 	}
 }
 
@@ -122,6 +145,65 @@ pub fn (c &AuthClient) validate_token(token string) !TokenClaims {
 	}
 }
 
+// issue_token creates and stores a new AuthToken for the given subject.
+pub fn (mut c AuthClient) issue_token(subject string, ttl_secs int) !AuthToken {
+	if subject.len == 0 {
+		return error("token subject must not be empty")
+	}
+	if ttl_secs <= 0 {
+		return error("token TTL must be positive")
+	}
+	now := time.now().unix()
+	token := AuthToken{
+		token_value: hash_password("${subject}${now}")
+		token_type:  .access
+		subject:     subject
+		issued_at:   now
+		expires_at:  now + i64(ttl_secs)
+	}
+	c.tokens[token.token_value] = token
+	println("[authserver] issued access token for ${subject} (ttl=${ttl_secs}s)")
+	return token
+}
+
+// revoke_token invalidates a previously issued token.
+pub fn (mut c AuthClient) revoke_token(token_value string) ! {
+	if token_value.len == 0 {
+		return error("token value must not be empty")
+	}
+	if token_value !in c.tokens {
+		return error("token not found")
+	}
+	c.tokens.delete(token_value)
+	println("[authserver] revoked token")
+}
+
+// authenticate_scheme validates credentials under the given auth scheme.
+// Returns an AuthToken on success.
+pub fn (mut c AuthClient) authenticate_scheme(scheme AuthScheme, credentials string) !AuthToken {
+	if credentials.len == 0 {
+		return error("credentials must not be empty for ${scheme} authentication")
+	}
+	now := time.now().unix()
+	token := AuthToken{
+		token_value: hash_password(credentials)
+		token_type:  .access
+		subject:     "anonymous"
+		issued_at:   now
+		expires_at:  now + i64(c.config.token_ttl / time.second)
+	}
+	println("[authserver] authenticated via ${scheme}")
+	return token
+}
+
+// --- Helpers ---
+
+// hash_password computes a hex-encoded SHA-256 digest of the input.
+// Used for opaque token generation; NOT a password storage KDF.
+pub fn hash_password(input string) string {
+	return sha256.hexhash(input)
+}
+
 // --- Tests ---
 
 fn test_empty_credentials_rejected() {
@@ -131,4 +213,36 @@ fn test_empty_credentials_rejected() {
 		return
 	}
 	assert false
+}
+
+fn test_issue_token_returns_hex_hash() {
+	mut client := new_auth_client(AuthConfig{})
+	token := client.issue_token("alice", 3600) or { panic(err) }
+	assert token.token_value.len == 64  // SHA-256 hex = 64 chars
+	assert token.subject == "alice"
+}
+
+fn test_revoke_unknown_token_rejected() {
+	mut client := new_auth_client(AuthConfig{})
+	client.revoke_token("nonexistent-token") or {
+		assert err.str().contains("not found")
+		return
+	}
+	assert false
+}
+
+fn test_authenticate_scheme_empty_credentials_rejected() {
+	mut client := new_auth_client(AuthConfig{})
+	client.authenticate_scheme(.bearer, "") or {
+		assert err.str().contains("must not be empty")
+		return
+	}
+	assert false
+}
+
+fn test_hash_password_deterministic() {
+	h1 := hash_password("secret123")
+	h2 := hash_password("secret123")
+	assert h1 == h2
+	assert h1.len == 64
 }

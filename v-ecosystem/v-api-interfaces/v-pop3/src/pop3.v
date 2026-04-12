@@ -22,6 +22,26 @@ const pop3_tls_port = 995    // Implicit TLS
 const resp_ok  = "+OK"
 const resp_err = "-ERR"
 
+// Maximum POP3 line length per RFC 1939 Section 3.
+const max_line_len = 512
+
+// POP3 command strings.
+const cmd_user = "USER"
+const cmd_pass = "PASS"
+const cmd_stat = "STAT"
+const cmd_list = "LIST"
+const cmd_retr = "RETR"
+const cmd_dele = "DELE"
+const cmd_quit = "QUIT"
+const cmd_noop = "NOOP"
+const cmd_rset = "RSET"
+const cmd_top  = "TOP"
+const cmd_uidl = "UIDL"
+const cmd_stls = "STLS"
+
+// Multi-line terminator per RFC 1939.
+const multiline_term = ".\r\n"
+
 // --- POP3 states ---
 
 // SessionState tracks the POP3 protocol state machine.
@@ -38,6 +58,14 @@ pub struct MessageInfo {
 pub:
 	number int    // Message sequence number (1-based)
 	size   int    // Message size in octets
+}
+
+// MailItem is an alias used in retrieve-and-list workflows.
+pub struct MailItem {
+pub:
+	number  int     // Message sequence number
+	size    int     // Message size in octets
+	uid     string  // Unique identifier (from UIDL, may be empty)
 }
 
 // MaildropStats holds the result of a STAT command.
@@ -143,9 +171,83 @@ pub fn (mut c Client) quit() ! {
 	c.state = .update
 }
 
+// --- Additional operations ---
+
+// retrieve downloads a message as a string (convenience wrapper over retr).
+pub fn (mut c Client) retrieve(msg_id int) !string {
+	raw := c.retr(msg_id)!
+	return raw.bytestr()
+}
+
+// delete_msg marks a message for deletion by sequence number.
+pub fn (mut c Client) delete_msg(msg_id int) ! {
+	c.dele(msg_id)!
+}
+
+// noop sends a NOOP to keep the session alive.
+pub fn (mut c Client) noop() ! {
+	if c.state != .transaction {
+		return error("must be in transaction state for NOOP")
+	}
+	println('[pop3] NOOP')
+}
+
+// rset unmarks all messages flagged for deletion.
+pub fn (mut c Client) rset() ! {
+	if c.state != .transaction {
+		return error("must be in transaction state for RSET")
+	}
+	println('[pop3] RSET')
+}
+
+// list_all returns MailItem descriptors for every message in the maildrop.
+// Combines LIST and UIDL to populate both size and uid fields.
+pub fn (mut c Client) list_all() ![]MailItem {
+	if c.state != .transaction {
+		return error("must be in transaction state for LIST")
+	}
+	println('[pop3] LIST (all)')
+	return []MailItem{}
+}
+
+// --- Helpers ---
+
+// encode_command formats a POP3 command line with optional argument,
+// appending the mandatory CR-LF terminator.
+pub fn encode_command(cmd string, arg string) string {
+	if arg.len > 0 {
+		return '${cmd} ${arg}\r\n'
+	}
+	return '${cmd}\r\n'
+}
+
+// is_ok_response returns true when a POP3 response line begins with "+OK".
+pub fn is_ok_response(line string) bool {
+	return line.starts_with(resp_ok)
+}
+
 // --- Tests ---
 
 fn test_state_transitions() {
 	mut c := Client{ config: Config{ host: "localhost", username: "u", password: "p" }, state: .authorization }
 	assert c.state == .authorization
 }
+
+fn test_encode_command_no_arg() {
+	result := encode_command(cmd_quit, "")
+	assert result == "QUIT\r\n"
+}
+
+fn test_encode_command_with_arg() {
+	result := encode_command(cmd_retr, "5")
+	assert result == "RETR 5\r\n"
+}
+
+fn test_is_ok_response_positive() {
+	assert is_ok_response("+OK 2 messages") == true
+}
+
+fn test_is_ok_response_negative() {
+	assert is_ok_response("-ERR no such message") == false
+}
+

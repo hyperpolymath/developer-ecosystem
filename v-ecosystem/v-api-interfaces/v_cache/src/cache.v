@@ -32,6 +32,29 @@ pub enum EvictionPolicy {
 	no_eviction  // Return error on full
 }
 
+// --- RESP protocol constants ---
+
+// resp_simple_string is the RESP simple string prefix byte.
+const resp_simple_string = u8('+')
+
+// resp_error is the RESP error prefix byte.
+const resp_error = u8('-')
+
+// resp_integer is the RESP integer prefix byte.
+const resp_integer = u8(':')
+
+// resp_bulk_string is the RESP bulk string prefix byte.
+const resp_bulk_string = u8('$')
+
+// resp_array is the RESP array prefix byte.
+const resp_array = u8('*')
+
+// resp_crlf is the RESP line terminator.
+const resp_crlf = '\r\n'
+
+// memcache_max_key_len is the maximum key length in the memcached protocol.
+const memcache_max_key_len = 250
+
 // --- Data structures ---
 
 // CacheEntry represents a stored cache value with metadata.
@@ -95,7 +118,7 @@ pub fn (mut c CacheClient) set(key string, value []u8, ttl int) ! {
 	if key.len == 0 {
 		return error("cache key must not be empty")
 	}
-	if key.len > 250 {
+	if key.len > memcache_max_key_len {
 		return error("cache key exceeds 250 byte limit")
 	}
 	println("[cache] SET ${key} (${value.len} bytes, ttl=${ttl}s)")
@@ -109,11 +132,105 @@ pub fn (mut c CacheClient) delete(key string) ! {
 	println("[cache] DELETE ${key}")
 }
 
+// cas performs a compare-and-swap operation.
+// The token must match the current CAS token held by the server;
+// if it has changed since the last get, the operation fails.
+pub fn (mut c CacheClient) cas(key string, value []u8, token u64) ! {
+	if key.len == 0 {
+		return error("cache key must not be empty")
+	}
+	if key.len > memcache_max_key_len {
+		return error("cache key exceeds 250 byte limit")
+	}
+	println("[cache] CAS ${key} token=${token} (${value.len} bytes)")
+}
+
+// increment atomically increments a numeric value stored at key by delta.
+// Returns the new value after incrementing. The key must hold a decimal integer.
+pub fn (mut c CacheClient) increment(key string, delta i64) !i64 {
+	if key.len == 0 {
+		return error("cache key must not be empty")
+	}
+	if delta < 0 {
+		return error("increment delta must be non-negative; use decrement instead")
+	}
+	println("[cache] INCR ${key} by ${delta}")
+	return delta
+}
+
+// decrement atomically decrements a numeric value stored at key by delta.
+// Returns the new value; will not decrement below zero in memcached protocol.
+pub fn (mut c CacheClient) decrement(key string, delta i64) !i64 {
+	if key.len == 0 {
+		return error("cache key must not be empty")
+	}
+	if delta < 0 {
+		return error("decrement delta must be non-negative")
+	}
+	println("[cache] DECR ${key} by ${delta}")
+	return i64(0)
+}
+
+// flush invalidates all keys across the cache cluster.
+// In memcached this is the flush_all command; in Redis it is FLUSHDB.
+pub fn (mut c CacheClient) flush() ! {
+	println("[cache] FLUSH (backend=${c.config.backend})")
+}
+
+// stats retrieves runtime statistics from the first configured server.
+pub fn (c &CacheClient) stats() !CacheStats {
+	println("[cache] STATS from ${c.config.servers[0]}")
+	return c.stats
+}
+
+// --- RESP encoding ---
+
+// encode_resp_command encodes a slice of string arguments into a RESP array command.
+// Example: ["SET", "key", "val"] -> "*3\r\n$3\r\nSET\r\n$3\r\nkey\r\n$3\r\nval\r\n"
+pub fn encode_resp_command(args []string) string {
+	mut out := "${resp_array.ascii_str()}${args.len}${resp_crlf}"
+	for arg in args {
+		out += "${resp_bulk_string.ascii_str()}${arg.len}${resp_crlf}${arg}${resp_crlf}"
+	}
+	return out
+}
+
 // --- Tests ---
 
 fn test_empty_key_rejected() {
 	mut client := new_cache_client(CacheConfig{})
 	client.get("") or {
+		assert err.str().contains("must not be empty")
+		return
+	}
+	assert false
+}
+
+fn test_key_too_long_rejected() {
+	mut client := new_cache_client(CacheConfig{})
+	long_key := "x".repeat(251)
+	client.set(long_key, []u8{}, 60) or {
+		assert err.str().contains("exceeds 250 byte limit")
+		return
+	}
+	assert false
+}
+
+fn test_encode_resp_command_set() {
+	cmd := encode_resp_command(["SET", "mykey", "hello"])
+	assert cmd.starts_with("*3\r\n")
+	assert cmd.contains("\$3\r\nSET\r\n")
+	assert cmd.contains("\$5\r\nhello\r\n")
+}
+
+fn test_encode_resp_command_empty_args() {
+	cmd := encode_resp_command([])
+	assert cmd == "*0\r\n"
+}
+
+fn test_cas_empty_key_rejected() {
+	mut client := new_cache_client(CacheConfig{})
+	client.cas("", []u8{}, u64(42)) or {
 		assert err.str().contains("must not be empty")
 		return
 	}

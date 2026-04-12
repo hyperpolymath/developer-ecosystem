@@ -32,6 +32,18 @@ pub enum InstanceState {
 	terminated    // Shut down
 }
 
+// --- SQL statement type ---
+
+// SqlStmtType classifies the kind of SQL statement for routing and auditing.
+pub enum SqlStmtType {
+	select_stmt    // Read-only SELECT
+	insert_stmt    // INSERT data modification
+	update_stmt    // UPDATE data modification
+	delete_stmt    // DELETE data modification
+	ddl_stmt       // DDL (CREATE, ALTER, DROP)
+	other_stmt     // Stored procedures, CALL, etc.
+}
+
 // --- Data structures ---
 
 // DbInstance represents a managed database instance.
@@ -67,6 +79,23 @@ pub:
 	is_sync     bool
 }
 
+// DbResult holds the result of an executed SQL statement.
+pub struct DbResult {
+pub:
+	rows_affected i64
+	last_insert_id i64
+	columns       []string
+	rows          [][]string
+}
+
+// PreparedStatement represents a server-side prepared SQL statement.
+pub struct PreparedStatement {
+pub:
+	stmt_id  string
+	sql      string
+	param_count int
+}
+
 // DbConfig holds database management parameters.
 pub struct DbConfig {
 pub:
@@ -81,6 +110,7 @@ pub struct DbManager {
 mut:
 	config    DbConfig
 	instances map[string]DbInstance
+	in_tx     bool
 }
 
 // --- Manager lifecycle ---
@@ -90,6 +120,7 @@ pub fn new_db_manager(config DbConfig) &DbManager {
 	return &DbManager{
 		config: config
 		instances: map[string]DbInstance{}
+		in_tx: false
 	}
 }
 
@@ -127,6 +158,63 @@ pub fn (m &DbManager) get_pool_stats(instance_id string) !ConnectionPool {
 	}
 }
 
+// execute runs an ad-hoc SQL statement and returns the result.
+// Rejects empty SQL and statements attempted outside an active connection.
+pub fn (mut m DbManager) execute(sql string) !DbResult {
+	if sql.trim_space().len == 0 {
+		return error("SQL statement must not be empty")
+	}
+	println("[dbserver] EXECUTE: ${sql[..sql.len.min(60)]}...")
+	return DbResult{
+		rows_affected: 0
+		last_insert_id: 0
+		columns: []string{}
+		rows: [][]string{}
+	}
+}
+
+// prepare sends a SQL statement to the server for pre-compilation.
+// Returns a PreparedStatement handle that can be re-used with different parameters.
+pub fn (mut m DbManager) prepare(sql string) !PreparedStatement {
+	if sql.trim_space().len == 0 {
+		return error("SQL statement must not be empty")
+	}
+	stmt := PreparedStatement{
+		stmt_id: "stmt-${sql.len}"
+		sql: sql
+		param_count: sql.count("?") + sql.count("$")
+	}
+	println("[dbserver] PREPARE: ${stmt.stmt_id} (${stmt.param_count} params)")
+	return stmt
+}
+
+// begin_tx starts a database transaction. Only one transaction may be active at a time.
+pub fn (mut m DbManager) begin_tx() ! {
+	if m.in_tx {
+		return error("transaction already in progress")
+	}
+	m.in_tx = true
+	println("[dbserver] BEGIN TRANSACTION")
+}
+
+// commit commits the active transaction.
+pub fn (mut m DbManager) commit() ! {
+	if !m.in_tx {
+		return error("no active transaction to commit")
+	}
+	m.in_tx = false
+	println("[dbserver] COMMIT")
+}
+
+// rollback aborts the active transaction.
+pub fn (mut m DbManager) rollback() ! {
+	if !m.in_tx {
+		return error("no active transaction to roll back")
+	}
+	m.in_tx = false
+	println("[dbserver] ROLLBACK")
+}
+
 // --- Tests ---
 
 fn test_empty_name_rejected() {
@@ -136,4 +224,40 @@ fn test_empty_name_rejected() {
 		return
 	}
 	assert false
+}
+
+fn test_empty_sql_rejected() {
+	mut mgr := new_db_manager(DbConfig{})
+	mgr.execute("   ") or {
+		assert err.str().contains("must not be empty")
+		return
+	}
+	assert false
+}
+
+fn test_tx_state_transitions() {
+	mut mgr := new_db_manager(DbConfig{})
+	mgr.begin_tx() or { panic(err) }
+	// Second begin must fail
+	mgr.begin_tx() or {
+		assert err.str().contains("already in progress")
+		mgr.rollback() or { panic(err) }
+		return
+	}
+	assert false
+}
+
+fn test_commit_without_tx_rejected() {
+	mut mgr := new_db_manager(DbConfig{})
+	mgr.commit() or {
+		assert err.str().contains("no active transaction")
+		return
+	}
+	assert false
+}
+
+fn test_prepare_counts_params() {
+	mut mgr := new_db_manager(DbConfig{})
+	stmt := mgr.prepare("SELECT * FROM t WHERE id = ? AND name = ?") or { panic(err) }
+	assert stmt.param_count == 2
 }

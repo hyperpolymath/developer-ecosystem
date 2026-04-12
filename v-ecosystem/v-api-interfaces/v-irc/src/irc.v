@@ -33,6 +33,24 @@ const rpl_motdstart  = 375
 const rpl_endofmotd  = 376
 const err_nicknameinuse = 433
 
+// IRC command name constants (RFC 2812 Section 3).
+const cmd_nick    = "NICK"
+const cmd_user    = "USER"
+const cmd_join    = "JOIN"
+const cmd_part    = "PART"
+const cmd_privmsg = "PRIVMSG"
+const cmd_notice  = "NOTICE"
+const cmd_ping    = "PING"
+const cmd_pong    = "PONG"
+const cmd_quit    = "QUIT"
+const cmd_kick    = "KICK"
+const cmd_mode    = "MODE"
+const cmd_topic   = "TOPIC"
+const cmd_whois   = "WHOIS"
+
+// CTCP delimiter byte.
+const ctcp_delim = u8(0x01)
+
 // --- Data structures ---
 
 // IrcMessage represents a parsed IRC protocol message.
@@ -126,6 +144,38 @@ pub fn (mut c Client) quit(message string) ! {
 	c.connected = false
 }
 
+// --- Additional operations ---
+
+// pong responds to a server PING with an appropriate PONG.
+pub fn (mut c Client) pong(server string) ! {
+	if !c.connected { return error("not connected") }
+	println('[irc] PONG :${server}')
+}
+
+// nick changes the client's nickname.
+pub fn (mut c Client) nick(new_nick string) ! {
+	if !c.connected { return error("not connected") }
+	if new_nick.len == 0 { return error("nickname must not be empty") }
+	println('[irc] NICK ${new_nick}')
+}
+
+// kick removes a user from a channel with an optional reason.
+pub fn (mut c Client) kick(channel string, user string, reason string) ! {
+	if !c.connected { return error("not connected") }
+	println('[irc] KICK ${channel} ${user} :${reason}')
+}
+
+// set_topic sets the topic for a channel.
+pub fn (mut c Client) set_topic(channel string, topic string) ! {
+	if !c.connected { return error("not connected") }
+	println('[irc] TOPIC ${channel} :${topic}')
+}
+
+// format_message encodes a PRIVMSG or NOTICE line ready to write to the wire.
+pub fn format_message(command string, target string, text string) string {
+	return '${command} ${target} :${text}\r\n'
+}
+
 // --- Message parsing ---
 
 // parse_message parses a raw IRC line into an IrcMessage.
@@ -158,3 +208,29 @@ fn test_parse_simple_message() {
 	assert msg.prefix == 'server'
 	assert msg.command == '001'
 }
+
+fn test_parse_ping() {
+	msg := parse_message('PING :irc.example.net') or { panic('parse failed') }
+	assert msg.prefix == ''
+	assert msg.command == 'PING'
+}
+
+fn test_parse_privmsg() {
+	msg := parse_message(':nick!user@host PRIVMSG #chan :hello world') or { panic('parse failed') }
+	assert msg.prefix == 'nick!user@host'
+	assert msg.command == 'PRIVMSG'
+}
+
+fn test_format_message() {
+	line := format_message(cmd_privmsg, "#general", "hi there")
+	assert line == "PRIVMSG #general :hi there\r\n"
+}
+
+fn test_parse_empty_fails() {
+	parse_message('') or {
+		assert err.str().contains("empty")
+		return
+	}
+	assert false
+}
+
