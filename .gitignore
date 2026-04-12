@@ -85,3 +85,5 @@ ai-cli-crash-capture/
 /opam-repository/
 /package-publishers/
 /lib/
+reports/
+zig-api/build/
