@@ -1,0 +1,60 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+= v-ecosystem — V-lang Deprecated (2026-04-12)
+:toc:
+
+== Status
+
+All V-lang connector stubs under `v-ecosystem/` (107 connectors across
+`v-api-interfaces/` and `v_api_interfaces/`) are *deprecated* as of
+2026-04-12 following the estate-wide V-lang ban (2026-04-10).
+
+The stubs were interface skeletons only — no logic resided in them.
+They defined typed entry points for REST, gRPC, and GraphQL protocols
+that V code would call into at runtime.
+
+== Migration Target: Zig FFI
+
+The canonical replacement for all connector interfaces is the Zig connector
+pool at `developer-ecosystem/zig-api/`:
+
+[source,toml]
+----
+# developer-ecosystem/zig-api/zig-api.ipkg  (Idris2 ABI definitions)
+modules = ZigApi.ABI.Types, ZigApi.ABI.Http, ZigApi.ABI.Process,
+          ZigApi.ABI.Connector, ZigApi.ABI.Foreign,
+          ZigApi.ABI.Layout, ZigApi.ABI.Proofs
+----
+
+[source,bash]
+----
+# Build the Zig connector pool
+cd developer-ecosystem/zig-api/ffi/zig
+zig build
+
+# Run integration tests
+zig build test
+----
+
+=== Protocol Mapping
+
+[cols="1,1,1"]
+|===
+| V connector stub | Protocol | Zig ABI module
+
+| `v_grpc/`            | gRPC    | `ZigApi.ABI.Connector`
+| `v_httpd/`, `v_apiserver/` | HTTP/REST | `ZigApi.ABI.Http`
+| `v_dns/`, `v_doh/`, `v_dot/`, `v_doq/` | DNS | `ZigApi.ABI.Connector`
+| `v_bgp/`, `v_bfd/`, `v_ospf/` | Routing | `ZigApi.ABI.Connector`
+| `v_ids/`, `v_firewall/`, `v_honeypot/` | Security | `ZigApi.ABI.Connector`
+| `v_metrics/`, `v_siem/`, `v_logcollector/` | Observability | `ZigApi.ABI.Connector`
+| All others (82 connectors) | Various | `ZigApi.ABI.Connector` (generic)
+|===
+
+== Next Steps
+
+. Confirm `zig-api` builds and passes all integration tests.
+. Identify any consumer code that imports from `v-api-interfaces/` and
+  redirect imports to the Zig ABI or Rust crates as appropriate.
+. Once no consumers remain, delete all `v-api-interfaces/` and
+  `v_api_interfaces/` directories and their `v.mod` files.
