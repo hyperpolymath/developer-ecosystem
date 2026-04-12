@@ -49,6 +49,36 @@ const flag_freq_traceable    = u16(0x8000)
 // PTP transport domain default.
 const default_domain = u8(0)
 
+// ptp_domain_default is the IANA-standard default PTP domain (IEEE 1588 §7.1).
+pub const ptp_domain_default = u8(0)
+
+// --- Message type enumeration ---
+
+// PtpMessageType is a typed enumeration of PTP message type codes.
+pub enum PtpMessageType {
+	sync        // 0x0 — periodic reference time from master clock
+	delay_req   // 0x1 — sent by slave to start path delay measurement
+	follow_up   // 0x8 — carries precise t1 for two-step clocks
+	delay_resp  // 0x9 — master's response to Delay_Req, carries t4
+	announce    // 0xB — master identity advertisement for BMCA
+}
+
+// is_event returns true for message types transported on the event port (319).
+pub fn (m PtpMessageType) is_event() bool {
+	return m == .sync || m == .delay_req
+}
+
+// code returns the 4-bit wire value for this message type.
+pub fn (m PtpMessageType) code() u8 {
+	return match m {
+		.sync       { u8(0x0) }
+		.delay_req  { u8(0x1) }
+		.follow_up  { u8(0x8) }
+		.delay_resp { u8(0x9) }
+		.announce   { u8(0xB) }
+	}
+}
+
 // --- Clock class enumeration ---
 
 // ClockClass indicates the quality of the clock source.
@@ -68,6 +98,21 @@ pub:
 	seconds_msb u16    // Upper 16 bits of seconds
 	seconds     u32    // Lower 32 bits of seconds
 	nanoseconds u32    // Nanoseconds within the second
+}
+
+// PtpTimestamp is the canonical 10-byte PTP timestamp (IEEE 1588 §5.3.3).
+// seconds field is 48 bits, split as seconds_msb (u16) + seconds (u32).
+pub struct PtpTimestamp {
+pub:
+	seconds_msb u16  // Upper 16 bits of the 48-bit seconds field
+	seconds     u32  // Lower 32 bits of the seconds field
+	nanoseconds u32  // Sub-second [0, 999_999_999]
+}
+
+// to_nanos converts PtpTimestamp to a single i64 nanosecond value.
+pub fn (t PtpTimestamp) to_nanos() i64 {
+	secs := i64(t.seconds_msb) << 32 | i64(t.seconds)
+	return secs * 1_000_000_000 + i64(t.nanoseconds)
 }
 
 // ClockIdentity is an 8-byte unique clock identifier.
@@ -145,6 +190,25 @@ pub fn (mut c Client) compute_offset(t1 Timestamp, t2 Timestamp, t3 Timestamp, t
 	c.delay_ns = ((t2_ns - t1_ns) + (t4_ns - t3_ns)) / 2
 	println('[ptp] offset=${c.offset_ns}ns, delay=${c.delay_ns}ns')
 	return c.offset_ns
+}
+
+// --- Path delay / offset computation ---
+
+// compute_mean_path_delay computes the mean path delay from the four IEEE 1588
+// exchange timestamps (all in nanoseconds since epoch):
+//   t1 = master Sync egress (from Follow_Up)
+//   t2 = slave  Sync ingress (measured locally)
+//   t3 = slave  Delay_Req egress (measured locally)
+//   t4 = master Delay_Req ingress (from Delay_Resp)
+// Formula: ((t2 - t1) + (t4 - t3)) / 2
+pub fn compute_mean_path_delay(t1 i64, t2 i64, t3 i64, t4 i64) i64 {
+	return ((t2 - t1) + (t4 - t3)) / 2
+}
+
+// compute_clock_offset computes the slave clock offset from master.
+// Formula: (t2 - t1) - mean_path_delay
+pub fn compute_clock_offset(t1 i64, t2 i64, t3 i64, t4 i64) i64 {
+	return (t2 - t1) - compute_mean_path_delay(t1, t2, t3, t4)
 }
 
 // --- Encoding ---
@@ -272,5 +336,27 @@ fn test_parse_header_too_short() {
 		return
 	}
 	assert false
+}
+
+fn test_ptp_message_type_is_event() {
+	assert PtpMessageType.sync.is_event()       == true
+	assert PtpMessageType.delay_req.is_event()  == true
+	assert PtpMessageType.follow_up.is_event()  == false
+	assert PtpMessageType.delay_resp.is_event() == false
+	assert PtpMessageType.announce.is_event()   == false
+}
+
+fn test_compute_mean_path_delay_symmetric() {
+	// t2-t1 = 100ns, t4-t3 = 100ns → delay = 100ns, offset = 0
+	delay  := compute_mean_path_delay(i64(1000), i64(1100), i64(1150), i64(1250))
+	offset := compute_clock_offset(i64(1000), i64(1100), i64(1150), i64(1250))
+	assert delay  == i64(100)
+	assert offset == i64(0)
+}
+
+fn test_ptp_timestamp_to_nanos() {
+	ts := PtpTimestamp{ seconds_msb: u16(0), seconds: u32(1), nanoseconds: u32(500_000_000) }
+	nanos := ts.to_nanos()
+	assert nanos == i64(1_500_000_000)
 }
 

@@ -32,9 +32,32 @@ pub enum DecoyType {
 	canary_http    // HTTP canary token
 	canary_email   // Email canary token
 	fake_cred      // Fake credential store
+	fake_credential // Alias for fake_cred with explicit TTL semantics
 	tarpit         // TCP tarpit (slow-down attacker)
 	canary_token   // Generic canary token
+	honeydoc       // Document with embedded callback beacon
+	phantom_service // Listening socket mimicking a real service
 	decoy_file     // Decoy file with embedded beacon
+}
+
+// default_ttl returns the recommended lifetime (seconds) for this decoy type.
+// A value of 0 means the asset does not auto-expire and must be removed manually.
+pub fn (d DecoyType) default_ttl() i64 {
+	return match d {
+		.fake_credential  { i64(86400)   } // 24 hours
+		.fake_cred        { i64(86400)   } // 24 hours
+		.phantom_service  { i64(3600)    } // 1 hour
+		.honeydoc         { i64(604800)  } // 7 days
+		.canary_token     { i64(2592000) } // 30 days
+		.canary_dns       { i64(2592000) } // 30 days
+		.canary_http      { i64(2592000) } // 30 days
+		.canary_email     { i64(2592000) } // 30 days
+		.honeypot         { i64(0)       } // indefinite
+		.honeytoken       { i64(2592000) } // 30 days
+		.breadcrumb       { i64(86400)   } // 24 hours
+		.tarpit           { i64(0)       } // indefinite
+		.decoy_file       { i64(604800)  } // 7 days
+	}
 }
 
 // --- Alert severity ---
@@ -47,6 +70,31 @@ pub enum AlertSeverity {
 }
 
 // --- Data structures ---
+
+// Canarytoken is a trackable token planted in a decoy artefact.
+// When an attacker interacts with the artefact the token fires, recording
+// the source IP and trigger timestamp.
+pub struct Canarytoken {
+pub:
+	id              string     // Unique token identifier (CT-<label>-<hex>)
+	decoy_type      DecoyType  // Category of artefact this token is embedded in
+	planted_at_unix i64        // Unix timestamp when the token was deployed
+	ttl_secs        i64        // Lifetime in seconds (0 = never auto-expires)
+pub mut:
+	triggered       bool       // True once the token has fired
+	trigger_source  string     // Source IP or identifier of the activating party
+	trigger_time    i64        // Unix timestamp of the first trigger event
+}
+
+// MovingTargetPolicy defines the rotation schedule and capacity limits for
+// the deception engine's active decoy pool.
+pub struct MovingTargetPolicy {
+pub:
+	rotation_interval_secs int           // Seconds between rotation sweeps
+	max_decoys             int = 50      // Hard cap on active canarytokens
+pub mut:
+	active_decoys          []Canarytoken // Currently active canarytokens
+}
 
 // DecoyConfig specifies deployment parameters for a decoy asset.
 pub struct DecoyConfig {
@@ -86,12 +134,14 @@ pub:
 	auto_deploy    bool = false
 }
 
-// DeceptionEngine manages deception assets.
+// DeceptionEngine manages deception assets, canarytokens, and alerts.
 pub struct DeceptionEngine {
 mut:
 	config  DeceptionConfig
 	decoys  map[string]Decoy
+	tokens  map[string]Canarytoken
 	alerts  []InteractionAlert
+	policy  MovingTargetPolicy
 }
 
 // --- Engine lifecycle ---
@@ -99,10 +149,92 @@ mut:
 // new_deception_engine creates a new deception engine.
 pub fn new_deception_engine(config DeceptionConfig) &DeceptionEngine {
 	return &DeceptionEngine{
-		config: config
-		decoys: map[string]Decoy{}
-		alerts: []InteractionAlert{}
+		config:  config
+		decoys:  map[string]Decoy{}
+		tokens:  map[string]Canarytoken{}
+		alerts:  []InteractionAlert{}
+		policy:  MovingTargetPolicy{
+			rotation_interval_secs: 3600
+			max_decoys:             50
+			active_decoys:          []Canarytoken{}
+		}
 	}
+}
+
+// deploy_canarytoken creates and registers a Canarytoken for the given type and label.
+// Returns an error if the engine is at capacity per MovingTargetPolicy.max_decoys.
+pub fn (mut e DeceptionEngine) deploy_canarytoken(kind DecoyType, label string) !Canarytoken {
+	if label.len < canary_min_label_len {
+		return error("canarytoken label must be at least ${canary_min_label_len} character(s)")
+	}
+	if e.policy.active_decoys.len >= e.policy.max_decoys {
+		return error("decoy capacity limit reached: ${e.policy.max_decoys} active decoys")
+	}
+	id := generate_canary_token(label)
+	ttl := kind.default_ttl()
+	tok := Canarytoken{
+		id:              id
+		decoy_type:      kind
+		planted_at_unix: time.now().unix()
+		ttl_secs:        ttl
+		triggered:       false
+		trigger_source:  ""
+		trigger_time:    0
+	}
+	e.tokens[id] = tok
+	e.policy.active_decoys << tok
+	println("[deception] canarytoken deployed id=${id} ttl=${ttl}s")
+	return tok
+}
+
+// trigger_token marks a canarytoken as triggered and records the source.
+// Returns an error if the token ID is unknown.
+pub fn (mut e DeceptionEngine) trigger_token(token_id string, source_ip string) ! {
+	if token_id !in e.tokens {
+		return error("canarytoken '${token_id}' not found")
+	}
+	mut tok := e.tokens[token_id]
+	tok.triggered = true
+	tok.trigger_source = source_ip
+	tok.trigger_time = time.now().unix()
+	e.tokens[token_id] = tok
+	for i, t in e.policy.active_decoys {
+		if t.id == token_id {
+			e.policy.active_decoys[i] = tok
+			break
+		}
+	}
+	e.alerts << InteractionAlert{
+		decoy_id:  token_id
+		source_ip: source_ip
+		timestamp: tok.trigger_time
+		severity:  .critical
+		details:   "canarytoken triggered"
+	}
+	println("[deception] TRIGGER token=${token_id} source=${source_ip}")
+}
+
+// rotate_decoys removes canarytokens whose TTL has elapsed.
+// Tokens with ttl_secs == 0 are never removed. Returns count of removed tokens.
+pub fn (mut e DeceptionEngine) rotate_decoys() int {
+	now := time.now().unix()
+	mut removed := 0
+	mut remaining := []Canarytoken{}
+	for tok in e.policy.active_decoys {
+		if tok.ttl_secs > 0 && tok.planted_at_unix + tok.ttl_secs < now {
+			e.tokens.delete(tok.id)
+			removed++
+		} else {
+			remaining << tok
+		}
+	}
+	e.policy.active_decoys = remaining
+	return removed
+}
+
+// active_count returns the number of currently active canarytokens.
+pub fn (e &DeceptionEngine) active_count() int {
+	return e.policy.active_decoys.len
 }
 
 // deploy_decoy creates and activates a deception asset.
@@ -247,5 +379,61 @@ fn test_check_triggered_unknown_decoy_errors() {
 		return
 	}
 	assert false
+}
+
+fn test_trigger_records_source() {
+	mut eng := new_deception_engine(DeceptionConfig{})
+	tok := eng.deploy_canarytoken(.canary_token, "admin") or { panic(err) }
+	assert !tok.triggered
+	eng.trigger_token(tok.id, "10.0.0.42") or { panic(err) }
+	updated := eng.tokens[tok.id]
+	assert updated.triggered
+	assert updated.trigger_source == "10.0.0.42"
+}
+
+fn test_decoy_count_enforced() {
+	mut eng := new_deception_engine(DeceptionConfig{})
+	eng.policy.max_decoys = 2
+	eng.deploy_canarytoken(.fake_cred, "key-1") or { panic(err) }
+	eng.deploy_canarytoken(.honeydoc, "doc-1") or { panic(err) }
+	eng.deploy_canarytoken(.canary_token, "extra") or {
+		assert err.str().contains("capacity limit")
+		return
+	}
+	assert false, "expected capacity limit error"
+}
+
+fn test_expired_removal() {
+	mut eng := new_deception_engine(DeceptionConfig{})
+	past := time.now().unix() - 10
+	expired_tok := Canarytoken{
+		id:              "CT-old-AABBCC"
+		decoy_type:      .fake_cred
+		planted_at_unix: past
+		ttl_secs:        i64(1)
+		triggered:       false
+		trigger_source:  ""
+		trigger_time:    0
+	}
+	eng.tokens[expired_tok.id] = expired_tok
+	eng.policy.active_decoys << expired_tok
+	fresh_tok := Canarytoken{
+		id:              "CT-fresh-DDEEFF"
+		decoy_type:      .honeydoc
+		planted_at_unix: time.now().unix()
+		ttl_secs:        i64(86400)
+		triggered:       false
+		trigger_source:  ""
+		trigger_time:    0
+	}
+	eng.tokens[fresh_tok.id] = fresh_tok
+	eng.policy.active_decoys << fresh_tok
+	removed := eng.rotate_decoys()
+	assert removed == 1
+	assert eng.active_count() == 1
+}
+
+fn test_fake_credential_default_ttl() {
+	assert DecoyType.fake_cred.default_ttl() == i64(86400)
 }
 
