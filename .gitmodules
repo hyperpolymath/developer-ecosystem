@@ -64,3 +64,6 @@
 [submodule "rescript-ecosystem/rescript-string-power"]
 	path = rescript-ecosystem/rescript-string-power
 	url = git@github.com:hyperpolymath/rescript-string-power.git
+[submodule "rescript-ecosystem/idaptik-rescript13-staging"]
+	path = rescript-ecosystem/idaptik-rescript13-staging
+	url = git@github.com:hyperpolymath/idaptik-rescript13-staging.git
