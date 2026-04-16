@@ -286,7 +286,7 @@ fn output_text(result: &ValidationResult) {
 }
 
 fn output_json(result: &ValidationResult) {
-    println!("{}", serde_json::to_string_pretty(result).unwrap());
+    println!("{}", serde_json::to_string_pretty(result).expect("TODO: handle error"));
 }
 
 fn output_sexp(result: &ValidationResult) {
@@ -345,7 +345,7 @@ fn list_resources(detailed: bool, format: OutputFormat) {
             }
         }
         OutputFormat::Json => {
-            println!("{}", serde_json::to_string_pretty(&resources).unwrap());
+            println!("{}", serde_json::to_string_pretty(&resources).expect("TODO: handle error"));
         }
         OutputFormat::Sexp => {
             println!("(well-known-resources");

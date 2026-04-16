@@ -171,54 +171,54 @@ mod tests {
 
     #[test]
     fn test_null() {
-        assert_eq!(canonicalize("null").unwrap(), "null");
+        assert_eq!(canonicalize("null").expect("TODO: handle error"), "null");
     }
 
     #[test]
     fn test_bool_true() {
-        assert_eq!(canonicalize("true").unwrap(), "true");
+        assert_eq!(canonicalize("true").expect("TODO: handle error"), "true");
     }
 
     #[test]
     fn test_bool_false() {
-        assert_eq!(canonicalize("false").unwrap(), "false");
+        assert_eq!(canonicalize("false").expect("TODO: handle error"), "false");
     }
 
     #[test]
     fn test_integer() {
-        assert_eq!(canonicalize("42").unwrap(), "42");
+        assert_eq!(canonicalize("42").expect("TODO: handle error"), "42");
     }
 
     #[test]
     fn test_string_basic() {
-        assert_eq!(canonicalize(r#""hello""#).unwrap(), r#""hello""#);
+        assert_eq!(canonicalize(r#""hello""#).expect("TODO: handle error"), r#""hello""#);
     }
 
     #[test]
     fn test_empty_object() {
-        assert_eq!(canonicalize("{}").unwrap(), "{}");
+        assert_eq!(canonicalize("{}").expect("TODO: handle error"), "{}");
     }
 
     #[test]
     fn test_empty_array() {
-        assert_eq!(canonicalize("[]").unwrap(), "[]");
+        assert_eq!(canonicalize("[]").expect("TODO: handle error"), "[]");
     }
 
     #[test]
     fn test_object_keys_sorted() {
         // Keys must be lexicographically sorted in canonical output
         let input = r#"{"z":1,"a":2,"m":3}"#;
-        assert_eq!(canonicalize(input).unwrap(), r#"{"a":2,"m":3,"z":1}"#);
+        assert_eq!(canonicalize(input).expect("TODO: handle error"), r#"{"a":2,"m":3,"z":1}"#);
     }
 
     #[test]
     fn test_string_escape_newline() {
-        assert_eq!(canonicalize("\"a\\nb\"").unwrap(), "\"a\\nb\"");
+        assert_eq!(canonicalize("\"a\\nb\"").expect("TODO: handle error"), "\"a\\nb\"");
     }
 
     #[test]
     fn test_string_escape_tab() {
-        assert_eq!(canonicalize("\"a\\tb\"").unwrap(), "\"a\\tb\"");
+        assert_eq!(canonicalize("\"a\\tb\"").expect("TODO: handle error"), "\"a\\tb\"");
     }
 
     // ===== Smoke tests =====
@@ -226,7 +226,7 @@ mod tests {
     #[test]
     fn smoke_nested_structure() {
         let input = r#"{"b":{"d":4,"c":3},"a":[1,2,3]}"#;
-        let out = canonicalize(input).unwrap();
+        let out = canonicalize(input).expect("TODO: handle error");
         // 'a' before 'b', nested object 'c' before 'd'
         assert_eq!(out, r#"{"a":[1,2,3],"b":{"c":3,"d":4}}"#);
     }
@@ -247,8 +247,8 @@ mod tests {
     fn e2e_canonicalize_twice_is_idempotent() {
         // Canonical form of canonical form is the same canonical form
         let input = r#"{"z":"last","a":"first","m":[3,1,2]}"#;
-        let once = canonicalize(input).unwrap();
-        let twice = canonicalize(&once).unwrap();
+        let once = canonicalize(input).expect("TODO: handle error");
+        let twice = canonicalize(&once).expect("TODO: handle error");
         assert_eq!(once, twice);
     }
 
@@ -259,7 +259,7 @@ mod tests {
   "a": 1
 }"#;
         let compact = r#"{"a":1,"b":2}"#;
-        assert_eq!(canonicalize(pretty).unwrap(), compact);
+        assert_eq!(canonicalize(pretty).expect("TODO: handle error"), compact);
     }
 
     // ===== Contract tests =====
@@ -267,7 +267,7 @@ mod tests {
     #[test]
     fn contract_output_has_no_whitespace() {
         let input = r#"{"x": [1, 2, 3], "y": "hello"}"#;
-        let out = canonicalize(input).unwrap();
+        let out = canonicalize(input).expect("TODO: handle error");
         assert!(!out.contains(' '));
         assert!(!out.contains('\n'));
         assert!(!out.contains('\t'));
@@ -275,26 +275,26 @@ mod tests {
 
     #[test]
     fn contract_negative_integer_preserved() {
-        assert_eq!(canonicalize("-99").unwrap(), "-99");
+        assert_eq!(canonicalize("-99").expect("TODO: handle error"), "-99");
     }
 
     #[test]
     fn contract_zero_preserved() {
-        assert_eq!(canonicalize("0").unwrap(), "0");
+        assert_eq!(canonicalize("0").expect("TODO: handle error"), "0");
     }
 
     // ===== Aspect tests (security / correctness) =====
 
     #[test]
     fn aspect_empty_string_value() {
-        assert_eq!(canonicalize(r#""""#).unwrap(), r#""""#);
+        assert_eq!(canonicalize(r#""""#).expect("TODO: handle error"), r#""""#);
     }
 
     #[test]
     fn aspect_unicode_control_chars_escaped() {
         // \u0001 (SOH) must be escaped in canonical output
         let input = "\"\\u0001\"";
-        let out = canonicalize(input).unwrap();
+        let out = canonicalize(input).expect("TODO: handle error");
         assert!(out.contains("\\u0001"));
     }
 

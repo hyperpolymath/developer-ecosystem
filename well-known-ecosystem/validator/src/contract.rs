@@ -172,7 +172,7 @@ mod tests {
         result.set_metadata("expires", "2025-12-31T23:59:59Z");
         assert!(result.metadata.is_some());
         assert_eq!(
-            result.metadata.as_ref().unwrap().get("expires"),
+            result.metadata.as_ref().expect("TODO: handle error").get("expires"),
             Some(&"2025-12-31T23:59:59Z".to_string())
         );
     }

@@ -378,19 +378,19 @@ mod tests {
     #[test]
     fn test_parse_resource_type() {
         assert_eq!(
-            parse_resource_type("security-txt").unwrap(),
+            parse_resource_type("security-txt").expect("TODO: handle error"),
             ResourceType::SecurityTxt
         );
         assert_eq!(
-            parse_resource_type("security.txt").unwrap(),
+            parse_resource_type("security.txt").expect("TODO: handle error"),
             ResourceType::SecurityTxt
         );
         assert_eq!(
-            parse_resource_type("openid-configuration").unwrap(),
+            parse_resource_type("openid-configuration").expect("TODO: handle error"),
             ResourceType::OpenidConfiguration
         );
         assert_eq!(
-            parse_resource_type("oidc").unwrap(),
+            parse_resource_type("oidc").expect("TODO: handle error"),
             ResourceType::OpenidConfiguration
         );
     }
@@ -398,11 +398,11 @@ mod tests {
     #[test]
     fn test_detect_resource_type() {
         assert_eq!(
-            detect_resource_type(Path::new("security.txt")).unwrap(),
+            detect_resource_type(Path::new("security.txt")).expect("TODO: handle error"),
             ResourceType::SecurityTxt
         );
         assert_eq!(
-            detect_resource_type(Path::new("assetlinks.json")).unwrap(),
+            detect_resource_type(Path::new("assetlinks.json")).expect("TODO: handle error"),
             ResourceType::Assetlinks
         );
     }

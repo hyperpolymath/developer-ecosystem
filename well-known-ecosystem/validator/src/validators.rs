@@ -110,7 +110,7 @@ fn check_for_secrets(text: &str, result: &mut ValidationResult) {
 
 /// Check that all URLs use HTTPS
 fn check_https_only(text: &str, result: &mut ValidationResult) {
-    let http_pattern = Regex::new(r"http://(?!localhost|127\.0\.0\.1|\[::1\])").unwrap();
+    let http_pattern = Regex::new(r"http://(?!localhost|127\.0\.0\.1|\[::1\])").expect("TODO: handle error");
 
     if let Some(m) = http_pattern.find(text) {
         result.add_error(format!(
@@ -134,7 +134,7 @@ fn validate_security_txt(content: &[u8], result: &mut ValidationResult) {
     }
 
     // Check Contact field (required)
-    let contact_re = Regex::new(r"(?m)^Contact:\s*(.+)$").unwrap();
+    let contact_re = Regex::new(r"(?m)^Contact:\s*(.+)$").expect("TODO: handle error");
     let contacts: Vec<_> = contact_re.captures_iter(text).collect();
 
     if contacts.is_empty() {
@@ -154,7 +154,7 @@ fn validate_security_txt(content: &[u8], result: &mut ValidationResult) {
     }
 
     // Check Expires field (required)
-    let expires_re = Regex::new(r"(?m)^Expires:\s*(.+)$").unwrap();
+    let expires_re = Regex::new(r"(?m)^Expires:\s*(.+)$").expect("TODO: handle error");
 
     if let Some(cap) = expires_re.captures(text) {
         let expires_str = cap.get(1).map_or("", |m| m.as_str().trim());
@@ -245,7 +245,7 @@ fn validate_openid_configuration(content: &[u8], result: &mut ValidationResult) 
         return;
     }
 
-    let obj = json.as_object().unwrap();
+    let obj = json.as_object().expect("TODO: handle error");
 
     // Required fields
     let required = [
@@ -326,7 +326,7 @@ fn validate_webfinger(content: &[u8], result: &mut ValidationResult) {
         return;
     }
 
-    let obj = json.as_object().unwrap();
+    let obj = json.as_object().expect("TODO: handle error");
 
     // Required: subject
     if !obj.contains_key("subject") {
@@ -373,7 +373,7 @@ fn validate_assetlinks(content: &[u8], result: &mut ValidationResult) {
         return;
     }
 
-    let arr = json.as_array().unwrap();
+    let arr = json.as_array().expect("TODO: handle error");
 
     for (i, entry) in arr.iter().enumerate() {
         if !entry.is_object() {
@@ -381,7 +381,7 @@ fn validate_assetlinks(content: &[u8], result: &mut ValidationResult) {
             continue;
         }
 
-        let obj = entry.as_object().unwrap();
+        let obj = entry.as_object().expect("TODO: handle error");
 
         // Check relation
         if !obj.contains_key("relation") {
@@ -436,7 +436,7 @@ fn validate_aasa(content: &[u8], result: &mut ValidationResult) {
         return;
     }
 
-    let obj = json.as_object().unwrap();
+    let obj = json.as_object().expect("TODO: handle error");
 
     // Must have at least one of: applinks, webcredentials, appclips
     let has_applinks = obj.contains_key("applinks");
@@ -485,7 +485,7 @@ fn validate_nodeinfo(content: &[u8], result: &mut ValidationResult) {
         return;
     }
 
-    let obj = json.as_object().unwrap();
+    let obj = json.as_object().expect("TODO: handle error");
 
     // Required fields
     let required = ["version", "software", "protocols", "usage", "openRegistrations"];
@@ -550,14 +550,14 @@ fn validate_matrix_server(content: &[u8], result: &mut ValidationResult) {
         return;
     }
 
-    let obj = json.as_object().unwrap();
+    let obj = json.as_object().expect("TODO: handle error");
 
     // Required: m.server
     if !obj.contains_key("m.server") {
         result.add_error("Missing required field: m.server");
     } else if let Some(server) = obj.get("m.server").and_then(|v| v.as_str()) {
         // Validate format: hostname:port
-        let server_re = Regex::new(r"^[a-zA-Z0-9.-]+:[0-9]+$").unwrap();
+        let server_re = Regex::new(r"^[a-zA-Z0-9.-]+:[0-9]+$").expect("TODO: handle error");
         if !server_re.is_match(server) {
             result.add_error(format!(
                 "m.server must be hostname:port format - found: {}",
@@ -591,14 +591,14 @@ mod tests {
     fn test_validate_security_txt_valid() {
         let content = b"Contact: mailto:security@example.com\n\
                         Expires: 2026-12-31T23:59:59Z\n";
-        let result = validate(content, ResourceType::SecurityTxt).unwrap();
+        let result = validate(content, ResourceType::SecurityTxt).expect("TODO: handle error");
         assert!(result.valid);
     }
 
     #[test]
     fn test_validate_security_txt_missing_contact() {
         let content = b"Expires: 2026-12-31T23:59:59Z\n";
-        let result = validate(content, ResourceType::SecurityTxt).unwrap();
+        let result = validate(content, ResourceType::SecurityTxt).expect("TODO: handle error");
         assert!(!result.valid);
         assert!(result.errors.iter().any(|e| e.contains("Contact")));
     }
@@ -606,7 +606,7 @@ mod tests {
     #[test]
     fn test_validate_security_txt_missing_expires() {
         let content = b"Contact: mailto:security@example.com\n";
-        let result = validate(content, ResourceType::SecurityTxt).unwrap();
+        let result = validate(content, ResourceType::SecurityTxt).expect("TODO: handle error");
         assert!(!result.valid);
         assert!(result.errors.iter().any(|e| e.contains("Expires")));
     }
@@ -615,7 +615,7 @@ mod tests {
     fn test_validate_security_txt_expired() {
         let content = b"Contact: mailto:security@example.com\n\
                         Expires: 2020-01-01T00:00:00Z\n";
-        let result = validate(content, ResourceType::SecurityTxt).unwrap();
+        let result = validate(content, ResourceType::SecurityTxt).expect("TODO: handle error");
         assert!(!result.valid);
         assert!(result.errors.iter().any(|e| e.contains("expired")));
     }
@@ -631,7 +631,7 @@ mod tests {
             "subject_types_supported": ["public"],
             "id_token_signing_alg_values_supported": ["RS256"]
         }"#;
-        let result = validate(content, ResourceType::OpenidConfiguration).unwrap();
+        let result = validate(content, ResourceType::OpenidConfiguration).expect("TODO: handle error");
         assert!(result.valid);
     }
 
@@ -645,7 +645,7 @@ mod tests {
                 "sha256_cert_fingerprints": ["00:11:22:33"]
             }
         }]"#;
-        let result = validate(content, ResourceType::Assetlinks).unwrap();
+        let result = validate(content, ResourceType::Assetlinks).expect("TODO: handle error");
         assert!(result.valid);
     }
 
@@ -653,7 +653,7 @@ mod tests {
     fn test_validate_http_url_error() {
         let content = b"Contact: http://example.com/security\n\
                         Expires: 2026-12-31T23:59:59Z\n";
-        let result = validate(content, ResourceType::SecurityTxt).unwrap();
+        let result = validate(content, ResourceType::SecurityTxt).expect("TODO: handle error");
         assert!(!result.valid);
         assert!(result.errors.iter().any(|e| e.contains("HTTP") || e.contains("HTTPS")));
     }

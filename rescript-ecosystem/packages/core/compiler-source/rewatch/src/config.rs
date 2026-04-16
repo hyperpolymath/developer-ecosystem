@@ -875,10 +875,10 @@ pub mod tests {
         }
         "#;
 
-        let config = serde_json::from_str::<Config>(json).unwrap();
+        let config = serde_json::from_str::<Config>(json).expect("TODO: handle error");
         let specs = config.get_package_specs();
         assert_eq!(specs.len(), 1);
-        let spec = specs.first().unwrap();
+        let spec = specs.first().expect("TODO: handle error");
         assert_eq!(spec.module, PackageModule::EsModule);
         assert_eq!(config.get_suffix(spec), ".mjs");
     }
@@ -930,7 +930,7 @@ pub mod tests {
         }
         "#;
 
-        let config = Config::new_from_json_string(json).unwrap();
+        let config = Config::new_from_json_string(json).expect("TODO: handle error");
         assert_eq!(config.get_package_specs().len(), 2);
     }
 
@@ -957,7 +957,7 @@ pub mod tests {
         }
         "#;
 
-        let config = serde_json::from_str::<Config>(json).unwrap();
+        let config = serde_json::from_str::<Config>(json).expect("TODO: handle error");
         if let Some(OneOrMore::Single(source)) = config.sources {
             let source = source.to_qualified_without_children(None);
             assert_eq!(source.type_, Some(String::from("dev")));
@@ -989,7 +989,7 @@ pub mod tests {
         }
         "#;
 
-        let config = serde_json::from_str::<Config>(json).unwrap();
+        let config = serde_json::from_str::<Config>(json).expect("TODO: handle error");
         if let Some(OneOrMore::Multiple(sources)) = config.sources {
             assert_eq!(sources.len(), 2);
             let test_dir = sources[1].to_qualified_without_children(None);
@@ -1017,7 +1017,7 @@ pub mod tests {
         }
         "#;
 
-        let config = serde_json::from_str::<Config>(json).unwrap();
+        let config = serde_json::from_str::<Config>(json).expect("TODO: handle error");
         assert!(config.gentype_config.is_some());
         assert_eq!(config.get_gentype_arg(), vec!["-bs-gentype".to_string()]);
     }
@@ -1037,10 +1037,10 @@ pub mod tests {
         }
         "#;
 
-        let config = serde_json::from_str::<Config>(json).unwrap();
+        let config = serde_json::from_str::<Config>(json).expect("TODO: handle error");
         assert!(config.jsx.is_some());
         assert_eq!(
-            config.jsx.unwrap(),
+            config.jsx.expect("TODO: handle error"),
             JsxSpecs {
                 version: None,
                 module: Some(JsxModule::Other(String::from("Voby.JSX"))),
@@ -1064,10 +1064,10 @@ pub mod tests {
         }
         "#;
 
-        let config = serde_json::from_str::<Config>(json).unwrap();
+        let config = serde_json::from_str::<Config>(json).expect("TODO: handle error");
         assert!(config.jsx.is_some());
         assert_eq!(
-            config.jsx.unwrap(),
+            config.jsx.expect("TODO: handle error"),
             JsxSpecs {
                 version: Some(4),
                 module: None,
@@ -1097,9 +1097,9 @@ pub mod tests {
         }
         "#;
 
-        let config = serde_json::from_str::<Config>(json).unwrap();
+        let config = serde_json::from_str::<Config>(json).expect("TODO: handle error");
         assert_eq!(
-            config.get_suffix(config.get_package_specs().first().unwrap()),
+            config.get_suffix(config.get_package_specs().first().expect("TODO: handle error")),
             ".mjs"
         );
     }

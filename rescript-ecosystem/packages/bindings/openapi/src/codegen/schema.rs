@@ -131,7 +131,7 @@ pub fn topological_sort(types: &[TypeDef]) -> Vec<&TypeDef> {
     for (name, deps) in &deps_map {
         // Each dependency means 'name' has an incoming edge
         // (dep must come before name in the sorted order)
-        *in_degree.get_mut(name).unwrap() += deps.len();
+        *in_degree.get_mut(name).expect("TODO: handle error") += deps.len();
     }
 
     // Start with types that have no dependencies (sorted for deterministic order)
@@ -155,7 +155,7 @@ pub fn topological_sort(types: &[TypeDef]) -> Vec<&TypeDef> {
         let mut newly_ready: Vec<String> = Vec::new();
         for (other_name, other_deps) in &deps_map {
             if other_deps.contains(&name) {
-                let degree = in_degree.get_mut(other_name).unwrap();
+                let degree = in_degree.get_mut(other_name).expect("TODO: handle error");
                 *degree -= 1;
                 if *degree == 0 {
                     newly_ready.push(other_name.clone());
@@ -305,7 +305,7 @@ fn tarjan_dfs(
     if ids[at] == low[at] {
         let mut component = Vec::new();
         loop {
-            let node = stack.pop().unwrap();
+            let node = stack.pop().expect("TODO: handle error");
             on_stack[node] = false;
             component.push(node);
             if node == at {
