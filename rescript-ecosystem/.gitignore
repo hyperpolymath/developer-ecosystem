@@ -36,3 +36,12 @@ sync_repos_report*.txt
 
 # Crash recovery artifacts
 ai-cli-crash-capture/
+target/
+_build/
+deps/
+.elixir_ls/
+.cache/
+*.log
+*.tmp
+build/
+dist/

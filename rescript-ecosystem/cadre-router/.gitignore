@@ -25,3 +25,13 @@ ai-cli-crash-capture/
 # Sync reports
 sync_report*.txt
 sync_repos_report*.txt
+target/
+_build/
+deps/
+.elixir_ls/
+.cache/
+*.log
+*.tmp
+Thumbs.db
+build/
+dist/

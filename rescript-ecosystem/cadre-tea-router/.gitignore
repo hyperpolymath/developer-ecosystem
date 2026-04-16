@@ -22,3 +22,11 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+target/
+_build/
+deps/
+.elixir_ls/
+.cache/
+*.tmp
+build/
+dist/

@@ -41,3 +41,8 @@ cover/
 # Logs
 *.log
 logs/
+target/
+node_modules/
+.cache/
+*.tmp
+build/
