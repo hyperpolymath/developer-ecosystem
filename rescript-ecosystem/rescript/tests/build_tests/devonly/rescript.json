@@ -1,0 +1,20 @@
+{
+  "name": "devonly",
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true,
+      "type": "dev"
+    },
+    {
+      "dir": "src2",
+      "type": "dev"
+    }
+  ],
+  "package-specs": {
+    "module": "esmodule",
+    "in-source": true,
+    "suffix": ".res.js"
+  },
+  "warnings": { "error": "+101" }
+}

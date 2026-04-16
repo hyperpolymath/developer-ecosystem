@@ -1,0 +1,35 @@
+= Rescript Tea - Citation Guide
+:toc:
+
+== BibTeX
+
+[source,bibtex]
+----
+@software{Rescript Tea_2026,
+  author = {Jewell, Jonathan},
+  title = {Rescript Tea},
+  year = {2026},
+  url = {https://github.com/hyperpolymath/Rescript Tea},
+  license = {PMPL-1.0-or-later}
+}
+----
+
+== Harvard Style
+
+Jewell, J.D.A. (2026) _Rescript Tea_ [Computer software]. Available at: https://github.com/hyperpolymath/Rescript Tea
+
+== OSCOLA
+
+Jonathan D.A. Jewell, 'Rescript Tea' (2026) <https://github.com/hyperpolymath/Rescript Tea>
+
+== MLA
+
+Jewell, Jonathan "Rescript Tea." 2026, github.com/hyperpolymath/Rescript Tea.
+
+== APA 7
+
+Jewell, J.D.A. (2026). _Rescript Tea_ [Computer software]. GitHub. https://github.com/hyperpolymath/Rescript Tea
+
+== See Also
+
+* link:CITATION.cff[CITATION.cff]

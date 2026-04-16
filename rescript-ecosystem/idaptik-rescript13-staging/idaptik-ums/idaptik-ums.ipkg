@@ -1,0 +1,16 @@
+package idaptikums
+
+-- SPDX-License-Identifier: PMPL-1.0-or-later
+
+version = 0.1.0
+authors = "Jonathan D.A. Jewell"
+
+sourcedir = "src/abi"
+
+-- depends = proven
+--   ^ Uncomment when the proven package is available as a local dependency.
+--     ProvenBridge currently uses local placeholder types that mirror
+--     Proven.SafeJson.Parser.JsonValue. Once this dependency is added,
+--     the local types in ProvenBridge.idr should be replaced with imports.
+
+modules = Primitives, Types, Devices, Zones, Inventory, Guards, Dogs, Drones, Assassin, Mission, Wiring, Physical, Level, Validation, ProvenBridge

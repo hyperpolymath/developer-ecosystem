@@ -1,0 +1,33 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+= v-grpc — V-lang Deprecated (2026-04-12)
+:toc:
+
+== Status
+
+`v-grpc` (high-assurance gRPC runtime and generator for V-lang) is
+*deprecated* as of 2026-04-12 following the estate-wide V-lang ban
+(2026-04-10). No migration of the V source is required — gRPC in the
+estate is now handled by the Zig FFI layer.
+
+== Migration Target: Zig FFI + Idris2 ABI
+
+gRPC interface definitions in the estate use the standard Idris2/Zig
+ABI/FFI architecture established 2026-01-30:
+
+[cols="1,1"]
+|===
+| v-grpc concern | Replacement
+
+| gRPC type definitions   | `developer-ecosystem/zig-api/src/ZigApi/ABI/` (Idris2)
+| gRPC Zig implementation | `developer-ecosystem/zig-api/ffi/zig/src/` (Zig)
+| gRPC connector stubs    | `developer-ecosystem/v-ecosystem/v-api-interfaces/v_grpc/` → see its MIGRATION.adoc
+|===
+
+See `developer-ecosystem/zig-api/` for the canonical gRPC connector pool.
+
+== Next Steps
+
+. Confirm no estate project references `v-grpc` as a live dependency.
+. Archive this repo (set GitHub to archived) once all consumers are confirmed migrated.
+. Delete `v.mod` and any `.v` source files when archiving.

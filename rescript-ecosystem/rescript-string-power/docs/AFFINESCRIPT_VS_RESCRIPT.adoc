@@ -1,0 +1,352 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
+
+= AffineScript vs ReScript: Comparative Analysis
+:toc:
+:toc-placement!:
+
+toc::[]
+
+== Executive Summary
+
+[cols="1,1,1"]
+|===
+| Dimension | AffineScript | ReScript
+
+| *Core philosophy*
+| Safety through ownership
+| Safety through types + JS interop
+
+| *Memory model*
+| Manual (affine types, no GC)
+| GC-managed (WASM-GC or JS runtime)
+
+| *Type system*
+| Affine + Dependent (QTT)
+| ML-family (Hindley-Milner + variants)
+
+| *Primary target*
+| WASM (linear memory)
+| JavaScript (WASM-GC planned)
+
+| *Maturity*
+| Design phase
+| Production (10+ years as BuckleScript)
+
+| *Use cases*
+| Embedded, real-time, safety-critical
+| Web apps, React, full-stack JS
+|===
+
+== Type System Comparison
+
+=== ReScript (What It Has)
+
+[source,rescript]
+----
+// Algebraic data types
+type result<'a, 'e> = Ok('a) | Error('e)
+
+// Polymorphic variants
+type status = [#pending | #active | #done]
+
+// Records with structural typing
+type user = {name: string, age: int}
+
+// Pattern matching
+let handle = (r: result<int, string>) =>
+  switch r {
+  | Ok(n) => n * 2
+  | Error(msg) => 0
+  }
+----
+
+*Strengths:*
+
+- Complete type inference (rarely write annotations)
+- Exhaustive pattern matching
+- Nominal + structural typing
+- Excellent JS interop via FFI
+- Sound type system (no `any` escape hatch)
+
+*Limitations:*
+
+- No dependent types (can't encode `Vec<5, int>`)
+- No linear/affine types (can't prevent use-after-free)
+- No effect tracking (side effects invisible to types)
+- No refinement types (can't say `x > 0`)
+
+=== AffineScript (What It Would Have)
+
+[source,affinescript]
+----
+// Dependent types: length-indexed vectors
+fn safe_head[n: Nat where n > 0](vec: Vec[n, T]) -> T
+
+// Affine types: ownership tracking
+fn consume(own resource: File) -> ()  // File moved, can't use again
+
+// Quantitative type theory: usage tracking
+fn identity(x: T) -> T  // x used exactly once (linear)
+fn ignore(0 x: T) -> () // x used zero times (erased)
+fn copy(ω x: T) -> (T, T) where T: Copy  // x used many times
+
+// Refinement-like via dependent types
+type PositiveInt = (n: Int ** n > 0)
+----
+
+*Strengths:*
+
+- Compile-time resource tracking (memory, files, sockets)
+- Proofs embedded in types (Vec[n] guarantees length)
+- Zero runtime overhead (no GC, no ref counting)
+- WASM-native (linear memory model matches language)
+- Erasure (proof terms don't appear in output)
+
+*Limitations:*
+
+- Steeper learning curve
+- Type inference more limited (dependent types undecidable in general)
+- Smaller ecosystem (new language)
+- More verbose annotations required
+
+== Memory Model
+
+[cols="1,1"]
+|===
+| ReScript | AffineScript
+
+a|
+[source,rescript]
+----
+// GC handles everything
+let users = [user1, user2]
+let first = users[0]
+// users still valid
+// first is a reference
+// GC cleans up when unreachable
+----
+
+a|
+[source,affinescript]
+----
+// Ownership is explicit
+let own users = Vec.new()
+users.push(own user1)  // user1 moved
+users.push(own user2)  // user2 moved
+
+let ref first = &users[0]  // borrow
+// users still owned, but borrowed
+
+drop(users)  // explicit deallocation
+// first now invalid (compile error if used)
+----
+|===
+
+== Compilation Targets
+
+=== ReScript Path
+
+----
+ReScript Source
+     │
+     ▼
+  ReScript Compiler (OCaml-based)
+     │
+     ├──► JavaScript (current)
+     │         │
+     │         └──► Browser/Node.js
+     │
+     └──► WASM-GC (planned)
+               │
+               └──► Browser (with GC support)
+----
+
+*Implications:*
+
+- Requires WASM-GC (Chrome 119+, Firefox 120+, not Safari yet)
+- Runtime overhead from GC
+- Easy JS interop
+- Fast startup (GC is built-in)
+
+=== AffineScript Path
+
+----
+AffineScript Source
+     │
+     ▼
+  Rust-based Compiler
+     │
+     └──► WASM (linear memory)
+               │
+               ├──► Browser (any WASM runtime)
+               ├──► Wasmtime/Wasmer (native speed)
+               ├──► Embedded (WASM3, wasm-micro-runtime)
+               └──► Edge (Cloudflare Workers, Fastly)
+----
+
+*Implications:*
+
+- Works on ALL WASM runtimes (no GC required)
+- Zero runtime overhead
+- Harder JS interop (manual memory management at boundary)
+- Predictable performance (no GC pauses)
+
+== String Handling (The Original Question)
+
+=== ReScript Strings
+
+[source,rescript]
+----
+// Immutable, GC-managed strings
+let greeting = "Hello, " ++ name ++ "!"
+
+// Tagged templates (v13)
+let query = sql`SELECT * FROM users WHERE id = ${Sql.int(userId)}`
+
+// String operations create new strings (GC cleans up old ones)
+let upper = String.toUpperCase(s)
+----
+
+*Pros:*
+
+- Simple mental model
+- Memory-safe by default
+- Good enough for web apps
+
+*Cons:*
+
+- Allocation pressure from concatenation
+- Can't do zero-copy string views
+- No control over memory layout
+
+=== AffineScript Strings
+
+[source,affinescript]
+----
+// Owned string (on heap)
+let own greeting: String = String.from("Hello")
+
+// String slice (borrowed view, zero-copy)
+let ref slice: &str = &greeting[0..5]
+
+// StringBuilder with capacity tracking
+let own builder: StringBuilder[cap: 256] = StringBuilder.new()
+builder.push("Hello")  // No allocation if fits
+builder.push(", ")
+builder.push(name)
+
+// Compile-time length tracking
+fn concat[n: Nat, m: Nat](
+  own a: String[n],
+  own b: String[m]
+) -> own String[n + m]
+----
+
+*Pros:*
+
+- Zero-copy slices
+- Predictable allocations
+- Can embed in fixed-size buffers
+- Length tracked in types
+
+*Cons:*
+
+- More verbose
+- Must think about ownership
+- Steeper learning curve
+
+== When to Use Which
+
+[cols="1,1"]
+|===
+| Use ReScript When | Use AffineScript When
+
+| Building web apps
+| Building embedded systems
+
+| React/Next.js integration
+| Real-time constraints
+
+| Team familiar with JS/TS
+| Memory budget is fixed
+
+| Rapid iteration needed
+| Formal verification required
+
+| Large npm ecosystem needed
+| WASM without GC required
+
+| Standard CRUD apps
+| Safety-critical systems
+
+| Prototyping
+| Performance predictability
+
+| Full-stack JavaScript
+| Resource management critical
+|===
+
+== Hybrid Strategy
+
+Both languages could coexist in your ecosystem:
+
+----
+┌─────────────────────────────────────────────────────────────┐
+│                    Application Layer                         │
+│                                                              │
+│  ReScript ──► UI Components ──► Browser (JS/WASM-GC)        │
+│      │                                                       │
+│      │  FFI                                                  │
+│      ▼                                                       │
+│  AffineScript ──► Performance Core ──► WASM (linear)        │
+│                   - Crypto                                   │
+│                   - Parsing                                  │
+│                   - Data processing                          │
+│                   - Real-time logic                          │
+└─────────────────────────────────────────────────────────────┘
+----
+
+ReScript for the 90% that doesn't need manual memory control.
+AffineScript for the 10% where performance/predictability matters.
+
+== Current Status
+
+[cols="1,1,1"]
+|===
+| Aspect | ReScript | AffineScript
+
+| Compiler
+| ✅ Production
+| 📝 Design docs only
+
+| Ecosystem
+| ✅ npm, rescript-react, etc.
+| ❌ None yet
+
+| Documentation
+| ✅ Extensive
+| 📝 Specs only
+
+| IDE Support
+| ✅ VSCode, vim, etc.
+| ❌ None yet
+
+| Learning Resources
+| ✅ Books, courses, community
+| ❌ None yet
+
+| Production Users
+| ✅ Meta, Ahrefs, etc.
+| ❌ None
+|===
+
+== Recommendation
+
+*Short-term (now):* Use ReScript + `rescript-string-power` for web work.
+
+*Medium-term (6-12 months):* Build AffineScript compiler in Rust.
+
+*Long-term:* Use both — ReScript for UI, AffineScript for performance-critical WASM modules called from ReScript.
+
+The languages are complementary, not competing.

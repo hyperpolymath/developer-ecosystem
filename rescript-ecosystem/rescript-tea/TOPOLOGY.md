@@ -1,0 +1,29 @@
+<!-- SPDX-License-Identifier: PMPL-1.0-or-later -->
+<!-- Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk> -->
+# TOPOLOGY.md — rescript-tea
+
+## Purpose
+
+Ground-up reimplementation of The Elm Architecture (TEA) for ReScript 12+. Works with `@rescript/core`, produces ES modules, and is compatible with Deno. Replaces the unmaintained rescript-tea@0.16.0 that depended on the legacy `bs-dependencies` system. Used as the UI framework for IDApTIK, Gossamer, and other ReScript-based UIs.
+
+## Module Map
+
+```
+rescript-tea/
+├── lib/
+│   ├── bs/       # BuckleScript/ReScript compiled output
+│   └── ocaml/    # OCaml intermediate artifacts
+├── examples/     # Usage examples (counter, todo, etc.)
+├── docs/         # Architecture and API documentation
+└── deno.json     # Deno module config
+```
+
+## Data Flow
+
+```
+[User events] ──► [Msg variants] ──► [update fn] ──► [Model]
+                                                          │
+                                                    [view fn]
+                                                          │
+                                               [Virtual DOM diff] ──► [DOM patch]
+```

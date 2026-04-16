@@ -1,0 +1,31 @@
+{
+  "name": "rescript-string-power",
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    },
+    {
+      "dir": "tests",
+      "subdirs": true
+    }
+  ],
+  "package-specs": [
+    {
+      "module": "esmodule",
+      "in-source": true
+    }
+  ],
+  "suffix": ".res.mjs",
+  "dependencies": [
+    "@rescript/react",
+    "@rescript/core"
+  ],
+  "warnings": {
+    "error": "+101"
+  },
+  "jsx": {
+    "version": 4,
+    "mode": "automatic"
+  }
+}

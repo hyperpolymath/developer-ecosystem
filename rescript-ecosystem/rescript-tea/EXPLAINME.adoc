@@ -1,0 +1,82 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= rescript-tea — Show Me The Receipts
+:toc:
+:icons: font
+
+The README makes claims. This file backs them up.
+
+== Core Claims
+
+=== Claim 1: Modern TEA Implementation with ReScript 12+, ES Modules, and Zero Runtime Dependencies
+
+*From README:* "Works with ReScript 12+ and @rescript/core... Uses ES module output (esmodule in package-specs)... Ships with zero runtime dependencies beyond @rescript/core."
+
+*Evidence:* The rescript.json is configured for modern ReScript: `"package-specs": [{"module": "esmodule", "in-source": true}]`, producing `.res.js` files inline. The deno.json imports ReScript 12.0.0 and @rescript/core 1.0.0 as development dependencies only. The full source at `src/tea/` (~15 modules) implements the Elm Architecture without any production runtime dependencies. The Tea module hierarchy includes Tea (top-level re-exports), Tea_App, Tea_Vdom, Tea_Cmd, Tea_Sub, Tea_Html, Tea_Svg, Tea_Json, Tea_Http, Tea_Ssr, Tea_Render, Tea_Debug, Tea_Time, Tea_Keyboard, Tea_Mouse, Tea_Window, Tea_Animationframe, and Tea_Test. Tests at `tests/` verify the full TEA cycle. **Caveat:** The original rescript-tea@0.16.0 is unmaintained; this is a ground-up reimplementation, so compatibility with code written for the old version is not guaranteed.
+
+=== Claim 2: Keyed Diffing, Server-Side Rendering, and Time-Travel Debugger
+
+*From README:* "Provides keyed virtual DOM diffing for efficient list rendering... Includes server-side rendering (SSR) for testing, snapshots, and static generation... Has a time-travel debugger."
+
+*Evidence:* The virtual DOM implementation at `src/tea/Tea_Vdom.res` provides `keyedA` for O(n) list reordering. When items are added, removed, or reordered, the renderer moves DOM nodes instead of recreating them. The Tea_Ssr module at `src/tea/Tea_Ssr.res` renders virtual DOM to HTML strings without a browser DOM using `toString` and `toStringPretty`. This enables snapshot testing and static site generation. The Tea_Debug module at `src/tea/Tea_Debug.res` wraps any TEA application with a debug panel showing message history, model state, and the ability to replay/rewind. Benchmark tests at `tests/bench_test.js` measure diffing and rendering performance. **Caveat:** SSR does not support all browser APIs (e.g., WebSockets); use carefully in production.
+
+=== Claim 3: Elm-Style JSON Decoders with Clear Error Messages and Path Context
+
+*From README:* "Ships with Elm-style JSON decoders (no Js.Json, no bs-json)... Includes composable, type-safe decoders that produce clear error messages with path context."
+
+*Evidence:* The Tea_Json module at `src/tea/Tea_Json.res` provides a complete decoder system: `string`, `int`, `float`, `bool`, `null`, `field`, `optionalField`, `at`, `array`, `index`, `dict`, plus combinators `map`, `map2`...`map5`, `andThen`, `oneOf`, `optional`, `nullable`, `succeed`, `fail`, `value`. Error messages include the path where decoding failed (e.g., "Expected string at .user.name"). The `decodeString` function applies a decoder to JSON string input; `errorToString` formats errors for display. Tests verify that nested decoding produces clear error paths. **Caveat:** This is a fresh implementation; some edge cases in complex nested structures may need refinement.
+
+== Technology Choices
+
+[cols="1,2"]
+|===
+| Technology | Learn More
+
+| **ReScript 12+** | Type-safe JavaScript with ES module output
+| **@rescript/core** | Modern standard library (only runtime dependency)
+| **Deno** | Development runtime and task runner
+| **Vite (optional)** | Build tool integration
+|===
+
+== Dogfooded Across The Account
+
+rescript-tea is used across the hyperpolymath ecosystem:
+- https://github.com/hyperpolymath/idaptik[idaptik] — Game UI and event loop
+- https://github.com/hyperpolymath/idaptik-rescript13-staging[idaptik-rescript13-staging] — Staging validation
+- https://github.com/hyperpolymath/odds-and-sods-package-manager[opsm-ui] — Package manager UI
+- Any ReScript frontend project requiring predictable state management
+
+Part of the ReScript ecosystem standardization effort.
+
+== File Map
+
+[cols="1,3"]
+|===
+| Path | What's There
+
+| `src/tea/Tea.res` | Main module; re-exports all TEA components
+| `src/tea/Tea_App.res` | Application bootstrap: `standard`, `beginner`, `debug` program types
+| `src/tea/Tea_Vdom.res` | Virtual DOM types: Text, Element, KeyedElement, Fragment; keyed diffing
+| `src/tea/Tea_Cmd.res` | Side-effect commands: none, msg, batch, call, map, execute
+| `src/tea/Tea_Sub.res` | Subscriptions: none, registration, batch, map, getKeys, enable
+| `src/tea/Tea_Html.res` | HTML element constructors (div, span, button, input, form, table, etc.)
+| `src/tea/Tea_Svg.res` | SVG element and attribute constructors
+| `src/tea/Tea_Json.res` | Elm-style JSON decoders with error path context
+| `src/tea/Tea_Http.res` | HTTP module: get, post, request, expectJson, expectString
+| `src/tea/Tea_Ssr.res` | Server-side rendering: toString, toStringPretty, toDocument
+| `src/tea/Tea_Render.res` | Browser DOM renderer: virtual DOM diffing and patching
+| `src/tea/Tea_Debug.res` | Time-travel debugger with message history and replay
+| `src/tea/Tea_Time.res` | Time subscriptions: every (periodic), delay (one-shot)
+| `src/tea/Tea_Keyboard.res` | Keyboard event subscriptions: downs, ups, presses
+| `src/tea/Tea_Mouse.res` | Mouse event subscriptions: clicks, moves, downs, ups
+| `src/tea/Tea_Window.res` | Window event subscriptions: onResize, onScroll
+| `src/tea/Tea_Animationframe.res` | Animation frame subscriptions for smooth 60fps updates
+| `src/tea/Tea_Test.res` | Test harness: simulate, send, sendAll, model, messageHistory, runScenario
+| `tests/` | Full test suite (no-check, allow-all Deno tests)
+| `tests/bench_test.js` | Benchmarks for diffing and rendering performance
+| `rescript.json` | ReScript compiler config (v12+, esmodule, in-source)
+| `deno.json` | Deno configuration with ReScript and build tasks
+|===
+
+== Questions?
+
+Open an issue or reach out directly — happy to explain anything in more detail.

@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# RFC 9116 security disclosure information.
+
+Contact: mailto:j.d.a.jewell@open.ac.uk
+Contact: https://github.com/hyperpolymath/rescript-string-power/security/advisories/new
+Expires: 2027-04-05T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://raw.githubusercontent.com/hyperpolymath/rescript-string-power/main/.well-known/security.txt
+Policy: https://github.com/hyperpolymath/rescript-string-power/blob/main/SECURITY.md

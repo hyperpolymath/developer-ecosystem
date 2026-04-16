@@ -1,0 +1,7 @@
+{
+  "name": "uncurried",
+  "sources": {
+    "dir": "src",
+    "subdirs": true
+  }
+}

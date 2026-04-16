@@ -1,0 +1,139 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= v-grpc — Show Me The Receipts
+Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+:toc:
+:icons: font
+
+The README makes claims. This file backs them up.
+
+== The gRPC-Web Transport Works
+
+[quote, src/grpc.v]
+____
+pub fn (mut h GRPCHandler) handle(req http.Request) http.Response {
+  path := req.url.all_before('?')
+  return match path {
+    '/gnosis.GnosisService/Render'   { handle_render(req) }
+    '/gnosis.GnosisService/Context'  { handle_context(req) }
+    '/gnosis.GnosisService/Health'   { handle_health() }
+    else { grpc_response(404, '{"error":"Unknown method: ${esc(path)}"}') }
+  }
+}
+____
+
+`src/grpc.v` implements `net.http.Handler` for V's standard HTTP server.
+Path routing dispatches to three Gnosis CLI wrappers: `gnosis_render`,
+`gnosis_dump_context`, and `gnosis_health`. Each invokes the Gnosis binary
+via `os.execute` with appropriate flags and parses the output. The `Server`
+struct supports service registration (`register_service`) and starts a
+blocking HTTP listener via `server.listen_and_serve()`. The `GNOSIS_BIN`
+environment variable overrides the binary path — test environments can
+point at a mock.
+
+**Caveat:** The transport is JSON-over-HTTP, not binary Protobuf over HTTP/2.
+The `Content-Type: application/grpc+json` header is set, making it
+gRPC-Web compatible for JSON clients, but a standard gRPC client expecting
+binary framing will not work. The Zig FFI layer (`ffi/zig/`) is the planned
+path to true HTTP/2 + Protobuf support.
+
+- Transport entry: `src/grpc.v:30` (`GRPCHandler.handle`)
+- Backend wrappers: `src/grpc.v:133–235` (`gnosis_render`, `gnosis_dump_context`, `gnosis_health`)
+- Server struct: `src/grpc.v:51–75` (`Server`, `new_server`, `register_service`, `start`)
+
+== v-protoc Generates V Stubs From .proto Files
+
+[quote, src/generator.v]
+____
+fn main() {
+  proto_path := os.args[1]
+  println('Generating V-lang stubs for ${proto_path}...')
+  generate_stubs(proto_content, output_path)
+}
+____
+
+`src/generator.v` (`v-protoc`) reads a `.proto` file and emits V-lang
+service stub code wired to the `v_grpc` module. The generator parses
+`message`, `field`, `service`, and `rpc` declarations using a simple
+line-oriented scanner — no external protoc dependency. Output is a `.pb.v`
+file alongside the input `.proto`. This lets a V-lang project add gRPC
+endpoints without installing the full protoc toolchain.
+
+**Caveat:** The generator uses a greedy line scanner, not a proper proto3
+grammar. Nested message types, `oneof`, `map<>`, and `import` statements
+are not fully handled. The emitted stubs use the `v_grpc` module and assume
+the JSON-over-HTTP transport — they are not compatible with binary protobuf
+framing without the planned Zig FFI upgrade.
+
+- Generator entry: `src/generator.v:main`
+- Stub emitter: `src/generator.v:generate_stubs`
+
+== The Idris2 ABI Provides Formal Correctness Guarantees
+
+[quote, src/abi/Types.idr]
+____
+%default total
+public export
+data Handle = MkHandle (ptr : Bits64)
+public export
+ptrSize : Platform -> Nat
+ptrSize Linux = 64
+ptrSize WASM = 32
+____
+
+`src/abi/Types.idr` declares the gRPC ABI with `%default total` — all
+definitions are provably total by the Idris2 checker. `Handle` is a
+`Bits64` wrapper; `So (ptr /= 0)` is the non-null precondition (same
+pattern as `cookie-rebound`). `ptrSize` is a dependent function from
+`Platform` to `Nat` — platform-specific pointer widths are resolved at
+type level, not at runtime. `Result` (Ok / Error / InvalidParam /
+OutOfMemory / NullPointer) carries round-trip proofs by exhaustive case
+split, matching the ABI proof pattern across the estate.
+
+**Caveat:** The Idris2 ABI is verified by the type checker but the
+`%runElab` platform detection stub (`thisPlatform = Linux`) is hardcoded —
+compile-time platform selection requires elaborator scripts not yet written.
+The Zig FFI layer in `ffi/zig/` is scaffolded but not yet connected to
+the V-lang transport.
+
+- Types: `src/abi/Types.idr` (`Handle`, `Result`, `Platform`, `ptrSize`)
+- Layout: `src/abi/Layout.idr` (memory layout verification)
+- FFI declarations: `src/abi/Foreign.idr` (`%foreign` C bindings)
+- Zig scaffold: `ffi/zig/`
+
+== Migration to Zig Is Straight-Line
+
+The three-layer architecture (Idris2 ABI → Zig FFI → transport) is already
+in place. The V-lang transport layer (`src/grpc.v`) is the only component
+that needs replacing. The migration steps are:
+
+1. Implement an HTTP/2 + Protobuf server in `ffi/zig/src/` using the
+   existing `src/abi/Foreign.idr` FFI declarations — no ABI changes needed
+2. Wire `ffi/zig/` to the Gnosis CLI wrappers (already tested via V)
+3. Drop `src/grpc.v` and `src/generator.v`; the `.proto` → stub generation
+   can move to a Zig-native protoc plugin
+
+== File Map
+
+[cols="1,2"]
+|===
+| Path | Purpose
+
+| `src/grpc.v` | V-lang gRPC-Web transport: `GRPCHandler`, `Server`, Gnosis CLI wrappers
+| `src/generator.v` | `v-protoc`: generates V-lang stubs from `.proto` files
+| `src/abi/Types.idr` | Idris2 ABI: `Handle`, `Result`, `Platform`, `ptrSize` — `%default total`
+| `src/abi/Layout.idr` | Memory layout verification for gRPC struct layouts
+| `src/abi/Foreign.idr` | `%foreign` C bindings to the Zig FFI layer
+| `ffi/zig/` | Zig FFI scaffold — planned HTTP/2 + Protobuf transport
+|===
+
+== Ties to the Wider Estate
+
+[cols="1,2"]
+|===
+| Technology | Also Used In
+
+| **Idris2 ABI (`So (ptr /= 0)`)** | link:https://github.com/hyperpolymath/cookie-rebound[cookie-rebound], link:https://github.com/hyperpolymath/stapeln[stapeln], link:https://github.com/hyperpolymath/groove[groove]
+| **`%default total` ABI proofs** | link:https://github.com/hyperpolymath/groove[groove] (Groove protocol ABI)
+| **Gnosis CLI backend** | link:https://github.com/hyperpolymath/v-rest[v-rest] (same backend, REST transport)
+| **Zig FFI scaffold** | link:https://github.com/hyperpolymath/developer-ecosystem[developer-ecosystem] (`v-zig-ffi/`)
+|===

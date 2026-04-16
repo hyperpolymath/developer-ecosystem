@@ -1,0 +1,36 @@
+= v-graphql - Citation Guide
+:toc:
+
+== BibTeX
+
+[source,bibtex]
+----
+@software{v-graphql_2026,
+  author = {Jewell, Jonathan D.A.},
+  title = {v-graphql},
+  year = {2026},
+  url = {https://github.com/hyperpolymath/v-graphql},
+  license = {PMPL-1.0-or-later}
+}
+----
+
+== Harvard Style
+
+Jewell, J.D.A. (2026) _v-graphql_ [Computer software]. Available at: https://github.com/hyperpolymath/v-graphql
+
+== OSCOLA
+
+Jonathan D.A. Jewell, 'v-graphql' (2026) <https://github.com/hyperpolymath/v-graphql>
+
+== MLA
+
+Jewell, Jonathan D.A. "v-graphql." 2026, github.com/hyperpolymath/v-graphql.
+
+== APA 7
+
+Jewell, J.D.A. (2026). _v-graphql_ [Computer software]. GitHub. https://github.com/hyperpolymath/v-graphql
+
+== See Also
+
+* link:../CITATION.cff[CITATION.cff]
+* link:../codemeta.json[codemeta.json]

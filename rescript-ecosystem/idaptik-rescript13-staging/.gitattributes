@@ -1,0 +1,53 @@
+# RSR-compliant .gitattributes
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# IDApTIK monorepo .gitattributes
+
+* text=auto eol=lf
+
+# Source
+*.rs    text eol=lf diff=rust
+*.ex    text eol=lf diff=elixir
+*.exs   text eol=lf diff=elixir
+*.res   text eol=lf
+*.resi  text eol=lf
+*.idr   text eol=lf
+*.zig   text eol=lf
+*.scm   text eol=lf
+*.ncl   text eol=lf
+*.nix   text eol=lf
+*.js    text eol=lf
+*.mjs   text eol=lf
+
+# Docs
+*.md    text eol=lf diff=markdown
+*.adoc  text eol=lf
+*.txt   text eol=lf
+
+# Data
+*.json  text eol=lf
+*.yaml  text eol=lf
+*.yml   text eol=lf
+*.toml  text eol=lf
+
+# Config
+.gitignore     text eol=lf
+.gitattributes text eol=lf
+Justfile       text eol=lf
+Containerfile  text eol=lf
+
+# Scripts
+*.sh   text eol=lf
+
+# Binary
+*.png   binary
+*.jpg   binary
+*.gif   binary
+*.pdf   binary
+*.woff2 binary
+*.zip   binary
+*.gz    binary
+*.wasm  binary
+
+# Lock files
+Cargo.lock  text eol=lf -diff
+deno.lock   text eol=lf -diff

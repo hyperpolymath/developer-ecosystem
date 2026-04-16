@@ -1,0 +1,36 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+
+= Changelog
+:toc: left
+
+All notable changes to this project will be documented here.
+
+The format is based on https://keepachangelog.com/en/1.1.0/[Keep a Changelog],
+and this project adheres to https://semver.org/spec/v2.0.0.html[Semantic
+Versioning].
+
+== Unreleased
+
+== 0.1.0 — 2026-04-05
+
+Initial public release.
+
+=== Added
+
+* Core `StringPower.res` library with seven tagged-template modules:
+  `Fmt`, `Sql`, `Css`, `React`, `I18n`, `Url`, `Gql`.
+* Rust CLI `string-union-gen` that generates `toString` / `fromString`
+  converters from `@stringUnion`-annotated ReScript polymorphic variants.
+* ReScript test suite (`tests/StringPower_test.res`, 15 assertions).
+* Rust unit tests covering the parser and code generator (5 tests).
+* Six independent test targets wired through `justfile`:
+  structure, unit, end-to-end, property, benchmark, lint.
+* `0-AI-MANIFEST.a2ml` for AI-agent onboarding.
+* `READINESS.md` documenting Component Readiness Grade B.
+* GitHub Actions workflow running all six test targets on every push.
+* Contributing guide, code of conduct, and security policy.
+
+=== Licence
+
+* Released under the Palimpsest License v1.0-or-later (PMPL-1.0-or-later).

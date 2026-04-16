@@ -1,0 +1,13 @@
+{
+  "name": "rescript-tea",
+  "version": "1.0.0",
+  "description": "The Elm Architecture for ReScript — comprehensive TEA with keyed diffing, HTTP, JSON decoders, SSR, time-travel debugger",
+  "main": "src/tea/Tea.res.js",
+  "author": "Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>",
+  "license": "SEE LICENSE IN LICENSE",
+  "peerDependencies": {
+    "rescript": "^12.0.0",
+    "@rescript/core": "^1.0.0"
+  },
+  "keywords": ["rescript", "elm", "tea", "virtual-dom", "keyed-diffing", "ssr", "http", "json-decoders"]
+}

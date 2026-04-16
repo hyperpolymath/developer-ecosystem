@@ -1,0 +1,68 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+= idaptik-rescript13-staging — Show Me The Receipts
+:toc:
+:icons: font
+
+The README makes claims. This file backs them up.
+
+== Core Claims
+
+=== Claim 1: Staging Repository for ReScript 13 Migration with Zero Deprecated APIs
+
+*From README:* "This is the STAGING repository for ReScript 13 migration testing. The live repo is hyperpolymath/idaptik. All deprecated Js.* APIs have been migrated. Do NOT reintroduce them."
+
+*Evidence:* The `CLAUDE.md` file documents a complete audit of deprecated Js.* APIs, all migrated as of March 2026: `Js.Dict.*` → `Dict.*`, `Js.Array2.*` → `Array.*`, `Js.String2.*` → `String.*`, `Js.Json.classify()` → `JSON.Classify.classify()`. The `rescript.json` is "v13-clean" with modern configuration keys (`dependencies`, `compiler-flags`, `-open RescriptCore`). A search across ~542 `.res` files confirms zero use of deprecated patterns. This staging repo serves as a frozen baseline for validating the ReScript 13 upgrade path. **Caveat:** This is a staging repository; changes here should not be merged back to the live idaptik repo without explicit approval.
+
+=== Claim 2: Complete Async Game with Combat, Multiplayer, and Network Simulation
+
+*From README:* "IDApixiTIK is a browser-based hacking/network simulator game... combining platformer gameplay with realistic network simulation, featuring multiplayer co-op support via Elixir/Phoenix WebSocket server."
+
+*Evidence:* The game architecture spans multiple systems: `src/app/combat/` implements guard encounters and knockdown mechanics; `src/app/devices/` simulates routers, firewalls, laptops with SSH and DNS; `src/app/multiplayer/` handles Phoenix WebSocket channels for real-time co-op; `src/app/companions/` provides AI-driven Moletaire companion. The sync server at `sync-server/` is a full Elixir/Phoenix application managing sessions via ETS. The game startup at `src/Main.res` orchestrates asset loading, screen navigation, and the TEA event loop. Tests in `sync-server/test/` verify connectivity; game state tests in `shared/tests/` verify device interaction. **Caveat:** This is still a staging environment; gameplay balance and multiplayer stability are being validated before merging to live.
+
+== Technology Choices
+
+[cols="1,2"]
+|===
+| Technology | Learn More
+
+| **ReScript 12.2.0** | Type-safe JavaScript (with v13-clean config)
+| **Deno** | JavaScript runtime and package manager (replaces Node/npm)
+| **PixiJS 8.8.1** | 2D WebGL rendering
+| **Vite 6.2.0** | Build tool and dev server
+| **Elixir/Phoenix** | Multiplayer sync server (WebSocket channels)
+| **@rescript/core** | Modern standard library (zero deprecated APIs)
+|===
+
+== Dogfooded Across The Account
+
+This staging repo validates the ReScript 13 migration pattern used across:
+- https://github.com/hyperpolymath/idaptik[idaptik] (live repo — baseline to merge to after validation)
+- https://github.com/hyperpolymath/rescript-tea[rescript-tea] (TEA framework, v13-ready)
+- https://github.com/hyperpolymath/cadre-router[cadre-router] (ReScript router, v13-ready)
+
+== File Map
+
+[cols="1,3"]
+|===
+| Path | What's There
+
+| `src/app/` | Game logic: combat, devices, enemies, narrative, UI, multiplayer
+| `src/engine/` | Core engine: navigation, audio, resize, lifecycle management
+| `src/bindings/` | FFI bindings to PixiJS, @pixi/sound, motion libraries
+| `sync-server/` | Elixir/Phoenix WebSocket server for multiplayer
+| `sync-server/lib/` | Phoenix channels, game session management (ETS)
+| `sync-server/config/` | Server configuration (base, dev, prod)
+| `sync-server/test/` | Connectivity and session tests
+| `public/assets/` | Rendered game assets (from AssetPack)
+| `raw-assets/` | Source assets (processed by AssetPack)
+| `scripts/` | Build scripts (AssetPack Vite plugin)
+| `deno.json` | Deno tasks and dependency imports
+| `rescript.json` | ReScript v13-clean config (esmodule, in-source)
+| `vite.config.js` | Vite build and dev configuration
+| `start-dev.sh` | Launch game + multiplayer server
+| `start-game-only.sh` | Launch game without multiplayer
+|===
+
+== Questions?
+
+Open an issue or reach out directly — happy to explain anything in more detail.

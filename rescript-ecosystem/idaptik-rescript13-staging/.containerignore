@@ -1,0 +1,82 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+#
+# Root .containerignore for IDApTIK monorepo
+#
+# All three production Containerfiles (game, sync, escape-hatch) use the repo
+# root as build context.  Without this file, the ENTIRE monorepo — including
+# hundreds of MB of Deno symlinks, Rust target/ artifacts, and .git history —
+# is sent as context, causing builds to hang, crash, or take forever.
+
+# --- Version control ---
+**/.git/
+**/.gitignore
+**/.gitattributes
+**/.gitmodules
+
+# --- Dependency caches (reinstalled in container) ---
+**/node_modules/
+**/.deno/
+**/deps/
+**/_build/
+
+# --- Build artifacts (rebuilt in container) ---
+**/target/
+**/dist/
+**/lib/bs/
+**/lib/ocaml/
+**/out/
+**/build/
+**/_release/
+**/*.res.mjs
+**/*.res.js
+
+# --- IDE and editor ---
+**/.idea/
+**/.vscode/
+**/.fleet/
+**/*.swp
+**/*.swo
+**/*~
+
+# --- OS junk ---
+**/.DS_Store
+**/Thumbs.db
+**/desktop.ini
+
+# --- Secrets and credentials ---
+**/.env
+**/.env.*
+**/*.pem
+**/*.key
+**/secrets/
+
+# --- Logs and temp ---
+**/*.log
+**/tmp/
+**/*.tmp
+**/*.bak
+
+# --- CI/CD (not needed in container builds) ---
+.github/
+
+# --- UMS (not needed for game or sync containers) ---
+# NOTE: Sync server Containerfile copies from idaptik-ums/
+# idaptik-sync-server/ so we cannot exclude the whole directory.
+# Instead, exclude the heavy subdirectories within it.
+idaptik-ums/src-tauri/target/
+idaptik-ums/node_modules/
+idaptik-ums/.devcontainer/
+
+# --- Developer docs (not needed in containers) ---
+idaptik-developers/
+
+# --- Coverage and test artifacts ---
+**/coverage/
+**/.nyc_output/
+**/test-results/
+
+# --- Generated content ---
+**/src/generated/
+
+# --- Machine-readable metadata ---
+.machine_readable/

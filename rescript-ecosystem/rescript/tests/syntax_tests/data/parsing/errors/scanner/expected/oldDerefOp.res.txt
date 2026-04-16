@@ -1,0 +1,12 @@
+
+  Syntax error!
+  syntax_tests/data/parsing/errors/scanner/oldDerefOp.res:1:50
+
+  1 │ let newVelocity = velocity +. a *. secondPerFrame^;
+  2 │ let newX = x +. newVelocity *. secondPerFrame^;
+  3 │ 
+
+  I'm not sure what to parse here when looking at "^".
+
+let newVelocity = velocity +. (a *. secondPerFrame)
+let newX = x +. (newVelocity *. secondPerFrame)

@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# k9iser manifest for v-rest
+# V REST connector — V-lang client and server bindings for REST API protocols
+
+[project]
+name = "v-rest"
+safety_tier = "hunt"
+
+[[source]]
+path = "Justfile"
+type = "justfile"
+output = "generated/k9iser/justfile-recipes.k9"
+
+[[source]]
+path = "Containerfile"
+type = "containerfile"
+output = "generated/k9iser/container-build.k9"
+
+[[source]]
+path = ".github/workflows/hypatia-scan.yml"
+type = "workflow"
+output = "generated/k9iser/ci-security.k9"
+
+[[constraint]]
+rule = "build.dependencies has no banned_packages"
+severity = "error"
+
+[[constraint]]
+rule = "container.base_image uses chainguard or distroless"
+severity = "warn"

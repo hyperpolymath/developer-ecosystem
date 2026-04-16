@@ -1,0 +1,13 @@
+= AI Guidance Directory
+
+Put AI-facing instructions in this folder.
+
+Examples:
+
+* `CLAUDE.md`
+* `COPILOT.md`
+* `GEMINI.md`
+* `AI.a2ml`
+* `AI.djot`
+
+Avoid scattering agent instruction files around the repo root.

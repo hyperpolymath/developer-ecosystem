@@ -1,0 +1,24 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+//
+// Tea_Animationframe.res — TEA Animation Frame — requestAnimationFrame subscriptions.
+//
+// Provides subscriptions for smooth animations using requestAnimationFrame.
+
+@val external requestAnimationFrame: (float => unit) => int = "requestAnimationFrame"
+@val external cancelAnimationFrame: int => unit = "cancelAnimationFrame"
+
+/// Subscribe to animation frames
+let onAnimationFrame = (tagger: float => 'msg): Tea_Sub.t<'msg> => {
+  Tea_Sub.registration("animation-frame", dispatch => {
+    let id = ref(0)
+    let rec callback = (time: float) => {
+      dispatch(tagger(time))
+      id := requestAnimationFrame(callback)
+    }
+    id := requestAnimationFrame(callback)
+
+    // Return cleanup function
+    () => cancelAnimationFrame(id.contents)
+  })
+}

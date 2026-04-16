@@ -1,0 +1,141 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= v-rest — Show Me The Receipts
+Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+:toc:
+:icons: font
+
+The README makes claims. This file backs them up.
+
+== The REST Transport Works
+
+[quote, src/rest.v]
+____
+pub fn (mut h GnosisHandler) handle(req http.Request) http.Response {
+  path := req.url.all_before('?')
+  return match path {
+    '/'         { handle_info() }
+    '/render'   { handle_render(req) }
+    '/context'  { handle_context(req) }
+    '/health'   { handle_health() }
+    else { json_response(404, '{"error":"Not found",...}') }
+  }
+}
+____
+
+`src/rest.v` implements `net.http.Handler` for V's standard HTTP server.
+Path routing dispatches to four handlers, all backed by Gnosis CLI wrappers.
+`handle_info()` returns a discovery document (`service`, `version`,
+`endpoints`) with no external call — useful as a smoke-test without Gnosis
+installed. `handle_health()` returns HTTP 200 + `"status":"ok"` when Gnosis
+is available, HTTP 503 + `"status":"unavailable"` when it is not — the
+status code distinction lets load balancers make routing decisions directly.
+`GNOSIS_BIN` overrides the binary path for testing.
+
+**Caveat:** The transport is plain JSON over HTTP/1.1, not HTTP/2 or
+streaming. Large template renders block the request until Gnosis exits.
+The Zig FFI layer (`ffi/zig/`) is the planned path to an async or streaming
+upgrade without V.
+
+- Transport entry: `src/rest.v:20` (`GnosisHandler.handle`)
+- Discovery: `src/rest.v:55` (`handle_info`)
+- Health with status-code semantics: `src/rest.v:87` (`handle_health`, 200 vs 503)
+- Backend wrappers: `src/rest.v:100–190` (`gnosis_render`, `gnosis_dump_context`, `gnosis_health`)
+
+== Context Endpoint Uses Query Params, Not a JSON Body
+
+[quote, src/rest.v]
+____
+fn handle_context(req http.Request) http.Response {
+  scm_path := query_param(req.url, 'scm')
+  result := gnosis_dump_context(scm_path)
+  ...
+}
+____
+
+`/context` is a GET request — the SCM path is passed as `?scm=path`, not
+in a JSON body. This is the main API difference from `v-grpc`'s `Context`
+method (which takes a JSON POST body). A V-lang `query_param` helper parses
+the URL query string without a router framework dependency. This makes
+`/context` trivially curl-able: `curl http://localhost:8080/context?scm=./STATE.a2ml`.
+
+**Caveat:** The query param parser is a simple split-on-`&` loop — it does
+not handle percent-encoding. Paths with spaces or special characters in the
+SCM file path must be percent-encoded by the caller.
+
+- Context handler: `src/rest.v:75` (`handle_context`)
+- Query param helper: `src/rest.v:250` (`query_param`)
+
+== The Idris2 ABI Provides the Same Formal Guarantees as v-grpc
+
+[quote, src/abi/Types.idr]
+____
+%default total
+public export
+data Handle = MkHandle (ptr : Bits64)
+public export
+ptrSize : Platform -> Nat
+ptrSize Linux = 64
+ptrSize WASM = 32
+____
+
+`src/abi/Types.idr` is structurally identical to the `v-grpc` ABI —
+`%default total`, `Handle` with implicit `So (ptr /= 0)` non-null
+precondition, `Result` with round-trip proofs by exhaustive case split,
+`ptrSize` as a dependent function from `Platform` to `Nat`. Both repos
+share the same ABI proof pattern used across the estate (`cookie-rebound`,
+`stapeln`, `groove`). The Zig FFI scaffold in `ffi/zig/` is the upgrade
+path for a native transport layer.
+
+**Caveat:** Same caveat as v-grpc — `thisPlatform = Linux` is hardcoded;
+compile-time platform selection requires elaborator scripts not yet written.
+
+- Types: `src/abi/Types.idr` (`Handle`, `Result`, `Platform`, `ptrSize`)
+- Layout: `src/abi/Layout.idr`
+- FFI: `src/abi/Foreign.idr`
+- Zig scaffold: `ffi/zig/`
+
+== Health Endpoint Returns Correct HTTP Status Codes
+
+Unlike many health endpoints that always return 200, `v-rest`'s `/health`
+returns:
+
+* **200** — Gnosis is reachable and the version string was read
+* **503** — Gnosis binary not found or non-zero exit
+
+This matters for load balancers and container orchestrators (Podman health
+checks, Kubernetes liveness probes) that route traffic based on status code.
+
+- Health handler: `src/rest.v:87` (`handle_health`)
+
+== Migration to Zig Is Straight-Line
+
+Same path as v-grpc:
+
+1. Implement HTTP server in `ffi/zig/src/` using the existing `src/abi/Foreign.idr` bindings — no ABI changes needed
+2. Wire `ffi/zig/` to the Gnosis CLI wrappers (same four handlers)
+3. Drop `src/rest.v`; query-param parsing moves to Zig
+
+== File Map
+
+[cols="1,2"]
+|===
+| Path | Purpose
+
+| `src/rest.v` | V-lang REST transport: `GnosisHandler`, `Server`, four handlers, Gnosis CLI wrappers
+| `src/abi/Types.idr` | Idris2 ABI: `Handle`, `Result`, `Platform`, `ptrSize` — `%default total`
+| `src/abi/Layout.idr` | Memory layout verification
+| `src/abi/Foreign.idr` | `%foreign` C bindings for Zig FFI upgrade
+| `ffi/zig/` | Zig FFI scaffold — upgrade path to native transport
+|===
+
+== Ties to the Wider Estate
+
+[cols="1,2"]
+|===
+| Technology | Also Used In
+
+| **Idris2 ABI (`%default total`, `So (ptr /= 0)`)** | link:https://github.com/hyperpolymath/v-grpc[v-grpc], link:https://github.com/hyperpolymath/cookie-rebound[cookie-rebound], link:https://github.com/hyperpolymath/stapeln[stapeln], link:https://github.com/hyperpolymath/groove[groove]
+| **Gnosis CLI backend** | link:https://github.com/hyperpolymath/v-grpc[v-grpc] (same backend, gRPC-Web transport)
+| **503 health semantics** | link:https://github.com/hyperpolymath/burble[burble] (same convention for load balancer routing)
+| **Zig FFI scaffold** | link:https://github.com/hyperpolymath/developer-ecosystem[developer-ecosystem] (`v-zig-ffi/`)
+|===

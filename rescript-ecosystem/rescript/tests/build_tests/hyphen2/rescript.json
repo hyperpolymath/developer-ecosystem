@@ -1,0 +1,5 @@
+{
+  "name": "hyphen2",
+  "sources": ["y-src"],
+  "namespace": true
+}

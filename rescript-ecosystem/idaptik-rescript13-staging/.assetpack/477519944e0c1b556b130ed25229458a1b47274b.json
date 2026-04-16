@@ -1,0 +1,608 @@
+{
+    "assets": {
+        "/var$REPOS_DIR/idaptik/raw-assets": {
+            "isFolder": true,
+            "metaData": {},
+            "inheritedMetaData": {},
+            "transformData": {},
+            "stats": {
+                "date": 1773067379194,
+                "duration": 1.1887449999921955,
+                "success": true
+            }
+        },
+        "/var$REPOS_DIR/idaptik/raw-assets/main{m}": {
+            "isFolder": true,
+            "parent": "/var$REPOS_DIR/idaptik/raw-assets",
+            "metaData": {
+                "m": true
+            },
+            "inheritedMetaData": {},
+            "transformData": {},
+            "stats": {
+                "date": 1773067379194,
+                "duration": 1.178630999987945,
+                "success": true
+            }
+        },
+        "/var$REPOS_DIR/idaptik/raw-assets/main{m}/logo-white.svg": {
+            "isFolder": false,
+            "parent": "/var$REPOS_DIR/idaptik/raw-assets/main{m}",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true
+            },
+            "transformData": {},
+            "stats": {
+                "date": 1773067379194,
+                "duration": 3.557160999975167,
+                "success": true
+            },
+            "hash": "Wq9lMw"
+        },
+        "/var$REPOS_DIR/idaptik/public/assets/main/logo-white.svg": {
+            "isFolder": false,
+            "transformParent": "/var$REPOS_DIR/idaptik/raw-assets/main{m}/logo-white.svg",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true
+            },
+            "transformData": {}
+        },
+        "/var$REPOS_DIR/idaptik/raw-assets/main{m}/sounds": {
+            "isFolder": true,
+            "parent": "/var$REPOS_DIR/idaptik/raw-assets/main{m}",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true
+            },
+            "transformData": {},
+            "stats": {
+                "date": 1773067379194,
+                "duration": 0.7602540000225417,
+                "success": true
+            }
+        },
+        "/var$REPOS_DIR/idaptik/raw-assets/main{m}/sounds/bgm-main.mp3": {
+            "isFolder": false,
+            "parent": "/var$REPOS_DIR/idaptik/raw-assets/main{m}/sounds",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true
+            },
+            "transformData": {},
+            "stats": {
+                "date": 1773067379194,
+                "duration": 1172.112477000046,
+                "success": true
+            },
+            "hash": "IXGL8w"
+        },
+        ".assetpack/audio/main{m}/sounds/bgm-main.mp3": {
+            "isFolder": false,
+            "transformParent": "/var$REPOS_DIR/idaptik/raw-assets/main{m}/sounds/bgm-main.mp3",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true
+            },
+            "transformData": {}
+        },
+        "/var$REPOS_DIR/idaptik/public/assets/main/sounds/bgm-main.mp3": {
+            "isFolder": false,
+            "transformParent": ".assetpack/audio/main{m}/sounds/bgm-main.mp3",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true
+            },
+            "transformData": {}
+        },
+        ".assetpack/audio/main{m}/sounds/bgm-main.ogg": {
+            "isFolder": false,
+            "transformParent": "/var$REPOS_DIR/idaptik/raw-assets/main{m}/sounds/bgm-main.mp3",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true
+            },
+            "transformData": {}
+        },
+        "/var$REPOS_DIR/idaptik/public/assets/main/sounds/bgm-main.ogg": {
+            "isFolder": false,
+            "transformParent": ".assetpack/audio/main{m}/sounds/bgm-main.ogg",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true
+            },
+            "transformData": {}
+        },
+        "/var$REPOS_DIR/idaptik/raw-assets/main{m}/sounds/sfx-hover.wav": {
+            "isFolder": false,
+            "parent": "/var$REPOS_DIR/idaptik/raw-assets/main{m}/sounds",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true
+            },
+            "transformData": {},
+            "stats": {
+                "date": 1773067379195,
+                "duration": 442.9665190000087,
+                "success": true
+            },
+            "hash": "P9yd"
+        },
+        ".assetpack/audio/main{m}/sounds/sfx-hover.mp3": {
+            "isFolder": false,
+            "transformParent": "/var$REPOS_DIR/idaptik/raw-assets/main{m}/sounds/sfx-hover.wav",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true
+            },
+            "transformData": {}
+        },
+        "/var$REPOS_DIR/idaptik/public/assets/main/sounds/sfx-hover.mp3": {
+            "isFolder": false,
+            "transformParent": ".assetpack/audio/main{m}/sounds/sfx-hover.mp3",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true
+            },
+            "transformData": {}
+        },
+        ".assetpack/audio/main{m}/sounds/sfx-hover.ogg": {
+            "isFolder": false,
+            "transformParent": "/var$REPOS_DIR/idaptik/raw-assets/main{m}/sounds/sfx-hover.wav",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true
+            },
+            "transformData": {}
+        },
+        "/var$REPOS_DIR/idaptik/public/assets/main/sounds/sfx-hover.ogg": {
+            "isFolder": false,
+            "transformParent": ".assetpack/audio/main{m}/sounds/sfx-hover.ogg",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true
+            },
+            "transformData": {}
+        },
+        "/var$REPOS_DIR/idaptik/raw-assets/main{m}/sounds/sfx-press.wav": {
+            "isFolder": false,
+            "parent": "/var$REPOS_DIR/idaptik/raw-assets/main{m}/sounds",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true
+            },
+            "transformData": {},
+            "stats": {
+                "date": 1773067379196,
+                "duration": 435.36734799999977,
+                "success": true
+            },
+            "hash": "59LMfg"
+        },
+        ".assetpack/audio/main{m}/sounds/sfx-press.mp3": {
+            "isFolder": false,
+            "transformParent": "/var$REPOS_DIR/idaptik/raw-assets/main{m}/sounds/sfx-press.wav",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true
+            },
+            "transformData": {}
+        },
+        "/var$REPOS_DIR/idaptik/public/assets/main/sounds/sfx-press.mp3": {
+            "isFolder": false,
+            "transformParent": ".assetpack/audio/main{m}/sounds/sfx-press.mp3",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true
+            },
+            "transformData": {}
+        },
+        ".assetpack/audio/main{m}/sounds/sfx-press.ogg": {
+            "isFolder": false,
+            "transformParent": "/var$REPOS_DIR/idaptik/raw-assets/main{m}/sounds/sfx-press.wav",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true
+            },
+            "transformData": {}
+        },
+        "/var$REPOS_DIR/idaptik/public/assets/main/sounds/sfx-press.ogg": {
+            "isFolder": false,
+            "transformParent": ".assetpack/audio/main{m}/sounds/sfx-press.ogg",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true
+            },
+            "transformData": {}
+        },
+        "/var$REPOS_DIR/idaptik/raw-assets/main{m}/ui{tps}": {
+            "isFolder": true,
+            "parent": "/var$REPOS_DIR/idaptik/raw-assets/main{m}",
+            "metaData": {
+                "tps": true
+            },
+            "inheritedMetaData": {
+                "m": true
+            },
+            "transformData": {},
+            "stats": {
+                "date": 1773067379196,
+                "duration": 370.3562929999898,
+                "success": true
+            }
+        },
+        "/var$REPOS_DIR/idaptik/raw-assets/main{m}/ui{tps}/button.png": {
+            "isFolder": false,
+            "parent": "/var$REPOS_DIR/idaptik/raw-assets/main{m}/ui{tps}",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true
+            },
+            "transformData": {},
+            "hash": "33gC"
+        },
+        "/var$REPOS_DIR/idaptik/raw-assets/main{m}/ui{tps}/icon-pause.png": {
+            "isFolder": false,
+            "parent": "/var$REPOS_DIR/idaptik/raw-assets/main{m}/ui{tps}",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true
+            },
+            "transformData": {},
+            "hash": "6xk80g"
+        },
+        "/var$REPOS_DIR/idaptik/raw-assets/main{m}/ui{tps}/icon-settings.png": {
+            "isFolder": false,
+            "parent": "/var$REPOS_DIR/idaptik/raw-assets/main{m}/ui{tps}",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true
+            },
+            "transformData": {},
+            "hash": "xq0X7Q"
+        },
+        "/var$REPOS_DIR/idaptik/raw-assets/main{m}/ui{tps}/rounded-rectangle.png": {
+            "isFolder": false,
+            "parent": "/var$REPOS_DIR/idaptik/raw-assets/main{m}/ui{tps}",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true
+            },
+            "transformData": {},
+            "hash": "fUycdg"
+        },
+        ".assetpack/texture-packer/main{m}/ui.png": {
+            "isFolder": false,
+            "transformParent": "/var$REPOS_DIR/idaptik/raw-assets/main{m}/ui{tps}",
+            "metaData": {
+                "mIgnore": true,
+                "nomip": true
+            },
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true
+            },
+            "transformData": {}
+        },
+        ".assetpack/compress/main{m}/ui.png": {
+            "isFolder": false,
+            "transformParent": ".assetpack/texture-packer/main{m}/ui.png",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true,
+                "mIgnore": true,
+                "nomip": true
+            },
+            "transformData": {}
+        },
+        "/var$REPOS_DIR/idaptik/public/assets/main/ui.png": {
+            "isFolder": false,
+            "transformParent": ".assetpack/compress/main{m}/ui.png",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true,
+                "mIgnore": true,
+                "nomip": true
+            },
+            "transformData": {}
+        },
+        ".assetpack/compress/main{m}/ui.webp": {
+            "isFolder": false,
+            "transformParent": ".assetpack/texture-packer/main{m}/ui.png",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true,
+                "mIgnore": true,
+                "nomip": true
+            },
+            "transformData": {}
+        },
+        "/var$REPOS_DIR/idaptik/public/assets/main/ui.webp": {
+            "isFolder": false,
+            "transformParent": ".assetpack/compress/main{m}/ui.webp",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true,
+                "mIgnore": true,
+                "nomip": true
+            },
+            "transformData": {}
+        },
+        ".assetpack/texture-packer/main{m}/ui.json": {
+            "isFolder": false,
+            "transformParent": "/var$REPOS_DIR/idaptik/raw-assets/main{m}/ui{tps}",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true
+            },
+            "transformData": {
+                "page": 0
+            }
+        },
+        ".assetpack/texture-packer-compress/main{m}/ui.png.json": {
+            "isFolder": false,
+            "transformParent": ".assetpack/texture-packer/main{m}/ui.json",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true
+            },
+            "transformData": {
+                "page": 0
+            }
+        },
+        ".assetpack/json/main{m}/ui.png.json": {
+            "isFolder": false,
+            "transformParent": ".assetpack/texture-packer-compress/main{m}/ui.png.json",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true
+            },
+            "transformData": {
+                "page": 0
+            }
+        },
+        "/var$REPOS_DIR/idaptik/public/assets/main/ui.png.json": {
+            "isFolder": false,
+            "transformParent": ".assetpack/json/main{m}/ui.png.json",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true
+            },
+            "transformData": {
+                "page": 0
+            }
+        },
+        ".assetpack/texture-packer-compress/main{m}/ui.webp.json": {
+            "isFolder": false,
+            "transformParent": ".assetpack/texture-packer/main{m}/ui.json",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true
+            },
+            "transformData": {
+                "page": 0
+            }
+        },
+        ".assetpack/json/main{m}/ui.webp.json": {
+            "isFolder": false,
+            "transformParent": ".assetpack/texture-packer-compress/main{m}/ui.webp.json",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true
+            },
+            "transformData": {
+                "page": 0
+            }
+        },
+        "/var$REPOS_DIR/idaptik/public/assets/main/ui.webp.json": {
+            "isFolder": false,
+            "transformParent": ".assetpack/json/main{m}/ui.webp.json",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true
+            },
+            "transformData": {
+                "page": 0
+            }
+        },
+        ".assetpack/texture-packer/main{m}/ui@0.5x.png": {
+            "isFolder": false,
+            "transformParent": "/var$REPOS_DIR/idaptik/raw-assets/main{m}/ui{tps}",
+            "metaData": {
+                "mIgnore": true,
+                "nomip": true
+            },
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true
+            },
+            "transformData": {}
+        },
+        ".assetpack/compress/main{m}/ui@0.5x.png": {
+            "isFolder": false,
+            "transformParent": ".assetpack/texture-packer/main{m}/ui@0.5x.png",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true,
+                "mIgnore": true,
+                "nomip": true
+            },
+            "transformData": {}
+        },
+        "/var$REPOS_DIR/idaptik/public/assets/main/ui@0.5x.png": {
+            "isFolder": false,
+            "transformParent": ".assetpack/compress/main{m}/ui@0.5x.png",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true,
+                "mIgnore": true,
+                "nomip": true
+            },
+            "transformData": {}
+        },
+        ".assetpack/compress/main{m}/ui@0.5x.webp": {
+            "isFolder": false,
+            "transformParent": ".assetpack/texture-packer/main{m}/ui@0.5x.png",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true,
+                "mIgnore": true,
+                "nomip": true
+            },
+            "transformData": {}
+        },
+        "/var$REPOS_DIR/idaptik/public/assets/main/ui@0.5x.webp": {
+            "isFolder": false,
+            "transformParent": ".assetpack/compress/main{m}/ui@0.5x.webp",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true,
+                "mIgnore": true,
+                "nomip": true
+            },
+            "transformData": {}
+        },
+        ".assetpack/texture-packer/main{m}/ui@0.5x.json": {
+            "isFolder": false,
+            "transformParent": "/var$REPOS_DIR/idaptik/raw-assets/main{m}/ui{tps}",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true
+            },
+            "transformData": {
+                "page": 0
+            }
+        },
+        ".assetpack/texture-packer-compress/main{m}/ui@0.5x.png.json": {
+            "isFolder": false,
+            "transformParent": ".assetpack/texture-packer/main{m}/ui@0.5x.json",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true
+            },
+            "transformData": {
+                "page": 0
+            }
+        },
+        ".assetpack/json/main{m}/ui@0.5x.png.json": {
+            "isFolder": false,
+            "transformParent": ".assetpack/texture-packer-compress/main{m}/ui@0.5x.png.json",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true
+            },
+            "transformData": {
+                "page": 0
+            }
+        },
+        "/var$REPOS_DIR/idaptik/public/assets/main/ui@0.5x.png.json": {
+            "isFolder": false,
+            "transformParent": ".assetpack/json/main{m}/ui@0.5x.png.json",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true
+            },
+            "transformData": {
+                "page": 0
+            }
+        },
+        ".assetpack/texture-packer-compress/main{m}/ui@0.5x.webp.json": {
+            "isFolder": false,
+            "transformParent": ".assetpack/texture-packer/main{m}/ui@0.5x.json",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true
+            },
+            "transformData": {
+                "page": 0
+            }
+        },
+        ".assetpack/json/main{m}/ui@0.5x.webp.json": {
+            "isFolder": false,
+            "transformParent": ".assetpack/texture-packer-compress/main{m}/ui@0.5x.webp.json",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true
+            },
+            "transformData": {
+                "page": 0
+            }
+        },
+        "/var$REPOS_DIR/idaptik/public/assets/main/ui@0.5x.webp.json": {
+            "isFolder": false,
+            "transformParent": ".assetpack/json/main{m}/ui@0.5x.webp.json",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true,
+                "tps": true
+            },
+            "transformData": {
+                "page": 0
+            }
+        },
+        "/var$REPOS_DIR/idaptik/raw-assets/preload{m}": {
+            "isFolder": true,
+            "parent": "/var$REPOS_DIR/idaptik/raw-assets",
+            "metaData": {
+                "m": true
+            },
+            "inheritedMetaData": {},
+            "transformData": {},
+            "stats": {
+                "date": 1773067379198,
+                "duration": 0.06603200000245124,
+                "success": true
+            }
+        },
+        "/var$REPOS_DIR/idaptik/raw-assets/preload{m}/logo.svg": {
+            "isFolder": false,
+            "parent": "/var$REPOS_DIR/idaptik/raw-assets/preload{m}",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true
+            },
+            "transformData": {},
+            "stats": {
+                "date": 1773067379198,
+                "duration": 0.4754949999623932,
+                "success": true
+            },
+            "hash": "LmftHw"
+        },
+        "/var$REPOS_DIR/idaptik/public/assets/preload/logo.svg": {
+            "isFolder": false,
+            "transformParent": "/var$REPOS_DIR/idaptik/raw-assets/preload{m}/logo.svg",
+            "metaData": {},
+            "inheritedMetaData": {
+                "m": true
+            },
+            "transformData": {}
+        }
+    }
+}

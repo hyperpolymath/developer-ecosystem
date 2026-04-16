@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# wokelangiser manifest for idaptik-rescript13-staging
+
+[project]
+name = "idaptik-rescript13-staging"
+
+[consent]
+gdpr = true
+ccpa = true
+default-state = "opt-out"
+categories = ["functional", "analytics", "gameplay-telemetry"]
+
+[accessibility]
+wcag-level = "AA"
+check-contrast = true
+check-alt-text = true
+check-aria = true
+min-contrast-ratio = 4.5
+
+[i18n]
+default-locale = "en-GB"
+supported-locales = ["en-GB", "fr-FR", "de-DE", "es-ES", "ja-JP"]
+extract-strings = true
+
+[report]
+format = "text"

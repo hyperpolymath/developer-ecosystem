@@ -1,0 +1,26 @@
+[package]
+name = "string-union-gen"
+version = "0.1.0"
+edition = "2021"
+description = "Generate string conversion functions for ReScript polymorphic variants"
+license = "LicenseRef-PMPL-1.0-or-later"
+repository = "https://github.com/hyperpolymath/rescript-string-power"
+authors = ["Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>"]
+keywords = ["rescript", "codegen", "string", "variants"]
+categories = ["development-tools", "command-line-utilities"]
+
+[[bin]]
+name = "string-union-gen"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+walkdir = "2"
+regex = "1"
+colored = "2"
+notify = { version = "6", default-features = false, features = ["macos_kqueue"] }
+
+[profile.release]
+lto = true
+strip = true
+codegen-units = 1

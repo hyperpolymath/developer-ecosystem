@@ -1,0 +1,114 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Mustfile (A2ML Canonical)
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath)
+
+@abstract:
+Physical State contract for IDApTIK — asymmetric co-op stealth
+puzzle-platformer and adaptive game engine ecosystem.
+ReScript 12.2.0 + Deno + PixiJS 8 + Elixir/Phoenix sync server.
+@end
+
+@requires:
+- section: Core-Files
+- section: Source-Quality
+- section: Build
+- section: Banned
+@end
+
+## Core-Files
+
+### license-present
+- description: LICENSE file must exist
+- run: test -f LICENSE
+- severity: critical
+
+### readme-present
+- description: README must exist
+- run: test -f README.adoc || test -f README.md
+- severity: critical
+
+### security-md
+- description: SECURITY.md must exist
+- run: test -f SECURITY.md
+- severity: critical
+
+### rescript-config
+- description: rescript.json must exist (v13-clean config)
+- run: test -f rescript.json
+- severity: critical
+
+### deno-config
+- description: deno.json must exist (runtime + package management)
+- run: test -f deno.json
+- severity: critical
+
+### manifest-exists
+- description: Asset manifest must exist
+- run: test -f src/manifest.json
+- severity: critical
+
+### main-entry
+- description: Main.res entry point must exist
+- run: test -f src/Main.res
+- severity: critical
+
+## Source-Quality
+
+### no-deprecated-js-apis
+- description: No deprecated Js.* APIs (must use @rescript/core)
+- run: grep -rn 'Js\.\(Dict\|Array2\|String2\|Math\|Float\|Int\|Console\)\.' src/ --include='*.res' | wc -l | grep -q '^0$'
+- severity: critical
+
+### no-belt-apis
+- description: Belt is banned — use @rescript/core equivalents
+- run: grep -rn 'Belt\.' src/ --include='*.res' | wc -l | grep -q '^0$'
+- severity: critical
+
+### spdx-headers
+- description: ReScript source files should have SPDX headers
+- run: find src/ -name '*.res' -not -name '*.res.mjs' | head -30 | xargs -r grep -L 'SPDX-License-Identifier' | wc -l | grep -q '^0$'
+- severity: warning
+
+### vm-source-integrity
+- description: VM source in vm/lib/ocaml/ must exist (NOT build artifacts)
+- run: test -d vm/lib/ocaml && find vm/lib/ocaml -name '*.res' | wc -l | grep -v '^0$'
+- severity: critical
+
+## Build
+
+### rescript-compiles
+- description: ReScript must compile without errors
+- run: deno task res:build 2>&1 | tail -1 | grep -qv 'Error'
+- severity: critical
+
+### shared-tests-pass
+- description: Shared module tests must pass
+- run: test -d shared/tests
+- severity: warning
+
+## Banned
+
+### no-dockerfile
+- description: No Dockerfiles (use Containerfile)
+- run: test ! -f Dockerfile
+- severity: critical
+
+### no-makefile
+- description: No Makefiles (use Justfile)
+- run: test ! -f Makefile
+- severity: critical
+
+### no-npm-lock
+- description: No package-lock.json (Deno manages deps)
+- run: test ! -f package-lock.json
+- severity: critical
+
+### no-node-modules
+- description: No node_modules/ directory
+- run: test ! -d node_modules
+- severity: critical
+
+### no-env-files
+- description: No .env files committed
+- run: test ! -f .env && test ! -f .env.local
+- severity: critical

@@ -1,0 +1,14 @@
+// Dust.a2ml for v-rest
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Generated: 2026-04-08T19:53:18+01:00
+
+Dust {
+    name: "v-rest"
+    version: "1.0.0"
+    description: "Dust contractile for v-rest"
+    
+    // Basic Dust configuration
+    enabled: true
+    
+    // Repository-specific settings will be added here
+}

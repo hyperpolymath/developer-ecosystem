@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<!--
+  index.html — HTML shell for the IDApTIK Universal Modding Studio.
+
+  This is the entry point loaded by the Gossamer webview. It sets up the
+  viewport, loads the compiled ReScript application (App.res.mjs), and
+  provides a minimal DOM skeleton that the ReScript UI mounts into.
+
+  The actual UI is built in ReScript (src/App.res) and compiled to ES
+  modules. Gossamer serves this file from the frontendDist directory.
+
+  Author: Jonathan D.A. Jewell
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IDApTIK Universal Modding Studio</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Minimal fallback styles — the ReScript app provides the full UI. */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: #0f1117;
+      color: #e0e0e0;
+    }
+    #root {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    /* Loading state — shown until the ReScript app mounts. */
+    .ums-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      font-size: 1.2rem;
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body>
+  <!-- The ReScript app mounts into this root element. -->
+  <div id="root">
+    <div class="ums-loading">Loading IDApTIK UMS...</div>
+  </div>
+
+  <!--
+    Load the compiled ReScript entry point as an ES module.
+    App.res.mjs is the compiled output of src/App.res.
+    In development, the Gossamer devUrl proxies this; in production,
+    it is served from the frontendDist bundle.
+  -->
+  <script type="module" src="src/App.res.mjs"></script>
+</body>
+</html>

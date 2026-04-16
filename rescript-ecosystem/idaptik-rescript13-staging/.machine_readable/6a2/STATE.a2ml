@@ -1,0 +1,28 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# STATE.a2ml — Project state checkpoint
+# Converted from STATE.scm on 2026-03-15
+
+[metadata]
+project = "idaptik-rescript13-staging"
+version = "0.1.0"
+last-updated = "2026-04-04"
+status = "active"
+
+[project-context]
+name = "idaptik-rescript13-staging"
+completion-percentage = 0
+phase = "In development"
+
+[crg]
+grade = "C"
+achieved-date = "2026-04-04"
+
+[crg.test-categories]
+unit        = { status = "yes", location = "sync-server/test/router_test.exs + shared/tests/deno/", count = "20+" }
+smoke       = { status = "yes", location = "sync-server/test/application_test.exs", count = "3" }
+property    = { status = "yes", location = "sync-server/test/property_test.exs", count = "5" }
+e2e         = { status = "yes", location = "shared/tests/deno/coprocessor_test.js", count = "10+" }
+reflexive   = { status = "yes", location = "sync-server/test/router_test.exs", count = "4" }
+contract    = { status = "yes", location = "sync-server/test/router_test.exs", count = "5" }
+aspect      = { status = "yes", location = "shared/tests/deno/coprocessor_security_test.js", count = "5+" }
+benchmarks  = { status = "yes", location = "shared/tests/deno/benchmark_test.js", count = "10" }

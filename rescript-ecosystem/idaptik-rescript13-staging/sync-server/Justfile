@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Joshua B. Jewell and Jonathan D.A. Jewell
+# IDApTIK Sync Server Justfile
+
+set shell := ["bash", "-uc"]
+
+# Run the server
+run:
+    mix run --no-halt
+
+# Build the project
+build:
+    mix compile
+
+# Run tests
+test:
+    mix test
+
+# Install dependencies
+deps:
+    mix deps.get

@@ -1,0 +1,36 @@
+= v-grpc - Citation Guide
+:toc:
+
+== BibTeX
+
+[source,bibtex]
+----
+@software{v-grpc_2026,
+  author = {Jewell, Jonathan D.A.},
+  title = {v-grpc},
+  year = {2026},
+  url = {https://github.com/hyperpolymath/v-grpc},
+  license = {PMPL-1.0-or-later}
+}
+----
+
+== Harvard Style
+
+Jewell, J.D.A. (2026) _v-grpc_ [Computer software]. Available at: https://github.com/hyperpolymath/v-grpc
+
+== OSCOLA
+
+Jonathan D.A. Jewell, 'v-grpc' (2026) <https://github.com/hyperpolymath/v-grpc>
+
+== MLA
+
+Jewell, Jonathan D.A. "v-grpc." 2026, github.com/hyperpolymath/v-grpc.
+
+== APA 7
+
+Jewell, J.D.A. (2026). _v-grpc_ [Computer software]. GitHub. https://github.com/hyperpolymath/v-grpc
+
+== See Also
+
+* link:../CITATION.cff[CITATION.cff]
+* link:../codemeta.json[codemeta.json]

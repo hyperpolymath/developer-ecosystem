@@ -1,0 +1,49 @@
+{
+  "name": "Broken Facility",
+  "devices": [
+    {
+      "ip": "10.0.1.1",
+      "kind": "server",
+      "label": "Lone Server"
+    },
+    {
+      "ip": "10.0.1.2",
+      "kind": "router",
+      "label": "Edge Router"
+    }
+  ],
+  "zones": [
+    { "name": "LAN" },
+    { "name": "DMZ" }
+  ],
+  "guards": [
+    { "zone": "LAN", "rank": "basic_guard" },
+    { "zone": "GHOST_ZONE", "rank": "enforcer" },
+    { "zone": "PHANTOM_SECTOR", "rank": "sentinel" }
+  ],
+  "zone_transitions": [
+    { "world_x": 3000.0, "target_zone": "DMZ" },
+    { "world_x": 1000.0, "target_zone": "LAN" },
+    { "world_x": 500.0, "target_zone": "LAN" }
+  ],
+  "device_defences": [
+    {
+      "ip": "10.0.1.1",
+      "flags": {
+        "failover_target": "10.99.99.99",
+        "cascade_trap": "10.88.88.88",
+        "mirror_target": null
+      }
+    },
+    {
+      "ip": "10.0.99.1",
+      "flags": {
+        "failover_target": null,
+        "cascade_trap": null,
+        "mirror_target": null
+      }
+    }
+  ],
+  "has_pbx": true,
+  "pbx_ip": "10.0.50.1"
+}

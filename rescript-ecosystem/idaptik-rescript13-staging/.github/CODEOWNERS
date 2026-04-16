@@ -1,0 +1,34 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# IDApTIK Code Owners
+#
+# These users are automatically requested for review when a PR
+# modifies files matching the patterns below.
+#
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default: all changes require review from the project lead
+*                           @JoshuaJewell @hyperpolymath
+
+# Game engine and core systems
+main-game/src/engine/       @JoshuaJewell @hyperpolymath
+main-game/src/bindings/     @JoshuaJewell @hyperpolymath
+
+# Game logic (screens, devices, player)
+main-game/src/app/          @JoshuaJewell @hyperpolymath
+
+# Build system and infrastructure
+main-game/deno.json         @JoshuaJewell @hyperpolymath
+main-game/rescript.json     @JoshuaJewell @hyperpolymath
+main-game/scripts/          @JoshuaJewell @hyperpolymath
+main-game/Containerfile     @JoshuaJewell @hyperpolymath
+
+# CI/CD workflows
+.github/workflows/          @JoshuaJewell @hyperpolymath
+
+# Guix channel
+guix/                       @JoshuaJewell @hyperpolymath
+.guix-channel               @JoshuaJewell @hyperpolymath
+
+# Security-sensitive files
+SECURITY.md                 @JoshuaJewell @hyperpolymath
+.machine_readable/          @JoshuaJewell @hyperpolymath

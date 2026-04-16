@@ -1,0 +1,35 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+name: E2E, Property and Unit Tests
+on:
+  push: { branches: [main] }
+  pull_request: { branches: ['**'] }
+permissions:
+  contents: read
+jobs:
+  e2e:
+    name: E2E tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: denoland/setup-deno@v2
+        with: { deno-version: v2.x }
+      - name: Run E2E tests
+        run: deno run --allow-all tests/e2e_test.js
+  unit:
+    name: Unit tests (TEA)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: denoland/setup-deno@v2
+        with: { deno-version: v2.x }
+      - name: Run unit tests
+        run: deno run --allow-all tests/tea_test.js
+  property:
+    name: Property tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+      - uses: denoland/setup-deno@v2
+        with: { deno-version: v2.x }
+      - name: Run property tests
+        run: deno run --allow-all tests/property_test.js

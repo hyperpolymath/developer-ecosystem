@@ -1,0 +1,14 @@
+// Must.a2ml for v-rest
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Generated: 2026-04-08T19:53:18+01:00
+
+Must {
+    name: "v-rest"
+    version: "1.0.0"
+    description: "Must contractile for v-rest"
+    
+    // Basic Must configuration
+    enabled: true
+    
+    // Repository-specific settings will be added here
+}

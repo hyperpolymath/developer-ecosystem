@@ -1,0 +1,19 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# eclexiaiser manifest for rescript-tea
+
+[project]
+name = "rescript-tea"
+
+[[functions]]
+name = "index"
+source = "src/index.ts"
+energy-budget-mj = 15
+
+[carbon]
+provider = "static"
+region = "GB"
+static-intensity = 200.0
+
+[report]
+format = "text"
+include-recommendations = true

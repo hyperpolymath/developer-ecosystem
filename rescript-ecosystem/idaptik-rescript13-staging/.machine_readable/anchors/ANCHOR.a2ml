@@ -1,0 +1,18 @@
+# ⚓ ANCHOR: idaptik-rescript13-staging
+# This is the canonical authority for the idaptik-rescript13-staging repository.
+
+id: "org.hyperpolymath.idaptik-rescript13-staging"
+version: "1.0.0"
+clade: "unknown"
+status: "active"
+
+# SSG Configuration (Unified boj-server build)
+ssg:
+  engine: "casket"
+  output_dir: "public"
+  boj_trigger: true
+  cartridge: "ssg-mcp"
+
+# Relationships
+parents:
+  - "org.hyperpolymath.boj-server"

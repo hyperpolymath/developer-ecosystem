@@ -1,0 +1,43 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+
+= EXPLAINME — rescript-string-power
+
+A very short orientation for humans arriving at this repository for the
+first time.
+
+== What it is
+
+Two things, shipped together because they address the same gap:
+
+. A **ReScript library** (`src/StringPower.res`) that turns ReScript v13's
+  native tagged-template syntax into something practical: SQL query
+  builders, CSS templates, HTML-safe string interpolation, URL encoders,
+  GraphQL document parsers, React JSX interpolation, and i18n key
+  extraction.
+. A **Rust CLI** (`tools/string-union-gen/`) that scans `.res` files for
+  `@stringUnion`-annotated polymorphic variants and emits companion files
+  with `toString`, `fromString`, and `allValues` helpers — the kind of
+  boilerplate that would otherwise need a PPX.
+
+== Why they live in one repo
+
+The library demonstrates how far tagged templates can go without PPX. The
+CLI covers the one case where a ReScript PPX is usually reached for — string
+union conversion. Together they make a coherent "no PPX required" story.
+
+== Where to start reading
+
+* `README.adoc` — API reference and usage.
+* `docs/AFFINESCRIPT_VS_RESCRIPT.adoc` — why ReScript, not AffineScript.
+* `src/StringPower.res` — the library itself, ~485 lines.
+* `tools/string-union-gen/src/main.rs` — the code generator, ~470 lines.
+* `tests/StringPower_test.res` — ReScript test suite.
+* `TEST-NEEDS.md` — the six CRG Grade B test targets and their status.
+
+== What it is not
+
+* Not a PPX. Deliberately.
+* Not a replacement for `rescript-embed-lang`; it complements it.
+* Not a typed SQL library. For compile-time query validation, use
+  `pgtyped-rescript` alongside this.

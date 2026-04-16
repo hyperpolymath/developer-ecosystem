@@ -1,0 +1,58 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# 0-AI-MANIFEST.a2ml — Universal AI Agent Entry Point
+# IDApTIK (IDApixiTIK) — Educational network simulation game
+#
+# READ THIS FILE FIRST. This is the canonical entry point for all AI agents.
+#
+# CRITICAL: This is the LIVE game repo. Your son depends on this.
+# DO NOT experiment here. Use idaptik-rescript13-staging for testing.
+
+[manifest]
+version = "1.0"
+project = "idaptik"
+type = "educational-game"
+
+[canonical-locations]
+state-files = ".machine_readable/"
+source = "src/"
+main-game = "main-game/"
+shared = "shared/"
+vm = "vm/"
+dlc = "dlc/"
+community = ".github/"
+
+[critical-invariants]
+invariant-1 = "This is the LIVE repo — DO NOT break the game"
+invariant-2 = "State files in .machine_readable/ ONLY — never in root"
+invariant-3 = "License: PMPL-1.0-or-later throughout"
+invariant-4 = "Author: Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>"
+invariant-5 = "Build with: deno task dev (NOT npm or bun)"
+invariant-6 = "ReScript source in src/ — no TypeScript"
+invariant-7 = "For experimental changes, use idaptik-rescript13-staging instead"
+
+[structure]
+src-app = "src/app/"           # Game application code
+src-engine = "src/engine/"     # Game engine
+src-bindings = "src/bindings/" # PixiJS/sound bindings
+main-game = "main-game/"       # Main game content
+shared = "shared/"             # Shared modules
+vm = "vm/"                     # Virtual machine
+dlc = "dlc/"                   # Downloadable content
+
+[panll-mapping]
+# IDApTIK is a PanLL module candidate
+# Universal Modding Studio is a key target for PanLL-first development
+panel-L = "Game rules, level constraints, network topology validation"
+panel-N = "AI companions (Moletaire), adaptive difficulty, learning analytics"
+panel-W = "Game state, player progress, network simulation results"
+
+[session-protocol]
+on-enter = [
+  "Read this manifest",
+  "Confirm: LIVE repo or staging?",
+  "Read .machine_readable/STATE.scm for current status",
+]
+on-exit = [
+  "Verify game still builds: deno task res:build",
+  "Update .machine_readable/STATE.scm with progress",
+]

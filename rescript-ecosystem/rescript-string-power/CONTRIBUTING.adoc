@@ -1,0 +1,75 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+
+= Contributing to rescript-string-power
+
+Thank you for considering a contribution. This file documents how to work on
+the repository locally and what is expected of patches submitted for review.
+
+== Prerequisites
+
+* `just` (command runner)
+* `rustc` + `cargo` (stable)
+* `deno` (latest)
+* `bash`, `shellcheck` (for structural and lint tests)
+
+You do **not** need Node.js, npm, bun, or yarn to run the test suite.
+You do need the ReScript compiler (`rescript` from npm) if you want to
+rebuild the ReScript library itself.
+
+== Local workflow
+
+[source,bash]
+----
+# List everything the justfile can do
+just
+
+# Run the full CRG Grade B test suite (6 independent targets)
+just test
+
+# Individual targets
+just test-structure   # T1 — bash structural checks
+just test-unit        # T2 — cargo test (Rust CLI unit tests)
+just test-e2e         # T3 — CLI invoked on a real fixture
+just test-property    # T4 — deno property-style tests
+just test-bench       # T5 — deno benchmarks
+just test-lint        # T6 — clippy, fmt check, shellcheck
+
+# Lint + format
+just fmt
+just lint
+----
+
+== Style
+
+* **UK English** in all documentation (colour, licence, analyse, initialise).
+* **AsciiDoc** preferred over Markdown for long-form documentation; Markdown
+  is acceptable for short policy files (`SECURITY.md`, `CODE_OF_CONDUCT.md`).
+* **No PPX** in the ReScript library. The point of this library is that PPX
+  is not necessary.
+* **SPDX headers** on every new source file.
+* **Deno-first** for any new JavaScript tooling.
+
+== Patch checklist
+
+Before opening a pull request:
+
+. `just test` passes (all 6 targets green).
+. `just lint` is clean.
+. New source files carry an SPDX header.
+. Any new behaviour has at least one test exercising it.
+. The Component Readiness Grade (`READINESS.md`) is not silently lowered.
+
+== Release process
+
+. Bump the version in `package.json`, `tools/string-union-gen/Cargo.toml`, and
+  `CHANGELOG.adoc`.
+. Tag the release: `git tag -a v0.x.y -m "Release v0.x.y"`.
+. Push the tag: `git push origin v0.x.y`.
+. The GitHub release workflow handles the rest.
+
+== Licensing of contributions
+
+By submitting a pull request you agree that your contribution will be
+licensed under the Palimpsest License v1.0-or-later (PMPL-1.0-or-later),
+matching the rest of the repository.

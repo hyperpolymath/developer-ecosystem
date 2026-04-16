@@ -1,0 +1,24 @@
+{
+  "applicability": [
+    "individual",
+    "team"
+  ],
+  "capabilities": {
+    "http": {
+      "description": "Staging HTTP environment for migrating the IDApTIK game engine to ReScript 13.",
+      "endpoint": "/api",
+      "panel_compatible": true,
+      "protocol": "http",
+      "requires_auth": false,
+      "type": "http"
+    }
+  },
+  "consumes": [
+    "octad-storage"
+  ],
+  "endpoints": {},
+  "groove_version": "1",
+  "health": "/health",
+  "service_id": "",
+  "service_version": "0.1.0"
+}

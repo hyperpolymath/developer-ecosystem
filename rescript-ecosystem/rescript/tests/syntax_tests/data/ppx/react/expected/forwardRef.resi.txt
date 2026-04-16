@@ -1,0 +1,91 @@
+@@jsxConfig({version: 4, mode: "classic"})
+
+module V4C: {
+  module FancyInput: {
+    @res.jsxComponentProps
+    type props<'className, 'children, 'ref> = {
+      className?: 'className,
+      children: 'children,
+      ref?: 'ref,
+    }
+
+    let make: React.component<props<string, React.element, ReactDOM.Ref.currentDomRef>>
+  }
+
+  module ForwardRef: {
+    @res.jsxComponentProps
+    type props<'ref> = {
+      ref?: 'ref,
+    }
+
+    let make: React.component<props<React.ref<Js.Nullable.t<inputRef>>>>
+  }
+}
+
+module V4CUncurried: {
+  module FancyInput: {
+    @res.jsxComponentProps
+    type props<'className, 'children, 'ref> = {
+      className?: 'className,
+      children: 'children,
+      ref?: 'ref,
+    }
+
+    let make: React.component<props<string, React.element, ReactDOM.Ref.currentDomRef>>
+  }
+
+  module ForwardRef: {
+    @res.jsxComponentProps
+    type props<'ref> = {
+      ref?: 'ref,
+    }
+
+    let make: React.component<props<React.ref<Js.Nullable.t<inputRef>>>>
+  }
+}
+
+@@jsxConfig({version: 4, mode: "automatic"})
+
+module V4A: {
+  module FancyInput: {
+    @res.jsxComponentProps
+    type props<'className, 'children, 'ref> = {
+      className?: 'className,
+      children: 'children,
+      ref?: 'ref,
+    }
+
+    let make: React.component<props<string, React.element, ReactDOM.Ref.currentDomRef>>
+  }
+
+  module ForwardRef: {
+    @res.jsxComponentProps
+    type props<'ref> = {
+      ref?: 'ref,
+    }
+
+    let make: React.component<props<React.ref<Js.Nullable.t<inputRef>>>>
+  }
+}
+
+module V4AUncurried: {
+  module FancyInput: {
+    @res.jsxComponentProps
+    type props<'className, 'children, 'ref> = {
+      className?: 'className,
+      children: 'children,
+      ref?: 'ref,
+    }
+
+    let make: React.component<props<string, React.element, ReactDOM.Ref.currentDomRef>>
+  }
+
+  module ForwardRef: {
+    @res.jsxComponentProps
+    type props<'ref> = {
+      ref?: 'ref,
+    }
+
+    let make: React.component<props<React.ref<Js.Nullable.t<inputRef>>>>
+  }
+}

@@ -1,0 +1,15 @@
+node_modules/
+.merlin
+.bsb.lock
+lib/
+*.bs.js
+*.res.mjs
+.DS_Store
+docs/*.html
+
+# Generated string union files
+*__strings.res
+
+# Rust/Cargo
+tools/string-union-gen/target/
+Cargo.lock

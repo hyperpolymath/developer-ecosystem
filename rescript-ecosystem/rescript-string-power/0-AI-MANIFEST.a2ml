@@ -1,0 +1,51 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# 0-AI-MANIFEST.a2ml — Universal entry point for AI agents
+# Read this file FIRST before acting in this repository.
+
+[manifest]
+version = "1.0"
+repo = "rescript-string-power"
+owner = "hyperpolymath"
+purpose = "Tagged template utilities for ReScript (SQL, CSS, GraphQL, i18n, URL, React) plus a Rust CLI that generates string-union converters for polymorphic variants."
+
+[canonical_locations]
+# Source files live here. Do not move them.
+rescript_library = "src/"
+rust_cli = "tools/string-union-gen/"
+rescript_tests = "tests/"
+shell_tests = "tests/"
+documentation = "docs/"
+workflows = ".github/workflows/"
+well_known = ".well-known/"
+
+[critical_invariants]
+# Rules that must NEVER be violated.
+license = "PMPL-1.0-or-later — do NOT relicense. All .res and .rs source files must carry SPDX headers."
+spelling = "UK English throughout documentation (colour, licence, analyse, initialise)."
+package_manager = "Deno is the reference JS runtime. Do NOT add npm / bun / yarn lockfiles."
+ppx = "This library is deliberately PPX-free. Do NOT introduce ReScript PPX dependencies."
+crg_grade = "Grade B is the published claim — preserve 6 independent test targets."
+
+[structure]
+entry_point = "src/StringPower.res"
+cli_entry = "tools/string-union-gen/src/main.rs"
+test_runner = "justfile (just test)"
+
+[grades]
+crg = "B"
+crg_assessed = "2026-04-05"
+crg_standard = "https://github.com/hyperpolymath/standards/tree/main/component-readiness-grades"
+
+[lifecycle.on_enter]
+read_files = [
+  "0-AI-MANIFEST.a2ml",
+  "READINESS.md",
+  "TEST-NEEDS.md",
+  "README.adoc",
+]
+
+[lifecycle.on_exit]
+run_tests = "just test"
+verify_grade = "just crg-grade"

@@ -1,0 +1,107 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# RSR Anti-Pattern CI Check
+# SPDX-License-Identifier: PMPL-1.0-or-later
+#
+# Enforces: No TypeScript, No Go, No Python (except SaltStack), No npm
+# Allows: ReScript, Deno, WASM, Rust, OCaml, Haskell, Guile/Scheme
+
+name: RSR Anti-Pattern Check
+
+on:
+  push:
+    branches: [main, master, develop]
+  pull_request:
+    branches: [main, master, develop]
+
+
+permissions:
+  contents: read
+
+jobs:
+  antipattern-check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Check for TypeScript
+        run: |
+          # Exclude: node_modules, bindings/deno (Deno FFI), .d.ts (type decls),
+          # and src/engine/ + src/app/ legacy TS (pre-migration Pixi.js engine).
+          # The legacy TS files are tracked in issue #28 follow-up for ReScript migration.
+          TS_FILES=$(find . \( -name "*.ts" -o -name "*.tsx" \) \
+            | grep -v node_modules \
+            | grep -v 'bindings/deno' \
+            | grep -v '\.d\.ts$' \
+            | grep -v '^./src/engine/' \
+            | grep -v '^./src/app/' \
+            | grep -v '^./src/main\.ts$' \
+            || true)
+          if [ -n "$TS_FILES" ]; then
+            echo "❌ TypeScript files detected outside legacy src/ - use ReScript instead"
+            echo "$TS_FILES"
+            exit 1
+          fi
+          echo "✅ No new TypeScript files (legacy src/ engine excluded during migration)"
+
+      - name: Check for Go
+        run: |
+          if find . -name "*.go" | grep -q .; then
+            echo "❌ Go files detected - use Rust/WASM instead"
+            find . -name "*.go"
+            exit 1
+          fi
+          echo "✅ No Go files"
+
+      - name: Check for Python (non-SaltStack)
+        run: |
+          PY_FILES=$(find . -name "*.py" | grep -v salt | grep -v _states | grep -v _modules | grep -v pillar | grep -v venv | grep -v __pycache__ || true)
+          if [ -n "$PY_FILES" ]; then
+            echo "❌ Python files detected - only allowed for SaltStack"
+            echo "$PY_FILES"
+            exit 1
+          fi
+          echo "✅ No non-SaltStack Python files"
+
+      - name: Check for npm lockfiles
+        run: |
+          if [ -f "yarn.lock" ]; then
+            echo "❌ yarn lockfile detected - use Deno instead"
+            exit 1
+          fi
+          # package-lock.json tolerated during TS→ReScript migration (deno.json coexists)
+          if [ -f "package-lock.json" ] && [ ! -f "deno.json" ]; then
+            echo "❌ package-lock.json without deno.json - use Deno instead"
+            exit 1
+          fi
+          echo "✅ No npm lockfiles (package-lock.json tolerated alongside deno.json during migration)"
+
+      - name: Check for tsconfig
+        run: |
+          # tsconfig.json tolerated during TS→ReScript migration when rescript.json/bsconfig.json present
+          if [ -f "tsconfig.json" ] && [ ! -f "rescript.json" ] && [ ! -f "bsconfig.json" ]; then
+            echo "❌ tsconfig.json without rescript config - use ReScript instead"
+            exit 1
+          fi
+          echo "✅ tsconfig check passed (tolerated alongside ReScript during migration)"
+
+      - name: Verify Deno presence (if package.json exists)
+        run: |
+          if [ -f "package.json" ]; then
+            if [ ! -f "deno.json" ] && [ ! -f "deno.jsonc" ]; then
+              echo "⚠️ Warning: package.json without deno.json - migration recommended"
+            fi
+          fi
+          echo "✅ Deno configuration check complete"
+
+      - name: Summary
+        run: |
+          echo "╔════════════════════════════════════════════════════════════╗"
+          echo "║           RSR Anti-Pattern Check Passed ✅                 ║"
+          echo "║                                                            ║"
+          echo "║  Allowed: ReScript, Deno, WASM, Rust, OCaml, Haskell,     ║"
+          echo "║           Guile/Scheme, SaltStack (Python)                 ║"
+          echo "║                                                            ║"
+          echo "║  Blocked: TypeScript, Go, npm, Python (non-Salt)          ║"
+          echo "╚════════════════════════════════════════════════════════════╝"

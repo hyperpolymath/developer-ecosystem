@@ -1,0 +1,51 @@
+@@jsxConfig({version: 4, mode: "classic"})
+
+module V4C1: {
+  type props = sharedProps<string>
+
+  let make: React.component<props>
+}
+
+module V4C2: {
+  type props<'a> = sharedProps<'a>
+
+  let make: React.component<props<_>>
+}
+
+module V4C3: {
+  type props<'a> = sharedProps<string, 'a>
+
+  let make: React.component<props<_>>
+}
+
+module V4C4: {
+  type props = sharedProps
+
+  let make: React.component<props>
+}
+
+@@jsxConfig({version: 4, mode: "automatic"})
+
+module V4A1: {
+  type props = sharedProps<string>
+
+  let make: React.component<props>
+}
+
+module V4A2: {
+  type props<'a> = sharedProps<'a>
+
+  let make: React.component<props<_>>
+}
+
+module V4A3: {
+  type props<'a> = sharedProps<string, 'a>
+
+  let make: React.component<props<_>>
+}
+
+module V4A4: {
+  type props = sharedProps
+
+  let make: React.component<props>
+}

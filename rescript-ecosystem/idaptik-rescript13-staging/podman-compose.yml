@@ -1,0 +1,59 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Joshua B. Jewell and Jonathan D.A. Jewell
+#
+# IDApTIK — Podman Compose (Stapeln-style containerisation)
+#
+# Usage:
+#   podman-compose up --build
+#   podman-compose down
+
+services:
+  game:
+    build:
+      context: .
+      dockerfile: containers/game.Containerfile
+    container_name: idaptik-game
+    ports:
+      - "8080:8080"
+    read_only: true
+    tmpfs:
+      - /tmp:size=16M
+      - /var/cache/nginx:size=32M
+      - /run:size=1M
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/healthz"]
+      interval: 15s
+      timeout: 3s
+      start_period: 5s
+      retries: 3
+    networks:
+      - idaptik
+    restart: unless-stopped
+
+  sync:
+    build:
+      context: .
+      dockerfile: containers/sync-server.Containerfile
+    container_name: idaptik-sync
+    ports:
+      - "4000:4000"
+    environment:
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE:?Set SECRET_KEY_BASE (mix phx.gen.secret)}
+      - PHX_HOST=${PHX_HOST:-localhost}
+      - PORT=4000
+    read_only: true
+    tmpfs:
+      - /tmp:size=64M
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:4000/"]
+      interval: 15s
+      timeout: 3s
+      start_period: 10s
+      retries: 3
+    networks:
+      - idaptik
+    restart: unless-stopped
+
+networks:
+  idaptik:
+    driver: bridge

@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Clade declaration — part of the gv-clade-index registry
+# See: https://github.com/hyperpolymath/gv-clade-index
+
+[identity]
+uuid = "7e140093-a0ef-514c-bdbb-eea0b3551cc3"
+primary-forge = "github"
+primary-owner = "hyperpolymath"
+canonical-name = "v-graphql"
+prefixed-name = "pt-v-graphql"
+
+[clade]
+primary = "pt"
+secondary = ["dx"]
+assigned = "2026-03-16"
+rationale = ""
+
+[forges]
+github = "hyperpolymath/v-graphql"
+gitlab = "hyperpolymath/v-graphql"
+bitbucket = "hyperpolymath/v-graphql"
+
+[lineage]
+type = "standalone"
+parent = "V-lang GraphQL implementation"
+born = "2026-03-16"

@@ -1,0 +1,50 @@
+{
+  "compilerOptions": {
+    "lib": ["deno.window", "deno.unstable"],
+    "strict": true
+  },
+  "lint": {
+    "exclude": [
+      "dist/",
+      "lib/",
+      "node_modules/",
+      "src/**/*.res.mjs"
+    ],
+    "rules": {
+      "tags": ["recommended"]
+    }
+  },
+  "fmt": {
+    "exclude": ["dist/", "lib/", "node_modules/", "src/**/*.res.mjs"],
+    "options": {
+      "useTabs": false,
+      "lineWidth": 88,
+      "indentWidth": 2,
+      "singleQuote": true
+    }
+  },
+  "imports": {
+    "@assetpack/core": "npm:@assetpack/core@1.7.0",
+    "@rescript/core": "npm:@rescript/core@1.6.1",
+    "@rescript/runtime": "npm:@rescript/runtime@12.2.0",
+    "rescript": "npm:rescript@12.2.0",
+    "@esotericsoftware/spine-pixi-v8": "npm:@esotericsoftware/spine-pixi-v8@4.2.74",
+    "@pixi/sound": "npm:@pixi/sound@6.0.1",
+    "@pixi/ui": "npm:@pixi/ui@2.2.2",
+    "motion": "npm:motion@12.4.7",
+    "pixi.js": "npm:pixi.js@8.8.1",
+    "vite": "npm:vite@6.2.0"
+  },
+  "tasks": {
+    "start": "deno task dev",
+    "res:build": "deno run --node-modules-dir=auto --allow-read --allow-write --allow-env --allow-run npm:rescript@12.2.0",
+    "res:clean": "deno run --node-modules-dir=auto --allow-read --allow-write --allow-env --allow-run npm:rescript@12.2.0 clean",
+    "res:dev": "deno run --node-modules-dir=auto --allow-read --allow-write --allow-env --allow-run npm:rescript@12.2.0 -w",
+    "build": "deno task res:build && deno run --node-modules-dir=auto --allow-read --allow-write --allow-env --allow-net --allow-sys --allow-ffi --allow-run npm:vite build --logLevel warn",
+    "dev": "deno task res:dev & deno task dev:vite",
+    "dev:vite": "deno run --node-modules-dir=auto --allow-read --allow-write --allow-env --allow-net --allow-sys --allow-ffi --allow-run npm:vite",
+    "lint": "DENO_NO_PACKAGE_JSON=1 deno lint",
+    "sync-server": "cd sync-server && mix phx.server",
+    "dev:all": "deno task sync-server & deno task dev"
+  }
+}

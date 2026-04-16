@@ -1,0 +1,133 @@
+{
+  "$schema": "https://gossamer.dev/schemas/config/v1",
+  "productName": "IDApTIK UMS",
+  "version": "0.1.0",
+  "identifier": "uk.ac.open.jewell.idaptik-ums",
+  "build": {
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:8000",
+    "beforeDevCommand": "deno task res:build",
+    "beforeBuildCommand": "deno task build"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "IDApTIK Universal Modding Studio",
+        "width": 1400,
+        "height": 900,
+        "minWidth": 1000,
+        "minHeight": 600,
+        "maxWidth": null,
+        "maxHeight": null,
+        "resizable": true,
+        "fullscreen": false,
+        "decorations": true,
+        "transparent": false,
+        "center": true,
+        "alwaysOnTop": false,
+        "visible": true,
+        "url": "/"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost; style-src 'self' 'unsafe-inline'",
+      "capabilities": [
+        "filesystem",
+        "shell",
+        "dialog",
+        "clipboard"
+      ],
+      "capabilityTokens": {
+        "enabled": false,
+        "issuer": "gossamer-runtime",
+        "ttl": 3600
+      },
+      "sandbox": {
+        "enabled": true,
+        "allowExec": false,
+        "allowNetwork": false,
+        "allowFilesystem": true
+      }
+    },
+    "ipc": {
+      "protocol": "json",
+      "bridgeInjection": true,
+      "maxMessageSize": 16777216,
+      "timeout": 30000
+    },
+    "tray": {
+      "enabled": false,
+      "icon": null,
+      "tooltip": null,
+      "menuOnLeftClick": true
+    }
+  },
+  "plugins": {
+    "shell": {
+      "open": true
+    },
+    "dialog": {},
+    "fs": {
+      "scope": {
+        "allow": [
+          "/tmp/idaptik-ums/levels/**",
+          "$HOME/.idaptik-ums/**"
+        ]
+      }
+    }
+  },
+  "bundle": {
+    "active": false,
+    "targets": [
+      "deb",
+      "appimage",
+      "dmg",
+      "nsis"
+    ],
+    "icon": [],
+    "resources": [],
+    "copyright": "Copyright (c) 2026 Jonathan D.A. Jewell",
+    "license": "AGPL-3.0-or-later",
+    "shortDescription": "Visual level editor for the IDApTIK hacking game",
+    "longDescription": "Visual level editor with ABI validation for the IDApTIK asymmetric co-op stealth puzzle-platformer",
+    "linux": {
+      "desktopEntry": true,
+      "category": "Development",
+      "section": "devel",
+      "depends": [],
+      "appimage": {
+        "bundleMediaFramework": false
+      }
+    },
+    "macos": {
+      "bundleIdentifier": "uk.ac.open.jewell.idaptik-ums",
+      "minimumSystemVersion": "11.0",
+      "frameworks": [],
+      "entitlements": null,
+      "signingIdentity": null,
+      "notarization": {
+        "enabled": false,
+        "teamId": null
+      }
+    },
+    "windows": {
+      "webview2": "embed",
+      "certificateThumbprint": null,
+      "wix": {
+        "language": "en-US"
+      },
+      "nsis": {
+        "displayLanguageSelector": false,
+        "installerIcon": null
+      }
+    }
+  },
+  "ephapax": {
+    "modules": [],
+    "region": "app",
+    "linearVerification": true,
+    "regionBoundary": "strict",
+    "preload": []
+  }
+}

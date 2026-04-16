@@ -1,0 +1,14 @@
+// Trust.a2ml for v-rest
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Generated: 2026-04-08T19:53:18+01:00
+
+Trust {
+    name: "v-rest"
+    version: "1.0.0"
+    description: "Trust contractile for v-rest"
+    
+    // Basic Trust configuration
+    enabled: true
+    
+    // Repository-specific settings will be added here
+}

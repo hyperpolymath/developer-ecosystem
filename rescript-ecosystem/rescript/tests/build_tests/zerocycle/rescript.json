@@ -1,0 +1,10 @@
+{
+  "name": "zerocycle",
+  "sources": ["src"],
+  "package-specs": {
+    "module": "esmodule",
+    "in-source": true
+  },
+  "suffix": ".res.js",
+  "dependencies": []
+}

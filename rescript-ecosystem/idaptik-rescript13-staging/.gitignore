@@ -1,0 +1,158 @@
+# RSR-compliant .gitignore
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# IDApTIK monorepo .gitignore
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+.direnv/
+
+# Build (unanchored to match nested monorepo paths)
+target/
+_build/
+/build/
+/dist/
+/out/
+
+# Vite cache
+.vite/
+
+# Dependencies
+node_modules/
+/vendor/
+deps/
+.elixir_ls/
+
+# Rust
+# Cargo.lock  # Keep for binaries
+
+# Elixir
+/cover/
+*.ez
+erl_crash.dump
+*.beam
+
+# ReScript — only ignore ReScript compiler artifacts, anchored per component.
+# Do NOT use an unanchored "lib/" — that would block Elixir lib/ directories.
+main-game/lib/
+shared/lib/
+idaptik-ums/lib/
+/lib/bs/
+/lib/ocaml/
+vm/lib/bs/
+
+# Elixir build + deps for nested components (monorepo — root patterns are anchored)
+idaptik-ums/idaptik-sync-server/_build/
+idaptik-ums/idaptik-sync-server/deps/
+
+# External repo symlinks (development convenience — NOT part of this repo)
+cadre-router
+rescript-ecosystem
+.bsb.lock
+*.res.mjs
+*.res.js
+
+# Idris2
+build/
+
+# Zig
+zig-cache/
+.zig-cache/
+zig-out/
+
+# Nix
+flake.lock
+
+# Secrets
+.env
+.env.*
+*.pem
+*.key
+secrets/
+
+# Test/Coverage
+/coverage/
+htmlcov/
+
+# Logs
+*.log
+/logs/
+firebase-debug.log
+
+# Temp
+/tmp/
+*.tmp
+*.bak
+
+# Crash recovery artifacts
+ai-cli-crash-capture/
+
+# KDE metadata
+.directory
+
+# Sync artifacts
+sync_report*.txt
+
+# Lock files (npm/bun banned — use deno.lock only)
+package-lock.json
+bun.lock
+yarn.lock
+pnpm-lock.yaml
+
+# Vite temp files
+vite.config.*.timestamp-*
+
+# Build logs and stamps
+.idaptik-logs/
+.build-stamp
+
+
+# Julia
+*.jl.cov
+*.jl.mem
+/Manifest.toml
+
+
+# ReScript
+/lib/bs/
+/.bsb.lock
+
+
+# Python (SaltStack only)
+__pycache__/
+*.py[cod]
+.venv/
+
+
+# Ada/SPARK
+*.ali
+/obj/
+/bin/
+
+
+# Haskell
+/.stack-work/
+/dist-newstyle/
+
+
+# Chapel
+*.chpl.tmp.*
+
+
+# Machine-readable locks
+.machine_readable/.locks/
+
+# ReScript/OCaml compiler artifacts
+*.cmt
+*.cmti
+*.cmi
+
+# wokelangiser generated i18n locale files (too large for GitHub)
+generated/wokelangiser/i18n/
+.cache/
+dist/

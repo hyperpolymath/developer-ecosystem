@@ -1,0 +1,488 @@
+= ReScript String Power
+:toc:
+:toc-placement!:
+
+image:https://img.shields.io/badge/CRG-B-green?style=flat-square[CRG B,link=https://github.com/hyperpolymath/standards/tree/main/component-readiness-grades]
+image:https://img.shields.io/badge/licence-PMPL--1.0--or--later-blue?style=flat-square[Licence,link=LICENSE]
+image:https://img.shields.io/badge/ReScript-v13-e6484f?style=flat-square[ReScript v13]
+image:https://img.shields.io/badge/Rust-stable-dea584?style=flat-square[Rust]
+
+Tagged template utilities for ReScript — SQL, CSS, GraphQL, i18n, and more.
+
+*Zero PPX. Pure library. ReScript v13 native syntax.*
+
+toc::[]
+
+== Why This Exists
+
+TypeScript's string handling is genuinely superior to ReScript's in several ways:
+
+[cols="1,1,1"]
+|===
+| Feature | TypeScript | ReScript (before this library)
+
+| Tagged template literals
+| `sql++`SELECT * FROM ${table}++`
+| No equivalent
+
+| Separate statics/dynamics
+| Built into tag function signature
+| Not available
+
+| DSL ecosystems
+| styled-components, graphql-tag, SQL builders
+| Wrapper functions only
+
+| Type-safe interpolation
+| Via generics + template types
+| String concat with manual conversion
+|===
+
+*ReScript added tagged templates* — the syntax exists. What was missing was a library to make them useful.
+
+This library provides:
+
+* **Type-safe interpolation** with explicit value wrappers
+* **SQL query builders** with parameterisation and injection protection
+* **CSS template utilities** with unit helpers and scoping
+* **React element interpolation** for JSX
+* **i18n key extraction** with slot-based translation
+* **URL building** with proper encoding
+* **GraphQL document parsing** with variable/operation extraction
+* **Composable patterns** for building your own DSLs
+
+== Quick Start
+
+[source,bash]
+----
+npm install rescript-string-power
+----
+
+[source,json]
+----
+// rescript.json
+{
+  "bs-dependencies": ["rescript-string-power"]
+}
+----
+
+[source,rescript]
+----
+open StringPower
+
+// Basic formatting
+let msg = Fmt.fmt`Hello ${S("world")}, count: ${I(42)}`
+
+// SQL (parameterised)
+let query = Sql.parameterized`
+  SELECT * FROM users WHERE id = ${Sql.int(userId)}
+`
+// { text: "SELECT * FROM users WHERE id = $1", params: [Int(42)] }
+
+// CSS with units
+let styles = Css.css`
+  padding: ${Css.px(16)};
+  font-size: ${Css.rem(1.0)};
+  color: ${Css.var("primary")};
+`
+
+// React elements
+let welcome = React.jsx`Hello ${React.t(name)}, you have ${React.i(count)} items`
+----
+
+== Design Philosophy
+
+=== Why Wrapper Types?
+
+ReScript doesn't have TypeScript's union literal types or conditional types. We can't write:
+
+[source,typescript]
+----
+// TypeScript - this is impossible in ReScript
+type SqlValue = string | number | boolean | null
+----
+
+So instead we use explicit variant wrappers:
+
+[source,rescript]
+----
+type sqlValue =
+  | Str(string)
+  | Int(int)
+  | Float(float)
+  | Bool(bool)
+  | Null
+----
+
+This is *more* type-safe than TypeScript's approach — you can't accidentally pass the wrong type. It's also self-documenting: `Sql.str(email)` is clearer than a bare `email` that might or might not be escaped.
+
+=== Why Not PPX?
+
+The ReScript team https://forum.rescript-lang.org/t/whats-the-current-view-on-ppx-usage/5068[explicitly discourages PPX] for most use cases:
+
+[quote, zth (ReScript core team)]
+____
+Be aware of the costs and the trade offs, and use PPXes only when the pros clearly offsets the cons. See how far you get without them, even if it means writing more code by hand.
+____
+
+This library proves you can get *very* far without PPX. The only thing PPX could add is:
+
+1. **Compile-time SQL validation** — requires database connection at build time
+2. **Type-level string manipulation** — fundamentally impossible in ML-family type systems
+3. **Implicit conversions** — arguably less safe anyway
+
+=== Statics vs Dynamics
+
+The key insight of tagged templates is separating *static* template parts from *dynamic* interpolated values:
+
+[source,rescript]
+----
+sql`SELECT * FROM ${tableName} WHERE id = ${userId}`
+//  ^                          ^            ^
+//  static[0]                  static[1]    static[2]
+//                  ^                        ^
+//              dynamic[0]              dynamic[1]
+----
+
+Your tag function receives:
+- `statics: array<string>` — the literal text parts (length N)
+- `dynamics: array<'a>` — the interpolated values (length N-1)
+
+This enables:
+- **Parameterised queries** — statics become query structure, dynamics become parameters
+- **Injection prevention** — dynamics are never interpreted as structure
+- **Optimisation** — statics can be cached/compiled once
+
+== API Reference
+
+=== Fmt — Basic Formatting
+
+[source,rescript]
+----
+type universal =
+  | S(string)
+  | I(int)
+  | F(float)
+  | B(bool)
+  | N // null/empty
+
+// Simple interpolation
+Fmt.fmt`Hello ${S(name)}`
+
+// HTML-escaped (XSS-safe)
+Fmt.html`<div>${S(userInput)}</div>`
+
+// Formatting control
+Fmt.format(F(3.14159), Precision(2))  // "3.14"
+Fmt.format(I(42), PadLeft(5, "0"))    // "00042"
+----
+
+=== Sql — Query Building
+
+[source,rescript]
+----
+type sqlValue =
+  | Str(string)   // Escaped string literal
+  | Int(int)
+  | Float(float)
+  | Bool(bool)
+  | Null
+  | Param(string) // Named parameter :name
+  | Raw(string)   // Unescaped (dangerous!)
+
+// Parameterised (recommended)
+let q = Sql.parameterized`
+  SELECT * FROM users WHERE email = ${Sql.str(email)}
+`
+// q.text = "SELECT * FROM users WHERE email = $1"
+// q.params = [Str("user@example.com")]
+
+// With raw table name
+Sql.parameterized`SELECT * FROM ${Sql.raw("users")} WHERE id = ${Sql.int(1)}`
+
+// Safe builder (checks for injection patterns)
+switch Sql.safe`SELECT * FROM users WHERE id = ${Sql.int(id)}` {
+| Ok(query) => execute(query)
+| Error(InjectionAttempt(msg)) => log("Security alert: " ++ msg)
+}
+----
+
+=== Css — Styling
+
+[source,rescript]
+----
+type cssValue =
+  | Px(int)
+  | Rem(float)
+  | Em(float)
+  | Pct(float)
+  | Color(string)
+  | Var(string)   // CSS variable
+  | Raw(string)
+
+// Basic
+Css.css`padding: ${Css.px(16)}; color: ${Css.var("primary")};`
+
+// Scoped (generates unique class name)
+let card = Css.scoped`display: flex; padding: ${Css.rem(1.0)};`
+// card.className = "sp_1"
+// card.styles = ".sp_1 { display: flex; padding: 1rem; }"
+----
+
+=== React — JSX Interpolation
+
+[source,rescript]
+----
+type reactValue =
+  | Text(string)
+  | Int(int)
+  | Float(float)
+  | Element(Jsx.element)
+  | Fragment(array<Jsx.element>)
+
+// In components
+<div>
+  {React.jsx`Welcome ${React.t(name)}, you have ${React.i(count)} items`}
+</div>
+
+// With embedded elements
+React.jsx`Click ${React.el(<Link href="/help">here</Link>)} for help`
+----
+
+=== I18n — Translation Keys
+
+[source,rescript]
+----
+// Define keys with named slots
+let greetingKey = I18n.i18n`Hello ${I18n.slot("name")}, welcome!`
+// { key: "Hello {name}, welcome!", slots: ["name"], ... }
+
+// Apply values
+let greeting = I18n.apply(greetingKey, Dict.fromArray([("name", "Alice")]))
+// "Hello Alice, welcome!"
+----
+
+=== Url — Safe URL Building
+
+[source,rescript]
+----
+// Path segments (encoded)
+Url.url`/users/${Url.path(userId)}/posts`
+
+// Query parameters
+Url.url`/search?${Url.query("q", searchTerm)}&${Url.query("page", "1")}`
+----
+
+=== Gql — GraphQL Documents
+
+[source,rescript]
+----
+let query = Gql.gql`
+  query FindUser($id: ID!) {
+    user(id: $id) { name }
+  }
+`
+// query.operationName = Some("FindUser")
+// query.variables = ["id"]
+// query.source = "query FindUser..."
+----
+
+== Building Custom DSLs
+
+The library is designed for extension. Define your value type and tag function:
+
+[source,rescript]
+----
+module Markdown = {
+  type mdValue =
+    | Text(string)
+    | Bold(string)
+    | Code(string)
+    | Link(string, string)
+
+  let toString = v => switch v {
+    | Text(s) => s
+    | Bold(s) => "**" ++ s ++ "**"
+    | Code(s) => "`" ++ s ++ "`"
+    | Link(text, url) => "[" ++ text ++ "](" ++ url ++ ")"
+  }
+
+  let md: StringPower.tagged<mdValue, string> = (statics, dynamics) => {
+    StringPower.Utils.interleave(statics, dynamics->Array.map(toString))
+  }
+
+  let t = s => Text(s)
+  let b = s => Bold(s)
+  let c = s => Code(s)
+  let link = (text, url) => Link(text, url)
+}
+
+// Usage
+let readme = Markdown.md`
+  # Title
+  This is ${Markdown.b("important")} code: ${Markdown.c("npm install")}
+`
+----
+
+== String Union Generator
+
+The `string-union-gen` CLI tool generates type-safe string conversion functions from `@stringUnion` annotated polymorphic variants.
+
+=== Installation
+
+[source,bash]
+----
+# From crates.io
+cargo install string-union-gen
+
+# Or build from source
+cd tools/string-union-gen
+cargo build --release
+cp target/release/string-union-gen ~/.local/bin/
+----
+
+=== Usage
+
+Annotate your polymorphic variants:
+
+[source,rescript]
+----
+// Status.res
+
+@stringUnion
+type status = [#pending | #active | #completed | #cancelled]
+
+@stringUnion
+type httpMethod = [
+  | @as("GET") #get
+  | @as("POST") #post
+  | @as("DELETE") #delete
+]
+----
+
+Run the generator:
+
+[source,bash]
+----
+string-union-gen -s src/
+
+# Or use just
+just gen
+----
+
+Generated `Status__strings.res`:
+
+[source,rescript]
+----
+// Auto-generated string union converters
+
+let statusToString = (v: Status.status): string => switch v {
+  | #pending => "pending"
+  | #active => "active"
+  | #completed => "completed"
+  | #cancelled => "cancelled"
+}
+
+let stringToStatus = (s: string): option<Status.status> => switch s {
+  | "pending" => Some(#pending)
+  | "active" => Some(#active)
+  | "completed" => Some(#completed)
+  | "cancelled" => Some(#cancelled)
+  | _ => None
+}
+
+let stringToStatusExn = (s: string): Status.status => switch s {
+  | "pending" => #pending
+  | "active" => #active
+  | "completed" => #completed
+  | "cancelled" => #cancelled
+  | _ => Exn.raiseError(`Invalid status: ${s}`)
+}
+
+let allStatusValues: array<Status.status> = [
+  #pending,
+  #active,
+  #completed,
+  #cancelled,
+]
+
+let allStatusStrings: array<string> = [
+  "pending",
+  "active",
+  "completed",
+  "cancelled",
+]
+
+// Similar for httpMethod with @as mappings...
+----
+
+=== CLI Options
+
+[source,bash]
+----
+string-union-gen --help
+
+Options:
+  -s, --source <DIR>     Source directory to scan [default: src]
+  -o, --output <DIR>     Output directory (defaults to same as source)
+  -w, --watch            Watch mode - regenerate on file changes
+      --dry-run          Show what would be generated without writing
+  -v, --verbose          Verbose output
+      --suffix <SUFFIX>  Generated file suffix [default: __strings]
+----
+
+=== Integration with rescript-embed-lang
+
+If you prefer PPX-style integration, you can wire up the generated files via `rescript-embed-lang`:
+
+[source,json]
+----
+// rescript.json
+{
+  "ppx-flags": [["rescript-embed-lang/ppx", "-enable-generic-transform"]]
+}
+----
+
+Then your generated `*__strings.res` files are automatically linked.
+
+== What This Cannot Do
+
+Be honest about limitations:
+
+[cols="1,2"]
+|===
+| Feature | Why Not
+
+| Type-level string manipulation
+| ML type systems don't support literal types the way TypeScript does. `Capitalize<T>` is fundamentally impossible.
+
+| Compile-time SQL validation
+| Would require database connection at build time + PPX. Consider `pgtyped-rescript` + `rescript-embed-lang` for this.
+
+| Implicit type coercion
+| By design — explicit wrappers are safer.
+
+| Zero-cost abstractions
+| Some runtime overhead for variant wrapping. Negligible in practice.
+|===
+
+== Integration with rescript-embed-lang
+
+For *codegen-backed* string DSLs (type-safe SQL, GraphQL with schema validation), combine this library with https://github.com/zth/rescript-embed-lang[rescript-embed-lang]:
+
+1. This library: Runtime utilities, formatting, basic templates
+2. embed-lang: Compile-time code generation from embedded strings
+
+They complement each other — use both.
+
+== Licence
+
+Palimpsest License v1.0-or-later (PMPL-1.0-or-later).
+See link:LICENSE[LICENSE] for the full text.
+
+== Contributing
+
+GitHub: https://github.com/hyperpolymath/rescript-string-power
+
+Issues and pull requests welcome. Please use ReScript v13 syntax and
+UK English spelling in documentation. See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc].

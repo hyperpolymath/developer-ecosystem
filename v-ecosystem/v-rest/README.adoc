@@ -1,0 +1,85 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= v-rest
+Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+:toc:
+:toc-placement: preamble
+
+REST API server exposing Gnosis stateful artefact rendering, with Idris2
+ABI proofs and a Zig FFI layer for future upgrade paths.
+
+NOTE: V-lang has been retired from this ecosystem (2026-04-10). This
+implementation is complete and functional as written. The migration target
+for the transport layer is Zig. This work is offered to the V community
+under PMPL-1.0-or-later — see the
+link:https://github.com/hyperpolymath/developer-ecosystem/blob/main/v-ecosystem/TRANSFER.adoc[v-ecosystem TRANSFER.adoc]
+for the full handoff bundle.
+
+== Overview
+
+`v-rest` wraps the Gnosis template rendering engine behind a conventional
+REST interface. Four endpoints:
+
+[cols="1,1,3"]
+|===
+| Method | Path | Purpose
+
+| `GET`  | `/`        | API discovery — service name, version, endpoint list
+| `POST` | `/render`  | Render a template against SCM context data
+| `GET`  | `/context` | Dump all resolved context key-value pairs (`?scm=path`)
+| `GET`  | `/health`  | Health check — reports Gnosis version and path
+|===
+
+The Gnosis backend is invoked via `os.execute`. The `GNOSIS_BIN` environment
+variable overrides the binary path (useful for testing).
+
+== Architecture
+
+[cols="1,3"]
+|===
+| Layer | Detail
+
+| *Transport* | V-lang `net.http` — conventional REST/JSON
+| *ABI* | Idris2 (`src/abi/`) — `Types.idr`, `Layout.idr`, `Foreign.idr`; `Handle` with `So (ptr /= 0)`, `Result` enum with round-trip proofs, `%default total`
+| *FFI* | Zig (`ffi/zig/`) — upgrade path to native transport without V
+| *Backend* | Gnosis CLI — path overridable via `GNOSIS_BIN`
+|===
+
+== ABI Proof Framework (In Progress)
+
+The Idris2 ABI layer (`src/abi/`) provides a proof framework — the structure
+and obligations are in place but not all proofs are complete:
+
+* `Types.idr` — complete: `Handle` with `So (ptr /= 0)`, `Result` enum,
+  platform-aware `ptrSize`, `%default total`
+* `Layout.idr` — in progress: memory layout verification structure is present;
+  several proof obligations remain as documented holes (not hidden with
+  `believe_me` — the gaps are explicitly annotated)
+* `Foreign.idr` — in progress: `%foreign` C bindings declared; callback
+  safety implementation noted as TODO
+
+The framework is sound and the obligations are clearly described — it is
+genuine in-progress verification work, not a finished proof.
+
+== Differences from v-grpc
+
+[cols="1,1"]
+|===
+| v-rest | v-grpc
+
+| Standard REST/JSON — `Content-Type: application/json` | gRPC-Web — `Content-Type: application/grpc+json`
+| GET/POST with query params | POST-only, path-based method dispatch
+| No stub generator | Includes `v-protoc` proto-to-stub generator
+| `/context?scm=path` query param | `Context` method takes JSON body
+|===
+
+Both repos wrap the same Gnosis CLI backend with the same Idris2 ABI + Zig FFI scaffold.
+
+== Related
+
+* link:https://github.com/hyperpolymath/v-grpc[v-grpc] — sibling gRPC-Web transport for the same backend
+* `developer-ecosystem/v-ecosystem/` — full V-lang ecosystem handoff bundle
+
+== License
+
+PMPL-1.0-or-later (MPL-2.0 is the automatic legal fallback until PMPL is
+formally recognised). See link:LICENSE[LICENSE].

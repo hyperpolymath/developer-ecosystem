@@ -1,0 +1,22 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Dependabot configuration for automated dependency updates
+version: 2
+updates:
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "github-actions"
+
+  # npm (main-game — Deno uses npm registry)
+  - package-ecosystem: "npm"
+    directory: "/main-game"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "javascript"
+    open-pull-requests-limit: 5

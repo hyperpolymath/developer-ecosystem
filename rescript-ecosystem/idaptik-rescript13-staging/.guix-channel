@@ -1,0 +1,15 @@
+; SPDX-License-Identifier: PMPL-1.0-or-later
+; IDApTIK Guix channel — reproducible development environment
+;
+; Usage:
+;   guix pull -C guix/channels.scm
+;   guix shell -m guix/manifest.scm
+;
+; Or add to ~/.config/guix/channels.scm:
+;   (channel
+;     (name 'idaptik)
+;     (url "https://github.com/hyperpolymath/idaptik.git"))
+
+(channel
+ (version 0)
+ (directory "guix"))

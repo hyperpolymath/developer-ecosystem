@@ -1,0 +1,82 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= v-grpc
+Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+:toc:
+:toc-placement: preamble
+
+gRPC-Web style JSON-over-HTTP server exposing Gnosis stateful artefact
+rendering, with Idris2 ABI proofs and a Zig FFI layer for the planned
+HTTP/2 + Protobuf upgrade path.
+
+NOTE: V-lang has been retired from this ecosystem (2026-04-10). This
+implementation is complete and functional as written. The migration target
+for the transport layer is Zig. This work is offered to the V community
+under PMPL-1.0-or-later — see link:TRANSFER.adoc[TRANSFER.adoc] in the
+`developer-ecosystem/v-ecosystem` handoff bundle.
+
+== Overview
+
+`v-grpc` wraps the Gnosis template rendering engine behind a gRPC-Web
+compatible interface. Clients send JSON-over-HTTP POST requests to
+service/method paths; the server dispatches to the Gnosis CLI and streams
+results back.
+
+Three RPC methods:
+
+[cols="2,1,3"]
+|===
+| Path | Method | Purpose
+
+| `/gnosis.GnosisService/Render` | POST | Render a template against SCM context data
+| `/gnosis.GnosisService/Context` | POST | Dump all resolved context key-value pairs
+| `/gnosis.GnosisService/Health` | POST | Health check — reports Gnosis version
+|===
+
+Also includes `v-protoc` (`src/generator.v`) — a stub generator that reads
+`.proto` files and emits V-lang service stubs wired to this runtime.
+
+== Architecture
+
+[cols="1,3"]
+|===
+| Layer | Detail
+
+| *Transport* | V-lang `net.http` — JSON-over-HTTP, gRPC-Web compatible
+| *ABI* | Idris2 (`src/abi/`) — `Types.idr`, `Layout.idr`, `Foreign.idr`; `Handle` with `So (ptr /= 0)`, `Result` enum with round-trip proofs
+| *FFI* | Zig (`ffi/zig/`) — planned HTTP/2 + Protobuf wire transport
+| *Backend* | Gnosis CLI — invoked via `os.execute`; path overridable via `GNOSIS_BIN`
+|===
+
+== ABI Proof Framework (In Progress)
+
+The Idris2 ABI layer (`src/abi/`) provides a proof framework — the structure
+and obligations are in place but not all proofs are complete:
+
+* `Types.idr` — complete: `Handle` with `So (ptr /= 0)`, `Result` enum,
+  platform-aware `ptrSize`, `%default total`
+* `Layout.idr` — in progress: memory layout verification structure is present;
+  several proof obligations remain as documented holes (not hidden with
+  `believe_me` — the gaps are explicitly annotated)
+* `Foreign.idr` — in progress: `%foreign` C bindings declared; callback
+  safety implementation noted as TODO
+
+The framework is sound and the obligations are clearly described — it is
+genuine in-progress verification work, not a finished proof.
+
+== Migration Path
+
+The V-lang transport layer (`src/grpc.v`) is a complete, working
+JSON-over-HTTP implementation. The intended migration to Zig:
+
+1. Replace `src/grpc.v` with a Zig HTTP/2 server using the existing `ffi/zig/` scaffold
+2. Wire the existing Idris2 ABI (`src/abi/`) to the Zig layer — no ABI changes needed
+3. Switch from JSON-over-HTTP to binary Protobuf using `src/generator.v` output
+
+== Related
+
+* link:https://github.com/hyperpolymath/v-rest[v-rest] — sibling REST transport for the same Gnosis backend
+* `developer-ecosystem/v-ecosystem/` — full V-lang ecosystem handoff bundle
+
+== License
+
+PMPL-1.0-or-later. See link:LICENSE[LICENSE].

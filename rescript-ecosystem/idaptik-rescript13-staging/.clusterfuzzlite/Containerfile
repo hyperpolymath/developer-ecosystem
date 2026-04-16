@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# ClusterFuzzLite build environment for IDApTIK
+#
+# Fuzzes the escape-hatch Rust component (the only native-code target).
+# The main-game (ReScript/JS) runs in a browser — not fuzzable via ClusterFuzzLite.
+
+FROM gcr.io/oss-fuzz-base/base-builder-rust
+
+COPY . $SRC/idaptik
+WORKDIR $SRC/idaptik
+
+COPY .clusterfuzzlite/build.sh $SRC/build.sh

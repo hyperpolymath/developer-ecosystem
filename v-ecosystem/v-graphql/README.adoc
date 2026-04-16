@@ -1,0 +1,132 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+
+= v-graphql -- GraphQL Server for V
+Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+:toc: preamble
+:icons: font
+:source-highlighter: rouge
+
+**A GraphQL server implementation written in V**, providing schema definition,
+query parsing, validation, execution, and HTTP transport.
+
+== Overview
+
+v-graphql brings a complete GraphQL server stack to the
+https://vlang.io/[V programming language]. V's compile-time safety, lack of a
+garbage collector, and C-level performance make it well-suited for building
+low-latency API gateways and microservices.
+
+=== Features
+
+* **Schema Definition Language (SDL) parser** -- parse `.graphql` schema files
+  into an in-memory type system.
+* **Query parser and validator** -- parse incoming GraphQL operations and
+  validate them against the schema (field existence, type compatibility,
+  fragment spread correctness, directive usage).
+* **Resolver execution engine** -- walk the operation selection set, invoke
+  user-defined resolver functions, and assemble the JSON response with proper
+  null propagation and error collection.
+* **Built-in HTTP transport** -- mount the GraphQL endpoint on V's `vweb`
+  server with JSON request/response handling and optional GraphiQL UI.
+* **Subscription support** -- WebSocket-based subscriptions via
+  `graphql-ws` protocol.
+* **Introspection** -- full `__schema` and `__type` introspection as required
+  by the GraphQL specification.
+
+== Quick Start
+
+[source,v]
+----
+// main.v -- Minimal GraphQL server.
+import graphql
+import vweb
+
+struct App {
+    vweb.Context
+}
+
+fn main() {
+    schema := graphql.parse_schema('
+        type Query {
+            hello(name: String!): String!
+        }
+    ')!
+
+    mut srv := graphql.new_server(schema)
+
+    srv.resolver('Query', 'hello', fn (ctx graphql.ResolveContext) !graphql.Value {
+        name := ctx.arg('name')!.str()
+        return graphql.string_val('Hello, ${name}!')
+    })
+
+    srv.serve(port: 8080)!
+}
+----
+
+[source,bash]
+----
+v run main.v
+# Visit http://localhost:8080/graphiql for the interactive explorer
+----
+
+== Building and Testing
+
+[source,bash]
+----
+just build             # Compile the library and examples
+just test              # Run all tests (unit + integration)
+just bench             # Run query-execution benchmarks
+just container-build   # Build verified OCI image
+----
+
+== Repository Structure
+
+[cols="1,3"]
+|===
+| Directory | Purpose
+
+| `src/`
+| Core library: lexer, parser, schema, validator, executor, transport.
+
+| `tests/`
+| Unit and integration tests including spec compliance fixtures.
+
+| `examples/`
+| Example servers demonstrating common patterns.
+
+| `benches/`
+| Micro-benchmarks for parser and executor hot paths.
+
+| `docs/`
+| Technical documentation (architecture, decisions, practice).
+
+| `.machine_readable/`
+| Canonical project state (a2ml files), bot directives, AI guides.
+
+| `container/`
+| Stapeln container ecosystem.
+|===
+
+== Design Decisions
+
+* **No code generation** -- schemas are parsed at startup rather than
+  generating V source at build time. This keeps the build simple and allows
+  runtime schema stitching.
+* **Zero allocations on hot path** -- the executor reuses arena-allocated
+  buffers for JSON serialisation to minimise allocation pressure under load.
+* **Spec compliance** -- targets the
+  https://spec.graphql.org/October2021/[October 2021 GraphQL specification].
+
+== Documentation
+
+* link:CONTRIBUTING.md[Contributing Guide]
+* link:ROADMAP.adoc[Roadmap]
+* link:TOPOLOGY.md[Architecture Topology]
+* link:docs/[Technical Documentation]
+
+== License
+
+SPDX-License-Identifier: PMPL-1.0-or-later +
+Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk> +
+See link:LICENSE[LICENSE] for the full Palimpsest License text.

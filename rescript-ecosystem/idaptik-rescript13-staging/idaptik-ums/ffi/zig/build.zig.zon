@@ -1,0 +1,15 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// build.zig.zon -- Package manifest for IDApTIK UMS Zig FFI.
+// Author: Jonathan D.A. Jewell
+
+.{
+    .name = .idaptik_ums_ffi,
+    .fingerprint = 0xdc4de70248c679e2,
+    .version = "0.1.0",
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+        "test",
+    },
+}

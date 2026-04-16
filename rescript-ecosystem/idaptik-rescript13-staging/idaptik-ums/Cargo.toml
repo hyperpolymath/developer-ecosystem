@@ -1,0 +1,41 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+#
+# Gossamer backend for the IDApTIK Universal Modding Studio.
+#
+# The UMS is a visual level editor for the IDApTIK hacking game. It loads,
+# validates, and exports level data through three verification layers:
+#
+#   1. Idris2 ABI (compile-time dependent-type proofs, erased at runtime)
+#   2. Zig FFI   (runtime materialisation of the same invariants via libidaptik_ums)
+#   3. Rust      (this crate — mirrors the checks for use in Gossamer commands)
+#
+# Migrated from Tauri 2.0 to Gossamer for tighter integration with the
+# Ephapax module system, capability-based security, and smaller binaries.
+
+[package]
+name = "idaptik-ums"
+version = "0.1.0"
+edition = "2021"
+authors = ["Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>"]
+license = "AGPL-3.0-or-later"
+description = "Universal Modding Studio — visual level editor for IDApTIK"
+repository = "https://github.com/hyperpolymath/idaptik"
+
+[[bin]]
+name = "idaptik-ums"
+path = "src-gossamer/main.rs"
+
+[dependencies]
+gossamer-rs = { path = "../../gossamer/bindings/rust" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[dev-dependencies]
+# No tokio needed — Gossamer commands are synchronous
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true

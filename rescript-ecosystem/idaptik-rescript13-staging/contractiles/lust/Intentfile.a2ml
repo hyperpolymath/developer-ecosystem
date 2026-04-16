@@ -1,0 +1,94 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Intentfile (A2ML Canonical)
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath)
+
+@abstract:
+Declared future intent for IDApTIK — game engine, multiplayer,
+ReScript migration, formal verification, and developer tools.
+@end
+
+@requires:
+- section: Migration
+- section: Engine
+- section: Multiplayer
+- section: Tools
+- section: Quality
+@end
+
+## Migration
+
+### rescript-13-upgrade
+- description: Upgrade from ReScript 12.2.0 to 13.x
+- status: in-progress
+- priority: critical
+- evidence: command: grep -q '"rescript": "13' deno.json 2>/dev/null || grep -q '"rescript": "13' package.json 2>/dev/null
+- notes: Config is v13-clean; blocker is rescript-legacy UTF-8 crash
+
+### belt-removal
+- description: Remove all Belt.* API usage (replaced by @rescript/core)
+- status: realised
+- priority: critical
+- evidence: command: grep -rn 'Belt\.' src/ --include='*.res' | wc -l | grep -q '^0$'
+- notes: Completed 2026-03-09
+
+### deprecated-js-removal
+- description: Remove all deprecated Js.* APIs
+- status: realised
+- priority: critical
+- evidence: command: grep -rn 'Js\.\(Dict\|Array2\|String2\)' src/ --include='*.res' | wc -l | grep -q '^0$'
+- notes: Completed 2026-03-03
+
+## Engine
+
+### vm-tier4-instructions
+- description: Complete Tier 4 VM instructions
+- status: in-progress
+- priority: high
+- evidence: command: grep -c 'Tier4' vm/lib/ocaml/*.res 2>/dev/null | grep -v '^0$'
+
+### asset-pipeline-v2
+- description: Upgrade AssetPack pipeline for PixiJS 8
+- status: declared
+- priority: medium
+
+## Multiplayer
+
+### phoenix-sync-stability
+- description: Stabilise Phoenix sync server for production
+- status: in-progress
+- priority: high
+- evidence: command: test -d sync-server/lib
+
+### playwright-e2e
+- description: Full Playwright E2E test suite for multiplayer
+- status: in-progress
+- priority: medium
+- evidence: command: find . -name '*.spec.ts' -o -name '*.spec.js' | wc -l | grep -v '^0$'
+
+## Tools
+
+### unified-modding-studio
+- description: Ship idaptik-ums (Tauri 2 modding tool)
+- status: declared
+- priority: medium
+- evidence: command: test -d idaptik-ums/src-tauri
+
+### developer-portal
+- description: Complete developer portal with ADRs and white paper
+- status: in-progress
+- priority: medium
+- evidence: command: test -d idaptik-developers/docs
+
+## Quality
+
+### test-coverage
+- description: Achieve 80%+ test coverage on shared module
+- status: in-progress
+- priority: high
+- evidence: command: test -d shared/tests
+
+### contractile-ci
+- description: Run contractile checks in CI pipeline
+- status: declared
+- priority: medium
+- evidence: command: grep -q 'contractile' .github/workflows/*.yml 2>/dev/null

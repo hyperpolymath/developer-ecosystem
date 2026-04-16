@@ -1,0 +1,6 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= App Utils Module
+
+App-specific helper modules that do not belong to core engine utilities.
+
+Current responsibility includes player/user preference persistence and retrieval glue used by top-level app flows.

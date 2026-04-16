@@ -1,0 +1,186 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+
+= IDApixiTIK — ReScript 13 Staging
+:toc: preamble
+:icons: font
+
+IDApixiTIK is a browser-based hacking/network simulator game built with
+ReScript and PixiJS. It combines platformer gameplay with realistic network
+simulation, featuring multiplayer co-op support via Elixir/Phoenix WebSocket.
+
+NOTE: *This is the STAGING repository* for ReScript 13 migration testing. The live repo is `hyperpolymath/idaptik`. Do NOT push v13 changes back to the live repo.
+
+== Features
+
+=== Game Systems
+
+* *Combat System*: Guard encounters, dog handlers, drone surveillance, assassin AI
+* *Companion System*: Moletaire (controllable mole character) with hunger mechanics
+* *Training Screens*: 8 training scenarios including combat, stealth, and puzzle mechanics
+* *Network Simulation*: Realistic device interaction, SSH, terminal commands, network topology
+* *Multiplayer*: Real-time co-op via Phoenix Channels (WebSocket)
+
+=== New in This Version (Merged from idaptik)
+
+* Enhanced combat with body collision, knockdown mechanics, assassin dodge
+* Companion system (Moletaire) with building navigation and hunger
+* New training screens: Drone encounters, Highway crossing (Frogger-style)
+* New devices: Firewall, PBX phone system, Coprocessor bridge
+* Multiplayer infrastructure with Phoenix WebSocket channels
+* SafeJson utility for safe JSON parsing
+* Deno runtime support
+
+== Prerequisites
+
+* https://deno.land/[Deno] — Runtime and package manager
+* https://elixir-lang.org/[Elixir] — For multiplayer sync server (optional for single-player)
+
+== Quick Start
+
+=== Single-Player Mode (Game Only)
+
+[source,bash]
+----
+./start-game-only.sh
+----
+
+Starts only the Vite dev server on port 8080. Open http://localhost:8080.
+
+=== Multiplayer Mode (Game + Sync Server)
+
+[source,bash]
+----
+./start-dev.sh
+----
+
+Starts Elixir sync server on port 4000 + Vite dev server on port 8080.
+
+== Development Commands
+
+[source,bash]
+----
+# ReScript compilation
+deno task res:build       # Compile ReScript once
+deno task res:clean       # Clean ReScript build artifacts
+deno task res:dev         # Watch mode (recompile on changes)
+
+# Vite dev server
+deno task dev:vite        # Start Vite dev server only
+deno task dev             # ReScript watch + Vite (game only)
+
+# Production build
+deno task build           # ReScript compile + Vite production build
+
+# Multiplayer sync server
+deno task sync-server     # Start Elixir sync server only
+deno task dev:all         # Start everything (sync server + game)
+----
+
+== Architecture
+
+=== Directory Structure
+
+[source]
+----
+IDApixiTIK/
+├── src/
+│   ├── Main.res                 # Entry point
+│   ├── manifest.json            # AssetPack generated (don't edit)
+│   ├── app/
+│   │   ├── combat/              # Combat system
+│   │   ├── companions/          # Moletaire AI and mechanics
+│   │   ├── devices/             # Network devices
+│   │   ├── enemies/             # Guard, dog, drone, assassin AI
+│   │   ├── multiplayer/         # Phoenix WebSocket client
+│   │   ├── narrative/           # Mission briefings
+│   │   ├── player/              # Player character
+│   │   ├── popups/              # Modal overlays
+│   │   ├── screens/             # Game screens (8 training scenarios)
+│   │   └── ui/                  # UI components
+│   ├── engine/                  # Core game engine
+│   └── bindings/                # JavaScript FFI bindings (PixiJS, Motion)
+├── sync-server/                 # Elixir/Phoenix multiplayer server
+├── public/                      # Static assets
+├── raw-assets/                  # Source assets (processed by AssetPack)
+├── deno.json                    # Deno configuration and tasks
+└── rescript.json                # ReScript compiler configuration
+----
+
+=== Technology Stack
+
+* *ReScript* — Primary language for game logic, compiles to `.res.mjs` files
+* *PixiJS 8* — 2D WebGL rendering engine
+* *Vite* — Build tool and dev server
+* *Deno* — Runtime and package manager
+* *Elixir/Phoenix* — Multiplayer sync server (WebSocket channels)
+* *@pixi/sound* — Audio (BGM/SFX)
+* *motion* — Tweening/animation library
+* *AssetPack* — Asset pipeline
+
+=== Key Patterns
+
+*Screen Navigation*: Screens define lifecycle methods (prepare, show, hide,
+pause, resume, update, resize). Navigation.t manages a stack of
+screens/popups with asset preloading.
+
+*Device System*: DeviceTypes.device interface with `getInfo()` and `openGUI()`.
+Factory pattern via DeviceFactory.res. Security levels: Open, Weak, Medium, Strong.
+
+*Network Topology*: Star topology with central router. Features DNS resolution,
+traceroute, SSH between devices, zone-based layout (LAN, VLAN, External).
+
+*Multiplayer*: Phoenix Channels over WebSocket. Pure ReScript client with
+reconnect, heartbeat, and multiplexing. VMNetwork handles cross-VM messaging.
+
+== Multiplayer Sync Server
+
+The Elixir sync server provides:
+
+* WebSocket-based Phoenix Channels for real-time multiplayer
+* Game session management and registry
+* Co-op event broadcasting
+* VM network synchronization
+* In-memory caching via ETS (no external dependencies)
+
+Key environment variables:
+
+* `SECRET_KEY_BASE` — Phoenix secret key (auto-generated for dev)
+* `PHX_HOST` — Hostname (default: localhost)
+* `PORT` — Server port (default: 4000)
+
+== Building for Production
+
+[source,bash]
+----
+deno task build   # Build game → dist/
+cd sync-server && MIX_ENV=prod mix release
+----
+
+== Troubleshooting
+
+[source,bash]
+----
+# ReScript compilation errors
+deno task res:clean && deno task res:build
+
+# Check sync server health
+curl http://localhost:4000/health
+----
+
+== Migration Notes
+
+* *Removed*: Podman/container infrastructure, PWA support
+* *Added*: Deno runtime, standalone Elixir sync server, new game features
+* *Updated*: ReScript 11 → 12, improved vite config, health endpoint plugin
+
+== Credits
+
+Originally created by Joshua B. Jewell, developed under hyperpolymath.
+
+Wondering how this works? See link:EXPLAINME.adoc[].
+
+== License
+
+SPDX-License-Identifier: AGPL-3.0-or-later +
+See link:LICENSE[LICENSE].

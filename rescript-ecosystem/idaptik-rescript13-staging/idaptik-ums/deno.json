@@ -1,0 +1,19 @@
+{
+  "// SPDX-License-Identifier": "AGPL-3.0-or-later",
+  "// description": "Deno task configuration for the IDApTIK Universal Modding Studio. Orchestrates ReScript compilation, Gossamer backend, and production builds.",
+  "tasks": {
+    "res:build": "npx rescript build",
+    "res:watch": "npx rescript build -w",
+    "res:clean": "npx rescript clean",
+    "dev": "deno task res:build && (deno task res:watch & deno task gossamer:dev)",
+    "build": "deno task res:build && deno task gossamer:build",
+    "gossamer:dev": "cargo run",
+    "gossamer:build": "cargo build --release",
+    "test": "cargo test",
+    "test:zig": "cd ffi/zig && zig build test",
+    "validate": "deno task test && deno task test:zig"
+  },
+  "compilerOptions": {
+    "lib": ["deno.window"]
+  }
+}

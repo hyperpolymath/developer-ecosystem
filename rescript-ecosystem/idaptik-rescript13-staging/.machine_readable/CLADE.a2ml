@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Clade declaration — part of the gv-clade-index registry
+# See: https://github.com/hyperpolymath/gv-clade-index
+
+[identity]
+uuid = "51fd8017-aa55-5ab9-a4b1-b16c3522f540"
+primary-forge = "github"
+primary-owner = "hyperpolymath"
+canonical-name = "idaptik-rescript13-staging"
+prefixed-name = "gm-idaptik-rescript13-staging"
+
+[clade]
+primary = "gm"
+secondary = []
+assigned = "2026-03-16"
+rationale = ""
+
+[forges]
+github = "hyperpolymath/idaptik-rescript13-staging"
+gitlab = "hyperpolymath/idaptik-rescript13-staging"
+bitbucket = "hyperpolymath/idaptik-rescript13-staging"
+
+[lineage]
+type = "standalone"
+parent = "IDApTIK ReScript 13 staging environment"
+born = "2026-03-16"

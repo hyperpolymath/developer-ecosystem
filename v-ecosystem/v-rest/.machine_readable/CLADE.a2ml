@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Clade declaration — part of the gv-clade-index registry
+# See: https://github.com/hyperpolymath/gv-clade-index
+
+[identity]
+uuid = "8de5b316-1efb-550a-8edd-699799b49146"
+primary-forge = "github"
+primary-owner = "hyperpolymath"
+canonical-name = "v-rest"
+prefixed-name = "pt-v-rest"
+
+[clade]
+primary = "pt"
+secondary = ["dx"]
+assigned = "2026-03-16"
+rationale = ""
+
+[forges]
+github = "hyperpolymath/v-rest"
+gitlab = "hyperpolymath/v-rest"
+bitbucket = "hyperpolymath/v-rest"
+
+[lineage]
+type = "standalone"
+parent = "V-lang REST implementation"
+born = "2026-03-16"
