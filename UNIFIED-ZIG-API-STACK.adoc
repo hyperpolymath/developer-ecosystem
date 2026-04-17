@@ -1,0 +1,345 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+// (MPL-2.0 is the automatic legal fallback until PMPL is formally recognised)
+= Unified Zig API Stack — Authoritative Playbook
+:toc:
+:toc-placement: preamble
+:doctype: article
+
+The canonical reference for every Zig-edge repo wiring into the
+hyperpolymath API stack.  Read this before designing or wiring any
+Zig-facing service boundary.
+
+== TL;DR
+
+The unified-zig-api stack replaces the retired haxadeca-v-api / unified-v-api /
+v-grpc / v-rest / v-zig-ffi / v-idris-abi family.  It is organised as four
+vertically-stacked layers:
+
+[none]
+- *Layer 1 — Idris2 core* (`verification-ecosystem/proven/`): formally verified
+  primitive operations; the ultimate source of trust.
+- *Layer 2 — Idris2 ABI* (`developer-ecosystem/zig-api/src/ZigApi/ABI/`): dependent-type
+  proofs of the C ABI surface — tag round-trips, safe-path soundness, injectivity,
+  memory layout.
+- *Layer 3 — Zig runtime* (`developer-ecosystem/zig-api/ffi/zig/src/`): C-ABI
+  implementations of core, process, gnosis, and connector subsystems;
+  exports the `uapi_*` symbol set.
+- *Layer 4 — C adaptor* (`developer-ecosystem/zig-api/generated/abi/zig_api.h`):
+  auto-generated from the Idris2 ABI; consumed by any language that speaks C FFI.
+
+Edge repos consume from this stack only.  Never re-roll equivalent functionality
+inline.
+
+== The Four Layers
+
+=== Layer 1 — Idris2 core (`verification-ecosystem/proven/`)
+
+*What it is.* A formally verified safety library: 104 modules in
+`src/Proven/` written with `%default total`, zero `believe_me`, zero
+`assert_total`.  Every function is proved to terminate, cover all cases, and
+return a value — no runtime exceptions possible.
+
+*Canonical entry points for consumers.*
+
+[cols="1,3"]
+|===
+| Path | Purpose
+
+| `core-only.ipkg`
+| Minimal package — import only the Idris2 proofs, no FFI dependency.
+  Preferred when you need proof witnesses in your own Idris2 ABI layer.
+
+| `api/`
+| High-level module surface for direct Idris2 consumers.
+
+| `bindings/`
+| Language-specific thin wrappers (18 complete, 102 scaffolded).
+  C, Rust, Python, ReScript bindings are production-ready;
+  others are research-stage.
+
+| `ffi/zig/src/main.zig`
+| Zig bridge: wraps Idris2 RefC output, exposes `proven_ffi_*` C symbols.
+|===
+
+*CRG grade:* C (Beta) — core proven, Rust/Python/C bindings tested; 102
+targets scaffolded.  Never reimplement logic in bindings; call Zig FFI only.
+
+=== Layer 2 — Idris2 ABI (`developer-ecosystem/zig-api/src/ZigApi/ABI/`)
+
+*What it is.* Dependent-type proofs of the C ABI surface shared with the Zig
+runtime.  These proofs run at compile time; any ABI drift is a type error.
+
+*Modules present.*
+
+[cols="1,3"]
+|===
+| File | Content
+
+| `Types.idr`
+| `Platform`, `Result` codes (11 variants), `Handle`, `Slot`, `ValidSlot`,
+  platform pointer-width claims.
+
+| `Http.idr`
+| `Method` (7 variants), `ServerState` (4 variants), `HealthStatus`,
+  `RouteDescriptor`.  Includes `methodTag`, `methodFromTag`, round-trip proofs.
+
+| `Process.idr`
+| `IsSafePath` structural proof, `ExecResult`, `GnosisRenderCmd`.
+  A `GnosisRenderCmd` cannot be constructed for an unsafe path without
+  discharging the `IsSafePath` proof — path safety is mandatory, not advisory.
+
+| `Connector.idr`
+| `ServiceId` (11 variants, 0–10), `ConnectorState` (6 variants),
+  `GrooveManifest`.  `serviceIdTag` + `serviceIdFromTag` with round-trip proof.
+
+| `Layout.idr`
+| Machine-checked memory layout claims: tag-count bounds (all enums fit in u8),
+  pool/sentinel bounds (capacity 64, sentinel 255, 64 < 255),
+  `@sizeOf` claims (handle = 8 bytes, slot = 1 byte).
+
+| `Proofs.idr`
+| Cross-cutting proofs: slot validity (sentinel 255 cannot build `ValidSlot`),
+  round-trip completeness across all five enum types, `SafePath` soundness
+  (empty allowlist denies; head-match accepts), health status contract
+  (200/503 codes, distinctness, 5xx range).
+
+| `Foreign.idr`
+| `%foreign` declarations for every `uapi_*` symbol in the Zig runtime,
+  plus safe `IO` wrappers.  This is the Idris2 entry point for consumers.
+|===
+
+*Package file:* `zig-api/zig-api.ipkg` — includes all seven ABI modules.
+
+=== Layer 3 — Zig runtime (`developer-ecosystem/zig-api/ffi/zig/src/`)
+
+*What it is.* Native C-ABI implementation of the API surface.  Built with
+Zig 0.15.2.  Produces `libzig_api.so` (shared) and `libzig_api.a` (static).
+
+*Modules.*
+
+[cols="1,3"]
+|===
+| Module | Responsibility
+
+| `lib.zig`
+| Root entry point.  Re-exports all `uapi_*` symbols.  Provides the three
+  lifecycle functions: `uapi_init`, `uapi_teardown`, `uapi_version`.
+
+| `core.zig`
+| `Result` enum (mirrors `ZigApi.ABI.Types`), thread-local error storage,
+  `Pool(T, N)` generic with mutex for fixed-capacity slot management.
+
+| `process.zig`
+| Safe-path validation (allowlist prefix match), `runProcess`,
+  `runGnosis` (shells out to the `gnosis` binary on `$PATH`).
+
+| `gnosis.zig`
+| HTTP/1.1 server pool.  Replaces v-grpc + v-rest.  Handles `/render`,
+  `/context`, `/health`, `/`, and gRPC-style `/gnosis.GnosisService/*` paths.
+  `uapi_gnosis_{create,start,stop,destroy,state,health}`.
+
+| `connector.zig`
+| 64-slot HTTP connector pool for 11 hyperpolymath services.
+  `uapi_connector_{create,health,call,destroy,state}`.
+  `uapi_connector_call` is the universal request dispatcher.
+|===
+
+*Build:* `just build` from `zig-api/`.  Recipes: `build`, `test`,
+`check-abi`, `test-integration`.
+
+*Current version:* 0.15.2 (matches Zig toolchain; see `ffi/zig/build.zig`).
+
+=== Layer 4 — C adaptor (`developer-ecosystem/zig-api/generated/abi/zig_api.h`)
+
+The machine-readable contract between the Zig runtime and every non-Idris2
+consumer.  Auto-generated from the Idris2 ABI.  *Never edit by hand.*
+
+Exposes: lifecycle (`uapi_init`, `uapi_teardown`, `uapi_version`), all
+`UAPI_OK`/`UAPI_ERR_*`/`UAPI_SERVER_*`/`UAPI_CONNECTOR_*`/`UAPI_SERVICE_*`/
+`UAPI_METHOD_*` constants, and the full `uapi_gnosis_*` and
+`uapi_connector_*` function set.
+
+When the Idris2 ABI changes, the header must be regenerated — not patched
+manually.  The regeneration pipeline is currently manual (see §10).
+
+== How to Consume
+
+=== From Idris2
+
+Import `ZigApi.ABI.Foreign` (which re-exports all seven ABI modules).
+Link against `libzig_api` at build time via the `zig-api.ipkg` package.
+
+[source,idris]
+----
+import ZigApi.ABI.Foreign
+
+main : IO ()
+main = do
+  Ok <- uapiInit | _ => putStrLn "init failed"
+  h  <- gnosisCreate 8091
+  Ok <- gnosisStart h | _ => putStrLn "start failed"
+  -- use the server
+  gnosisStop h
+  gnosisDestroy h
+  uapiTeardown
+----
+
+=== From another Zig project
+
+Option A — link the shared library and `@cImport` the header:
+
+[source,zig]
+----
+const c = @cImport(@cInclude("zig_api.h"));
+
+pub fn main() !void {
+    _ = c.uapi_init();
+    defer c.uapi_teardown();
+    const slot = c.uapi_connector_create(c.UAPI_SERVICE_VERISIMDB,
+                                          "http://127.0.0.1:8100");
+    defer c.uapi_connector_destroy(slot);
+    // ...
+}
+----
+
+Option B — add `libzig_api` as a `build.zig` dependency and import symbols
+directly from the Zig modules (internal use only; C ABI is the stable surface).
+
+=== From Rust
+
+Use `bindgen` to generate Rust bindings from `zig_api.h`, or use the
+scaffolded bindings in `verification-ecosystem/proven/bindings/rust/`
+if you also need proven primitives.  Link against `libzig_api.so`/`.a`.
+
+=== From ReScript / JavaScript via Deno
+
+Use `Deno.dlopen` against `libzig_api.so` (Linux) to call `uapi_*`
+symbols directly.  No Node bindings are available; Deno FFI is the path.
+
+=== From Julia
+
+Use `ccall` against `libzig_api.so`.  Example:
+`ccall((:uapi_init, "libzig_api"), UInt8, ())`.
+Julia-specific wrappers are not yet written; `ccall` is the direct path.
+
+== Wiring a New Edge Repo
+
+A new Zig-edge repo is one that calls hyperpolymath services via
+`libzig_api` or extends the Idris2 ABI with repo-specific types.
+
+. *Create from template.* Clone `hyperpolymath/rsr-template-repo`, run
+  `just init`, and customise placeholders.
+. *Add `libzig_api` to `build.zig`.*  Reference the shared library output
+  from `developer-ecosystem/zig-api/ffi/zig/` or install it system-wide via
+  `just install` from the `zig-api` Justfile.  A minimal skeleton:
++
+[source,zig]
+----
+const zig_api = b.addSharedLibraryFromPath(
+    .{ .name = "zig_api", .path = .{ .cwd_relative = PATH_TO_LIBZIG_API } },
+);
+exe.linkLibrary(zig_api);
+exe.addIncludePath(.{ .cwd_relative = PATH_TO_GENERATED_ABI });
+----
+. *Place repo-specific Idris2 ABI proofs in `src/abi/` of the edge repo.*
+  Import `ZigApi.ABI.Types` and `ZigApi.ABI.Connector` from `zig-api.ipkg`
+  (add it as a dependency in the edge repo's `.ipkg`).  Extend, do not fork.
+. *Use the Groove protocol* for inter-service communication wherever possible
+  (see `standards/groove-protocol/`).  `zig-groove-bridge` in
+  `developer-ecosystem/zig-ecosystem/connectors/zig-groove-bridge/` is the
+  reference consumer — study `src/main.zig` before writing your own discovery
+  or attachment logic.
+. *Do not re-roll connector logic.*  Call `uapi_connector_create` with the
+  appropriate `UAPI_SERVICE_*` tag.  All 11 services have pre-declared IDs.
+
+== Authoritative Component Links
+
+[cols="2,3"]
+|===
+| Component | Canonical path
+
+| proven (Idris2 core)
+| `verification-ecosystem/proven/`
+
+| zig-api Idris2 ABI
+| `developer-ecosystem/zig-api/src/ZigApi/ABI/`
+
+| zig-api Zig runtime
+| `developer-ecosystem/zig-api/ffi/zig/src/`
+
+| zig-api C header
+| `developer-ecosystem/zig-api/generated/abi/zig_api.h`
+
+| zig-groove-bridge (reference edge)
+| `developer-ecosystem/zig-ecosystem/connectors/zig-groove-bridge/`
+
+| bridge-nginx-zig (skeleton)
+| `developer-ecosystem/bridge-nginx-zig/`
+
+| Groove protocol spec
+| `standards/groove-protocol/`
+
+| rsr-template-repo
+| `hyperpolymath/rsr-template-repo` (GitHub)
+|===
+
+== Retirement Note
+
+The following repos are retired.  Their content has been moved to
+`developer-ecosystem/v-ecosystem/v-api-interfaces/` for potential donation to
+the V community.  Do not model any new work on them.
+
+* `developer-ecosystem/v-grpc/`
+* `developer-ecosystem/v-rest/`
+* `developer-ecosystem/v-zig-ffi/`
+* `developer-ecosystem/v-idris-abi/`
+* `developer-ecosystem/haxadeca-v-api/`
+* `developer-ecosystem/unified-v-api/`
+
+The trigger was the estate-wide V-lang ban on 2026-04-10 (V-lang detected via
+`v.mod` / `vpkg.json`; note: `.v` extension is Verilog, not V-lang).
+
+== Current Status
+
+[cols="1,1,3"]
+|===
+| Component | Readiness | Notes
+
+| `proven` (Idris2 core)
+| ACTIVE
+| 104 modules, `%default total`, 0 `believe_me`, 49 tests.
+  18 bindings complete; 102 scaffolded.
+
+| `zig-api` (Idris2 ABI + Zig runtime)
+| PRODUCTION-ADJACENT
+| Idris2 ABI fully proved; Zig runtime builds and passes unit tests;
+  integration tests require `gnosis` binary on `$PATH`.
+
+| `zig-groove-bridge`
+| PARTIAL
+| Dodeca-API + discovery logic written; attachment / full Groove manifest
+  negotiation being unblocked.
+
+| `bridge-nginx-zig`
+| SKELETON
+| `build.zig` and directory structure present; HTTP proxy logic not yet written.
+|===
+
+== Open Questions / Deferred
+
+* *proven -> zig-api active wiring.* `zig-api`'s `Foreign.idr` references
+  `libzig_api` only.  The narrative goal of calling `proven_ffi_*` symbols from
+  within the Zig runtime (e.g. using `proven` SafeMath for buffer bounds in
+  `gnosis.zig`) is described in `zig-api/EXPLAINME.adoc` but not yet wired.
+  Until wired, proven and zig-api are parallel stacks that share the Idris2/Zig
+  FFI pattern but do not chain.
+
+* *C adaptor auto-regeneration pipeline.* `zig_api.h` is marked
+  `AUTO-GENERATED` but no `just` recipe or CI step currently regenerates it
+  from the Idris2 ABI source.  Manual sync is a drift risk.  A `just gen-header`
+  recipe invoking `idris2` + an extraction pass is needed.
+
+* *Template repo for new edges.* `rsr-template-repo` does not yet include a
+  `build.zig` skeleton that depends on `libzig_api`.  A `just new-zig-edge`
+  subcommand in `scaffoldia` or a template overlay is the right long-term fix.
