@@ -28,6 +28,33 @@ const core = @import("core.zig");
 const process = @import("process.zig");
 
 // =============================================================================
+// proven FFI — extern declarations matching proven.h
+// =============================================================================
+
+/// C ABI result type for boolean operations (matches ProvenBoolResult in proven.h).
+/// Layout must match: struct { int32_t status; bool value; }
+const ProvenBoolResult = extern struct {
+    status: c_int,
+    value:  bool,
+};
+
+/// proven status codes (subset used here).
+const PROVEN_OK: c_int = 0;
+
+/// Check if a byte slice contains CRLF injection characters ("\r\n").
+/// Implemented in verification-ecosystem/proven/ffi/zig/src/main.zig.
+/// Linked via -lproven_ffi in build.zig.
+extern fn proven_header_has_crlf(ptr: [*]const u8, len: usize) ProvenBoolResult;
+
+/// Error returned when proven_header_has_crlf detects CRLF injection.
+pub const HeaderError = error{
+    /// proven detected CRLF injection characters in the header.
+    CRLFInjectionDetected,
+    /// proven returned an unexpected status code.
+    ProvenStatusError,
+};
+
+// =============================================================================
 // Constants
 // =============================================================================
 
@@ -193,12 +220,25 @@ fn idxFromHandle(handle: u64) ?usize {
 
 /// Write a minimal HTTP/1.1 response with a text body.
 /// `status_code` e.g. 200, 400, 404, 503.
+///
+/// Validates Content-Type header using safeHeaderDefault() to prevent CRLF
+/// injection attacks. If validation fails, the response is refused entirely
+/// and a 500 error is sent instead (fail-closed policy).
 fn writeResponse(
     conn: *std.net.Server.Connection,
     status_code: u16,
     content_type: []const u8,
     body: []const u8,
 ) void {
+    // Validate Content-Type header against CRLF injection.
+    // safeHeaderDefault returns false if CRLF is detected or proven errors.
+    if (!safeHeaderDefault(content_type)) {
+        // CRLF injection detected or proven validation failed.
+        // Refuse the response entirely (fail-closed).
+        writeInternalError(conn, "response header validation failed");
+        return;
+    }
+
     // Reuse a stack buffer for the status line + headers.
     var header_buf: [512]u8 = undefined;
     const headers = std.fmt.bufPrint(
@@ -226,6 +266,26 @@ fn writeInternalError(conn: *std.net.Server.Connection, msg: []const u8) void {
     const body = std.fmt.bufPrint(&buf, "{{\"error\":\"{s}\"}}", .{msg}) catch
         "{\"error\":\"internal server error\"}";
     writeResponse(conn, 500, "application/json", body);
+}
+
+/// Check if a header name or value is safe (no CRLF injection).
+/// Uses proven_header_has_crlf (formally-verified detection from libproven_ffi).
+/// Returns false if CRLF is detected or if proven returns an error.
+///
+/// This is a load-bearing proven FFI call: writeResponse uses this to validate
+/// headers before adding them to the response. If any header fails validation,
+/// the entire response is refused (fail-closed policy).
+fn safeHeaderDefault(value: []const u8) bool {
+    if (value.len == 0) return true; // empty header is safe
+    const result = proven_header_has_crlf(value.ptr, value.len);
+    if (result.status != PROVEN_OK) {
+        // proven returned an error: fail closed.
+        core.setError("proven_header_has_crlf returned status {d} for header '{s}'",
+            .{ result.status, value });
+        return false;
+    }
+    // result.value == true means CRLF detected → deny.
+    return !result.value;
 }
 
 // =============================================================================
