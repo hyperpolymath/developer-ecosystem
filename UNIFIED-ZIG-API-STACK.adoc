@@ -138,6 +138,11 @@ Zig 0.15.2.  Produces `libzig_api.so` (shared) and `libzig_api.a` (static).
 | HTTP/1.1 server pool.  Replaces v-grpc + v-rest.  Handles `/render`,
   `/context`, `/health`, `/`, and gRPC-style `/gnosis.GnosisService/*` paths.
   `uapi_gnosis_{create,start,stop,destroy,state,health}`.
+  **Edge hook API (2026-04-17):** `uapi_gnosis_set_handler(handle, fn_ptr)` and
+  `uapi_gnosis_write_response` support single-port + path-routed edge dispatch;
+  see §"Canonical single-port shape" below.  When a hook is registered, gnosis
+  calls the edge fn for every request instead of the built-in routes — no
+  separate accept loop needed in the edge repo.
 
 | `connector.zig`
 | 64-slot HTTP connector pool for 11 hyperpolymath services.
@@ -187,7 +192,79 @@ main = do
 
 === From another Zig project
 
-Option A — link the shared library and `@cImport` the header:
+==== Canonical single-port shape (2026-04-17)
+
+The standard pattern for Zig edge repos is one gnosis pool slot plus
+`uapi_gnosis_set_handler`.  The edge repo *does not* bind its own sockets or
+run its own accept loops — gnosis owns the listener; the edge supplies the
+dispatch function.
+
+[source,zig]
+----
+const c = @cImport(@cInclude("zig_api.h"));
+
+// GnosisRequest and GnosisResponse are defined in zig_api.h.
+// @cImport translates C pointer types to [*c] in Zig.
+// Convert to regular pointers at the top of the handler for ergonomic field
+// access:
+//
+//   const resp: *c.GnosisResponse      = @ptrCast(resp_c);
+//   const req:  *const c.GnosisRequest = @ptrCast(req_c);
+//
+export fn myEdgeHandler(
+    req_c: [*c]const c.GnosisRequest,
+    resp_c: [*c]c.GnosisResponse,
+) callconv(.c) void {
+    const resp: *c.GnosisResponse      = @ptrCast(resp_c);
+    const req:  *const c.GnosisRequest = @ptrCast(req_c);
+
+    const path = std.mem.span(req.path);
+
+    if (std.mem.startsWith(u8, path, "/api/v1/")) {
+        const body = "{\"status\":\"ok\"}";
+        c.uapi_gnosis_write_response(resp_c, 200, "application/json",
+                                     body, body.len);
+    } else {
+        const e = "{\"error\":\"not found\"}";
+        c.uapi_gnosis_write_response(resp_c, 404, "application/json",
+                                     e, e.len);
+    }
+    _ = resp; _ = req; // suppress unused-var warnings if not needed
+}
+
+pub fn main() !void {
+    _ = c.uapi_init();
+    defer c.uapi_teardown();
+
+    const handle = c.uapi_gnosis_create(4000);
+    // Register the edge handler BEFORE uapi_gnosis_start.
+    _ = c.uapi_gnosis_set_handler(handle, &myEdgeHandler);
+    _ = c.uapi_gnosis_start(handle);
+    defer c.uapi_gnosis_stop(handle);
+    defer c.uapi_gnosis_destroy(handle);
+
+    while (c.uapi_gnosis_state(handle) == c.UAPI_SERVER_LISTENING) {
+        std.Thread.sleep(std.time.ns_per_s);
+    }
+}
+----
+
+Key rules for the edge hook:
+
+* Call `uapi_gnosis_set_handler` *after* `uapi_gnosis_create` and *before*
+  `uapi_gnosis_start`.  Calling after start returns `UAPI_ERR`.
+* Pass `NULL` as `handler_fn` to revert to built-in gnosis routes.
+* `GnosisRequest` fields (`method`, `path`, `body_ptr`, `body_len`) are valid
+  only for the duration of the handler call — copy any data you need to keep.
+* `GnosisResponse` fields must be fully populated before the handler returns.
+  Use `uapi_gnosis_write_response` as a convenience or fill the struct directly.
+* `body_ptr` in `GnosisResponse` must remain valid until `uapi_gnosis_write_response`
+  returns — a module-level or stack buffer that outlives the call is fine;
+  an arena-allocated slice freed before return is not.
+
+==== Option B — connector usage only
+
+Link the shared library and `@cImport` the header:
 
 [source,zig]
 ----
@@ -203,7 +280,7 @@ pub fn main() !void {
 }
 ----
 
-Option B — add `libzig_api` as a `build.zig` dependency and import symbols
+Option C — add `libzig_api` as a `build.zig` dependency and import symbols
 directly from the Zig modules (internal use only; C ABI is the stable surface).
 
 === From Rust
@@ -242,6 +319,16 @@ const zig_api = b.addSharedLibraryFromPath(
 exe.linkLibrary(zig_api);
 exe.addIncludePath(.{ .cwd_relative = PATH_TO_GENERATED_ABI });
 ----
+. *Use the canonical single-port + set_handler shape* (see §"Canonical
+  single-port shape" above) for all HTTP-serving edge repos.  **Do not** bind
+  your own sockets or run your own accept loops — gnosis owns the listener.
+  Register your dispatch function with `uapi_gnosis_set_handler` before
+  calling `uapi_gnosis_start`.  Path-route all protocols (REST, GraphQL,
+  gRPC-JSON) inside a single edge handler.  Reference implementations:
+  - `standards/lol/api/zig-gateway/src/main.zig` — LoL gateway (v0.2.0,
+    single-port, path-routed, 3-protocol)
+  - `aerie/src/api/zig/main.zig` — Aerie gateway (single-port, path-routed,
+    REST + GraphQL + gRPC-JSON)
 . *Place repo-specific Idris2 ABI proofs in `src/abi/` of the edge repo.*
   Import `ZigApi.ABI.Types` and `ZigApi.ABI.Connector` from `zig-api.ipkg`
   (add it as a dependency in the edge repo's `.ipkg`).  Extend, do not fork.
@@ -315,6 +402,14 @@ The trigger was the estate-wide V-lang ban on 2026-04-10 (V-lang detected via
 | PRODUCTION-ADJACENT
 | Idris2 ABI fully proved; Zig runtime builds and passes unit tests;
   integration tests require `gnosis` binary on `$PATH`.
+
+| `uapi_gnosis_set_handler` + `uapi_gnosis_write_response`
+| ACTIVE (2026-04-17)
+| Edge hook API.  Enables single-port + path-routed dispatch for all edge
+  repos.  `set_handler` registers a C-ABI `GnosisHandlerFn` before start;
+  `write_response` is a convenience fill helper.  Idris2 ABI:
+  `ZigApi.ABI.Foreign.prim__gnosisSetHandler`.  Header: `zig_api.h` lines
+  197–212.
 
 | `zig-groove-bridge`
 | PARTIAL
