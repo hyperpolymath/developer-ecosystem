@@ -1,0 +1,41 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# STATE.a2ml — zig-groove-bridge project state
+[metadata]
+project = "zig-groove-bridge"
+version = "0.1.0"
+last-updated = "2026-04-17"
+status = "working"
+session = "unblock-pattern-repo — 2026-04-17"
+
+[project-context]
+name = "Zig Groove Bridge"
+purpose = """Dodeca-API multi-protocol connector for Groove protocol.
+Snap-on/snap-off discovery and attachment to Groove-aware services."""
+completion-percentage = 95
+
+[position]
+phase = "implementation"
+maturity = "alpha"
+
+[route-to-mvp]
+milestones = [
+  { name = "README + A2ML metadata", status = "complete", date = "2026-04-17" },
+  { name = "Build verification", status = "in-progress", date = "2026-04-17" },
+  { name = "Integration with zig-api foundation", status = "planned", date = "future" },
+]
+
+[blockers-and-issues]
+issues = [
+]
+
+[critical-next-actions]
+actions = [
+  "Wire to zig-api foundation when foundation is ready",
+  "Consider async/await variant if high-throughput discovery needed",
+]
+
+[maintenance-status]
+last-run-utc = "2026-04-17T00:00:00Z"
+last-result = "pass"

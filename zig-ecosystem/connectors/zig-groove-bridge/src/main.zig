@@ -336,13 +336,14 @@ pub fn probePort(allocator: Allocator, hint_name: []const u8, port: u16) ?Discov
 /// range (ports 6460-6500).  Returns a heap-allocated ServiceList; call
 /// `list.deinit()` when done.
 pub fn discoverAll(allocator: Allocator) !ServiceList {
-    var found = std.ArrayList(DiscoveredService).init(allocator);
-    errdefer found.deinit();
+    var found: std.ArrayList(DiscoveredService) = .empty;
+    try found.ensureTotalCapacityPrecise(allocator, 10);
+    errdefer found.deinit(allocator);
 
     // ── Known services ────────────────────────────────────────────────────────
     for (KNOWN_SERVICES) |ks| {
         if (probePort(allocator, ks.name, ks.port)) |svc| {
-            try found.append(svc);
+            try found.append(allocator, svc);
         }
     }
 
@@ -350,12 +351,12 @@ pub fn discoverAll(allocator: Allocator) !ServiceList {
     var p: u16 = GROOVE_RANGE_START;
     while (p <= GROOVE_RANGE_END) : (p += 1) {
         if (probePort(allocator, "unknown", p)) |svc| {
-            try found.append(svc);
+            try found.append(allocator, svc);
         }
     }
 
     return ServiceList{
-        .items = try found.toOwnedSlice(),
+        .items = try found.toOwnedSlice(allocator),
         .allocator = allocator,
     };
 }
