@@ -1,0 +1,44 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+= Aerie API — V-lang Implementation SIDELINED
+:toc:
+
+== Status
+
+The V-lang implementation of the Aerie API service (`src/api/v/`) is *sidelined*
+as of 2026-04-12 following the estate-wide V-lang ban (2026-04-10).
+
+V-lang is banned across all hyperpolymath repositories. See
+link:https://github.com/hyperpolymath/standards/blob/main/VLANG-BAN.adoc[VLANG-BAN.adoc]
+for rationale and migration guidance.
+
+== Migration Target
+
+The replacement is a **Rust + Axum** API service with **Idris2 ABI / Zig FFI**
+for formally verified subsystems. Target location: `src/api/rust/`.
+
+[cols="1,1,1"]
+|===
+| V module (sidelined) | Replacement | Status
+
+| `main.v`             | `src/api/rust/main.rs`      | Planned
+| `proof.v`            | `src/api/rust/proof.rs`     | Planned — Idris2 ABI / Zig FFI
+| `policy.v`           | `src/api/rust/policy.rs`    | Planned
+| `resolvers.v`        | `src/api/rust/resolvers.rs` | Planned
+| `verb_governance.v`  | `src/api/rust/governance.rs`| Planned
+| `verisim_client.v`   | VeriSimDB Rust client        | See `nextgen-databases/verisimdb/connectors/clients/rust/`
+| `redis_client.v`     | `deadpool-redis` crate       | Planned
+| `librespeed_client.v`| Rust HTTP client             | Planned
+| `hyperglass_client.v`| Rust HTTP client             | Planned
+| `smokeping_client.v` | Rust HTTP client             | Planned
+| `aerie.pb.v`         | `tonic` gRPC codegen         | Planned
+|===
+
+== Note on V-grpc Dependency
+
+The `v.mod` lists `v_grpc` as a dependency. The gRPC layer should be
+ported to `tonic` (Rust) or `grpc-web` (ReScript/Deno) depending on the
+transport requirements.
+
+The V-lang source is retained in-tree for reference during migration but
+MUST NOT be compiled, deployed, or extended.
