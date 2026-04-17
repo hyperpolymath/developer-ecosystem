@@ -1,75 +1,53 @@
 // SPDX-License-Identifier: PMPL-1.0-or-later
-= V Ecosystem
-Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= V Ecosystem — Community Transfer Bundle
+Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+:toc:
+:toc-placement: preamble
 
-== Overview
+Community transfer staging area for V-lang work from the hyperpolymath estate.
+See link:TRANSFER.adoc[TRANSFER.adoc] for the full transfer documentation,
+licence terms, and contact details.
 
-Monorepo for V programming language ecosystem tools and bridges.
+== What Is Here
 
-== Projects
+This directory contains all V-lang work produced in the hyperpolymath estate,
+offered to the V community following the estate's decision to retire V-lang in
+favour of Zig for systems-level FFI work (2026-04-10).
 
-=== v-rest (Standard)
-
-The canonical template for V-lang REST services.
-**Standard:** All REST services in this ecosystem are implemented in V-lang.
-
-=== v-grpc
-
-gRPC and Protobuf support for the V language.
-
-=== v-graphql
-
-GraphQL implementation and schema generation for V.
-
-=== v-zig-ffi
-
-Mandatory Zig FFI layer for all V-lang bridges to ensure header-less C ABI compatibility.
-
-=== v-idris-abi
-
-Mandatory Idris2 ABI verification layer for formally proven memory layouts.
-
-=== v-telemetry
-
-OpenTelemetry and observability support for V services.
-
-=== v-validator
-
-Type-safe validation and schema enforcement for V.
-
-=== v-middleware
-
-Authentication, CORS, and common request handlers for V services.
-
-=== v-benchmarks
-
-Performance testing suite for the V-lang stack.
-
-=== v-deno
-
-V Language FFI Bridge for Deno — call V shared libraries from Deno via `Deno.dlopen`.
-
-* Written in ReScript with Idris2 ABI definitions and Zig FFI layer
-* Provides V compilation, library loading, and type-safe FFI bindings
-* See `v-deno/README.adoc` for details
-
-== Structure
+=== Structure
 
 ----
 v-ecosystem/
-├── v-rest/           # Canonical REST standard
-├── v-grpc/           # gRPC support
-├── v-graphql/        # GraphQL support
-├── v-zig-ffi/        # Zig FFI seam (Mandatory)
-├── v-idris-abi/      # Idris2 ABI verification (Mandatory)
-├── v-telemetry/      # Observability
-├── v-validator/      # Schema validation
-├── v-middleware/     # Common handlers
-├── v-benchmarks/     # Performance testing
-├── v-deno/           # V ↔ Deno FFI bridge
-└── README.adoc       # This file
+├── TRANSFER.adoc         # Full transfer documentation (start here)
+├── MIGRATION.adoc        # Migration notes: V stubs → Zig FFI
+├── connectors/           # 11 service-connector stubs (V-lang client patterns)
+├── v-api-interfaces/     # 95+ protocol scaffolds (hyphen naming)
+│   ├── v-proven/         # Safe-operations library bindings (PMPL-1.0-or-later)
+│   ├── v-bebop/          # Bebop binary serialisation bindings (AGPL-3.0-or-later)
+│   └── ... (93 protocol scaffolds: WebSocket, gRPC, MQTT, REST, etc.)
+├── v_api_interfaces/     # Additional protocol scaffolds (underscore naming)
+│   ├── verisimdb_graphql/ # VeriSimDB GraphQL gateway pattern
+│   ├── verisimdb_grpc/    # VeriSimDB gRPC gateway pattern
+│   ├── verisimdb_rest/    # VeriSimDB REST gateway pattern
+│   └── ... (additional protocol stubs)
+├── v-grpc/               # gRPC-Web runtime + v-protoc stub generator
+├── v-rest/               # Conventional REST server
+├── v-graphql/            # GraphQL support
+├── v-zig-ffi/            # Zig FFI seam layer (mandatory for all connectors)
+├── v-idris-abi/          # Idris2 ABI verification layer
+├── v-telemetry/          # OpenTelemetry / observability support
+├── v-validator/          # Type-safe validation and schema enforcement
+├── v-middleware/         # Authentication, CORS, common request handlers
+├── v-benchmarks/         # Performance testing suite
+└── v-deno/               # V ↔ Deno FFI bridge
 ----
 
-== License
+== Licence
 
-PMPL-1.0-or-later
+All hyperpolymath-original code: **PMPL-1.0-or-later** (MPL-2.0 is the
+automatic legal fallback until PMPL achieves formal recognition).
+
+Exception: `v-api-interfaces/v-bebop/` is licensed **AGPL-3.0-or-later**.
+
+See link:TRANSFER.adoc[TRANSFER.adoc] for full licence and attribution details.

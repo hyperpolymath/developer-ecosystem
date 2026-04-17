@@ -86,25 +86,31 @@ Already listed in https://github.com/vlang/awesome-v[awesome-v] under
 
 === Service Connectors (11)
 
-V-lang bridge stubs connecting to hyperpolymath services. RSR-structured
-with README, source scaffold, and ABI/FFI directories. Each connector
-wraps a service with a V-lang client interface.
+V-lang bridge stubs. Each follows the same RSR structure: a README,
+source scaffold, and ABI/FFI directories. Each connector wraps a specific
+service with a V-lang client interface.
+
+**Note on service names:** These connectors were built against
+hyperpolymath-internal services (BoJ, Hypatia, VeriSimDB, etc.). The
+services themselves are not part of this donation. The connectors are
+donated as working examples of V-lang client patterns against real API
+surfaces — adapt the connection details for your own backend.
 
 [cols="1,3"]
 |===
-| Connector | Service
+| Connector | Service (hp-internal; adapt as needed)
 
-| `v-ambientops` | AmbientOps container orchestration
-| `v-boj` | BoJ MCP server
-| `v-burble` | Burble WebRTC media platform
-| `v-echidna` | Echidna formal verification orchestrator
-| `v-gossamer` | Gossamer window management
-| `v-groove-bridge` | Groove inter-service protocol bridge
-| `v-hypatia` | Hypatia CI/CD neurosymbolic engine
-| `v-idaptik` | IDApTIK adaptive tutoring system
-| `v-reposystem` | Reposystem repository automation
-| `v-stapeln` | Stapeln container platform
-| `v-verisimdb` | VeriSimDB formal verification database
+| `v-ambientops` | Container orchestration service
+| `v-boj` | MCP (Model Context Protocol) server
+| `v-burble` | WebRTC media platform
+| `v-echidna` | Formal verification orchestrator
+| `v-gossamer` | Window management / desktop service
+| `v-groove-bridge` | Inter-service protocol bridge
+| `v-hypatia` | CI/CD analysis engine
+| `v-idaptik` | Adaptive tutoring system
+| `v-reposystem` | Repository automation service
+| `v-stapeln` | Container platform
+| `v-verisimdb` | Formal verification database
 |===
 
 === Infrastructure Modules
@@ -132,9 +138,61 @@ GraphQL, and 88 others. Each scaffold has:
 * `TOPOLOGY.md` — architecture diagram
 * `src/*.v` — V-lang stub (to be implemented)
 * `ffi/zig/` — Zig FFI scaffold
-* `.machine_readable/` — A2ML state files
+* `.machine_readable/` — A2ML state files (structured metadata, self-describing)
 
-These are clean RSR-structure starting points ready for V implementation.
+These are clean starting points ready for V implementation.
+
+Two additional entries landed in `v-api-interfaces/` as of 2026-04-17:
+
+==== v-api-interfaces/v-proven
+
+Thin V-lang FFI wrapper around `libproven`, a safe-operations library
+covering overflow-checked arithmetic, XSS prevention, path traversal
+protection, email/IP validation, and cryptographic token generation.
+
+The V binding (`proven.v`, ~1 600 LOC) is a complete FFI shim; all logic
+lives in Idris2 with Zig and Rust alternative bindings also available.
+
+**Licence:** PMPL-1.0-or-later (MPL-2.0 legal fallback).
+
+This file was previously part of the hyperpolymath `verification-ecosystem`
+repo under `proven/bindings/v/`. It is being donated here because the V
+binding is complete and useful, but the hyperpolymath estate is moving to
+Zig/Rust for all FFI bindings. See `v-api-interfaces/v-proven/MIGRATION.adoc`
+for the migration context.
+
+==== v-api-interfaces/v-bebop
+
+V-lang FFI bindings for the Bebop binary serialisation protocol, plus IIoT
+client and server examples using V's standard `net` library.
+
+Files:
+* `bebop_bridge.v` — module binding the C ABI from `include/bebop_v_ffi.h`
+* `iiot_client.v` — IIoT sensor data client
+* `iiot_server.v` — IIoT sensor data server
+* `v.mod` — V module manifest
+
+**Licence:** AGPL-3.0-or-later (note: different from the rest of this bundle
+which is PMPL-1.0-or-later). This code originated in the hyperpolymath
+`bebop-ffi` project; the AGPL reflects the licensing of the Bebop wire-format
+binding work done in that project.
+
+This directory was previously `developer-ecosystem/bebop-v-ffi/v/`.
+
+==== VeriSimDB API stubs (in v_api_interfaces/)
+
+`v_api_interfaces/` (note: underscore variant; both directories are included
+in this transfer) contains additional connectors including three VeriSimDB-
+specific stubs:
+
+* `verisimdb_graphql/` — GraphQL gateway for VeriSimDB hexad storage (port 9092)
+* `verisimdb_grpc/` — gRPC interface to VeriSimDB
+* `verisimdb_rest/` — REST interface to VeriSimDB
+
+VeriSimDB is an internal hyperpolymath formal-verification database. These
+stubs are donated as working examples of GraphQL/gRPC/REST gateway patterns
+in V, even though VeriSimDB itself is not being donated. The stubs will
+require adaptation to connect to a different backend.
 
 == Transfer Terms
 

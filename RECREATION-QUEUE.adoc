@@ -1,0 +1,315 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Recreation Queue — V-lang and ReScript Donation Areas
+Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+:toc:
+:toc-placement: preamble
+
+IMPORTANT: This is a deferred-work plan, not a commitment to a timeline.
+Recreation begins only when explicitly directed by the project owner.
+This document is updated as donation readiness and consumption analysis
+evolves.
+
+== Purpose
+
+When the V-lang and ReScript donation areas actually hand over to their
+respective communities, hyperpolymath will need to replace any functionality
+it currently consumes from those areas. This document tracks:
+
+* What each donated module does
+* Which hyperpolymath repo/module currently consumes it
+* The target recreation language (Zig for V, AffineScript for ReScript)
+* Notes on complexity or known blockers
+
+Items are listed by donation area. Items with unclear consumer status are
+flagged explicitly.
+
+== V-lang Donation Area (`developer-ecosystem/v-ecosystem/`)
+
+=== V Service Connectors
+
+The 11 service connectors (`connectors/v-boj`, `v-hypatia`, etc.) are
+**V-lang stubs** — they were built as V-lang client interfaces to
+hyperpolymath services. As of 2026-04-12, they are deprecated internally
+and the Zig connector pool (`developer-ecosystem/zig-api/`) is the canonical
+replacement.
+
+[cols="2,2,1,3"]
+|===
+| Module | HP Consumer | Recreation Target | Notes
+
+| `connectors/v-boj`
+| BoJ MCP server (boj-server)
+| Zig
+| Zig equivalent in `developer-ecosystem/zig-api/`. Protocol: MCP over HTTP.
+
+| `connectors/v-hypatia`
+| Hypatia CI/CD engine
+| Zig
+| Zig equivalent in `developer-ecosystem/zig-api/`. Protocol: REST/JSON.
+
+| `connectors/v-stapeln`
+| Stapeln container platform
+| Zig
+| Zig equivalent in `developer-ecosystem/zig-api/`. Protocol: REST/JSON.
+
+| `connectors/v-verisimdb`
+| VeriSimDB (all estate-wide users)
+| Zig
+| Zig equivalent in `developer-ecosystem/zig-api/`. VeriSimDB has three
+  protocol surfaces (GraphQL/gRPC/REST); see `v_api_interfaces/verisimdb_*`
+  for the donated pattern examples.
+
+| `connectors/v-echidna`
+| Echidna formal verification orchestrator
+| Zig
+| Zig equivalent in `developer-ecosystem/zig-api/`. Protocol: REST/JSON.
+
+| `connectors/v-burble`
+| Burble WebRTC platform
+| Zig
+| Zig equivalent in `developer-ecosystem/zig-api/`. Protocol: WebRTC/REST.
+
+| `connectors/v-gossamer`
+| Gossamer window manager
+| Zig
+| Zig equivalent in `developer-ecosystem/zig-api/`. Protocol: IPC/REST.
+
+| `connectors/v-groove-bridge`
+| Groove inter-service protocol
+| Zig
+| Groove is the HP-standard inter-service protocol. Zig implementation
+  is the canonical form already (`groove-spec` repo).
+
+| `connectors/v-ambientops`
+| AmbientOps container orchestration
+| Zig
+| Zig equivalent in `developer-ecosystem/zig-api/`.
+
+| `connectors/v-reposystem`
+| Reposystem (scaffoldia/gitbot-fleet)
+| Zig
+| Zig equivalent in `developer-ecosystem/zig-api/`.
+
+| `connectors/v-idaptik`
+| IDApTIK adaptive tutoring system
+| Zig
+| Zig equivalent in `developer-ecosystem/zig-api/`.
+|===
+
+NOTE: The `developer-ecosystem/zig-api/` connector pool is already the
+declared migration target (see `MIGRATION.adoc`). Confirm it builds and
+passes integration tests before treating the V connectors as safely
+decommissioned.
+
+=== V API Interface Scaffolds
+
+The protocol scaffolds in `v-api-interfaces/` and `v_api_interfaces/` were
+building-block stubs. Most have **no active HP consumer** — they were
+staging areas for potential future protocol support. Two entries have
+specific notes:
+
+[cols="2,2,1,3"]
+|===
+| Module | HP Consumer | Recreation Target | Notes
+
+| `v-api-interfaces/v-proven`
+| `verification-ecosystem/proven` (libproven library)
+| Zig
+| Zig bindings already exist at `proven/bindings/zig/`. Recreation is
+  complete in principle; verify Zig bindings have feature parity with the
+  V binding (all 6 modules: SafeMath, SafeString, SafePath, SafeEmail,
+  SafeNetwork, SafeCrypto).
+
+| `v-api-interfaces/v-bebop`
+| `developer-ecosystem/bebop-ffi`
+| Zig
+| Zig FFI for bebop is the natural form (Zig already handles C ABI directly).
+  The `bebop-ffi` repo has the C header; Zig binding is the next step when
+  directed. AGPL-3.0-or-later on the donated V code.
+
+| `v_api_interfaces/verisimdb_graphql`
+| VeriSimDB (all estate-wide consumers)
+| Zig
+| Donated as a pattern example; actual VeriSimDB Zig binding lives in
+  `developer-ecosystem/zig-api/`. Verify protocol coverage.
+
+| `v_api_interfaces/verisimdb_grpc`
+| VeriSimDB (all estate-wide consumers)
+| Zig
+| See above.
+
+| `v_api_interfaces/verisimdb_rest`
+| VeriSimDB (all estate-wide consumers)
+| Zig
+| See above.
+
+| All other protocol scaffolds (90+)
+| _No confirmed HP consumer_
+| Zig (if needed)
+| These were speculative staging scaffolds. Flag for user review before
+  treating as safe to decommission — some may have been planned consumers.
+  See "Flagged for Review" section below.
+|===
+
+=== V Infrastructure Modules
+
+[cols="2,2,1,3"]
+|===
+| Module | HP Consumer | Recreation Target | Notes
+
+| `v-zig-ffi/`
+| All V-lang connectors (seam layer)
+| N/A (already Zig)
+| The Zig FFI seam is the donation itself. HP uses Zig natively — no
+  recreation needed.
+
+| `v-idris-abi/`
+| All V-lang connectors (ABI verification)
+| N/A (already Idris2)
+| Idris2 ABI definitions are language-agnostic; they continue to be used
+  in the Zig connector pool. No recreation needed.
+
+| `v-deno/`
+| Deno integration layer
+| Zig
+| The V ↔ Deno bridge was a convenience layer. Deno's native FFI
+  (`Deno.dlopen`) can call Zig compiled libraries directly without a
+  V intermediary. Complexity: low.
+
+| `v-grpc/`, `v-rest/`
+| HP Gnosis CLI backend
+| Zig
+| Gnosis CLI is an HP-internal tool. Zig HTTP server replaces the V
+  transport layer. `developer-ecosystem/zig-api/` covers this.
+
+| `v-graphql/`
+| HP services with GraphQL surface
+| Zig
+| Low priority — HP uses REST and gRPC as primary protocols.
+
+| `v-telemetry/`, `v-validator/`, `v-middleware/`, `v-benchmarks/`
+| Various (unclear which specific consumers)
+| Zig
+| Flagged for user review. These are cross-cutting modules; specific
+  consumers not confirmed. See "Flagged for Review" section.
+|===
+
+=== Flagged for User Review (V-lang)
+
+The following items have **unclear consumer status** and should be reviewed
+before the V donation finalises:
+
+* All 90+ generic protocol scaffolds in `v-api-interfaces/` (WebSocket,
+  MQTT, AMQP, Cap'n Proto, etc.) — were any of these being actively
+  depended on by an HP project?
+* `v-telemetry/`, `v-validator/`, `v-middleware/`, `v-benchmarks/` — do
+  any HP projects import from these, or were they always self-contained
+  donation stubs?
+* `v-graphql/` — any HP consumer beyond pattern documentation?
+
+== ReScript Donation Area (`rescript-developer-ecosystem/`)
+
+IMPORTANT: The `rescript-developer-ecosystem/` directory is **not a unified
+donation staging area**. It contains 6 independent git repositories, each
+with its own `.git/` directory and GitHub remote. There is no top-level
+`README` or `TRANSFER.adoc`. This area has not been touched in this cleanup
+session (per standing instructions: report back if it's not what was described).
+
+The user should be aware that to create a proper handover package for the
+ReScript community, these repos would need to be treated individually or a
+wrapper container (with its own TRANSFER.adoc and README) would need to be
+created. See the session report for the full breakdown.
+
+=== ReScript Components — HP Consumption Analysis
+
+[cols="2,2,1,3"]
+|===
+| Repo | HP Consumer | Recreation Target | Notes
+
+| `rescript/`
+| Compiler fork — not consumed as a library
+| N/A
+| This is a fork of https://github.com/rescript-lang/rescript with
+  `upstream` remote pointing there. It is a working copy / contribution
+  staging area, not an HP-internal library. No recreation needed.
+
+| `rescript-tea/`
+| PanLL (TEA architecture), potentially IDApTIK and any HP web UIs
+| AffineScript
+| The Elm Architecture implementation for ReScript. HP uses TEA as the
+  standard UI pattern. AffineScript's TEA framework is the long-term
+  replacement (`affinescript-ecosystem`). Complexity: high (TEA is a
+  foundational pattern used broadly). Deferred until AffineScript TEA
+  is production-ready.
+
+| `rescript-string-power/`
+| Any HP ReScript code using tagged template utilities (SQL, CSS, GraphQL)
+| AffineScript
+| Tagged template utilities library. HP consumer unclear — may be used in
+  IDApTIK or PanLL for SQL/GraphQL query building. Flagged for user review.
+  Complexity: medium.
+
+| `rescript-evangeliser/`
+| Developer tooling / onboarding
+| AffineScript (or retire)
+| Pattern-detection and educational tool for JS → ReScript migration.
+  HP consumption is low (primarily for external developer education).
+  AffineScript equivalent would be a JS → AffineScript evangeliser.
+  Low priority for recreation.
+
+| `bridge-web-rescript/`
+| Specification-stage PWA framework
+| AffineScript + Deno
+| Currently at specification stage only — no production HP consumer yet.
+  The vision (ReScript → WASM PWA framework) aligns with AffineScript's
+  direction. Recreation would be the AffineScript web runtime. Deferred.
+
+| `rescript-wasm-runtime/`
+| Any HP code using Deno/WASM ReScript bindings
+| AffineScript (WASM target)
+| Runtime bindings for Deno + WASM. HP consumer unclear. Flagged for
+  user review. AffineScript's WASM target would subsume this.
+|===
+
+=== Flagged for User Review (ReScript)
+
+* `rescript-string-power/` — confirm which HP repos use tagged template
+  utilities before treating as safe to donate
+* `rescript-wasm-runtime/` — confirm which HP repos use Deno WASM bindings
+* `rescript-tea/` — confirm all HP TEA consumers before donation (IDApTIK,
+  PanLL, any other web UIs)
+* The entire `rescript-developer-ecosystem/` directory structure — should
+  it become a proper container repo with a TRANSFER.adoc, or should each
+  of the 6 repos be donated individually?
+
+== Summary
+
+[cols="1,1,1"]
+|===
+| Area | Items in queue | Recreation target
+
+| V-lang connectors (confirmed HP consumers)
+| 11
+| Zig (mostly already covered by `zig-api/`)
+
+| V-lang API scaffolds (confirmed HP consumers)
+| 5 (v-proven, v-bebop, 3 × VeriSimDB)
+| Zig
+
+| V-lang infrastructure modules (uncertain consumers)
+| 6 (flagged for review)
+| Zig
+
+| ReScript repos (confirmed or probable HP consumers)
+| 2–4 (rescript-tea, rescript-string-power, rescript-wasm-runtime, bridge-web-rescript)
+| AffineScript
+
+| ReScript compiler fork
+| 0 (no recreation needed)
+| N/A
+|===
+
+Total items requiring Zig recreation: **16** (11 confirmed + 5 specific scaffolds; up to 6 more pending review)
+
+Total items requiring AffineScript recreation: **2–4** (pending user review of consumers)

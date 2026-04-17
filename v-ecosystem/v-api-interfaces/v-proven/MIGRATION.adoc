@@ -1,0 +1,52 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+= V Bindings — Deprecated (2026-04-12)
+:toc:
+
+== Status
+
+These V-lang bindings for `libproven` were deprecated in the originating
+hyperpolymath estate as of 2026-04-12, following a decision to retire V-lang
+in favour of Zig for all FFI binding work.
+
+**For V community users:** the binding remains fully functional. This note
+explains why no further updates will come from hyperpolymath — it is not a
+statement about V-lang itself.
+
+== Migration Targets
+
+Use one of the canonical bindings instead:
+
+=== Zig (preferred for FFI and systems code)
+
+`proven/bindings/zig/` — comprehensive module-per-domain Zig bindings with
+the same coverage as this file.  Idiomatic Zig with proper error handling.
+
+[source,zig]
+----
+const proven = @import("proven");
+const result = try proven.safe_math.safeDiv(42, 7);
+----
+
+=== Rust (preferred for application code)
+
+`proven/bindings/rust/` — full Rust crate wrapping `libproven` via
+`bindgen`-generated FFI.  Idiomatic Result<T, E> error handling.
+
+[source,toml]
+----
+[dependencies]
+proven = { path = "../../proven/bindings/rust" }
+----
+
+== File
+
+`proven.v` (1 599 lines) — thin FFI wrapper around `libproven.so`.
+All logic lives in Idris2; this file only marshals data.  The Zig and
+Rust replacements provide identical coverage.
+
+== Next Steps
+
+. Remove `proven.v` from consuming projects.
+. Replace imports with the appropriate Zig or Rust binding.
+. The `v.mod` in this directory can be deleted once all consumers are migrated.
