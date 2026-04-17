@@ -1,0 +1,13 @@
+set shell := ["bash", "-euo", "pipefail", "-c"]
+
+default: test
+
+build:
+    dune build src/
+
+test:
+    dune build test/ReactiveTest.exe
+    dune exec test/ReactiveTest.exe
+
+clean:
+    dune clean

@@ -1,0 +1,11 @@
+set shell := ["bash", "-euo", "pipefail", "-c"]
+
+default: test
+
+test:
+    yarn build
+    yarn typecheck
+    @git diff --quiet src/ || { echo; echo "Please review the Gentype outputs too!"; echo; false; }
+
+clean:
+    yarn clean

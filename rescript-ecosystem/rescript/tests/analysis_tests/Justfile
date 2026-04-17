@@ -1,0 +1,19 @@
+set shell := ["bash", "-euo", "pipefail", "-c"]
+
+default: test
+
+test-analysis-binary:
+    just --working-directory tests test
+    just --working-directory tests-generic-jsx-transform test
+    just --working-directory tests-incremental-typechecking test
+
+test-reanalyze:
+    just --working-directory tests-reanalyze test
+
+test: test-analysis-binary test-reanalyze
+
+clean:
+    just --working-directory tests clean
+    just --working-directory tests-generic-jsx-transform clean
+    just --working-directory tests-incremental-typechecking clean
+    just --working-directory tests-reanalyze clean

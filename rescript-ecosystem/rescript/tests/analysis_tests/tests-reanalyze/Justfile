@@ -1,0 +1,19 @@
+set shell := ["bash", "-euo", "pipefail", "-c"]
+
+default: build
+
+build:
+    just --working-directory deadcode build
+    just --working-directory termination build
+
+test:
+    just --working-directory deadcode test
+    just --working-directory termination test
+
+# Order-independence test for reanalyze. Not run by default since it takes longer.
+test-reanalyze-order-independence:
+    just --working-directory deadcode test-reanalyze-order-independence
+
+clean:
+    just --working-directory deadcode clean
+    just --working-directory termination clean
