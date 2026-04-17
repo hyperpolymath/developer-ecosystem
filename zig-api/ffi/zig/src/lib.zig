@@ -29,6 +29,8 @@ comptime {
     _ = gnosis.uapi_gnosis_destroy;
     _ = gnosis.uapi_gnosis_state;
     _ = gnosis.uapi_gnosis_health;
+    _ = gnosis.uapi_gnosis_set_handler;
+    _ = gnosis.uapi_gnosis_write_response;
     // connector pool
     _ = connector.uapi_connector_create;
     _ = connector.uapi_connector_health;

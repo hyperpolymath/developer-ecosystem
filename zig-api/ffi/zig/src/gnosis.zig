@@ -65,6 +65,10 @@ const GnosisServer = struct {
     stop_flag:  std.atomic.Value(bool),
     /// gnosis binary path (null-terminated, heap-owned by pool allocator).
     gnosis_bin: [:0]const u8,
+    /// Optional edge handler hook.  When non-null, `uapi_gnosis_start`'s serve
+    /// loop calls this instead of the built-in gnosis route handlers.
+    /// Set once before `uapi_gnosis_start`; never changed after start.
+    handler:    ?GnosisHandlerFn,
 
     /// Return a zeroed-out default slot.
     fn empty() GnosisServer {
@@ -75,9 +79,62 @@ const GnosisServer = struct {
             .thread     = null,
             .stop_flag  = std.atomic.Value(bool).init(false),
             .gnosis_bin = "",
+            .handler    = null,
         };
     }
 };
+
+// =============================================================================
+// Handler hook types
+// =============================================================================
+
+/// C-ABI-stable request context passed to edge handler functions.
+///
+/// `method` and `path` are null-terminated C strings pointing into the
+/// per-connection buffer — valid only for the duration of the handler call.
+/// `body_ptr` / `body_len` describe the request body (empty slice for GET).
+/// `conn`     is an opaque pointer to the underlying `std.net.Server.Connection`;
+///            cast to `*std.net.Server.Connection` inside the handler if needed.
+///            Prefer the provided helper `uapi_gnosis_write_response` instead of
+///            reaching into the connection directly.
+pub const GnosisRequest = extern struct {
+    /// HTTP method string, e.g. "GET", "POST" (null-terminated).
+    method:   [*:0]const u8,
+    /// Request path, e.g. "/api/v1/render" (null-terminated, query-stripped).
+    path:     [*:0]const u8,
+    /// Request body bytes.  Null pointer when body is empty.
+    body_ptr: ?[*]const u8,
+    /// Byte length of `body_ptr` (0 when body is empty).
+    body_len: u32,
+};
+
+/// C-ABI response written by an edge handler.
+///
+/// The handler fills in all four fields; `uapi_gnosis_start`'s serve loop
+/// flushes them to the TCP stream.
+/// `body_ptr` must remain valid until `uapi_gnosis_write_response` returns
+/// (stack buffers inside the handler are fine).
+pub const GnosisResponse = extern struct {
+    /// HTTP numeric status code, e.g. 200, 404.
+    status:       u16,
+    _pad:         u16,
+    /// Null-terminated MIME type string, e.g. "application/json".
+    content_type: [*:0]const u8,
+    /// Response body bytes.  Null pointer for zero-length body.
+    body_ptr:     ?[*]const u8,
+    /// Byte length of `body_ptr`.
+    body_len:     u32,
+};
+
+/// C-ABI function pointer type for edge handler hooks.
+///
+/// The handler receives a parsed request and an output `GnosisResponse` it
+/// must fill before returning.  Both pointers are valid for the entire call.
+/// The handler MUST NOT store either pointer beyond the call.
+pub const GnosisHandlerFn = *const fn (
+    req:  *const GnosisRequest,
+    resp: *GnosisResponse,
+) callconv(.c) void;
 
 // =============================================================================
 // Global pool + pool allocator
@@ -418,6 +475,8 @@ fn readLine(stream: std.net.Stream, buf: []u8) ![]const u8 {
 const ServeThreadArgs = struct {
     idx:        usize,
     gnosis_bin: []const u8,
+    /// Optional edge handler — null means use built-in gnosis routes.
+    handler:    ?GnosisHandlerFn,
 };
 
 fn serveThread(args: ServeThreadArgs) void {
@@ -459,7 +518,13 @@ fn serveThread(args: ServeThreadArgs) void {
         // Reset the arena between connections.
         _ = arena.reset(.retain_capacity);
 
-        serveRequest(&conn, ctx);
+        if (args.handler) |handler_fn| {
+            // Edge handler hook: dispatch to the edge's path-routing function
+            // instead of the built-in gnosis routes.
+            serveRequestViaHandler(&conn, handler_fn, ctx.allocator);
+        } else {
+            serveRequest(&conn, ctx);
+        }
     }
 
     pool_mutex.lock();
@@ -488,6 +553,120 @@ fn stopServerSlot(idx: usize) void {
     }
     pool[idx].active = false;
     pool[idx].state  = .stopped;
+}
+
+// =============================================================================
+// Edge handler dispatch
+// =============================================================================
+
+/// Parse the HTTP/1.1 request from `conn`, build a `GnosisRequest`, invoke
+/// `handler_fn`, then flush the `GnosisResponse` back to the stream.
+///
+/// Called from `serveThread` when the pool slot has a registered handler.
+/// All allocations go through `allocator`; freed when the arena resets between
+/// connections.
+fn serveRequestViaHandler(
+    conn:       *std.net.Server.Connection,
+    handler_fn: GnosisHandlerFn,
+    allocator:  std.mem.Allocator,
+) void {
+    // --- Parse request line ---
+    var request_line_buf: [1024]u8 = undefined;
+    const request_line = readLine(conn.stream, &request_line_buf) catch {
+        writeBadRequest(conn, "malformed request line");
+        return;
+    };
+
+    var parts = std.mem.splitScalar(u8, request_line, ' ');
+    const method_str = parts.next() orelse {
+        writeBadRequest(conn, "missing method");
+        return;
+    };
+    const raw_path = parts.next() orelse {
+        writeBadRequest(conn, "missing path");
+        return;
+    };
+
+    // Strip query string from path.
+    const path_str = if (std.mem.indexOfScalar(u8, raw_path, '?')) |qi|
+        raw_path[0..qi]
+    else
+        raw_path;
+
+    // --- Drain headers, extract Content-Length ---
+    var content_length: usize = 0;
+    var header_buf: [256]u8   = undefined;
+    while (true) {
+        const line = readLine(conn.stream, &header_buf) catch break;
+        if (line.len == 0) break;
+        if (std.ascii.startsWithIgnoreCase(line, "content-length:")) {
+            const val = std.mem.trimLeft(u8, line["content-length:".len..], " \t");
+            content_length = std.fmt.parseInt(usize, val, 10) catch 0;
+        }
+    }
+
+    // --- Read body ---
+    var body_owned: ?[]u8 = null;
+    defer if (body_owned) |b| allocator.free(b);
+    if (content_length > 0) {
+        body_owned = readBody(allocator, conn.stream, content_length) catch {
+            writeInternalError(conn, "failed to read request body");
+            return;
+        };
+    }
+    const body_bytes: ?[]u8 = body_owned;
+
+    // --- Null-terminate method and path for the C-ABI structs ---
+    // Allocate sentinel-terminated copies so the handler sees valid C strings.
+    const method_z = allocator.dupeZ(u8, method_str) catch {
+        writeInternalError(conn, "oom");
+        return;
+    };
+    const path_z = allocator.dupeZ(u8, path_str) catch {
+        writeInternalError(conn, "oom");
+        return;
+    };
+
+    // --- Build GnosisRequest ---
+    const req = GnosisRequest{
+        .method   = method_z,
+        .path     = path_z,
+        .body_ptr = if (body_bytes) |b| b.ptr else null,
+        .body_len = @intCast(if (body_bytes) |b| b.len else 0),
+    };
+
+    // --- Invoke handler ---
+    var resp = GnosisResponse{
+        .status       = 200,
+        ._pad         = 0,
+        .content_type = "application/json",
+        .body_ptr     = null,
+        .body_len     = 0,
+    };
+    handler_fn(&req, &resp);
+
+    // --- Flush response ---
+    const body_out: []const u8 = if (resp.body_ptr) |p| p[0..resp.body_len] else "";
+    const ct_out:   []const u8 = std.mem.span(resp.content_type);
+    writeResponse(conn, resp.status, ct_out, body_out);
+}
+
+/// Helper exported for edge handlers: write a response body into a
+/// `GnosisResponse` from a Zig slice.  Since the edge handler stack-allocates
+/// a response buffer, this is a convenience shim — the handler can also fill
+/// `resp.*` directly.
+pub export fn uapi_gnosis_write_response(
+    resp:         *GnosisResponse,
+    status:       u16,
+    content_type: [*:0]const u8,
+    body_ptr:     ?[*]const u8,
+    body_len:     u32,
+) callconv(.c) void {
+    resp.status       = status;
+    resp._pad         = 0;
+    resp.content_type = content_type;
+    resp.body_ptr     = body_ptr;
+    resp.body_len     = body_len;
 }
 
 // =============================================================================
@@ -544,7 +723,11 @@ pub export fn uapi_gnosis_start(handle: u64) callconv(.c) u8 {
     pool[idx].thread = std.Thread.spawn(
         .{},
         serveThread,
-        .{ServeThreadArgs{ .idx = idx, .gnosis_bin = pool[idx].gnosis_bin }},
+        .{ServeThreadArgs{
+            .idx        = idx,
+            .gnosis_bin = pool[idx].gnosis_bin,
+            .handler    = pool[idx].handler,
+        }},
     ) catch |err| {
         core.setError("gnosis: thread spawn failed: {}", .{err});
         return core.Result.process_failed.toU8();
@@ -583,6 +766,43 @@ pub export fn uapi_gnosis_state(handle: u64) callconv(.c) u8 {
     defer pool_mutex.unlock();
     if (!pool[idx].active) return @intFromEnum(ServerState.stopped);
     return @intFromEnum(pool[idx].state);
+}
+
+/// Register an edge handler hook for the server identified by `handle`.
+///
+/// Semantics:
+///   - MUST be called after `uapi_gnosis_create` and BEFORE `uapi_gnosis_start`.
+///   - Calling after `uapi_gnosis_start` returns `UAPI_ERR` (no hot-swap).
+///   - Once set, `uapi_gnosis_start`'s accept loop calls `handler_fn` for every
+///     request instead of the built-in gnosis routes.
+///   - The built-in routes are still compiled in; pass a null handler (0) to
+///     revert to them.
+///
+/// Returns UAPI_OK (0) on success, UAPI_ERR (1) on failure.
+pub export fn uapi_gnosis_set_handler(
+    handle:     u64,
+    handler_fn: ?GnosisHandlerFn,
+) callconv(.c) u8 {
+    const idx = idxFromHandle(handle) orelse {
+        core.setError("gnosis: set_handler: invalid handle {d}", .{handle});
+        return core.Result.invalid_param.toU8();
+    };
+
+    pool_mutex.lock();
+    defer pool_mutex.unlock();
+
+    if (!pool[idx].active) {
+        core.setError("gnosis: set_handler: handle {d} is not active", .{handle});
+        return core.Result.invalid_param.toU8();
+    }
+    // Refuse to hot-swap after the server has started.
+    if (pool[idx].state == .listening or pool[idx].state == .draining) {
+        core.setError("gnosis: set_handler: server already started — cannot change handler", .{});
+        return core.Result.err.toU8();
+    }
+
+    pool[idx].handler = handler_fn;
+    return core.Result.ok.toU8();
 }
 
 /// Synchronous health probe.
@@ -640,4 +860,78 @@ test "handle encoding roundtrip" {
     try std.testing.expectEqual(@as(?usize, null), idxFromHandle(0));
     // handle > MAX_SERVERS is invalid
     try std.testing.expectEqual(@as(?usize, null), idxFromHandle(MAX_SERVERS + 1));
+}
+
+// ---------------------------------------------------------------------------
+// Handler hook tests
+// ---------------------------------------------------------------------------
+
+/// A no-op edge handler: writes a fixed 200 JSON response.
+/// Used by the tests below to verify that the hook dispatch path is reachable.
+fn testHandler(req: *const GnosisRequest, resp: *GnosisResponse) callconv(.c) void {
+    // Suppress unused-parameter warning.
+    _ = req;
+    resp.status       = 200;
+    resp._pad         = 0;
+    resp.content_type = "application/json";
+    // Point at a static string — valid for the lifetime of the call.
+    const body: [*:0]const u8 = "{\"handler\":\"test\"}";
+    resp.body_ptr = body;
+    resp.body_len = 18; // length of the string above
+}
+
+test "set_handler rejects invalid handle" {
+    init();
+    defer teardown();
+    const rc = uapi_gnosis_set_handler(0, &testHandler);
+    try std.testing.expectEqual(@as(u8, core.Result.invalid_param.toU8()), rc);
+}
+
+test "set_handler accepts idle server and records handler" {
+    init();
+    defer teardown();
+
+    const handle = uapi_gnosis_create(19876);
+    try std.testing.expect(handle != 0);
+    defer uapi_gnosis_destroy(handle);
+
+    const rc = uapi_gnosis_set_handler(handle, &testHandler);
+    try std.testing.expectEqual(@as(u8, core.Result.ok.toU8()), rc);
+
+    // Verify the handler was stored.
+    const idx = idxFromHandle(handle) orelse return error.BadHandle;
+    try std.testing.expect(pool[idx].handler != null);
+}
+
+test "set_handler rejects null handler (revert to built-in)" {
+    init();
+    defer teardown();
+
+    const handle = uapi_gnosis_create(19877);
+    try std.testing.expect(handle != 0);
+    defer uapi_gnosis_destroy(handle);
+
+    // Set a real handler, then clear it.
+    _ = uapi_gnosis_set_handler(handle, &testHandler);
+    const rc = uapi_gnosis_set_handler(handle, null);
+    try std.testing.expectEqual(@as(u8, core.Result.ok.toU8()), rc);
+
+    const idx = idxFromHandle(handle) orelse return error.BadHandle;
+    try std.testing.expect(pool[idx].handler == null);
+}
+
+test "write_response fills GnosisResponse fields" {
+    const body = "hello";
+    const ct:   [*:0]const u8 = "text/plain";
+    var resp = GnosisResponse{
+        .status       = 0,
+        ._pad         = 0,
+        .content_type = "application/json",
+        .body_ptr     = null,
+        .body_len     = 0,
+    };
+    uapi_gnosis_write_response(&resp, 201, ct, body, 5);
+    try std.testing.expectEqual(@as(u16, 201), resp.status);
+    try std.testing.expectEqual(@as(u32, 5), resp.body_len);
+    try std.testing.expectEqual(@as(?[*]const u8, body), resp.body_ptr);
 }

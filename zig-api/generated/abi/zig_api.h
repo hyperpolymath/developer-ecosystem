@@ -118,25 +118,6 @@ void uapi_teardown(void);
 #define UAPI_METHOD_PATCH            6
 
 /* ============================================================================
- * Path safety  (ffi/zig/src/process.zig)
- * ========================================================================== */
-
-/**
- * Check whether a path is safe to open.
- *
- * Applies two gates:
- *   1. Allowlist prefix check (see process.zig DEFAULT_ALLOWLIST).
- *   2. proven_path_has_traversal — formally-verified traversal detection.
- *
- * `path_ptr` — pointer to path bytes (need not be null-terminated).
- * `path_len` — byte length of the path.
- *
- * Returns 1 when the path is safe, 0 when denied.
- * Fails closed: returns 0 on any proven internal error.
- */
-uint8_t uapi_safe_path_default(const uint8_t *path_ptr, uint32_t path_len);
-
-/* ============================================================================
  * Gnosis API server  (ffi/zig/src/gnosis.zig)
  * ========================================================================== */
 
@@ -179,6 +160,56 @@ uint8_t uapi_gnosis_state(uint64_t handle);
  * UAPI_HEALTH_NOT_SERVING (1) otherwise.
  */
 uint8_t uapi_gnosis_health(uint64_t handle);
+
+/**
+ * Request context passed to edge handler hooks.
+ * All pointer fields are valid only for the duration of the handler call.
+ */
+typedef struct {
+    const char    *method;    /**< HTTP method, e.g. "GET" (null-terminated). */
+    const char    *path;      /**< Request path, query-stripped (null-terminated). */
+    const uint8_t *body_ptr;  /**< Request body bytes; NULL when empty. */
+    uint32_t       body_len;  /**< Byte length of body_ptr; 0 when empty. */
+} GnosisRequest;
+
+/**
+ * Response written by an edge handler hook.
+ * `body_ptr` must remain valid until uapi_gnosis_write_response returns.
+ */
+typedef struct {
+    uint16_t       status;        /**< HTTP status code, e.g. 200, 404. */
+    uint16_t       _pad;          /**< Reserved; set to 0. */
+    const char    *content_type;  /**< MIME type string (null-terminated). */
+    const uint8_t *body_ptr;      /**< Response body; NULL for zero-length body. */
+    uint32_t       body_len;      /**< Byte length of body_ptr. */
+} GnosisResponse;
+
+/**
+ * Register an edge handler hook for the server identified by `handle`.
+ *
+ * Must be called after uapi_gnosis_create and BEFORE uapi_gnosis_start.
+ * Calling after start returns UAPI_ERR — no hot-swap.
+ * When set, uapi_gnosis_start dispatches every request to `handler_fn`
+ * instead of the built-in gnosis routes.  Pass NULL to revert to built-in.
+ *
+ * Returns UAPI_OK on success, non-zero on failure.
+ */
+uint8_t uapi_gnosis_set_handler(
+    uint64_t      handle,
+    void        (*handler_fn)(const GnosisRequest *req, GnosisResponse *resp)
+);
+
+/**
+ * Convenience helper: fill all fields of a GnosisResponse in one call.
+ * Edge handlers may call this or fill the struct directly.
+ */
+void uapi_gnosis_write_response(
+    GnosisResponse *resp,
+    uint16_t        status,
+    const char     *content_type,
+    const uint8_t  *body_ptr,
+    uint32_t        body_len
+);
 
 /* ============================================================================
  * Service connector pool  (ffi/zig/src/connector.zig)
