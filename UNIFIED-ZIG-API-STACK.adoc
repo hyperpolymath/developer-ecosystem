@@ -411,6 +411,14 @@ The trigger was the estate-wide V-lang ban on 2026-04-10 (V-lang detected via
   `ZigApi.ABI.Foreign.prim__gnosisSetHandler`.  Header: `zig_api.h` lines
   197–212.
 
+| `proven_header_has_crlf` / `safeHeaderDefault`
+| ACTIVE (2026-04-17)
+| CRLF injection guard wired into `gnosis.zig:writeResponse`.
+  `safeHeaderDefault` calls `proven_header_has_crlf` (formally-verified
+  from libproven_ffi) to validate Content-Type header before serialisation.
+  Fail-closed policy: if CRLF detected or proven errors, response refused
+  with 500 error instead of being sent.
+
 | `zig-groove-bridge`
 | PARTIAL
 | Dodeca-API + discovery logic written; attachment / full Groove manifest
@@ -431,8 +439,9 @@ The trigger was the estate-wide V-lang ban on 2026-04-10 (V-lang detected via
   `zig-api/ffi/zig/build.zig` links `libproven_ffi.a` built via
   `verification-ecosystem/proven/ffi/zig/build_standalone.zig`.
   The two stacks now chain: zig-api is a proven consumer.
-  Next wiring candidate: `proven_header_has_crlf` in `gnosis.zig` header parsing
-  (the `Content-Length:` and `Content-Type:` extraction in `serveRequest`).
+  **Update 2026-04-17 (evening):** `proven_header_has_crlf` now wired into
+  `gnosis.zig:writeResponse` via `safeHeaderDefault` helper; validates
+  Content-Type header for CRLF injection before serialisation.
 
 * *C adaptor auto-regeneration pipeline.* **Resolved 2026-04-17.**
   `just gen-header` (Bash + Python3 extractor in `scripts/gen-header.sh`)
