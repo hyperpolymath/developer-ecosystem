@@ -37,7 +37,7 @@ sed -i "s/2026-03-13/$(date +%Y-%m-%d)/g" $(grep -rl '2026-03-13' .)
 |---|---|---|---|
 | `Jonathan D.A. Jewell` | Full legal name | `Jane Doe` | SPDX headers (all files), MAINTAINERS.md, .mailmap, .reuse/dep5, docs/AI-CONVENTIONS.md |
 | `j.d.a.jewell@open.ac.uk` | Primary contact email | `jane@example.org` | SPDX headers (all files), .mailmap, .reuse/dep5, .well-known/humans.txt |
-| `jonathan.jewell@gmail.com` | Previous/secondary email (for .mailmap) | `old@example.com` | .mailmap |
+| `user-old@example.com` | Previous/secondary email (for .mailmap) | `old@example.com` | .mailmap |
 | `The Open University` | Author's organization/affiliation | `Acme University` | project-metadata.k9.ncl |
 | `Jewell` | Author surname (for citations) | `Doe` | docs/CITATIONS.adoc |
 | `Jonathan` | Author first name (for citations) | `Jane` | docs/CITATIONS.adoc |
