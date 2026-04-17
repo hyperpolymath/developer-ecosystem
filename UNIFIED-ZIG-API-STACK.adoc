@@ -305,19 +305,43 @@ Julia-specific wrappers are not yet written; `ccall` is the direct path.
 A new Zig-edge repo is one that calls hyperpolymath services via
 `libzig_api` or extends the Idris2 ABI with repo-specific types.
 
-. *Create from template.* Clone `hyperpolymath/rsr-template-repo`, run
+**Step 0 (preferred) — use the `zig-edge` Scaffoldia template.**
+
+The template lives at
+`reposystem/scaffoldia/registry/zig/zig-edge.ncl`.
+It wires `build.zig`, `src/main.zig`, `src/abi/` (Types + Foreign + Layout),
+`<name>.ipkg`, `justfile`, `README.adoc`, `.gitignore`, and a minimal CI
+workflow in one shot.  Invoke via Scaffoldia:
+
+[source,bash]
+----
+scaffoldia new zig-edge \
+    --EDGE_NAME=my-gateway \
+    --EDGE_PURPOSE="My service API gateway" \
+    --DEFAULT_PORT=4001 \
+    --HANDLER_PREFIX=myGateway
+----
+
+If Scaffoldia is not yet set up for your workstation, copy
+`reposystem/scaffoldia/registry/zig/zig-edge.ncl`, substitute the four
+`{{PLACEHOLDER}}` values manually, and render with `nickel export`.
+
+Manual wiring (steps below) is the fallback when the template cannot be used.
+
+. *Create from template (manual fallback).* Clone `hyperpolymath/rsr-template-repo`, run
   `just init`, and customise placeholders.
-. *Add `libzig_api` to `build.zig`.*  Reference the shared library output
-  from `developer-ecosystem/zig-api/ffi/zig/` or install it system-wide via
-  `just install` from the `zig-api` Justfile.  A minimal skeleton:
+. *Add `libzig_api` to `build.zig`.*  Use the pattern from the Scaffoldia
+  template (`zig-edge.ncl` `build_zig` section) — `createModule` +
+  `addAnonymousImport("zig_api", …)` + `addLibraryPath` + `addIncludePath` +
+  `linkSystemLibrary("zig_api", …)`.  Static linkage is required; dynamic
+  linkage does not resolve all `proven_ffi` transitive symbols.  A minimal
+  skeleton (prefer the template over hand-writing this):
 +
 [source,zig]
 ----
-const zig_api = b.addSharedLibraryFromPath(
-    .{ .name = "zig_api", .path = .{ .cwd_relative = PATH_TO_LIBZIG_API } },
-);
-exe.linkLibrary(zig_api);
-exe.addIncludePath(.{ .cwd_relative = PATH_TO_GENERATED_ABI });
+edge_mod.addLibraryPath(.{ .cwd_relative = zig_api_lib_path });
+edge_mod.addIncludePath(.{ .cwd_relative = zig_api_include_path });
+edge_mod.linkSystemLibrary("zig_api", .{});
 ----
 . *Use the canonical single-port + set_handler shape* (see §"Canonical
   single-port shape" above) for all HTTP-serving edge repos.  **Do not** bind
@@ -449,6 +473,9 @@ The trigger was the estate-wide V-lang ban on 2026-04-10 (V-lang detected via
   source modules.  `just check-header` runs in CI (`zig-api-ci.yml`) and fails
   the build on any drift.
 
-* *Template repo for new edges.* `rsr-template-repo` does not yet include a
-  `build.zig` skeleton that depends on `libzig_api`.  A `just new-zig-edge`
-  subcommand in `scaffoldia` or a template overlay is the right long-term fix.
+* *Template repo for new edges.* **Resolved 2026-04-17.**
+  `reposystem/scaffoldia/registry/zig/zig-edge.ncl` is the canonical
+  Scaffoldia template for new Zig edge repos.  It produces `build.zig`,
+  `src/main.zig`, `src/abi/` (Types + Foreign + Layout), `<name>.ipkg`,
+  `justfile`, `README.adoc`, `.gitignore`, and `.github/workflows/ci.yml`
+  pre-wired to the unified stack.  See §"Wiring a New Edge Repo" Step 0.
