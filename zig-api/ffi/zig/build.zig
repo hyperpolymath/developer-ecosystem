@@ -15,16 +15,18 @@
 //                     process.zig uses as a second gate in safePathDefault.
 //                     Build with:
 //                       cd verification-ecosystem/proven/ffi/zig
-//                       zig build --build-file build_standalone.zig \
-//                           --prefix zig-out-standalone
-//                     The default proven_lib_path below points to that output.
+//                       zig build
+//                     Output lands in zig-out/lib/libproven_ffi.a (standard zig build output).
+//                     The default proven_lib_path below points to that location.
 
 const std = @import("std");
 
 /// Path to the directory containing libproven_ffi.a.
 /// Override with -Dproven-lib-path=/absolute/path.
+/// Points to proven's standard zig-out/lib output (not zig-out-standalone —
+/// that symlink was removed 2026-04-17; zig build now outputs to zig-out/ directly).
 const DEFAULT_PROVEN_LIB_PATH =
-    "/var/mnt/eclipse/repos/verification-ecosystem/proven/ffi/zig/zig-out-standalone/lib";
+    "/var/mnt/eclipse/repos/verification-ecosystem/proven/ffi/zig/zig-out/lib";
 
 /// Path to the directory containing proven.h (the C ABI header).
 const DEFAULT_PROVEN_INCLUDE_PATH =
