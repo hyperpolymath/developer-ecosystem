@@ -5,9 +5,45 @@
 //
 // safe_path() mirrors ZigApi.ABI.Process.checkSafePath.
 // DEFAULT_ALLOWLIST must stay in sync with ZigApi.ABI.Process.defaultAllowlist.
+//
+// Path safety now uses two gates:
+//   1. Allowlist prefix check (hand-written, fast).
+//   2. proven_path_has_traversal — formally-verified traversal detection from
+//      libproven_ffi (verification-ecosystem/proven).  This catches paths that
+//      pass the prefix check but contain ".." components (e.g. "/tmp/../../../etc").
+//
+// The proven call is load-bearing: safePathDefault returns false if either gate
+// fires, so no gnosis argument can contain a traversal sequence.
 
 const std = @import("std");
 const core = @import("core.zig");
+
+// =============================================================================
+// proven FFI — extern declarations matching proven.h
+// =============================================================================
+
+/// C ABI result type for boolean operations (matches ProvenBoolResult in proven.h).
+/// Layout must match: struct { int32_t status; bool value; }
+const ProvenBoolResult = extern struct {
+    status: c_int,
+    value:  bool,
+};
+
+/// proven status codes (subset used here).
+const PROVEN_OK: c_int = 0;
+
+/// Check if a byte slice contains a directory traversal sequence ("..").
+/// Implemented in verification-ecosystem/proven/ffi/zig/src/main.zig.
+/// Linked via -lproven_ffi in build.zig.
+extern fn proven_path_has_traversal(ptr: [*]const u8, len: usize) ProvenBoolResult;
+
+/// Error returned when proven_path_has_traversal signals a traversal.
+pub const PathError = error{
+    /// proven detected a directory traversal sequence ("..") in the path.
+    TraversalDetected,
+    /// proven returned an unexpected status code.
+    ProvenStatusError,
+};
 
 // =============================================================================
 // ExecResult  (must match ZigApi.ABI.Process.execResultTag)
@@ -43,9 +79,33 @@ pub fn safePath(path: []const u8, allowlist: []const []const u8) bool {
     return false;
 }
 
-/// Returns true if `path` passes the DEFAULT_ALLOWLIST check.
+/// Returns true if `path` is safe: it must start with an allowed prefix AND
+/// must not contain any directory traversal sequence ("..").
+///
+/// The traversal check is delegated to proven_path_has_traversal (libproven_ffi),
+/// a formally-verified C ABI function from verification-ecosystem/proven.
+/// This prevents attacks such as "/tmp/../../../etc/passwd" that pass the prefix
+/// check but navigate outside the allowed subtree.
+///
+/// Returns false (path denied) on any proven error to fail-closed.
 pub fn safePathDefault(path: []const u8) bool {
-    return safePath(path, &DEFAULT_ALLOWLIST);
+    // Gate 1: allowlist prefix check.
+    if (!safePath(path, &DEFAULT_ALLOWLIST)) return false;
+
+    // Gate 2: proven traversal detection (load-bearing proven FFI call).
+    // proven_path_has_traversal is the first proven_ffi_* symbol called from
+    // zig-api — actualising the proven → zig-api layering described in
+    // zig-api/EXPLAINME.adoc and UNIFIED-ZIG-API-STACK.adoc.
+    if (path.len == 0) return true; // empty already blocked by prefix check
+    const result = proven_path_has_traversal(path.ptr, path.len);
+    if (result.status != PROVEN_OK) {
+        // proven returned an error: fail closed.
+        core.setError("proven_path_has_traversal returned status {d} for path '{s}'",
+            .{ result.status, path });
+        return false;
+    }
+    // result.value == true means traversal detected → deny.
+    return !result.value;
 }
 
 // =============================================================================
@@ -209,4 +269,11 @@ test "safe_path rejects disallowed paths" {
     try std.testing.expect(!safePathDefault("/root/secret"));
     try std.testing.expect(!safePathDefault("../../../etc/shadow"));
     try std.testing.expect(!safePathDefault(""));
+}
+
+test "safe_path rejects traversal inside allowed prefix (proven gate)" {
+    // These paths pass the prefix check but contain ".." — proven must catch them.
+    try std.testing.expect(!safePathDefault("/tmp/../../../etc/passwd"));
+    try std.testing.expect(!safePathDefault("/home/hyper/../../root/secret"));
+    try std.testing.expect(!safePathDefault("/var/mnt/eclipse/repos/foo/../../../etc/shadow"));
 }

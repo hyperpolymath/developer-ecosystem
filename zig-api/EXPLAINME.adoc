@@ -48,7 +48,9 @@ The four modules:
 | `Result` enum, thread-local error storage, generic `Pool(T, N)` with mutex
 
 | `process.zig`
-| Safe-path validation, `runProcess`, `runGnosis` (shells out to the `gnosis` binary)
+| Safe-path validation, `runProcess`, `runGnosis` (shells out to the `gnosis` binary).
+  As of 2026-04-17, `safePathDefault` calls `proven_path_has_traversal` from
+  `libproven_ffi` as a second gate — the first concrete proven→zig-api wiring.
 
 | `gnosis.zig`
 | HTTP/1.1 server pool (replaces `v-grpc` + `v-rest`).  Handles `/render`,
