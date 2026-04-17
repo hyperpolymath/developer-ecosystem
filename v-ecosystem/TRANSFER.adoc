@@ -4,6 +4,18 @@ Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 :toc:
 :toc-placement: preamble
 
+[IMPORTANT]
+====
+**Seeking a maintainer from the V community.**
+
+Hyperpolymath is looking for someone from the V community to take over
+management of this ecosystem due to other commitments. The work below is
+offered in good faith as a genuine contribution — it is not a
+fire-and-forget dump. If you're interested in picking it up, please reach
+out via GitHub issues on the hosting repository, or by email to
+mailto:j.d.a.jewell@open.ac.uk[j.d.a.jewell@open.ac.uk].
+====
+
 This document describes all V-lang work in the hyperpolymath estate that is
 offered to the V community, following the ecosystem consolidation decision of
 2026-04-10.
