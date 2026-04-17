@@ -108,6 +108,19 @@ pub fn safePathDefault(path: []const u8) bool {
     return !result.value;
 }
 
+/// C ABI export of safePathDefault for consumers that link libzig_api as a
+/// pre-built static/shared library and cannot import process.zig directly.
+///
+/// `path_ptr` — pointer to the path bytes (need not be null-terminated).
+/// `path_len` — byte length of the path.
+///
+/// Returns 1 (true) when the path is safe, 0 (false) when denied.
+/// Matches the declaration in generated/abi/zig_api.h: uapi_safe_path_default.
+pub export fn uapi_safe_path_default(path_ptr: [*]const u8, path_len: usize) callconv(.c) u8 {
+    const path = path_ptr[0..path_len];
+    return if (safePathDefault(path)) 1 else 0;
+}
+
 // =============================================================================
 // ExecOutput — captured stdout / stderr from a subprocess
 // =============================================================================

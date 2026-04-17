@@ -118,6 +118,25 @@ void uapi_teardown(void);
 #define UAPI_METHOD_PATCH            6
 
 /* ============================================================================
+ * Path safety  (ffi/zig/src/process.zig)
+ * ========================================================================== */
+
+/**
+ * Check whether a path is safe to open.
+ *
+ * Applies two gates:
+ *   1. Allowlist prefix check (see process.zig DEFAULT_ALLOWLIST).
+ *   2. proven_path_has_traversal — formally-verified traversal detection.
+ *
+ * `path_ptr` — pointer to path bytes (need not be null-terminated).
+ * `path_len` — byte length of the path.
+ *
+ * Returns 1 when the path is safe, 0 when denied.
+ * Fails closed: returns 0 on any proven internal error.
+ */
+uint8_t uapi_safe_path_default(const uint8_t *path_ptr, uint32_t path_len);
+
+/* ============================================================================
  * Gnosis API server  (ffi/zig/src/gnosis.zig)
  * ========================================================================== */
 
