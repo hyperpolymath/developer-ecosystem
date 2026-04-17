@@ -33,14 +33,26 @@ test-all: test test-integration
 
 # Check Idris2 ABI proofs (requires idris2 on PATH)
 check-abi:
-    idris2 --check src/abi/Types.idr
-    idris2 --check src/abi/Http.idr
-    idris2 --check src/abi/Process.idr
-    idris2 --check src/abi/Connector.idr
-    idris2 --check src/abi/Foreign.idr
+    idris2 --check src/ZigApi/ABI/Types.idr
+    idris2 --check src/ZigApi/ABI/Http.idr
+    idris2 --check src/ZigApi/ABI/Process.idr
+    idris2 --check src/ZigApi/ABI/Connector.idr
+    idris2 --check src/ZigApi/ABI/Foreign.idr
+
+# Regenerate generated/abi/zig_api.h from the Idris2 ABI modules.
+# Output is deterministic (fixed section order, no timestamps).
+# Run this whenever any src/ZigApi/ABI/*.idr file changes.
+gen-header:
+    bash scripts/gen-header.sh .
+
+# Verify the committed header matches what gen-header would produce.
+# Fails with a diff if there is drift. Used by CI.
+check-header:
+    just gen-header
+    git diff --exit-code generated/abi/zig_api.h
 
 # Build + check everything
-ci: check-abi test
+ci: check-abi gen-header test
 
 # Remove build artefacts
 clean:

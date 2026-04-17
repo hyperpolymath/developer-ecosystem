@@ -328,17 +328,22 @@ The trigger was the estate-wide V-lang ban on 2026-04-10 (V-lang detected via
 
 == Open Questions / Deferred
 
-* *proven -> zig-api active wiring.* `zig-api`'s `Foreign.idr` references
-  `libzig_api` only.  The narrative goal of calling `proven_ffi_*` symbols from
-  within the Zig runtime (e.g. using `proven` SafeMath for buffer bounds in
-  `gnosis.zig`) is described in `zig-api/EXPLAINME.adoc` but not yet wired.
-  Until wired, proven and zig-api are parallel stacks that share the Idris2/Zig
-  FFI pattern but do not chain.
+* *proven -> zig-api active wiring.* **Actualised 2026-04-17.**
+  `proven_path_has_traversal` is now called from
+  `zig-api/ffi/zig/src/process.zig:safePathDefault` (line ~73) as a second gate
+  on every gnosis path argument.  It rejects paths that contain `..` components
+  even when they pass the prefix allowlist (e.g. `/tmp/../../../etc/passwd`).
+  `zig-api/ffi/zig/build.zig` links `libproven_ffi.a` built via
+  `verification-ecosystem/proven/ffi/zig/build_standalone.zig`.
+  The two stacks now chain: zig-api is a proven consumer.
+  Next wiring candidate: `proven_header_has_crlf` in `gnosis.zig` header parsing
+  (the `Content-Length:` and `Content-Type:` extraction in `serveRequest`).
 
-* *C adaptor auto-regeneration pipeline.* `zig_api.h` is marked
-  `AUTO-GENERATED` but no `just` recipe or CI step currently regenerates it
-  from the Idris2 ABI source.  Manual sync is a drift risk.  A `just gen-header`
-  recipe invoking `idris2` + an extraction pass is needed.
+* *C adaptor auto-regeneration pipeline.* **Resolved 2026-04-17.**
+  `just gen-header` (Bash + Python3 extractor in `scripts/gen-header.sh`)
+  regenerates `generated/abi/zig_api.h` deterministically from the Idris2 ABI
+  source modules.  `just check-header` runs in CI (`zig-api-ci.yml`) and fails
+  the build on any drift.
 
 * *Template repo for new edges.* `rsr-template-repo` does not yet include a
   `build.zig` skeleton that depends on `libzig_api`.  A `just new-zig-edge`

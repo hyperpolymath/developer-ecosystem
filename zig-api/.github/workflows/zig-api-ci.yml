@@ -1,0 +1,110 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+# (MPL-2.0 is the automatic legal fallback until PMPL is formally recognised)
+#
+# zig-api-ci.yml — CI for developer-ecosystem/zig-api
+#
+# Jobs:
+#   header-drift  — runs `just check-header`; fails if zig_api.h is out of sync
+#                   with the Idris2 ABI source modules.
+#   build         — runs `just build` (zig build)
+#   test          — runs `just test`  (zig build test)
+
+name: zig-api CI
+
+on:
+  push:
+    paths:
+      - 'zig-api/**'
+  pull_request:
+    paths:
+      - 'zig-api/**'
+
+permissions:
+  contents: read
+
+jobs:
+  # --------------------------------------------------------------------------
+  # header-drift: regenerate zig_api.h from Idris2 ABI and fail on any diff.
+  # This catches silent ABI drift between the source modules and the committed
+  # header without requiring Idris2 to be installed (the extractor is pure
+  # Bash + Python 3, both available on ubuntu-latest).
+  # --------------------------------------------------------------------------
+  header-drift:
+    name: Check header drift
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: zig-api
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Regenerate header and check for drift
+        run: just check-header
+
+  # --------------------------------------------------------------------------
+  # build: compile the Zig FFI layer (shared + static libraries).
+  # --------------------------------------------------------------------------
+  build:
+    name: Build (zig build)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: zig-api
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install just
+        run: |
+          curl -sSfL https://just.systems/install.sh | bash -s -- --to /usr/local/bin
+
+      - name: Install Zig
+        run: |
+          ZIG_VERSION=0.15.0-dev.672+b15e2d572
+          curl -sSfL "https://ziglang.org/builds/zig-linux-x86_64-${ZIG_VERSION}.tar.xz" \
+              | tar -xJ --strip-components=1 -C /usr/local
+        env:
+          ZIG_VERSION: "0.15.0-dev.672+b15e2d572"
+
+      - name: Build
+        run: just build
+
+  # --------------------------------------------------------------------------
+  # test: run Zig unit tests.
+  # --------------------------------------------------------------------------
+  test:
+    name: Test (zig build test)
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: zig-api
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install just
+        run: |
+          curl -sSfL https://just.systems/install.sh | bash -s -- --to /usr/local/bin
+
+      - name: Install Zig
+        run: |
+          ZIG_VERSION=0.15.0-dev.672+b15e2d572
+          curl -sSfL "https://ziglang.org/builds/zig-linux-x86_64-${ZIG_VERSION}.tar.xz" \
+              | tar -xJ --strip-components=1 -C /usr/local
+        env:
+          ZIG_VERSION: "0.15.0-dev.672+b15e2d572"
+
+      - name: Test
+        run: just test
