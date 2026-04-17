@@ -1,0 +1,38 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+= LOL v-gateway — V-lang Deprecated (2026-04-12)
+:toc:
+
+== Status
+
+The V-lang implementation in `src/` is *deprecated* as of 2026-04-12
+following the estate-wide V-lang ban (2026-04-10).
+
+== Migration Target: Zig
+
+The canonical replacement is the Zig gateway at `../zig-gateway/`:
+
+[source,bash]
+----
+# From standards/lol/api/zig-gateway/
+zig build
+./zig-out/bin/lol-gateway
+----
+
+The Zig gateway is a three-port listener matching the V layout:
+
+[cols="1,1,1"]
+|===
+| Mount | Port | V source
+
+| REST    | `LOL_PORT` (default 7800)   | `src/main.v` (REST routes)
+| gRPC    | `LOL_PORT+1` (default 7801) | `src/main.v` (gRPC listener)
+| GraphQL | `LOL_PORT+2` (default 7802) | `src/main.v` (GraphQL listener)
+|===
+
+== Next Steps
+
+. Confirm `zig-gateway` handles `/api/v1/languages`, `/api/v1/corpus`,
+  `/api/v1/crawl`, and `/api/v1/health`.
+. Update `compose.yml` (if any) to replace the V container.
+. Once confirmed healthy, delete `src/*.v` and `v.mod`.

@@ -1,0 +1,22 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+= LOL V-LOL Library — V-lang Implementation SIDELINED
+:toc:
+
+== Status
+
+The V-lang LOL corpus library (`src/`) is *sidelined*
+as of 2026-04-12 following the estate-wide V-lang ban (2026-04-10).
+
+== Migration Target
+
+[cols="1,1"]
+|===
+| V module (sidelined) | Replacement
+
+| `lol.v`  | Gleam or Rust LOL corpus module
+| `types.v`| Rust domain types
+| `ffi.v`  | Idris2 ABI / Zig FFI
+|===
+
+The V-lang source is retained for reference but MUST NOT be compiled or deployed.
