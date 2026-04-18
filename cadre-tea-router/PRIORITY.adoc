@@ -1,0 +1,76 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= cadre-tea-router Priority List
+:toc:
+
+== MUST (Critical - Core Routing)
+
+[cols="1,3,1"]
+|===
+|ID |Task |Status
+
+|M1
+|URL parsing with path/query/fragment
+|✓ DONE
+
+|M2
+|Route-to-Msg pattern
+|PENDING
+
+|M3
+|Navigation commands (push, replace, back, forward)
+|PENDING
+
+|M4
+|URL change subscriptions
+|PENDING
+|===
+
+== SHOULD (Important - Full Integration)
+
+[cols="1,3,1"]
+|===
+|ID |Task |Status
+
+|S1
+|Integration with cadre-router primitives
+|PENDING
+
+|S2
+|Init-from-URL helpers
+|PENDING
+
+|S3
+|Type-safe route definitions
+|PENDING
+
+|S4
+|Query parameter parsing
+|PENDING
+
+|S5
+|Hash-based routing fallback
+|PENDING
+|===
+
+== COULD (Nice to Have - Future)
+
+[cols="1,3,1"]
+|===
+|ID |Task |Status
+
+|C1
+|Route guards/middleware
+|PENDING
+
+|C2
+|Scroll restoration
+|PENDING
+
+|C3
+|Prefetching support
+|PENDING
+
+|C4
+|Analytics integration hooks
+|PENDING
+|===

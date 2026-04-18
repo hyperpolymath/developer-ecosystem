@@ -1,0 +1,24 @@
+{
+  "name": "@anthropics/cadre-tea-router",
+  "sources": [
+    {
+      "dir": "src",
+      "subdirs": true
+    }
+  ],
+  "package-specs": [
+    {
+      "module": "esmodule",
+      "in-source": true
+    }
+  ],
+  "suffix": ".res.mjs",
+  "bs-dependencies": [
+    "@anthropics/cadre-router",
+    "rescript-tea",
+    "@proven/rescript-bindings"
+  ],
+  "warnings": {
+    "error": "+101"
+  }
+}
