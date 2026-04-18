@@ -1,0 +1,127 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+
+= Bridge: Nginx-Zig
+
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+:toc: macro
+:toclevels: 2
+:icons: font
+:bridge_tech: Zig 0.11+
+:target: Nginx C-Binary
+:status: Specification
+
+[.lead]
+*Status: Specification — Implementation Pending*
+
+A high-integrity bridge using *Zig* to interface Ephapax linear tokens with Nginx C-buffers, eliminating configuration drift through linear type semantics.
+
+toc::[]
+
+== Overview
+
+Bridge-Nginx-Zig provides a validated handover layer between the Ephapax supervisor system and Nginx's internal configuration cycle. By treating Nginx configurations as *linear matter* (consumed exactly once), it prevents the class of bugs arising from configuration drift, stale state, and double-application.
+
+=== Key Concepts
+
+Ephapax Linear Tokens::
+  Single-use configuration tokens that enforce exactly-once semantics. Once consumed by the bridge, the token cannot be reused or duplicated.
+
+Configuration Drift Elimination::
+  Traditional Nginx reload patterns allow configurations to diverge from intended state. This bridge ensures each configuration is a discrete, validated, atomic unit.
+
+Zig Validation Layer::
+  The Zig layer validates the configuration buffer provided by the Ephapax supervisor before passing the pointer to Nginx's internal cycle. This catches malformed or dangerous configurations before they reach the C binary.
+
+== Architecture
+
+[source]
+----
+┌─────────────────────┐
+│  Ephapax Supervisor │
+│  (Linear Tokens)    │
+└──────────┬──────────┘
+           │ ephapax_token_t
+           ▼
+┌─────────────────────┐
+│   Zig Bridge Layer  │
+│  • Token validation │
+│  • Buffer safety    │
+│  • Pointer handover │
+└──────────┬──────────┘
+           │ *ngx_conf_t
+           ▼
+┌─────────────────────┐
+│   Nginx C Binary    │
+│  (Internal Cycle)   │
+└─────────────────────┘
+----
+
+== Current Status
+
+[IMPORTANT]
+====
+*This repository contains the project specification only.*
+
+Source code implementation will be uploaded shortly.
+====
+
+=== What Exists
+
+* Project specification and concept documentation
+* Repository infrastructure (CI/CD, issue templates, governance)
+* Dual license (MIT OR PMPL-1.0-or-later)
+* Community guidelines and security policy
+
+=== What's Coming
+
+* Zig source implementation (`src/`)
+* Nginx module integration (`lib/`)
+* Build system (`build.zig`, `justfile` recipes)
+* Test suite
+* Example configurations
+
+== Installation
+
+[NOTE]
+====
+Installation instructions will be available once the implementation is complete.
+====
+
+.Planned installation method:
+[source,bash]
+----
+just install-bridge
+----
+
+== Requirements
+
+* Zig 0.11+
+* Nginx source headers (for `ngx_conf_t` definitions)
+* Ephapax runtime (for linear token generation)
+
+== License
+
+This project is dual-licensed under your choice of:
+
+* https://opensource.org/licenses/MIT[Palimpsest-MPL-1.0 License]
+* https://github.com/hyperpolymath/palimpsest-license.html[PMPL-1.0-or-later]
+
+See link:LICENSE.txt[LICENSE.txt] for details.
+
+== Contributing
+
+See link:CONTRIBUTING.md[CONTRIBUTING.md] for development setup and contribution guidelines.
+
+== Security
+
+For security concerns, see link:SECURITY.md[SECURITY.md].
+
+== Related Projects
+
+* https://github.com/hyperpolymath[hyperpolymath] — Parent organization
+* Ephapax — Linear token supervisor (specification pending)
+
+---
+
+_Part of the hyperpolymath ecosystem._
