@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# ai.txt - AI/ML Training Policy Declaration
+# https://site.spawning.ai/spawning-ai-txt
+
+# TRAINING PERMISSIONS
+User-Agent: *
+Disallow: /
+
+# This repository permits AI assistance for code review, documentation,
+# and contribution purposes within the project context.
+# Training on this codebase for commercial AI models is NOT permitted
+# without explicit written permission.
+
+# LICENSING
+# This project is licensed under AGPL-3.0-or-later with Palimpsest
+# dual-licensing options. See LICENSE.txt for details.
+
+# CONTACT
+# For licensing inquiries: https://github.com/hyperpolymath/asdf-ghjk/issues
+
+# PREFERENCES
+# We welcome AI-assisted contributions that:
+# - Follow our CONTRIBUTING guidelines
+# - Maintain code quality standards
+# - Include proper attribution
+# - Respect the project's licensing terms

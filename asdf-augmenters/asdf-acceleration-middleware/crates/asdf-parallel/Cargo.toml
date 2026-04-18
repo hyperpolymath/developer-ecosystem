@@ -1,0 +1,22 @@
+[package]
+name = "asdf-parallel"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+documentation.workspace = true
+keywords.workspace = true
+categories.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+anyhow = { workspace = true }
+thiserror = { workspace = true }
+rayon = { workspace = true }
+tracing = { workspace = true }
+serde = { workspace = true }
+num_cpus = { workspace = true }
+asdf-core = { path = "../asdf-core" }
+
+[dev-dependencies]

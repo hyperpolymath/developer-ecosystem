@@ -1,0 +1,72 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  shellcheck:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38 # v2.0.0
+        with:
+          scandir: './bin'
+          additional_files: 'lib/utils.bash'
+
+  test-plugin:
+    name: Test Plugin (${{ matrix.tool }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        tool: [vault, terraform, consul, packer]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install asdf
+        uses: asdf-vm/actions/setup@05e0d2ed97b598bfce82fd30daf324ae0c4570e6 # v3.0.2
+
+      - name: Test list-all for ${{ matrix.tool }}
+        run: |
+          asdf plugin add ${{ matrix.tool }} .
+          asdf list all ${{ matrix.tool }} | tail -10
+
+      - name: Test latest-stable for ${{ matrix.tool }}
+        run: |
+          asdf latest ${{ matrix.tool }}
+
+  test-install:
+    name: Test Install
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install asdf
+        uses: asdf-vm/actions/setup@05e0d2ed97b598bfce82fd30daf324ae0c4570e6 # v3.0.2
+
+      - name: Add plugin as vault
+        run: asdf plugin add vault .
+
+      - name: Install latest vault
+        run: |
+          asdf install vault latest
+          asdf global vault latest
+
+      - name: Verify installation
+        run: |
+          which vault
+          vault version

@@ -1,0 +1,26 @@
+= asdf-sops
+
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+:url-asdf: https://asdf-vm.com
+
+An {url-asdf}[asdf] plugin for https://github.com/getsops/sops[SOPS] - Secrets OPerationS.
+
+== Installation
+
+[source,bash]
+----
+asdf plugin add sops https://github.com/hyperpolymath/asdf-sops-plugin.git
+----
+
+== Usage
+
+[source,bash]
+----
+asdf list all sops
+asdf install sops latest
+asdf global sops latest
+----
+
+== License
+
+SPDX-License-Identifier: PMPL-1.0-or-later-or-later

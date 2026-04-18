@@ -1,0 +1,62 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= ROADMAP
+:toc:
+
+== Current State: Fully Functional v1.0.0
+
+The plugin is complete with all core functionality:
+
+* [x] Multi-forge mirror workflow (GitLab, Codeberg, Bitbucket)
+* [x] Instant-sync propagation workflow
+* [x] AI assistant configuration (CLAUDE.md)
+* [x] Plugin implementation
+* [x] Documentation
+* [x] CI/CD pipeline with security scanning
+
+== Completed Phases
+
+=== Phase 0: Specification
+
+* [x] Define security tools/versions the plugin manages
+* [x] Document target use cases
+* [x] Establish plugin architecture
+
+=== Phase 1: Core Plugin
+
+* [x] Implement asdf plugin interface scripts:
+** `bin/list-all` - list available versions
+** `bin/download` - download specific version
+** `bin/install` - install specific version
+* [x] Implement security commands:
+** `audit` - audit installed plugins for vulnerabilities
+** `verify` - verify plugin signatures and checksums
+** `report` - generate security reports
+** `update-db` - update vulnerability database
+* [x] Basic documentation
+
+=== Phase 2: Security Hardening
+
+* [x] SHA256 checksum validation
+* [x] Supply chain security documentation
+* [x] Pre-commit validation hooks
+* [x] SPDX license headers on all files
+
+== Future Roadmap
+
+=== Phase 3: Extended Features (Planned)
+
+* [ ] GPG signature verification for plugin downloads
+* [ ] Multiple security tool support (trivy, grype, etc.)
+* [ ] Platform detection and binary selection
+* [ ] Integration with Guix/Nix for hermetic installs
+
+=== Phase 4: Enterprise Features (Planned)
+
+* [ ] Policy-as-code for security requirements
+* [ ] Integration with vulnerability management platforms
+* [ ] SBOM generation for installed plugins
+* [ ] Compliance reporting (SOC2, FedRAMP)
+
+---
+
+_Version 1.0.0 released with core security scanning capabilities._

@@ -1,0 +1,90 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+== [Unreleased]
+
+=== Added
+- Initial release of asdf-ghjk plugin
+- Core scripts: `list-all`, `download`, `install`
+- Platform support for Linux (x86_64, aarch64) and macOS (x86_64, arm64)
+- SHA256 checksum verification for downloads
+- GitHub API integration with rate limit handling
+- Automatic retry logic for failed downloads
+- Comprehensive error handling and logging
+- Color-coded output for better UX
+- Runtime dependency checking
+- Support for GITHUB_API_TOKEN environment variable
+- ShellCheck compliance for all shell scripts
+- BATS test suite with unit and integration tests
+- GitHub Actions CI/CD pipeline
+- Comprehensive documentation (README, CONTRIBUTING, TROUBLESHOOTING, EXAMPLES)
+- Optional scripts: `help-overview`, `list-bin-paths`
+
+=== Changed
+- N/A (initial release)
+
+=== Deprecated
+- N/A (initial release)
+
+=== Removed
+- N/A (initial release)
+
+=== Fixed
+- N/A (initial release)
+
+=== Security
+- N/A (initial release)
+
+== [1.0.0] - 2024-XX-XX (Planned)
+
+=== Added
+- Production-ready plugin for asdf
+- Full ghjk version management
+- Multi-platform support
+- Automated testing and CI/CD
+- Complete documentation
+
+---
+
+== Release Notes Format
+
+For future releases, use this template:
+
+[source,markdown]
+----
+== [X.Y.Z] - YYYY-MM-DD
+
+=== Added
+- New features
+
+=== Changed
+- Changes in existing functionality
+
+=== Deprecated
+- Soon-to-be removed features
+
+=== Removed
+- Removed features
+
+=== Fixed
+- Bug fixes
+
+=== Security
+- Security fixes
+[source,]
+----
+
+== Version History
+
+- **1.0.0** - Initial release (planned)
+  - Complete asdf plugin for ghjk
+  - Full platform support
+  - Comprehensive testing and documentation
+
+[Unreleased]: https://github.com/Hyperpolymath/asdf-ghjk/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/Hyperpolymath/asdf-ghjk/releases/tag/v1.0.0

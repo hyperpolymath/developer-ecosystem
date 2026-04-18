@@ -1,0 +1,30 @@
+= Contributing
+
+Thank you for your interest in contributing!
+
+== Quick Start
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run tests: `asdf plugin test zig .`
+5. Submit a pull request
+
+== Code Style
+
+* Use ShellCheck for linting
+* Follow existing code patterns
+* Add SPDX headers to new files
+
+== Testing
+
+Test your changes with:
+
+[source,bash]
+----
+asdf plugin test zig . --asdf-tool-version latest
+----
+
+== License
+
+Contributions are licensed under AGPL-3.0-or-later.

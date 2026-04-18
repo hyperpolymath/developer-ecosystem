@@ -1,0 +1,10 @@
+# Example .tool-versions file for asdf-ghjk
+# Copy this to .tool-versions and modify as needed
+
+# ghjk - Development environment manager
+ghjk 0.3.2
+
+# Optional: Other tools you might use with ghjk
+# nodejs 20.0.0
+# python 3.11.0
+# golang 1.21.0

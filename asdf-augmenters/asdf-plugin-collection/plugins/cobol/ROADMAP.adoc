@@ -1,0 +1,104 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= asdf-cobol Roadmap
+:toc:
+:icons: font
+
+[NOTE]
+====
+*Current Status*: Repository infrastructure only. Plugin implementation pending.
+====
+
+== Phase 0: Infrastructure ✓
+
+[cols="1,1,3"]
+|===
+| Status | Item | Notes
+
+| ✓ | Repository created | GitHub + GitLab namespace reserved
+| ✓ | Multi-forge mirroring | GitLab, Codeberg, Bitbucket via GitHub Actions
+| ✓ | Instant sync workflow | Automatic propagation on push/release
+| ✓ | Documentation stubs | README.md, README.adoc
+|===
+
+== Phase 1: Core Plugin Implementation
+
+[cols="1,1,3"]
+|===
+| Status | Item | Notes
+
+| ☐ | `bin/list-all` | Scrape GnuCOBOL release versions from GNU FTP/SourceForge
+| ☐ | `bin/download` | Fetch source tarball with checksum verification
+| ☐ | `bin/install` | Configure, compile, install GnuCOBOL
+| ☐ | Dependency detection | Check for required build deps (gcc, libdb, libgmp, etc.)
+| ☐ | Basic test suite | Verify installation produces working `cobc`
+|===
+
+=== Implementation Notes
+
+GnuCOBOL build requirements:
+
+[source,bash]
+----
+# Debian/Ubuntu
+sudo apt install build-essential libgmp-dev libdb-dev libncurses-dev
+
+# macOS (Homebrew)
+brew install gmp berkeley-db ncurses
+----
+
+Version sources:
+
+* https://ftp.gnu.org/gnu/gnucobol/
+* https://sourceforge.net/projects/gnucobol/files/
+
+== Phase 2: Enhanced Features
+
+[cols="1,1,3"]
+|===
+| Status | Item | Notes
+
+| ☐ | `bin/exec-env` | Set `COB_*` environment variables
+| ☐ | `bin/list-bin-paths` | Expose `cobc`, `cobcrun`, etc.
+| ☐ | Pre-compiled binaries | Optional binary cache for common platforms
+| ☐ | Version aliases | Map `latest`, `stable` to actual versions
+|===
+
+== Phase 3: Ecosystem Integration
+
+[cols="1,1,3"]
+|===
+| Status | Item | Notes
+
+| ☐ | `.tool-versions` examples | Sample project configurations
+| ☐ | CI/CD templates | GitHub Actions, GitLab CI examples
+| ☐ | Docker integration | Base images with asdf-cobol
+| ☐ | Devcontainer support | VS Code / Codespaces configuration
+|===
+
+== Phase 4: Advanced
+
+[cols="1,1,3"]
+|===
+| Status | Item | Notes
+
+| ☐ | Build from Git | Support installing from GnuCOBOL Git repo
+| ☐ | Custom configure flags | Allow user-specified build options
+| ☐ | Cross-compilation | Support for alternative target architectures
+| ☐ | GnuCOBOL modules | Plugin support for COBOL DB bindings
+|===
+
+== Non-Goals
+
+* IDE integration (separate concern)
+* COBOL language server (separate project)
+* Legacy COBOL compiler support (Micro Focus, IBM, etc.)
+
+== Version History
+
+[cols="1,3"]
+|===
+| Version | Changes
+
+| 0.0.0 (current)
+| Repository scaffolding only. No functional code.
+|===

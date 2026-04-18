@@ -1,0 +1,128 @@
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= asdf-control-tower
+
+:toc: auto
+:toclevels: 3
+:icons: font
+
+Central hub for the **hyperpolymath asdf plugin ecosystem** - providing multi-forge mirroring infrastructure, coordination, and documentation for a planned collection of asdf version manager plugins.
+
+== Project Status
+
+[cols="1,3"]
+|===
+| Component | Status
+
+| Multi-forge mirroring
+| ✓ Implemented
+
+| Instant-sync dispatch
+| ✓ Implemented
+
+| Static documentation site
+| ✓ Implemented
+
+| asdf plugins
+| Specification only (none released)
+|===
+
+== What's Here
+
+=== Implemented Infrastructure
+
+This repository contains **working CI/CD infrastructure**:
+
+[cols="2,4"]
+|===
+| File | Purpose
+
+| `.github/workflows/mirror.yml`
+| Hub-and-spoke mirroring to GitLab, Codeberg, Bitbucket
+
+| `.github/workflows/instant-sync.yml`
+| Event-driven propagation via repository dispatch
+
+| `.github/workflows/pages.yml`
+| Static site build and deployment (terrapin-ssg + Asciidoctor)
+|===
+
+=== Documentation Site Content
+
+Located in `site/content/`:
+
+* `index.adoc` - Ecosystem overview and philosophy
+* `plugins.adoc` - Planned plugin specifications
+* `infrastructure.adoc` - Architecture and security documentation
+* `roadmap.adoc` - Development phases and milestones
+
+=== Configuration
+
+* `.claude/CLAUDE.md` - Hyperpolymath Language Policy (tech stack standards)
+
+== Architecture
+
+----
+                    ┌─────────────┐
+                    │   GitHub    │
+                    │   (Hub)     │
+                    └──────┬──────┘
+                           │
+           ┌───────────────┼───────────────┐
+           │               │               │
+           ▼               ▼               ▼
+    ┌─────────────┐ ┌─────────────┐ ┌─────────────┐
+    │   GitLab    │ │  Codeberg   │ │  Bitbucket  │
+    │   (Spoke)   │ │   (Spoke)   │ │   (Spoke)   │
+    └─────────────┘ └─────────────┘ └─────────────┘
+----
+
+== Planned Plugins
+
+Target cloud-native tooling:
+
+[cols="2,2,3"]
+|===
+| Plugin | Category | Status
+
+| asdf-k9s | Kubernetes | Planned
+| asdf-yq | YAML processing | Planned
+| asdf-trivy | Security scanning | Planned
+| asdf-hadolint | Dockerfile linting | Planned
+| asdf-buf | Protobuf tooling | Planned
+| asdf-grype | Vulnerability scanning | Planned
+| asdf-earthly | Build automation | Planned
+| asdf-dagger | CI/CD | Planned
+| asdf-helmfile | Kubernetes/Helm | Planned
+| asdf-kustomize | Kubernetes | Planned
+|===
+
+== Security Measures
+
+* SSH known hosts verification (MITM prevention)
+* SHA-pinned GitHub Actions (supply chain security)
+* Minimal workflow permissions (`read-all`)
+* No credential persistence
+* Job timeouts and concurrency controls
+
+== Installation (Future)
+
+Once plugins are released:
+
+[source,bash]
+----
+asdf plugin add <plugin-name> https://github.com/hyperpolymath/asdf-<plugin-name>.git
+asdf install <plugin-name> latest
+----
+
+== Related Projects
+
+* https://github.com/hyperpolymath/terrapin-ssg[terrapin-ssg] - Static site generator (Logo/UCBLogo)
+* https://asdf-vm.com[asdf-vm] - Extendable version manager
+
+== License
+
+MPL-2.0 (see link:LICENSE[LICENSE] and link:PALIMPSEST.adoc[PALIMPSEST.adoc])

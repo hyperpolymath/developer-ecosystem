@@ -1,0 +1,69 @@
+# SPDX-License-Identifier: MPL-2.0
+# Dependencies
+node_modules/
+vendor/
+_build/
+deps/
+.hex/
+.mix/
+
+# Build outputs
+target/
+dist/
+build/
+out/
+*.o
+*.a
+*.so
+*.dylib
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# Environment
+.env
+.env.local
+*.env
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Temporary
+tmp/
+temp/
+*.tmp
+
+# Language specific
+__pycache__/
+*.pyc
+*.pyo
+.Python
+*.beam
+*.ez
+erl_crash.dump
+.zig-cache/
+zig-out/
+
+# Deno
+deno.lock
+
+# Rust
+Cargo.lock
+
+# ReScript
+lib/bs/
+.bsb.lock
+*.bs.js
+.elixir_ls/
+.cache/
+Thumbs.db

@@ -1,0 +1,203 @@
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= asdf-plugin-configurator
+
+:toc: macro
+:toc-title: Contents
+:toclevels: 3
+:icons: font
+:source-highlighter: rouge
+
+Unified configuration management for asdf plugins across development environments.
+
+toc::[]
+
+== Overview
+
+**asdf-plugin-configurator** provides declarative configuration, validation, and automation for https://asdf-vm.com/[asdf version manager] plugin management. It standardizes plugin configuration across projects and teams.
+
+=== Project Status
+
+[IMPORTANT]
+====
+*Current Phase: 0 - Infrastructure*
+
+This project is in early infrastructure setup. No application code exists yet. See link:ROADMAP.adoc[ROADMAP.adoc] for development phases.
+====
+
+=== What Will Be Built
+
+* Declarative YAML/TOML configuration for asdf plugins
+* CLI tools for plugin installation, validation, and synchronization
+* Team collaboration features with configuration inheritance
+* CI/CD integration (GitHub Actions, GitLab CI, Bitbucket Pipelines)
+* Security features including checksum verification and GPG validation
+
+== Current Infrastructure
+
+=== Hub-and-Spoke SCM Mirroring
+
+The repository is automatically mirrored to multiple forges:
+
+[cols="1,2"]
+|===
+|Forge |Purpose
+
+|GitHub (Primary)
+|Main development, issues, PRs
+
+|GitLab
+|Mirror for redundancy
+
+|Codeberg
+|FOSS-friendly mirror
+
+|Bitbucket
+|Enterprise accessibility
+|===
+
+=== Security Measures (Implemented)
+
+* SSH known_hosts pre-configuration (MITM protection)
+* `--force-with-lease` instead of `--force` (history protection)
+* Retry logic with exponential backoff
+* Pinned GitHub Action versions (commit SHA)
+* Least-privilege workflow permissions (`read-all`)
+
+== Technology Stack
+
+This project follows the *Hyperpolymath Standard* language policy:
+
+[cols="1,2,2"]
+|===
+|Component |Technology |Notes
+
+|CLI/Core
+|Rust
+|Performance-critical, cross-platform
+
+|Configuration
+|YAML/TOML + Nickel
+|Human-readable with validation
+
+|Scripts
+|POSIX Shell / Bash
+|Minimal, for automation only
+
+|State Files
+|Guile Scheme
+|STATE.scm, META.scm patterns
+|===
+
+=== Banned Technologies
+
+TypeScript, Node.js, npm, Bun, Go, Python (except SaltStack), Kotlin, Swift, React Native, Flutter/Dart.
+
+See `.claude/CLAUDE.md` for complete policy.
+
+== Installation
+
+[NOTE]
+====
+Installation instructions will be added when Phase 1 is complete.
+====
+
+== Usage
+
+[NOTE]
+====
+CLI commands will be documented when Phase 1 is complete.
+====
+
+.Planned Commands
+[source,bash]
+----
+# Initialize configuration in a project
+asdf-config init
+
+# Validate configuration file
+asdf-config validate
+
+# Install all configured plugins
+asdf-config install
+
+# Sync plugin versions across team
+asdf-config sync
+
+# Export current setup to configuration
+asdf-config export
+----
+
+== Configuration Format
+
+.Planned configuration schema (example)
+[source,yaml]
+----
+# .asdf-config.yaml
+plugins:
+  nodejs:
+    version: "^20.0.0"
+    source: official
+
+  rust:
+    version: ">=1.70.0"
+    post_install:
+      - rustup component add clippy
+
+  python:
+    version: "~3.11.0"
+    platforms:
+      linux: "3.11.8"
+      darwin: "3.11.7"
+----
+
+== Development
+
+=== Prerequisites
+
+* Rust (latest stable)
+* asdf version manager
+* POSIX-compliant shell
+
+=== Building
+
+[source,bash]
+----
+# Clone the repository
+git clone https://github.com/hyperpolymath/asdf-plugin-configurator.git
+cd asdf-plugin-configurator
+
+# Build (when available)
+cargo build --release
+
+# Run tests (when available)
+cargo test
+----
+
+== Contributing
+
+Contributions are welcome once Phase 1 scaffolding is in place.
+
+=== Development Guidelines
+
+1. Follow the Hyperpolymath language policy (see `.claude/CLAUDE.md`)
+2. All code must have SPDX license headers
+3. Use SHA-256+ for any cryptographic operations
+4. HTTPS only - no HTTP URLs
+5. No hardcoded secrets
+
+== License
+
+PMPL-1.0-or-later
+
+See LICENSE file for details (to be added).
+
+== Links
+
+* link:ROADMAP.adoc[Development Roadmap]
+* https://asdf-vm.com/[asdf version manager]

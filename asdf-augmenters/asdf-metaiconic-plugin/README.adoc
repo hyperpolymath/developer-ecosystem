@@ -1,0 +1,114 @@
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= asdf-metaiconic-plugin
+
+:toc: macro
+:toc-title: Contents
+:toclevels: 3
+:icons: font
+
+Unified metadata index and discovery layer for the hyperpolymath asdf plugin ecosystem.
+
+toc::[]
+
+== Overview
+
+**asdf-metaiconic-plugin** is the central metadata registry for 68+ asdf plugins in the hyperpolymath ecosystem. It provides:
+
+* Standardized plugin metadata schema
+* Category and tag-based organization
+* Plugin discovery and search
+* Icon and branding consistency
+* Quality metrics aggregation
+
+== Status
+
+[cols="1,3"]
+|===
+| Component | Status
+
+| Specification
+| ✓ link:SPECIFICATION.adoc[Complete]
+
+| Registry Schema
+| ✓ link:registry/plugins.yaml[Implemented]
+
+| Category Definitions
+| ✓ link:registry/categories.yaml[Implemented]
+
+| Search CLI
+| ⏳ Phase 2
+
+| Icons
+| ⏳ Phase 2
+|===
+
+== Quick Start
+
+[source,bash]
+----
+# Search for security plugins
+asdf metaiconic search "vulnerability"
+
+# List all plugins by category
+asdf metaiconic list --category security
+
+# Get plugin info
+asdf metaiconic info trivy
+----
+
+== Registry Structure
+
+----
+registry/
+├── plugins.yaml      # Master plugin list (68+ entries)
+├── categories.yaml   # Category definitions (9 categories)
+└── schemas/          # Validation schemas
+----
+
+== Categories
+
+[cols="1,2"]
+|===
+| Category | Plugins
+
+| security | trivy, grype, syft, cosign, gitleaks, age, opa
+| database | arangodb, mariadb, neo4j, cassandra, surrealdb
+| config | nickel, dhall, cue, yq, taplo, bebop
+| network | coredns, envoy, pomerium, linkerd
+| crypto | step-ca, cfssl, lego, rekor, fulcio
+| build | apko, melange, restic, borg, hashicorp
+| language | ada, fortran, rescript, ocaml, vlang
+| ssg | casket-ssg, zola, cobalt, mdbook
+| webserver | httpd, varnish, openlitespeed
+|===
+
+== Ecosystem Integration
+
+This plugin is consumed by:
+
+* **asdf-plugin-configurator** - CLI tool uses registry for search
+* **asdf-ui-plugin** - Visual interface uses icons and metadata
+* **asdf-control-tower** - Dashboard aggregates plugin status
+
+See link:ECOSYSTEM.scm[ECOSYSTEM.scm] for full integration map.
+
+== Infrastructure
+
+* Multi-forge mirroring (GitHub → GitLab, Codeberg, Bitbucket)
+* Instant sync propagation on push/release
+* AI assistant configuration (`.claude/CLAUDE.md`)
+
+== Links
+
+* link:SPECIFICATION.adoc[Full Specification]
+* link:registry/plugins.yaml[Plugin Registry]
+* https://github.com/hyperpolymath/asdf-control-tower[Control Tower]
+* https://github.com/hyperpolymath/asdf-plugin-configurator[Configurator CLI]
+
+== License
+
+PMPL-1.0-or-later

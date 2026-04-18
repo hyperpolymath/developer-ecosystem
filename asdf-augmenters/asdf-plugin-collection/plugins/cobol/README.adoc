@@ -1,0 +1,107 @@
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= asdf-cobol
+
+:toc: macro
+:toclevels: 2
+:icons: font
+:source-highlighter: rouge
+
+https://asdf-vm.com[asdf] plugin for https://www.gnu.org/software/gnucobol/[GnuCOBOL].
+
+[IMPORTANT]
+====
+*Project Status: Specification Pending*
+
+This repository is a placeholder. The plugin implementation will be uploaded shortly.
+====
+
+toc::[]
+
+== Overview
+
+This plugin will enable version management of GnuCOBOL via the asdf version manager, allowing developers to:
+
+* Install multiple GnuCOBOL versions side-by-side
+* Switch between versions per-project or globally
+* Ensure reproducible COBOL development environments
+
+== Planned Installation
+
+Once implemented:
+
+[source,bash]
+----
+asdf plugin add cobol https://gitlab.com/hyperpolymath/asdf-cobol.git
+asdf list-all cobol
+asdf install cobol 3.2.0
+asdf global cobol 3.2.0
+----
+
+== Current Repository Contents
+
+[cols="1,3"]
+|===
+| Path | Description
+
+| `.github/workflows/mirror.yml`
+| Hub-and-spoke mirror workflow (GitLab, Codeberg, Bitbucket)
+
+| `.github/workflows/instant-sync.yml`
+| Automatic forge propagation on push/release
+
+| `README.md`
+| Placeholder documentation
+
+| `README.adoc`
+| This file
+|===
+
+== What Is Missing (Pending Implementation)
+
+Standard asdf plugin structure requires:
+
+[source]
+----
+bin/
+├── download      # Fetch GnuCOBOL source tarball
+├── install       # Compile and install GnuCOBOL
+├── list-all      # List available versions
+├── list-bin-paths # (optional) Expose binaries
+└── exec-env      # (optional) Set runtime environment
+----
+
+== About GnuCOBOL
+
+GnuCOBOL (formerly OpenCOBOL) is a free COBOL compiler that translates COBOL source to C, then compiles with a native C compiler. It implements substantial portions of the COBOL 85, COBOL 2002, and COBOL 2014 standards.
+
+Key features:
+
+* COBOL 85/2002/2014 support
+* Compiles to native code via C
+* Interoperability with C libraries
+* Active development and community
+
+== Multi-Forge Distribution
+
+This repository is distributed across multiple forges:
+
+* *Primary*: https://gitlab.com/hyperpolymath/asdf-cobol[GitLab]
+* *Mirror*: GitHub (hyperpolymath/asdf-cobol-plugin)
+* *Mirror*: Codeberg
+* *Mirror*: Bitbucket
+
+== Contributing
+
+See `CONTRIBUTING.md` (pending).
+
+== License
+
+PMPL-1.0-or-later
+
+== Funding
+
+If you find this useful, consider supporting via https://buymeacoffee.com[Buy Me a Coffee].

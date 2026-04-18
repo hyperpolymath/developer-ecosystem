@@ -1,0 +1,105 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= Infrastructure
+:description: Technical infrastructure powering the asdf ecosystem
+:keywords: infrastructure, CI/CD, mirroring, automation
+
+== Control Tower Architecture
+
+The asdf-control-tower provides centralized management for all hyperpolymath asdf plugins through automated workflows and multi-platform distribution.
+
+=== SCM Mirroring
+
+Our hub-and-spoke model ensures code availability across multiple platforms:
+
+[source]
+----
+                    ┌─────────────┐
+                    │   GitHub    │
+                    │   (Hub)     │
+                    └──────┬──────┘
+                           │
+           ┌───────────────┼───────────────┐
+           │               │               │
+           ▼               ▼               ▼
+    ┌─────────────┐ ┌─────────────┐ ┌─────────────┐
+    │   GitLab    │ │  Codeberg   │ │  Bitbucket  │
+    │   (Spoke)   │ │   (Spoke)   │ │   (Spoke)   │
+    └─────────────┘ └─────────────┘ └─────────────┘
+----
+
+==== Security Measures
+
+* **SSH known hosts verification** - Prevents MITM attacks
+* **Pinned action SHAs** - Supply chain security
+* **Minimal permissions** - `read-all` workflow permissions
+* **No credential persistence** - `persist-credentials: false`
+* **Job timeouts** - Prevents runaway workflows
+* **Concurrency controls** - Prevents race conditions
+
+=== CI/CD Pipeline
+
+Each plugin repository includes:
+
+[cols="1,3"]
+|===
+| Workflow | Purpose
+
+| `ci.yml`
+| Run tests on PRs and pushes
+
+| `release.yml`
+| Automated releases with changelog
+
+| `mirror.yml`
+| Sync to GitLab, Codeberg, Bitbucket
+
+| `security.yml`
+| Dependency scanning and alerts
+|===
+
+=== GitHub Actions Security
+
+All workflows use pinned SHA versions:
+
+[source,yaml]
+----
+# Good: Pinned to specific commit
+- uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+
+# Bad: Tag can be moved
+- uses: actions/checkout@v4
+----
+
+=== Repository Variables
+
+Enable/disable mirrors per-repository:
+
+[cols="2,3"]
+|===
+| Variable | Purpose
+
+| `GITLAB_MIRROR_ENABLED`
+| Set to `true` to enable GitLab mirror
+
+| `CODEBERG_MIRROR_ENABLED`
+| Set to `true` to enable Codeberg mirror
+
+| `BITBUCKET_MIRROR_ENABLED`
+| Set to `true` to enable Bitbucket mirror
+|===
+
+=== Secrets Management
+
+SSH keys for each platform are stored as repository secrets:
+
+* `GITLAB_SSH_KEY`
+* `CODEBERG_SSH_KEY`
+* `BITBUCKET_SSH_KEY`
+
+Keys should be generated specifically for mirroring and have write access only to the target repositories.
+
+=== Monitoring
+
+* GitHub Actions logs for each mirror run
+* Success/failure notifications via Slack/Discord (see link:roadmap.html[Roadmap] Phase 3)
+* Centralized status dashboard (see link:dashboard.html[Dashboard])

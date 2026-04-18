@@ -1,0 +1,40 @@
+= asdf-casket-ssg
+
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+:author: hyperpolymath
+:url-asdf: https://asdf-vm.com
+:url-repo: https://github.com/hyperpolymath/asdf-casket-ssg-plugin
+
+image:https://img.shields.io/github/license/hyperpolymath/asdf-casket-ssg-plugin?style=flat-square[License,link=LICENSE]
+image:https://img.shields.io/github/actions/workflow/status/hyperpolymath/asdf-casket-ssg-plugin/ci.yml?branch=main&style=flat-square[Build Status,link={url-repo}/actions]
+image:https://img.shields.io/badge/asdf-plugin-blue?style=flat-square[asdf Plugin,link={url-asdf}]
+
+An {url-asdf}[asdf] plugin to manage https://github.com/hyperpolymath/casket-ssg[casket-ssg] versions.
+
+== Installation
+
+[source,bash]
+----
+asdf plugin add casket-ssg https://github.com/hyperpolymath/asdf-casket-ssg-plugin.git
+----
+
+== Usage
+
+[source,bash]
+----
+# List all available versions
+asdf list all casket-ssg
+
+# Install a specific version
+asdf install casket-ssg 1.1.0
+
+# Set global default
+asdf global casket-ssg 1.1.0
+
+# Set local version for current project
+asdf local casket-ssg 1.1.0
+----
+
+== License
+
+SPDX-License-Identifier: PMPL-1.0-or-later-or-later

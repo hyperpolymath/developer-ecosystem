@@ -1,0 +1,60 @@
+= asdf-hashicorp
+
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+:author: hyperpolymath
+:url-asdf: https://asdf-vm.com
+:url-repo: https://github.com/hyperpolymath/asdf-hashicorp-plugin
+
+image:https://img.shields.io/github/license/hyperpolymath/asdf-hashicorp-plugin?style=flat-square[License,link=LICENSE]
+image:https://img.shields.io/github/actions/workflow/status/hyperpolymath/asdf-hashicorp-plugin/ci.yml?branch=main&style=flat-square[Build Status,link={url-repo}/actions]
+
+An {url-asdf}[asdf] plugin to manage all HashiCorp tools.
+
+== Supported Tools
+
+* **vault** - Secrets management
+* **terraform** - Infrastructure as Code
+* **consul** - Service mesh
+* **nomad** - Workload orchestration
+* **packer** - Image builder
+* **vagrant** - Development environments
+* **boundary** - Secure remote access
+* **waypoint** - Application deployment
+* **sentinel** - Policy as Code
+* **consul-template** - Template rendering
+* **envconsul** - Environment variables from Consul
+
+== Installation
+
+Add the plugin for each tool you need:
+
+[source,bash]
+----
+# Add individual tools
+asdf plugin add vault https://github.com/hyperpolymath/asdf-hashicorp-plugin.git
+asdf plugin add terraform https://github.com/hyperpolymath/asdf-hashicorp-plugin.git
+asdf plugin add consul https://github.com/hyperpolymath/asdf-hashicorp-plugin.git
+asdf plugin add nomad https://github.com/hyperpolymath/asdf-hashicorp-plugin.git
+asdf plugin add packer https://github.com/hyperpolymath/asdf-hashicorp-plugin.git
+----
+
+== Usage
+
+[source,bash]
+----
+# List all available versions
+asdf list all vault
+
+# Install a specific version
+asdf install vault 1.15.0
+
+# Install latest
+asdf install terraform latest
+
+# Set global default
+asdf global vault 1.15.0
+----
+
+== License
+
+SPDX-License-Identifier: PMPL-1.0-or-later-or-later

@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# humans.txt - Information about the humans behind this project
+# https://humanstxt.org/
+
+/* TEAM */
+
+Project: asdf-ghjk
+Description: asdf plugin for ghjk development environment manager
+Repository: https://github.com/hyperpolymath/asdf-ghjk
+
+Maintainer: Hyperpolymath
+GitHub: https://github.com/hyperpolymath
+Role: Lead Maintainer
+
+/* THANKS */
+
+asdf-vm team: For creating the excellent version manager
+metatypedev: For developing ghjk
+All contributors: For improving this plugin
+
+/* SITE */
+
+Last update: 2026-01-09
+Standards: RFC 9116, POSIX shell
+Language: English
+Doctype: AsciiDoc, Markdown
+Tools: Bash, ShellCheck, BATS
+
+/* LICENSE */
+
+SPDX: AGPL-3.0-or-later
+Full text: LICENSE.txt

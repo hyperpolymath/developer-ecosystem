@@ -1,0 +1,101 @@
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= asdf-ui-plugin
+
+:toc: macro
+:toc-title: Contents
+:toclevels: 2
+
+A fully functional **asdf plugin** providing a terminal user interface for managing asdf plugins and versions.
+
+== Status
+
+[NOTE]
+====
+**Implementation Complete** - Core plugin functionality is fully working.
+====
+
+== Features
+
+* **Version Management**: List, install, and switch between versions
+* **Interactive TUI**: Terminal user interface for easy navigation
+* **Dashboard View**: Overview of installed plugins and versions
+* **Version Selector**: Interactive picker for version switching
+
+== Installation
+
+[source,bash]
+----
+asdf plugin add asdf-ui https://github.com/hyperpolymath/asdf-ui-plugin.git
+asdf install asdf-ui 1.0.0
+asdf global asdf-ui 1.0.0
+----
+
+== Usage
+
+[source,bash]
+----
+# Launch interactive TUI
+asdf-ui
+
+# Show plugin dashboard
+asdf-ui dashboard
+
+# Interactive version selector
+asdf-ui versions
+
+# Display help
+asdf-ui help
+----
+
+== Components
+
+[cols="1,3"]
+|===
+| Component | Description
+
+| `bin/list-all`
+| Lists all available versions
+
+| `bin/download`
+| Downloads specified version
+
+| `bin/install`
+| Installs version and creates asdf-ui binary
+
+| `lib/utils.bash`
+| Core utility functions and TUI implementation
+
+| `.github/workflows/ci.yml`
+| Continuous integration with ShellCheck
+
+| `.github/workflows/mirror.yml`
+| Hub-and-spoke mirroring to GitLab, Codeberg, Bitbucket
+
+| `.github/workflows/instant-sync.yml`
+| Automatic forge propagation on push/release
+
+| `.claude/CLAUDE.md`
+| Hyperpolymath development standards (language policy)
+|===
+
+See link:ROADMAP.adoc[ROADMAP.adoc] for development history and future plans.
+
+== Development Standards
+
+This project follows the **Hyperpolymath Language Policy**:
+
+* *Primary*: ReScript, Rust, Deno
+* *Mobile*: Tauri 2.0+ or Dioxus (no Kotlin/Swift)
+* *Backend*: Gleam (BEAM or JS target)
+* *Config*: Nickel, Guile Scheme
+* *Package Management*: Guix (primary), Nix (fallback)
+
+See `.claude/CLAUDE.md` for full policy details.
+
+== License
+
+PMPL-1.0-or-later

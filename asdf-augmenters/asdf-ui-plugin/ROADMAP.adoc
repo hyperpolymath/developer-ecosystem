@@ -1,0 +1,71 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= asdf-ui-plugin Roadmap
+:toc: macro
+:toc-title: Phases
+:toclevels: 2
+
+Terminal user interface plugin for asdf version manager.
+
+== Current State
+
+[NOTE]
+====
+**Phase 4: Complete** - All core functionality implemented and working.
+====
+
+== Development Roadmap
+
+=== Phase 1: Specification & Design icon:check[role=green]
+
+* [x] Define project requirements (Terminal UI for asdf)
+* [x] Define UI requirements and user workflows
+* [x] Choose implementation (Bash-based TUI for portability)
+* [x] Design plugin architecture for asdf integration
+
+=== Phase 2: Core Implementation icon:check[role=green]
+
+* [x] Set up project structure (bin/, lib/, hooks/)
+* [x] Implement asdf plugin interface (list-all, download, install)
+* [x] Build core TUI components
+* [x] Integrate with asdf version management commands
+
+=== Phase 3: Feature Development icon:check[role=green]
+
+* [x] Plugin listing and search
+* [x] Version selection interface
+* [x] Installation progress tracking
+* [x] Environment management UI
+
+=== Phase 4: Polish & Release icon:check[role=green]
+
+* [x] Testing and QA (ShellCheck, CI pipeline)
+* [x] Documentation (README, ROADMAP, CONTRIBUTING)
+* [x] Security validation hooks
+* [x] Initial release (v1.0.0)
+
+== Infrastructure Complete
+
+[cols="1,1,2"]
+|===
+| Item | Status | Notes
+
+| Multi-forge mirroring
+| icon:check[role=green] Done
+| GitLab, Codeberg, Bitbucket
+
+| Instant sync
+| icon:check[role=green] Done
+| Automatic propagation on push
+
+| Development policy
+| icon:check[role=green] Done
+| Hyperpolymath standards in CLAUDE.md
+
+| SPDX licensing
+| icon:check[role=green] Done
+| AGPL-3.0-or-later headers
+|===
+
+== Contributing
+
+Contributions are welcome! See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc] for guidelines.

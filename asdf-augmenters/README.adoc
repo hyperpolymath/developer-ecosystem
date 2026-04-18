@@ -1,0 +1,23 @@
+= asdf Augmenters
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+Meta-tools that enhance and extend the asdf version manager itself.
+
+== Components
+
+* `asdf-acceleration-middleware/` - Performance acceleration layer for asdf
+* `asdf-security-plugin/` - Security scanning and verification for asdf plugins
+* `asdf-metaiconic-plugin/` - Metaiconic integration for asdf
+* `asdf-control-tower/` - Centralized management and orchestration for asdf
+* `asdf-plugin-collection/` - Plugin collection management
+* `asdf-plugin-configurator/` - Plugin configuration tooling
+* `asdf-ghjk/` - GitHub-based plugin management
+* `asdf-ui-plugin/` - UI for asdf plugin management
+
+== License
+
+PMPL-1.0-or-later
+
+== Author
+
+Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>

@@ -1,0 +1,22 @@
+# Code owners for asdf-ghjk
+# These users will be automatically requested for review when PRs touch these files
+
+# Default owners for everything
+* @Hyperpolymath
+
+# Core scripts
+/bin/ @Hyperpolymath
+/lib/ @Hyperpolymath
+
+# Tests
+/test/ @Hyperpolymath
+
+# CI/CD
+/.github/ @Hyperpolymath
+
+# Documentation
+/docs/ @Hyperpolymath
+*.md @Hyperpolymath
+
+# Security
+/SECURITY.md @Hyperpolymath

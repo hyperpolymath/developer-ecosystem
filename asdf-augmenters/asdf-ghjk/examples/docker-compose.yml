@@ -1,0 +1,39 @@
+# Docker Compose example with asdf-ghjk
+version: '3.8'
+
+services:
+  # Development environment
+  dev:
+    build:
+      context: ..
+      dockerfile: examples/Dockerfile
+    volumes:
+      - ../:/app
+      - asdf-cache:/root/.asdf
+    environment:
+      - GITHUB_API_TOKEN=${GITHUB_API_TOKEN}
+    command: ghjk run dev
+    ports:
+      - "3000:3000"
+
+  # Production build
+  prod:
+    build:
+      context: ..
+      dockerfile: examples/Dockerfile.multi-stage
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  # Testing environment
+  test:
+    build:
+      context: ..
+      dockerfile: examples/Dockerfile
+    volumes:
+      - ../:/app
+    command: ghjk run test
+
+volumes:
+  asdf-cache:
+    driver: local

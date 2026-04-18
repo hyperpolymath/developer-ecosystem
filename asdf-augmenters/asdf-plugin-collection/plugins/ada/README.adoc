@@ -1,0 +1,632 @@
+= asdf-ada
+
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+
+:author: hyperpolymath
+:revnumber: 0.1.0
+:toc: macro
+:toclevels: 3
+:icons: font
+:source-highlighter: rouge
+:experimental:
+:url-asdf: https://asdf-vm.com
+:url-gnat: https://www.adacore.com/download
+:url-alire: https://alire.ada.dev
+:url-ada-lang: https://ada-lang.io
+:url-repo: https://github.com/hyperpolymath/asdf-ada-plugin
+
+image:https://img.shields.io/github/license/hyperpolymath/asdf-ada-plugin?style=flat-square[License,link=LICENSE]
+image:https://img.shields.io/github/v/release/hyperpolymath/asdf-ada-plugin?style=flat-square[Release,link={url-repo}/releases]
+image:https://img.shields.io/github/actions/workflow/status/hyperpolymath/asdf-ada-plugin/ci.yml?branch=main&style=flat-square[Build Status,link={url-repo}/actions]
+image:https://img.shields.io/badge/asdf-plugin-blue?style=flat-square[asdf Plugin,link={url-asdf}]
+
+[.lead]
+An {url-asdf}[asdf] plugin to manage https://ada-lang.io[Ada/GNAT] compiler versions seamlessly across projects.
+
+toc::[]
+
+== Overview
+
+=== What is Ada?
+
+https://ada-lang.io[Ada] is a structured, statically typed, imperative, and object-oriented high-level programming language designed for safety-critical and mission-critical systems. Originally developed in the 1980s for the U.S. Department of Defense, Ada is renowned for:
+
+* **Strong typing** — Catches errors at compile time rather than runtime
+* **Built-in concurrency** — Native tasking support for parallel programming
+* **Contract-based programming** — Pre/post conditions and type invariants
+* **Real-time systems support** — Deterministic behavior for embedded systems
+* **Long-term maintainability** — Designed for systems with 30+ year lifecycles
+
+Ada is used in aerospace (Boeing, Airbus), defense systems, rail transportation, medical devices, and financial systems where reliability is paramount.
+
+=== What is asdf?
+
+{url-asdf}[asdf] is a universal version manager that allows you to manage multiple runtime versions with a single CLI tool. Instead of juggling separate version managers for each language, asdf provides one interface to rule them all.
+
+=== Why asdf-ada?
+
+Managing Ada/GNAT compiler versions traditionally requires manual downloads, environment variable configuration, and careful PATH management. `asdf-ada` simplifies this by providing:
+
+[cols="1,3"]
+|===
+|Feature |Benefit
+
+|**Version Switching**
+|Switch between GNAT versions instantly per project
+
+|**Project Isolation**
+|Each project can specify its required Ada version via `.tool-versions`
+
+|**Reproducible Builds**
+|Team members and CI/CD pipelines use identical compiler versions
+
+|**Multiple Distributions**
+|Support for FSF GNAT, GNAT Community, and Alire-managed toolchains
+
+|**Cross-Platform**
+|Works on Linux, macOS, and Windows (via WSL)
+|===
+
+== Prerequisites
+
+=== System Requirements
+
+[cols="1,2,3"]
+|===
+|Platform |Minimum Version |Notes
+
+|**Linux**
+|Ubuntu 20.04+ / Fedora 35+ / Debian 11+
+|x86_64 and aarch64 supported
+
+|**macOS**
+|macOS 11 (Big Sur)+
+|Intel and Apple Silicon (M1/M2/M3)
+
+|**Windows**
+|Windows 10+ with WSL2
+|Native support planned for future releases
+|===
+
+=== Dependencies
+
+Before installing the plugin, ensure you have the following:
+
+[source,bash]
+----
+# Debian/Ubuntu
+sudo apt-get update
+sudo apt-get install -y curl git build-essential libc6-dev
+
+# Fedora/RHEL
+sudo dnf install -y curl git gcc glibc-devel
+
+# macOS (via Homebrew)
+brew install curl git
+xcode-select --install  # For build tools
+
+# Arch Linux
+sudo pacman -S curl git base-devel
+----
+
+=== asdf Installation
+
+If you haven't installed asdf yet:
+
+[source,bash]
+----
+# Clone asdf
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.0
+
+# Add to your shell (bash)
+echo '. "$HOME/.asdf/asdf.sh"' >> ~/.bashrc
+echo '. "$HOME/.asdf/completions/asdf.bash"' >> ~/.bashrc
+
+# Add to your shell (zsh)
+echo '. "$HOME/.asdf/asdf.sh"' >> ~/.zshrc
+
+# Add to your shell (fish)
+echo 'source ~/.asdf/asdf.fish' >> ~/.config/fish/config.fish
+
+# Reload your shell
+exec $SHELL
+----
+
+== Installation
+
+=== Adding the Plugin
+
+[source,bash]
+----
+# Add the asdf-ada plugin
+asdf plugin add ada https://github.com/hyperpolymath/asdf-ada-plugin.git
+
+# Verify installation
+asdf plugin list
+----
+
+=== Installing Ada/GNAT Versions
+
+[source,bash]
+----
+# List all available versions
+asdf list all ada
+
+# Install a specific version
+asdf install ada 14.1.0        # FSF GNAT 14.1.0
+asdf install ada community-2021 # GNAT Community 2021
+asdf install ada alire-latest   # Latest via Alire
+
+# Install the latest stable version
+asdf install ada latest
+----
+
+=== Setting the Version
+
+[source,bash]
+----
+# Set global default (used when no local version is specified)
+asdf global ada 14.1.0
+
+# Set local version for current project (creates .tool-versions)
+asdf local ada 14.1.0
+
+# Set version for current shell session only
+asdf shell ada 14.1.0
+
+# Verify the active version
+asdf current ada
+gnatmake --version
+----
+
+== Usage
+
+=== Project Configuration
+
+Create a `.tool-versions` file in your project root:
+
+[source]
+----
+ada 14.1.0
+----
+
+When you `cd` into the project directory, asdf automatically activates the specified version.
+
+=== Available Commands
+
+[source,bash]
+----
+# List installed versions
+asdf list ada
+
+# Show current version
+asdf current ada
+
+# Uninstall a version
+asdf uninstall ada 13.2.0
+
+# Reshim after installing Ada tools (e.g., via Alire)
+asdf reshim ada
+
+# Show installation path
+asdf where ada 14.1.0
+----
+
+=== Environment Variables
+
+The plugin respects and sets the following environment variables:
+
+[cols="2,3,2"]
+|===
+|Variable |Description |Default
+
+|`ASDF_ADA_DISTRIBUTION`
+|Preferred distribution (`fsf`, `community`, `alire`)
+|`fsf`
+
+|`ASDF_ADA_MIRROR`
+|Custom mirror URL for downloads
+|Official sources
+
+|`ASDF_ADA_SKIP_VERIFY`
+|Skip checksum verification (`true`/`false`)
+|`false`
+
+|`ASDF_ADA_INSTALL_GPRBUILD`
+|Auto-install GPRbuild (`true`/`false`)
+|`true`
+|===
+
+=== Integration with Build Tools
+
+==== GPRbuild
+
+[source,bash]
+----
+# GPRbuild is included with most GNAT installations
+gprbuild --version
+
+# Build an Ada project
+gprbuild -P my_project.gpr
+----
+
+==== Alire
+
+{url-alire}[Alire] is Ada's package manager. You can use it alongside asdf:
+
+[source,bash]
+----
+# Install Alire separately or use asdf-managed version
+asdf install ada alire-latest
+
+# Initialize an Alire project
+alr init my_project
+cd my_project
+alr build
+----
+
+==== SPARK Formal Verification
+
+For SPARK Pro users:
+
+[source,bash]
+----
+# SPARK is included in GNAT Community editions
+gnatprove --version
+
+# Run formal verification
+gnatprove -P my_project.gpr
+----
+
+== Supported Versions
+
+=== FSF GNAT (GNU Ada)
+
+Official GNU Compiler Collection Ada frontend:
+
+[source]
+----
+14.1.0, 14.0.0, 13.3.0, 13.2.0, 13.1.0
+12.4.0, 12.3.0, 12.2.0, 12.1.0
+11.5.0, 11.4.0, 11.3.0, 11.2.0, 11.1.0
+10.5.0, 10.4.0, 10.3.0
+----
+
+=== GNAT Community Edition
+
+AdaCore's free community releases (discontinued after 2021):
+
+[source]
+----
+community-2021
+community-2020
+community-2019
+----
+
+=== Alire Toolchains
+
+Managed via the Alire package manager:
+
+[source]
+----
+alire-latest    # Latest available via Alire
+alire-native    # Native toolchain via Alire
+----
+
+== Configuration
+
+=== Plugin Configuration File
+
+Create `~/.config/asdf-ada/config` for persistent settings:
+
+[source,ini]
+----
+# Default distribution preference
+distribution = fsf
+
+# Download mirror (leave empty for official sources)
+mirror =
+
+# Verify checksums (recommended)
+verify_checksums = true
+
+# Install GPRbuild automatically
+install_gprbuild = true
+
+# Concurrent downloads
+parallel_downloads = 4
+----
+
+=== Platform-Specific Notes
+
+==== macOS Apple Silicon
+
+Native ARM64 builds are available for GNAT 13.1.0+. For older versions, Rosetta 2 emulation is used automatically.
+
+==== Linux ARM64
+
+ARM64 builds are provided for:
+- Raspberry Pi 4/5 (64-bit OS)
+- AWS Graviton instances
+- Other aarch64 systems
+
+==== Windows (WSL2)
+
+[source,bash]
+----
+# Install WSL2 with Ubuntu
+wsl --install -d Ubuntu
+
+# Inside WSL, install asdf and the plugin as normal
+# See the Linux installation instructions above
+----
+
+== Troubleshooting
+
+=== Common Issues
+
+[qanda]
+Version not found when running `gnatmake`::
+Run `asdf reshim ada` after installation and ensure your shell is properly configured.
+
+Download fails with SSL errors::
+Ensure `ca-certificates` is installed: `sudo apt-get install ca-certificates`
+
+"Permission denied" during installation::
+Check write permissions for `~/.asdf/installs/ada/`
+
+Slow downloads::
+Set `ASDF_ADA_MIRROR` to a geographically closer mirror.
+
+=== Getting Help
+
+1. Check the link:{url-repo}/issues[GitHub Issues] for known problems
+2. Join the https://gitter.im/ada-lang/Lobby[Ada community chat]
+3. Open a https://github.com/hyperpolymath/asdf-ada-plugin/issues/new[new issue] with:
+   - Your OS and version
+   - asdf version (`asdf --version`)
+   - Plugin version
+   - Full error output
+
+== Contributing
+
+We welcome contributions! Please see our link:CONTRIBUTING.adoc[Contributing Guide] for details.
+
+=== Quick Start for Contributors
+
+[source,bash]
+----
+# Fork and clone
+git clone https://github.com/YOUR_USERNAME/asdf-ada-plugin.git
+cd asdf-ada-plugin
+
+# Create a feature branch
+git checkout -b feature/your-feature-name
+
+# Make changes and test
+./scripts/test.sh
+
+# Submit a pull request
+----
+
+=== Code of Conduct
+
+This project adheres to the https://www.contributor-covenant.org/[Contributor Covenant]. Please read our link:CODE_OF_CONDUCT.adoc[Code of Conduct] before participating.
+
+== Roadmap
+
+This roadmap outlines the planned development phases for `asdf-ada`.
+
+=== Phase 1: Foundation (v0.1.0) icon:wrench[]
+
+*Status:* 🚧 In Progress
+
+[%interactive]
+* [ ] Core plugin structure following asdf plugin template
+* [ ] `bin/list-all` — Fetch available GNAT versions from upstream
+* [ ] `bin/download` — Download GNAT releases
+* [ ] `bin/install` — Install and configure GNAT toolchain
+* [ ] `bin/latest-stable` — Resolve latest stable version
+* [ ] Basic FSF GNAT support (Linux x86_64)
+* [ ] README and initial documentation
+* [ ] GitHub Actions CI/CD pipeline
+* [ ] Basic test suite using Bats
+
+=== Phase 2: Multi-Platform Support (v0.2.0) icon:desktop[]
+
+*Status:* 📋 Planned
+
+[%interactive]
+* [ ] macOS x86_64 support
+* [ ] macOS ARM64 (Apple Silicon) support
+* [ ] Linux ARM64 support
+* [ ] Windows WSL2 documentation and testing
+* [ ] Checksum verification for all downloads
+* [ ] Progress indicators during download/install
+* [ ] Improved error messages and logging
+
+=== Phase 3: Extended Distribution Support (v0.3.0) icon:cubes[]
+
+*Status:* 📋 Planned
+
+[%interactive]
+* [ ] GNAT Community Edition support (2019-2021)
+* [ ] Alire toolchain integration
+* [ ] AdaCore GNAT Pro stub support (license required)
+* [ ] Custom mirror configuration
+* [ ] Version aliases (`lts`, `stable`, `latest`)
+* [ ] `bin/help` plugin subcommands
+
+=== Phase 4: Developer Experience (v0.4.0) icon:star[]
+
+*Status:* 📋 Planned
+
+[%interactive]
+* [ ] Automatic GPRbuild installation
+* [ ] GNATcov integration
+* [ ] SPARK tools inclusion
+* [ ] Shell completions (bash, zsh, fish)
+* [ ] Version constraint solving (semver support)
+* [ ] `asdf-ada doctor` command for diagnostics
+
+=== Phase 5: Ecosystem Integration (v0.5.0) icon:plug[]
+
+*Status:* 📋 Planned
+
+[%interactive]
+* [ ] Alire crate template generation
+* [ ] VS Code Ada extension compatibility documentation
+* [ ] GNAT Studio integration notes
+* [ ] Docker/container image publishing
+* [ ] CI/CD examples (GitHub Actions, GitLab CI, Jenkins)
+* [ ] Nix flake support
+
+=== Phase 6: Enterprise & Polish (v1.0.0) icon:building[]
+
+*Status:* 🔮 Future
+
+[%interactive]
+* [ ] Stable API with semantic versioning
+* [ ] Comprehensive test coverage (90%+)
+* [ ] Full documentation with tutorials
+* [ ] Offline installation support
+* [ ] Corporate proxy support
+* [ ] Signed releases
+* [ ] Official asdf plugin registry listing
+* [ ] Community governance model
+
+=== Future Ideas icon:lightbulb[]
+
+These features are under consideration for post-1.0 releases:
+
+* **Cross-compilation toolchains** — ARM bare-metal, RISC-V targets
+* **GNAT-LLVM support** — LLVM-based Ada compiler backend
+* **Version diffing** — Show changelog between versions
+* **Performance profiling integration** — GNATbench-like features
+* **IDE project generation** — Templates for various editors
+* **Dependency caching** — Speed up clean installs
+* **Native Windows support** — Without WSL requirement
+
+== Mirrors
+
+This repository is mirrored to:
+
+* https://gitlab.com/hyperpolymath/asdf-ada-plugin[GitLab]
+* https://codeberg.org/hyperpolymath/asdf-ada-plugin[Codeberg]
+* https://bitbucket.org/hyperpolymath/asdf-ada-plugin[Bitbucket]
+
+== Related Projects
+
+* {url-asdf}[asdf] — The universal version manager
+* {url-gnat}[GNAT Downloads] — Official AdaCore downloads
+* {url-alire}[Alire] — Ada/SPARK package manager
+* {url-ada-lang}[Ada Programming Language] — Official Ada resources
+* https://learn.adacore.com[learn.adacore.com] — Free Ada/SPARK tutorials
+* https://github.com/ohenley/awesome-ada[Awesome Ada] — Curated Ada resources
+
+== Hyperpolymath asdf Ecosystem
+
+This plugin is part of the **Hyperpolymath asdf ecosystem**, a layered architecture for managing developer tool versions.
+
+=== Ecosystem Architecture
+
+[source]
+----
+                    ┌──────────────────────────┐
+                    │  asdf-control-tower      │  ← Layer 3: Presentation
+                    │  (docs + dashboard)      │
+                    └───────────┬──────────────┘
+                                │
+┌──────────────────────────┐    │    ┌──────────────────────────┐
+│ asdf-ui-plugin           │────┼────│ asdf-plugin-configurator │  ← Layer 2–3
+│ (visual UX; planned)     │    │    │ (Rust CLI; config/policy)│
+└──────────────────────────┘    │    └──────────────────────────┘
+                                │
+                    ┌───────────┴───────────┐
+                    │ asdf-metaiconic-plugin│  ← Layer 1: Registry
+                    │ (registry + schema)   │
+                    └───────────┬───────────┘
+                                │
+     ┌────────────────────────────────────────────────┐
+     │  Individual asdf tool plugins (Layer 5)        │
+     │                                                │
+     │  ★ asdf-ada-plugin  ← YOU ARE HERE             │
+     │    asdf-neo4j-plugin                           │
+     │    asdf-ghjk                                   │
+     │    …(68+ installable plugins)                  │
+     └────────────────────────────────────────────────┘
+----
+
+=== Layer Descriptions
+
+[cols="1,2,4"]
+|===
+|Layer |Component |Purpose
+
+|**Layer 0**
+|Infrastructure Spine
+|Multi-forge mirroring, instant-sync, policy constraints (`.claude/CLAUDE.md`), community docs — present across all repos
+
+|**Layer 1**
+|https://github.com/hyperpolymath/asdf-metaiconic-plugin[asdf-metaiconic-plugin]
+|Canonical metadata registry: `registry/plugins.yaml`, category definitions, quality metrics, icon/branding standards
+
+|**Layer 2**
+|https://github.com/hyperpolymath/asdf-plugin-configurator[asdf-plugin-configurator]
+|Rust CLI for declarative plugin configuration — apply policy to machines/projects, consume registry for validation
+
+|**Layer 3**
+|https://github.com/hyperpolymath/asdf-control-tower[asdf-control-tower] + https://github.com/hyperpolymath/asdf-ui-plugin[asdf-ui-plugin]
+|Human-facing dashboard, documentation hub, visual discovery UI (planned)
+
+|**Layer 4**
+|Domain Collections
+|Category "umbrella" plugins (e.g., `asdf-security-plugin` for curated security toolsets)
+
+|**Layer 5**
+|**Tool Plugins** ★
+|**Actual installable units** — implements `bin/list-all`, `bin/download`, `bin/install`, `bin/latest-stable`. This repo (`asdf-ada-plugin`) lives here.
+|===
+
+=== This Plugin's Role
+
+`asdf-ada-plugin` is a **Layer 5 tool plugin** — the actual "workhorse" that asdf uses to install and manage Ada/GNAT compiler versions. It:
+
+* Implements the asdf plugin contract (`bin/list-all`, `bin/download`, `bin/install`, `bin/latest-stable`)
+* Fetches releases from the https://github.com/alire-project/GNAT-FSF-builds[GNAT-FSF-builds] upstream
+* Provides checksum verification, multi-platform support, and robust error handling
+* Is indexed by `asdf-metaiconic-plugin` for ecosystem-wide discovery
+* Can be configured via `asdf-plugin-configurator` for team/project consistency
+
+=== Ecosystem Links
+
+* https://github.com/hyperpolymath/asdf-control-tower[asdf-control-tower] — Ecosystem documentation hub
+* https://github.com/hyperpolymath/asdf-metaiconic-plugin[asdf-metaiconic-plugin] — Plugin registry and metadata
+* https://github.com/hyperpolymath/asdf-plugin-configurator[asdf-plugin-configurator] — Policy enforcement CLI
+
+== License
+
+This project is licensed under the Palimpsest-MPL License v3.0 or later.
+See the link:LICENSE[LICENSE] file for details.
+
+[source]
+----
+SPDX-License-Identifier: PMPL-1.0-or-later-or-later
+----
+
+== Acknowledgments
+
+* The {url-asdf}[asdf] team for creating the plugin ecosystem
+* https://www.adacore.com[AdaCore] for maintaining GNAT
+* The Ada community for keeping the language thriving
+* All contributors who help improve this plugin
+
+---
+
+[.text-center]
+Made with ❤️ for the Ada community
+
+[.text-center]
+link:#[⬆ Back to Top]

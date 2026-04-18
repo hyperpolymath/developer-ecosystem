@@ -1,0 +1,360 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Master plugin registry for hyperpolymath asdf ecosystem
+# Schema: registry/schemas/plugin.schema.json
+
+version: "1.0.0"
+updated: "2025-12-31"
+
+plugins:
+  # === Security Tools ===
+  - name: asdf-trivy-plugin
+    tool: trivy
+    display_name: Trivy
+    description: Security scanner for vulnerabilities and misconfigurations
+    category: security
+    tags: [vulnerability-scanning, container-security, sbom, iac-scanning]
+    upstream:
+      repo: aquasecurity/trivy
+      homepage: https://trivy.dev
+      license: Apache-2.0
+
+  - name: asdf-grype-plugin
+    tool: grype
+    display_name: Grype
+    description: Vulnerability scanner for container images and filesystems
+    category: security
+    tags: [vulnerability-scanning, sbom]
+    upstream:
+      repo: anchore/grype
+      homepage: https://github.com/anchore/grype
+      license: Apache-2.0
+
+  - name: asdf-syft-plugin
+    tool: syft
+    display_name: Syft
+    description: SBOM generator for container images and filesystems
+    category: security
+    tags: [sbom, software-composition]
+    upstream:
+      repo: anchore/syft
+      homepage: https://github.com/anchore/syft
+      license: Apache-2.0
+
+  - name: asdf-cosign-plugin
+    tool: cosign
+    display_name: Cosign
+    description: Container signing, verification, and attestation
+    category: security
+    tags: [signing, verification, supply-chain]
+    upstream:
+      repo: sigstore/cosign
+      homepage: https://sigstore.dev
+      license: Apache-2.0
+
+  - name: asdf-gitleaks-plugin
+    tool: gitleaks
+    display_name: Gitleaks
+    description: Secret scanning tool for git repositories
+    category: security
+    tags: [secret-scanning, git]
+    upstream:
+      repo: gitleaks/gitleaks
+      homepage: https://gitleaks.io
+      license: MIT
+
+  - name: asdf-age-plugin
+    tool: age
+    display_name: age
+    description: Simple, modern file encryption tool
+    category: crypto
+    tags: [encryption, file-encryption]
+    upstream:
+      repo: FiloSottile/age
+      homepage: https://age-encryption.org
+      license: BSD-3-Clause
+
+  # === Databases ===
+  - name: asdf-arangodb-plugin
+    tool: arangodb
+    display_name: ArangoDB
+    description: Multi-model graph database
+    category: database
+    tags: [graph-database, document-database, nosql]
+    upstream:
+      repo: arangodb/arangodb
+      homepage: https://arangodb.com
+      license: Apache-2.0
+
+  - name: asdf-mariadb-plugin
+    tool: mariadb
+    display_name: MariaDB
+    description: Community-developed MySQL fork
+    category: database
+    tags: [relational-database, mysql-compatible]
+    upstream:
+      repo: MariaDB/server
+      homepage: https://mariadb.org
+      license: GPL-2.0
+
+  - name: asdf-neo4j-plugin
+    tool: neo4j
+    display_name: Neo4j
+    description: Native graph database
+    category: database
+    tags: [graph-database, cypher]
+    upstream:
+      homepage: https://neo4j.com
+      license: GPL-3.0
+
+  # === Configuration Languages ===
+  - name: asdf-nickel-plugin
+    tool: nickel
+    display_name: Nickel
+    description: Configuration language with gradual typing
+    category: config
+    tags: [configuration-language, typed]
+    upstream:
+      repo: tweag/nickel
+      homepage: https://nickel-lang.org
+      license: MIT
+
+  - name: asdf-dhall-plugin
+    tool: dhall
+    display_name: Dhall
+    description: Programmable configuration language
+    category: config
+    tags: [configuration-language, typed, total]
+    upstream:
+      repo: dhall-lang/dhall-haskell
+      homepage: https://dhall-lang.org
+      license: BSD-3-Clause
+
+  - name: asdf-cue-plugin
+    tool: cue
+    display_name: CUE
+    description: Data validation language and engine
+    category: config
+    tags: [configuration-language, validation, schema]
+    upstream:
+      repo: cue-lang/cue
+      homepage: https://cuelang.org
+      license: Apache-2.0
+
+  - name: asdf-yq-plugin
+    tool: yq
+    display_name: yq
+    description: YAML/JSON/XML processor
+    category: config
+    tags: [yaml, json, cli-tool]
+    upstream:
+      repo: mikefarah/yq
+      homepage: https://mikefarah.gitbook.io/yq
+      license: MIT
+
+  - name: asdf-taplo-plugin
+    tool: taplo
+    display_name: Taplo
+    description: TOML toolkit and formatter
+    category: config
+    tags: [toml, formatter, lsp]
+    upstream:
+      repo: tamasfe/taplo
+      homepage: https://taplo.tamasfe.dev
+      license: MIT
+
+  # === Network Infrastructure ===
+  - name: asdf-coredns-plugin
+    tool: coredns
+    display_name: CoreDNS
+    description: DNS server with plugin architecture
+    category: network
+    tags: [dns, kubernetes, service-discovery]
+    upstream:
+      repo: coredns/coredns
+      homepage: https://coredns.io
+      license: Apache-2.0
+
+  - name: asdf-envoy-plugin
+    tool: envoy
+    display_name: Envoy
+    description: Cloud-native high-performance proxy
+    category: network
+    tags: [proxy, service-mesh, load-balancer]
+    upstream:
+      repo: envoyproxy/envoy
+      homepage: https://envoyproxy.io
+      license: Apache-2.0
+
+  - name: asdf-pomerium-plugin
+    tool: pomerium
+    display_name: Pomerium
+    description: Identity-aware access proxy
+    category: network
+    tags: [proxy, zero-trust, access-control]
+    upstream:
+      repo: pomerium/pomerium
+      homepage: https://pomerium.com
+      license: Apache-2.0
+
+  # === Backup & Storage ===
+  - name: asdf-restic-plugin
+    tool: restic
+    display_name: Restic
+    description: Fast, secure, efficient backup program
+    category: build
+    tags: [backup, deduplication, encryption]
+    upstream:
+      repo: restic/restic
+      homepage: https://restic.net
+      license: BSD-2-Clause
+
+  - name: asdf-borg-plugin
+    tool: borg
+    display_name: BorgBackup
+    description: Deduplicating archiver with compression and encryption
+    category: build
+    tags: [backup, deduplication, archiver]
+    upstream:
+      repo: borgbackup/borg
+      homepage: https://borgbackup.org
+      license: BSD-3-Clause
+
+  # === Certificate & PKI ===
+  - name: asdf-step-ca-plugin
+    tool: step-ca
+    display_name: step-ca
+    description: Private certificate authority
+    category: crypto
+    tags: [pki, certificate-authority, tls]
+    upstream:
+      repo: smallstep/certificates
+      homepage: https://smallstep.com
+      license: Apache-2.0
+
+  - name: asdf-cfssl-plugin
+    tool: cfssl
+    display_name: CFSSL
+    description: CloudFlare's PKI toolkit
+    category: crypto
+    tags: [pki, certificate, signing]
+    upstream:
+      repo: cloudflare/cfssl
+      homepage: https://cfssl.org
+      license: BSD-2-Clause
+
+  - name: asdf-lego-plugin
+    tool: lego
+    display_name: Lego
+    description: ACME client and library
+    category: crypto
+    tags: [acme, letsencrypt, certificate]
+    upstream:
+      repo: go-acme/lego
+      homepage: https://go-acme.github.io/lego
+      license: MIT
+
+  # === Languages ===
+  - name: asdf-ada-plugin
+    tool: gnat
+    display_name: GNAT (Ada)
+    description: Ada compiler from GNAT project
+    category: language
+    tags: [ada, compiler, safety-critical]
+    upstream:
+      homepage: https://www.adacore.com
+      license: GPL-3.0
+
+  - name: asdf-fortran-plugin
+    tool: gfortran
+    display_name: GFortran
+    description: GNU Fortran compiler
+    category: language
+    tags: [fortran, compiler, hpc]
+    upstream:
+      homepage: https://gcc.gnu.org/fortran
+      license: GPL-3.0
+
+  # === Container Tools ===
+  - name: asdf-apko-plugin
+    tool: apko
+    display_name: apko
+    description: Build OCI images using APK packages
+    category: build
+    tags: [container, apk, oci]
+    upstream:
+      repo: chainguard-dev/apko
+      homepage: https://github.com/chainguard-dev/apko
+      license: Apache-2.0
+
+  - name: asdf-melange-plugin
+    tool: melange
+    display_name: Melange
+    description: Build APK packages declaratively
+    category: build
+    tags: [package-builder, apk, declarative]
+    upstream:
+      repo: chainguard-dev/melange
+      homepage: https://github.com/chainguard-dev/melange
+      license: Apache-2.0
+
+  # === Static Site Generators ===
+  - name: asdf-casket-ssg-plugin
+    tool: casket-ssg
+    display_name: Casket SSG
+    description: Hyperpolymath static site generator
+    category: ssg
+    tags: [static-site-generator, asciidoc]
+    upstream:
+      repo: hyperpolymath/casket-ssg
+      homepage: https://github.com/hyperpolymath/casket-ssg
+      license: AGPL-3.0
+
+  - name: asdf-zola-plugin
+    tool: zola
+    display_name: Zola
+    description: Fast static site generator in Rust
+    category: ssg
+    tags: [static-site-generator, rust, tera]
+    upstream:
+      repo: getzola/zola
+      homepage: https://getzola.org
+      license: MIT
+
+  # === HashiCorp Tools ===
+  - name: asdf-hashicorp-plugin
+    tool: hashicorp
+    display_name: HashiCorp Suite
+    description: Unified plugin for HashiCorp tools
+    category: build
+    tags: [terraform, vault, consul, nomad]
+    upstream:
+      homepage: https://hashicorp.com
+      license: BUSL-1.1
+
+  # === Policy & Compliance ===
+  - name: asdf-opa-plugin
+    tool: opa
+    display_name: OPA
+    description: Open Policy Agent
+    category: security
+    tags: [policy, rego, authorization]
+    upstream:
+      repo: open-policy-agent/opa
+      homepage: https://openpolicyagent.org
+      license: Apache-2.0
+
+  # === Serialization ===
+  - name: asdf-bebop-plugin
+    tool: bebop
+    display_name: Bebop
+    description: Fast binary serialization format
+    category: config
+    tags: [serialization, binary, schema]
+    upstream:
+      repo: betwixt-labs/bebop
+      homepage: https://bebop.sh
+      license: Apache-2.0
+
+  # === DO NOT ADD MORE - use full list from actual repo directories ===
+  # This is a representative sample. Full list generated from:
+  # ls -d ~/repos/asdf-*-plugin | wc -l = 68 plugins

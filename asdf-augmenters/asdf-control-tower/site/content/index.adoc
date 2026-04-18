@@ -1,0 +1,53 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= hyperpolymath asdf Ecosystem
+:description: A curated collection of asdf plugins for modern development workflows
+:keywords: asdf, version manager, plugins, polyglot, development tools
+
+== Welcome to the Control Tower
+
+The **asdf-control-tower** is the central hub for managing and coordinating the hyperpolymath collection of asdf plugins. We provide high-quality, well-maintained plugins for developers who need reliable version management across multiple tools and languages.
+
+=== What is asdf?
+
+https://asdf-vm.com[asdf] is an extendable version manager that supports multiple languages and tools through a plugin system. Instead of managing separate version managers for each language (nvm, rbenv, pyenv, etc.), asdf provides a single interface for all.
+
+=== Our Philosophy
+
+* **Quality over quantity** - Each plugin is thoroughly tested and maintained
+* **Security first** - SHA verification, secure downloads, supply chain integrity
+* **Community driven** - Open source under MPL-2.0
+* **Multi-platform mirrors** - Available on GitHub, GitLab, Codeberg, and Bitbucket
+
+=== Hub-and-Spoke Architecture
+
+The control tower uses a hub-and-spoke model for source control management:
+
+[cols="1,3"]
+|===
+| Hub | GitHub (primary development)
+| Spoke | GitLab mirror
+| Spoke | Codeberg mirror
+| Spoke | Bitbucket mirror
+|===
+
+This ensures our plugins remain accessible even if one platform experiences issues.
+
+=== Getting Started
+
+[source,bash]
+----
+# Install asdf (see asdf-vm.com for your platform)
+# Then add our plugins:
+
+asdf plugin add <plugin-name> https://github.com/hyperpolymath/asdf-<plugin-name>.git
+----
+
+=== Connect With Us
+
+* https://github.com/hyperpolymath[GitHub: @hyperpolymath]
+* https://gitlab.com/hyperpolymath[GitLab: @hyperpolymath]
+* https://codeberg.org/hyperpolymath[Codeberg: @hyperpolymath]
+
+---
+
+_Part of the poly-ssg ecosystem. Built with terrapin-ssg._

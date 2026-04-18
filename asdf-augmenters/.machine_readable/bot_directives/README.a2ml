@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# .bot_directives README — migrated from SCM on 2026-04-17
+# Media-Type: application/vnd.bot-directives+a2ml
+
+schema_version = "1.0"
+directive_type = "bot-directives-readme"
+version = "1.0"
+notes = "Repo-specific bot constraints. Bots must follow these directives in addition to global policies."

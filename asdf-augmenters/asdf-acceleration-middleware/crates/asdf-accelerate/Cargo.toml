@@ -1,0 +1,34 @@
+[package]
+name = "asdf-accelerate"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+documentation.workspace = true
+keywords.workspace = true
+categories.workspace = true
+rust-version.workspace = true
+
+[[bin]]
+name = "asdf-accelerate"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = { workspace = true }
+clap = { workspace = true }
+colored = { workspace = true }
+indicatif = { workspace = true }
+serde_json = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+asdf-core = { path = "../asdf-core" }
+asdf-cache = { path = "../asdf-cache" }
+asdf-parallel = { path = "../asdf-parallel" }
+asdf-config = { path = "../asdf-config" }
+asdf-metrics = { path = "../asdf-metrics" }
+
+[dev-dependencies]
+assert_cmd = { workspace = true }
+predicates = { workspace = true }

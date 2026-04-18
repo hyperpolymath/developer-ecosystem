@@ -1,0 +1,10 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= asdf-augmenters Roadmap
+
+Meta-tools that enhance the asdf version manager. Completion: 45%.
+
+== Goals
+* [ ] Complete core functionality
+* [ ] Add test coverage
+* [ ] Write documentation
+* [ ] Stable 1.0 release

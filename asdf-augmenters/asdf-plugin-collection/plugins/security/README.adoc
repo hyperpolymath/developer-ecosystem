@@ -1,0 +1,122 @@
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= asdf-security-plugin
+
+:toc: macro
+:toc-title: Contents
+:toclevels: 2
+
+**Security scanning plugin for asdf version manager**
+
+toc::[]
+
+== Status
+
+[NOTE]
+====
+This plugin is *fully functional* at version 1.0.0.
+====
+
+== Overview
+
+`asdf-security-plugin` is a security-focused plugin for the https://asdf-vm.com/[asdf version manager]. It provides security scanning capabilities for asdf installations, including plugin auditing, signature verification, and vulnerability reporting.
+
+== Installation
+
+[source,bash]
+----
+asdf plugin add asdf-security https://github.com/hyperpolymath/asdf-security-plugin.git
+asdf install asdf-security 1.0.0
+asdf global asdf-security 1.0.0
+----
+
+== Usage
+
+[source,bash]
+----
+asdf-security <command> [args...]
+----
+
+=== Commands
+
+[cols="2,3",options="header"]
+|===
+| Command | Description
+
+| `audit`
+| Audit all installed asdf plugins for known vulnerabilities
+
+| `verify <plugin>`
+| Verify GPG signatures and SHA256 checksums of a plugin
+
+| `report`
+| Generate a comprehensive security report of all plugins
+
+| `update-db`
+| Update the local vulnerability database
+|===
+
+=== Examples
+
+[source,bash]
+----
+# Audit all plugins
+asdf-security audit
+
+# Verify a specific plugin
+asdf-security verify nodejs
+
+# Generate security report
+asdf-security report
+
+# Update vulnerability database
+asdf-security update-db
+----
+
+== Components
+
+[cols="2,3",options="header"]
+|===
+| Component | Description
+
+| `bin/list-all`
+| Lists available versions of asdf-security
+
+| `bin/download`
+| Downloads the specified version
+
+| `bin/install`
+| Installs asdf-security to the specified path
+
+| `lib/utils.bash`
+| Shared utility functions
+
+| `.github/workflows/`
+| CI/CD infrastructure including security scanning
+
+| `hooks/`
+| Pre-commit validation hooks for security standards
+|===
+
+== Security Features
+
+* *Plugin Auditing*: Scans installed plugins against known vulnerability databases
+* *Signature Verification*: Validates GPG signatures on plugin releases
+* *Checksum Validation*: SHA256 integrity verification for downloads
+* *Security Reports*: Comprehensive JSON/text reports of security posture
+
+== Development Standards
+
+Per the Hyperpolymath Language Policy:
+
+* **Primary languages**: Bash/POSIX Shell (for asdf plugin scripts)
+* **Package management**: Guix (primary), Nix (fallback)
+* **Security**: SHA256+ hashing, HTTPS only, no hardcoded secrets, SHA-pinned dependencies
+* **Code quality**: ShellCheck linting, SPDX license headers
+
+== License
+
+PMPL-1.0-or-later

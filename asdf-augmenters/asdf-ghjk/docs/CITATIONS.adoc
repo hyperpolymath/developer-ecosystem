@@ -1,0 +1,36 @@
+= asdf-ghjk - Citation Guide
+:toc:
+
+== BibTeX
+
+[source,bibtex]
+----
+@software{asdf-ghjk_2025,
+  author = {Polymath, Hyper},
+  title = {asdf-ghjk},
+  year = {2025},
+  url = {https://github.com/hyperpolymath/asdf-ghjk},
+  license = {AGPL-3.0-or-later}
+}
+----
+
+== Harvard Style
+
+Polymath, H. (2025) _asdf-ghjk_ [Computer software]. Available at: https://github.com/hyperpolymath/asdf-ghjk
+
+== OSCOLA
+
+Hyper Polymath, 'asdf-ghjk' (2025) <https://github.com/hyperpolymath/asdf-ghjk>
+
+== MLA
+
+Polymath, Hyper. "asdf-ghjk." 2025, github.com/hyperpolymath/asdf-ghjk.
+
+== APA 7
+
+Polymath, H. (2025). _asdf-ghjk_ [Computer software]. GitHub. https://github.com/hyperpolymath/asdf-ghjk
+
+== See Also
+
+* link:../CITATION.cff[CITATION.cff]
+* link:../codemeta.json[codemeta.json]

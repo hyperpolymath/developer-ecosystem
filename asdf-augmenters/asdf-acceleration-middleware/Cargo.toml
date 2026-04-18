@@ -1,0 +1,84 @@
+[workspace]
+members = [
+    "crates/asdf-core",
+    "crates/asdf-cache",
+    "crates/asdf-parallel",
+    "crates/asdf-config",
+    "crates/asdf-metrics",
+    "crates/asdf-accelerate",
+    "crates/asdf-bench",
+    "crates/asdf-discover",
+    "crates/asdf-monitor",
+]
+resolver = "2"
+
+[workspace.package]
+version = "1.0.0"
+edition = "2021"
+authors = ["asdf-acceleration-middleware contributors"]
+license = "MIT OR Palimpsest-0.8"
+repository = "https://github.com/Hyperpolymath/asdf-acceleration-middleware"
+homepage = "https://github.com/Hyperpolymath/asdf-acceleration-middleware"
+documentation = "https://docs.rs/asdf-acceleration-middleware"
+keywords = ["asdf", "acceleration", "middleware", "performance", "tooling"]
+categories = ["command-line-utilities", "development-tools"]
+rust-version = "1.70.0"
+
+[workspace.dependencies]
+# Core dependencies
+anyhow = "1.0"
+thiserror = "1.0"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+
+# CLI dependencies
+clap = { version = "4.4", features = ["derive", "cargo", "env"] }
+colored = "2.0"
+indicatif = "0.17"
+console = "0.15"
+
+# Async/Parallel
+rayon = "1.8"
+tokio = { version = "1.35", features = ["full"] }
+futures = "0.3"
+
+# Caching
+sled = "0.34"
+bincode = "1.3"
+lru = "0.16"
+
+# System integration
+duct = "0.13"
+which = "5.0"
+notify-rust = "4.10"
+num_cpus = "1.16"
+dirs = "5.0"
+
+# Configuration
+config = "0.14"
+
+# Metrics
+sysinfo = "0.30"
+
+# Testing
+assert_cmd = "2.0"
+predicates = "3.0"
+tempfile = "3.8"
+criterion = { version = "0.5", features = ["html_reports"] }
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+strip = true
+panic = "abort"
+
+[profile.dev]
+opt-level = 0
+debug = true
+
+[profile.test]
+opt-level = 1

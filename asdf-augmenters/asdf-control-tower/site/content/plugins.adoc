@@ -1,0 +1,91 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= asdf Plugins
+:description: Overview of hyperpolymath asdf plugins
+:keywords: asdf plugins, version management, development tools
+
+== Plugin Collection
+
+Our plugins follow asdf best practices and include comprehensive testing, security verification, and cross-platform support.
+
+=== Available Plugins
+
+[cols="2,4,1"]
+|===
+| Plugin | Description | Status
+
+| asdf-buf
+| Protocol buffer tooling (buf CLI)
+| Planned
+
+| asdf-dagger
+| Dagger CI/CD engine
+| Planned
+
+| asdf-earthly
+| Earthly build automation
+| Planned
+
+| asdf-grype
+| Vulnerability scanner for containers
+| Planned
+
+| asdf-hadolint
+| Dockerfile linter
+| Planned
+
+| asdf-helmfile
+| Declarative Helm chart management
+| Planned
+
+| asdf-k9s
+| Kubernetes CLI manager
+| Planned
+
+| asdf-kustomize
+| Kubernetes configuration customization
+| Planned
+
+| asdf-trivy
+| Security scanner for containers
+| Planned
+
+| asdf-yq
+| YAML/JSON processor
+| Planned
+|===
+
+=== Plugin Standards
+
+All hyperpolymath asdf plugins adhere to:
+
+==== Security
+* SHA256 checksum verification for all downloads
+* Signed releases where upstream provides signatures
+* No execution of remote scripts during install
+
+==== Quality
+* Comprehensive test suite using bats-core
+* CI/CD pipeline with GitHub Actions
+* Support for Linux (amd64, arm64) and macOS (Intel, Apple Silicon)
+
+==== Maintenance
+* Semantic versioning
+* Automated dependency updates
+* Responsive issue triage
+
+=== Contributing a Plugin
+
+Want to contribute a new plugin or improve an existing one?
+
+. Fork the repository
+. Follow the https://github.com/asdf-vm/asdf-plugin-template[asdf plugin template]
+. Ensure all tests pass
+. Submit a pull request
+
+=== Plugin Request
+
+Need a plugin we don't have? Open an issue on the https://github.com/hyperpolymath/asdf-control-tower/issues[control tower repository] with:
+
+* Tool name and homepage
+* Why you need asdf support
+* Any special installation requirements

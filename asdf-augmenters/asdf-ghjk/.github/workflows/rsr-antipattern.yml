@@ -1,0 +1,57 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+name: RSR Antipattern Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions: read-all
+
+jobs:
+  check:
+    name: Check for RSR Antipatterns
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v4
+
+      - name: Check for banned patterns
+        run: |
+          errors=0
+
+          # Check for TypeScript files
+          if find . -name "*.ts" -not -path "./node_modules/*" | grep -q .; then
+            echo "::error::TypeScript files found. Use ReScript instead."
+            errors=$((errors + 1))
+          fi
+
+          # Check for package-lock.json (npm)
+          if [ -f "package-lock.json" ]; then
+            echo "::error::package-lock.json found. Use Deno instead of npm."
+            errors=$((errors + 1))
+          fi
+
+          # Check for bun.lockb (bun)
+          if [ -f "bun.lockb" ]; then
+            echo "::error::bun.lockb found. Use Deno instead of Bun."
+            errors=$((errors + 1))
+          fi
+
+          # Check for Python files
+          if find . -name "*.py" -not -path "./.venv/*" | grep -q .; then
+            echo "::error::Python files found. Use Julia, Rust, or ReScript instead."
+            errors=$((errors + 1))
+          fi
+
+          # Check for Go files
+          if find . -name "*.go" | grep -q .; then
+            echo "::error::Go files found. Use Rust instead."
+            errors=$((errors + 1))
+          fi
+
+          if [ $errors -gt 0 ]; then
+            exit 1
+          fi
+
+          echo "No RSR antipatterns detected."

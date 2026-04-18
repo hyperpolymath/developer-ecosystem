@@ -1,0 +1,5 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+@manifest { version: "1.0.0", repo: "hyperpolymath/asdf-augmenters", updated: "2026-02-08" }
+@canonical-locations { scm-files: ".machine_readable/", ci-cd: ".github/workflows/" }
+@critical-invariants { rule: "SCM files in .machine_readable/ ONLY" }
+@lifecycle { on-enter: "Read manifest then SCM files", on-exit: "Update STATE.scm" }
