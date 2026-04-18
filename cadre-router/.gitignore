@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Build artifacts
+lib/
+
+# Lock files
+package-lock.json
+
+# Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+target/
+_build/
+deps/
+.elixir_ls/
+.cache/
+*.log
+*.tmp
+Thumbs.db
+build/
+dist/

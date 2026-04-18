@@ -1,0 +1,216 @@
+= cadre-tea-router
+:toc:
+:toclevels: 3
+:sectanchors:
+:source-highlighter: rouge
+
+Type-safe routing integration for rescript-tea applications.
+
+== What this is
+
+`cadre-tea-router` provides idiomatic rescript-tea integration for the `cadre-router` URL routing library:
+
+* **Tea.Cmd.t navigation** — `push`, `replace`, `back`, `forward`
+* **Tea.Sub.t subscriptions** — React to URL changes
+* **TEA-native links** — Type-safe `<a>` elements with proper message dispatch
+* **Program integration** — `navigationProgram` for TEA apps with routing
+
+== Quick Start
+
+[source,rescript]
+----
+// 1. Define your routes (using cadre-router)
+module Route = {
+  type t = Home | Profile | User(int) | NotFound
+
+  let parser = {
+    open CadreRouter.Parser
+    oneOf([
+      top->map(_ => Home),
+      s("profile")->map(_ => Profile),
+      s("user")->andThen(int)->map(((_, id)) => User(id)),
+    ])
+  }
+
+  let toString = route => switch route {
+    | Home => "/"
+    | Profile => "/profile"
+    | User(id) => "/user/" ++ Belt.Int.toString(id)
+    | NotFound => "/404"
+  }
+}
+
+// 2. Define your message type
+type msg =
+  | RouteChanged(Route.t)
+  | ClickedLink(Route.t)
+  | UrlNotFound(CadreRouter.Url.t)
+
+// 3. Create the router module
+module Router = TeaRouter.Make({
+  type route = Route.t
+  type msg = msg
+
+  let parser = Route.parser
+  let toString = Route.toString
+  let onRouteChange = route => RouteChanged(route)
+  let onNotFound = url => UrlNotFound(url)
+})
+
+// 4. Use in your TEA application
+let init = () => {
+  let (route, cmd) = Router.init()
+  ({ route: route->Option.getOr(Route.Home) }, cmd)
+}
+
+let update = (msg, model) =>
+  switch msg {
+  | RouteChanged(route) => ({ route }, Tea.Cmd.none)
+  | ClickedLink(route) => (model, Router.push(route))
+  | UrlNotFound(_) => ({ route: Route.NotFound }, Tea.Cmd.none)
+  }
+
+let subscriptions = _ => Router.urlChanges
+
+let view = model => {
+  open Tea.Html
+  div([], [
+    Router.link(~route=Route.Home, [text("Home")]),
+    Router.link(~route=Route.Profile, [text("Profile")]),
+    Router.link(~route=Route.User(42), [text("User 42")]),
+  ])
+}
+----
+
+== Installation
+
+[source,json]
+----
+// deno.json
+{
+  "imports": {
+    "cadre-router": "npm:cadre-router@^0.1.0",
+    "cadre-tea-router": "npm:cadre-tea-router@^0.1.0",
+    "rescript-tea": "npm:rescript-tea@^x.x.x"
+  }
+}
+----
+
+[source,json]
+----
+// rescript.json
+{
+  "bs-dependencies": [
+    "cadre-router",
+    "cadre-tea-router",
+    "rescript-tea"
+  ]
+}
+----
+
+== API Reference
+
+=== `TeaRouter.Make` Functor
+
+[source,rescript]
+----
+module Make: (Config: {
+  type route
+  type msg
+
+  let parser: CadreRouter.Parser.t<route>
+  let toString: route => string
+  let onRouteChange: route => msg
+  let onNotFound: CadreRouter.Url.t => msg
+}) => {
+  // Initialize router, parsing current URL
+  let init: unit => (option<Config.route>, Tea.Cmd.t<Config.msg>)
+
+  // Navigation commands
+  let push: Config.route => Tea.Cmd.t<Config.msg>
+  let replace: Config.route => Tea.Cmd.t<Config.msg>
+  let back: Tea.Cmd.t<Config.msg>
+  let forward: Tea.Cmd.t<Config.msg>
+
+  // URL change subscription
+  let urlChanges: Tea.Sub.t<Config.msg>
+
+  // Type-safe link helper
+  let link: (
+    ~route: Config.route,
+    ~attrs: list<Tea.Html.attribute<Config.msg>>=?,
+    list<Tea.Html.t<Config.msg>>
+  ) => Tea.Html.t<Config.msg>
+
+  // href attribute for manual link construction
+  let href: Config.route => Tea.Html.attribute<Config.msg>
+}
+----
+
+=== `TeaRouter.HashRouter.Make`
+
+Same API as above, but uses hash-based routing (`/#/route`) for static hosting.
+
+== Patterns
+
+=== Nested Routes
+
+[source,rescript]
+----
+type journeySub = Map | Log | Settings
+
+type route =
+  | Journey(string, journeySub)
+
+// In your view
+let viewJourney = (id, sub) =>
+  switch sub {
+  | Map => JourneyMap.view(id)
+  | Log => JourneyLog.view(id)
+  | Settings => JourneySettings.view(id)
+  }
+----
+
+=== Protected Routes
+
+[source,rescript]
+----
+let update = (msg, model) =>
+  switch msg {
+  | ClickedLink(route) =>
+    if requiresAuth(route) && !model.isAuthenticated {
+      (model, Router.push(Route.Login))
+    } else {
+      (model, Router.push(route))
+    }
+  }
+----
+
+=== Route Guards
+
+[source,rescript]
+----
+let subscriptions = model => {
+  Router.urlChanges->Tea.Sub.map(msg =>
+    switch msg {
+    | RouteChanged(route) if shouldRedirect(route, model) =>
+      Redirect(getRedirectRoute(route, model))
+    | _ => msg
+    }
+  )
+}
+----
+
+== Relationship to cadre-router
+
+This package depends on `cadre-router` for:
+
+* URL parsing (`CadreRouter.Url`)
+* Parser combinators (`CadreRouter.Parser`)
+* Navigation primitives (`CadreRouter.Navigation`)
+
+`cadre-tea-router` adds the TEA-specific wrappers.
+
+== License
+
+Apache-2.0

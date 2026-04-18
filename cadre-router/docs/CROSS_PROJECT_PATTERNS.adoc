@@ -1,0 +1,180 @@
+= Cross-Project Patterns: Security ↔ Routing
+:toc:
+
+Lessons shared between `sanctify-php`/`php-aegis` (security) and `cadre-router` (routing).
+
+== The Core Pattern
+
+Both domains follow the same fundamental flow:
+
+[source]
+----
+Untrusted Input → Validate/Parse → Typed Value → Safe Operations → Serialize Output
+----
+
+=== In Security (php-aegis)
+
+[source,php]
+----
+$_POST["url"]           // Untrusted input
+→ Validator::url()      // Validate at boundary
+→ ValidUrl $url         // Typed value (cannot be invalid)
+→ use in application    // Safe operations
+→ TurtleEscaper::iri()  // Context-aware output
+----
+
+=== In Routing (cadre-router)
+
+[source,rescript]
+----
+"/journey/abc123"       // Untrusted URL string
+→ Parser.parse()        // Validate at boundary
+→ Journey(JourneyId.t)  // Typed value (cannot be invalid)
+→ render view           // Safe operations
+→ Route.toString()      // Context-aware output (path vs hash)
+----
+
+== Pattern 1: Context-Aware Output
+
+Different contexts require different serialization.
+
+=== Security: Output Escaping
+
+[cols="1,2"]
+|===
+| Context | Escaper
+
+| SQL | `addslashes()` (legacy) or prepared statements
+| HTML | `htmlspecialchars()`
+| RDF Turtle | `TurtleEscaper::literal()`, `TurtleEscaper::iri()`
+| URL | `urlencode()`
+|===
+
+*Lesson*: Using the wrong escaper causes vulnerabilities (e.g., `addslashes()` for Turtle → RDF injection).
+
+=== Routing: URL Serialization
+
+[cols="1,2"]
+|===
+| Context | Serializer
+
+| Path-based | `/journey/abc123`
+| Hash-based | `/#/journey/abc123`
+| Query-encoded | `/search?q=hello%20world`
+|===
+
+*Lesson*: `Navigation` vs `HashNavigation` provide context-appropriate URL handling.
+
+== Pattern 2: Validation at Boundaries
+
+Parse/validate once at the system boundary, then carry typed values internally.
+
+=== Security
+
+[source,php]
+----
+// BAD: Validate repeatedly, stringly-typed
+function processUrl(string $url) {
+  if (!filter_var($url, FILTER_VALIDATE_URL)) { ... }
+  // $url is still just a string, could be invalid elsewhere
+}
+
+// GOOD: Validate once, carry typed value
+function processUrl(ValidUrl $url) {
+  // Cannot be called with invalid URL - type system enforces it
+}
+----
+
+=== Routing
+
+[source,rescript]
+----
+// BAD: Parse repeatedly, stringly-typed
+let handleRoute = (path: string) => {
+  if (path == "/profile") { ... }
+  // Easy to typo, no exhaustiveness checking
+}
+
+// GOOD: Parse once, carry typed value
+let handleRoute = (route: Route.t) => {
+  switch route {
+  | Profile => ...  // Compiler ensures all cases handled
+  | Journey(id) => ...  // id is already validated JourneyId.t
+  }
+}
+----
+
+== Pattern 3: Framework-Specific Integration
+
+Core logic is framework-agnostic; integration layers adapt to specific frameworks.
+
+=== Security (php-aegis)
+
+[cols="1,2"]
+|===
+| Core | Framework Integration
+
+| `Validator` class | WordPress: `wp_kses_post()`, nonces
+| `TurtleEscaper` class | WordPress: hooks for semantic output
+| `Headers` class | WordPress: `send_headers` action
+|===
+
+=== Routing (cadre-router)
+
+[cols="1,2"]
+|===
+| Core | Framework Integration
+
+| `Parser` module | TEA: `TeaRouter.Make` functor
+| `Navigation` module | TEA: `Tea.Cmd.t`, `Tea.Sub.t`
+| `Link` module | TEA: `Tea.Html.t<msg>`, React: `React.element`
+|===
+
+== Pattern 4: Bidirectional Guarantees
+
+Operations that go both directions must be inverses.
+
+=== Security
+
+[source,php]
+----
+// Escape and unescape must be inverses
+$escaped = TurtleEscaper::literal($input);
+$unescaped = TurtleParser::parseLiteral($escaped);
+assert($input === $unescaped);  // Must hold
+----
+
+=== Routing
+
+[source,rescript]
+----
+// Serialize and parse must be inverses
+let url = Route.toString(route)
+let parsed = Route.fromUrl(Url.fromString(url))
+assert(parsed == Some(route))  // RouteBuilder guarantees this
+----
+
+*Implementation*: `RouteBuilder` provides compile-time bidirectional guarantees by defining both directions from a single source.
+
+== Applying These Patterns
+
+=== When Building Security Tools
+
+1. Create typed wrappers for validated values (`ValidUrl`, `SanitizedHtml`)
+2. Validate at system boundaries (HTTP input, database reads)
+3. Provide context-aware output escapers
+4. Document which escaper for which context
+
+=== When Building Routers
+
+1. Create typed route variants (`Route.t`)
+2. Parse URLs at system boundary (app init, URL change events)
+3. Provide context-aware serializers (path, hash, query)
+4. Use `RouteBuilder` for bidirectional guarantees
+
+== References
+
+* `hyperpolymath/sanctify-php` — PHP security analysis tool
+* `hyperpolymath/php-aegis` — PHP security primitives library
+* `hyperpolymath/cadre-router` — ReScript URL routing
+* `hyperpolymath/cadre-tea-router` — TEA integration for routing

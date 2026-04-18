@@ -1,0 +1,16 @@
+{
+  "name": "@cadre/tea-router",
+  "version": "0.1.0",
+  "exports": "./src/TeaRouter.js",
+  "tasks": {
+    "build": "rescript build",
+    "clean": "rescript clean",
+    "watch": "rescript build -w",
+    "test": "deno test --allow-read tests/"
+  },
+  "imports": {
+    "cadre-router": "npm:cadre-router@^0.1.0",
+    "rescript-tea": "npm:rescript-tea@^0.9.0",
+    "rescript": "npm:rescript@^11.0.0"
+  }
+}

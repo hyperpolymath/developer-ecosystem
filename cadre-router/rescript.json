@@ -1,0 +1,25 @@
+{
+  "name": "cadre-router",
+  "sources": [
+    { "dir": "src", "subdirs": true },
+    { "dir": "demo", "subdirs": true },
+    { "dir": "tests", "subdirs": true }
+  ],
+  "package-specs": [
+    {
+      "module": "es6",
+      "in-source": true
+    }
+  ],
+  "suffix": ".js",
+  "dependencies": ["@rescript/react"],
+  "dev-dependencies": [],
+  "compiler-flags": ["-open Belt"],
+  "warnings": {
+    "error": "+101"
+  },
+  "jsx": {
+    "version": 4,
+    "mode": "automatic"
+  }
+}
