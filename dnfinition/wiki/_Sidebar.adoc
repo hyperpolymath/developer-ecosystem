@@ -1,0 +1,40 @@
+// SPDX-License-Identifier: MPL-2.0-or-later
+= DNFinition
+
+link:Home[**🏠 Home**]
+
+== 👤 User Guide
+
+* link:Getting-Started[Getting Started]
+* link:Installation[Installation]
+* link:TUI-Guide[TUI Guide]
+* link:CLI-Reference[CLI Reference]
+* link:Snapshots[Snapshots & Rollback]
+* link:OS-Upgrades[OS Upgrades]
+* link:Transaction-History[Transaction History]
+
+== 📚 Reference
+
+* link:Configuration[Configuration]
+* link:Backend-Support[Backend Support]
+* link:Troubleshooting[Troubleshooting]
+* link:FAQ[FAQ]
+
+== 🛠️ Developer Guide
+
+* link:Building-from-Source[Building from Source]
+* link:Architecture[Architecture]
+* link:SPARK-Verification[SPARK Verification]
+* link:Adding-Backends[Adding Backends]
+* link:Testing[Testing]
+* link:Contributing[Contributing]
+
+== 📋 Project
+
+* https://github.com/hyperpolymath/dnfinition[GitHub Repository]
+* https://github.com/hyperpolymath/dnfinition/releases[Releases]
+* https://github.com/hyperpolymath/dnfinition/issues[Issues]
+
+---
+
+v0.0.5 | AGPL-3.0-or-later

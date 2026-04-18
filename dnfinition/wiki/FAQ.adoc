@@ -1,0 +1,214 @@
+// SPDX-License-Identifier: MPL-2.0-or-later
+= Frequently Asked Questions
+:toc: left
+:toclevels: 2
+:icons: font
+
+== General
+
+=== What does "DNFinition" mean?
+
+It's a portmanteau of "DNF" (the Fedora package manager) and "definition" — defining what a package manager should be. Also works as "the definitive" package manager experience.
+
+=== Why another package manager?
+
+DNFinition isn't replacing your package manager — it's a **unified interface** on top of existing package managers (dnf, apt, pacman, etc.).
+
+The problem it solves:
+
+* Different distros have different commands
+* Most package managers can't reliably rollback
+* OS upgrades can break systems
+* Package management UX hasn't improved in decades
+
+=== Does it replace dnf/apt/pacman?
+
+No. DNFinition **uses** your existing package manager. It calls dnf/apt/pacman under the hood but provides:
+
+* Unified interface across all of them
+* Automatic snapshots before changes
+* Rollback capability
+* Better TUI for browsing packages
+
+=== Is it production-ready?
+
+**v0.0.5 is alpha quality.** It works for basic operations but:
+
+* Not all backends are complete
+* Some edge cases may not be handled
+* More testing needed before production use
+
+We recommend trying it on non-critical systems first.
+
+== Installation
+
+=== Why do I need Ada/GNAT?
+
+DNFinition's core is written in Ada/SPARK for formal verification. GNAT is the Ada compiler.
+
+Installing on Fedora:
+[source,bash]
+----
+sudo dnf install gcc-gnat gprbuild
+----
+
+=== Why Elixir?
+
+Elixir provides:
+
+* Excellent state management (GenServer)
+* Reliable persistence (CubDB)
+* Async operations and process supervision
+* Easy concurrent operations
+
+=== Can I use it without Elixir?
+
+Not currently. The Elixir component handles state persistence. We're considering a pure-Ada version for minimal installations.
+
+== Features
+
+=== How does rollback work?
+
+DNFinition creates a snapshot **before** every transaction:
+
+. User requests: Install vim
+. DNFinition creates BTRFS/ZFS/LVM snapshot
+. DNFinition runs: `dnf install vim`
+. If success → record transaction, keep snapshot
+. If failure → restore snapshot automatically
+
+For rollback:
+[source,bash]
+----
+sudo dnfinition rollback
+# Restores the previous snapshot
+----
+
+=== What if I don't have BTRFS/ZFS/LVM?
+
+DNFinition falls back to **transaction logging**:
+
+* Records exact packages installed/removed
+* Rollback reverses the operations
+* Less reliable than filesystem snapshots
+* Can't rollback config file changes
+
+We strongly recommend BTRFS for full functionality.
+
+=== Does it support Flatpak/Snap?
+
+* **Flatpak**: Partial support (install/remove)
+* **Snap**: Planned
+
+These are secondary package managers — DNFinition focuses on system package managers first.
+
+=== Can I upgrade my OS version?
+
+OS upgrade support is planned for v0.2.0. The workflow will be:
+
+. Create full system snapshot
+. Upgrade to new version
+. If issues → boot into old snapshot
+
+This already works manually; DNFinition will automate it.
+
+== Technical
+
+=== What's SPARK verification?
+
+SPARK is a subset of Ada designed for formal verification. Key properties we verify:
+
+* **Transaction atomicity**: Transactions either complete fully or roll back
+* **State consistency**: System is always in a valid state
+* **Rollback correctness**: Rollback restores exact prior state
+
+This is **mathematical proof**, not just testing.
+
+=== Why hybrid Ada + Elixir?
+
+Each language serves its purpose:
+
+* **Ada/SPARK**: Where correctness matters (transactions)
+* **Elixir**: Where flexibility matters (state, async, persistence)
+
+The interop uses command-line calls between components.
+
+=== How does backend detection work?
+
+DNFinition checks for package manager availability:
+
+[source]
+----
+if exists("/usr/bin/dnf") then Backend := DNF
+elsif exists("/usr/bin/apt") then Backend := APT
+elsif exists("/usr/bin/rpm-ostree") then Backend := RPM_Ostree
+elsif exists("/usr/bin/pacman") then Backend := Pacman
+-- etc.
+----
+
+You can override with `--backend=dnf` or in config.
+
+== Troubleshooting
+
+=== "Permission denied" errors
+
+Package operations require root:
+
+[source,bash]
+----
+sudo dnfinition install vim
+----
+
+=== "No snapshot backend found"
+
+You need BTRFS, ZFS, or LVM for snapshot support. Check your filesystem:
+
+[source,bash]
+----
+df -Th /
+# Should show btrfs, zfs, or lvm in TYPE column
+----
+
+Without snapshots, DNFinition uses transaction logs (limited rollback).
+
+=== "Backend not supported" for my distro
+
+Not all backends are complete. Check link:Backend-Support[Backend Support] for status.
+
+You can request support by opening an issue.
+
+=== Build fails with GNAT errors
+
+Ensure you have GNAT 12+ and GPRbuild 22+:
+
+[source,bash]
+----
+gnat --version
+gprbuild --version
+----
+
+== Contributing
+
+=== How can I help?
+
+Priority areas:
+
+. **Backend completions**: Finish pacman, zypper backends
+. **Testing**: More test coverage
+. **Documentation**: Improve wiki and guides
+. **Bug reports**: File issues for any problems
+
+See link:Contributing[Contributing] guide.
+
+=== What's the license?
+
+AGPL-3.0-or-later — keeping package management tools free and open.
+
+=== Can I use this in my commercial product?
+
+If you're building a commercial product, you must:
+
+. Open-source your modifications under AGPL
+. Or contact the author about commercial licensing
+
+See https://www.gnu.org/licenses/agpl-3.0.html[AGPL-3.0] for full terms.

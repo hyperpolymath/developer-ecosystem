@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# asdf tool versions for dnfinition
+gnat 14.2.0
+gprbuild 22.0.0
+elixir 1.16.0
+erlang 26.2

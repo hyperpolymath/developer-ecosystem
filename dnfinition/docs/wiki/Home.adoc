@@ -1,0 +1,196 @@
+// SPDX-License-Identifier: MPL-2.0-or-later
+= DNFinition Wiki
+:toc: right
+:toclevels: 2
+:icons: font
+:source-highlighter: rouge
+
+image::https://img.shields.io/badge/Ada%2FSPARK-2022-green.svg[Ada/SPARK]
+image::https://img.shields.io/badge/Elixir-1.16-purple.svg[Elixir]
+image::https://img.shields.io/badge/license-AGPL--3.0-blue.svg[AGPL-3.0]
+
+Welcome to the **DNFinition** wiki — comprehensive documentation for the universal package manager with reversibility.
+
+== Quick Links
+
+[cols="1,1,1"]
+|===
+|👤 **User Guide** |🛠️ **Developer Guide** |📚 **Reference**
+
+|link:Getting-Started[Getting Started]
+|link:Building-from-Source[Building from Source]
+|link:CLI-Reference[CLI Reference]
+
+|link:TUI-Guide[TUI Guide]
+|link:Architecture[Architecture]
+|link:Configuration[Configuration]
+
+|link:Snapshots[Snapshots & Rollback]
+|link:SPARK-Verification[SPARK Verification]
+|link:Backend-Support[Backend Support]
+
+|link:OS-Upgrades[OS Upgrades]
+|link:Contributing[Contributing]
+|link:Troubleshooting[Troubleshooting]
+
+|link:Transaction-History[Transaction History]
+|link:Testing[Testing]
+|link:FAQ[FAQ]
+|===
+
+== What is DNFinition?
+
+DNFinition is an interactive TUI (Terminal User Interface) package manager that provides:
+
+* **Unified Interface** — One TUI for dnf, apt, rpm-ostree, pacman, zypper, pkg, and 50+ package managers
+* **Reversibility** — Complete transaction rollback via snapshots, transaction logs, or native mechanisms
+* **OS Upgrades** — Safe system version upgrades with automatic pre-upgrade snapshots
+* **Pretty Output** — Modern interface like nala with comprehensive package information
+* **Browse Mode** — Interactive package browsing like aptitude
+* **Formal Verification** — SPARK-proven transaction safety guarantees
+
+== The Problem We Solve
+
+=== Current State of Package Management
+
+* **Multiple CLIs**: dnf, apt, pacman, zypper, pkg — different commands, different flags
+* **No guaranteed rollback**: Most package managers can't safely undo operations
+* **Risky upgrades**: OS version upgrades can break systems with no recovery
+* **Poor UX**: Technical output, hard to browse packages, unclear consequences
+* **No transaction safety**: Install fails halfway, system in broken state
+
+=== DNFinition's Solution
+
+* **One interface**: Learn once, use everywhere
+* **Always rollback**: Every operation creates a restore point
+* **Safe upgrades**: Pre-upgrade snapshots, can boot into old version
+* **Beautiful TUI**: Browse packages, see dependencies, preview changes
+* **Atomic operations**: Either succeeds completely or rolls back
+
+== Supported Package Managers
+
+[cols="2,3,1"]
+|===
+|Backend |Distributions |Status
+
+|dnf
+|Fedora, RHEL, CentOS Stream
+|✓ Full
+
+|apt
+|Debian, Ubuntu, Linux Mint
+|✓ Full
+
+|rpm-ostree
+|Fedora Silverblue, Kinoite
+|✓ Full
+
+|pacman
+|Arch, Manjaro, EndeavourOS
+|⚠ Partial
+
+|zypper
+|openSUSE, SLES
+|⚠ Partial
+
+|pkg
+|FreeBSD
+|☐ Planned
+
+|nix
+|NixOS, Nix (any distro)
+|☐ Planned
+
+|flatpak
+|Universal (secondary)
+|⚠ Partial
+
+|snap
+|Ubuntu, supported distros
+|☐ Planned
+|===
+
+== Quick Start
+
+[source,bash]
+----
+# Clone and build
+git clone https://github.com/hyperpolymath/dnfinition
+cd dnfinition
+just deps-fedora  # or deps-debian, deps-arch
+just build
+
+# Launch the TUI
+just run
+
+# Or install system-wide
+just install
+dnfinition
+----
+
+== Architecture
+
+DNFinition uses a hybrid architecture:
+
+* **Ada/SPARK**: Core transaction engine with formal verification
+* **Elixir**: State management with CubDB persistence
+* **TUI**: Terminal interface with vim-style navigation
+
+[source]
+----
+┌─────────────────────────────────────────────────────────────────┐
+│                    DNFinition TUI Layer                          │
+│  ┌────────────────────────────────────────────────────────────┐ │
+│  │              Terminal User Interface (Ada)                 │ │
+│  └────────────────────────────────────────────────────────────┘ │
+├─────────────────────────────────────────────────────────────────┤
+│                    Transaction Engine                            │
+│  ┌───────────────────────┬────────────────────────────────────┐ │
+│  │   SPARK Transaction   │        Elixir State (CubDB)        │ │
+│  │   (Formally Verified) │                                    │ │
+│  └───────────────────────┴────────────────────────────────────┘ │
+├─────────────────────────────────────────────────────────────────┤
+│                    Backend Adapters                              │
+│  ┌────────┬────────┬───────────┬────────┬────────┬───────────┐ │
+│  │  dnf   │  apt   │rpm-ostree │ pacman │ zypper │   nix     │ │
+│  └────────┴────────┴───────────┴────────┴────────┴───────────┘ │
+├─────────────────────────────────────────────────────────────────┤
+│                    Snapshot Layer                                │
+│  ┌────────────────────────────────────────────────────────────┐ │
+│  │     BTRFS / ZFS / LVM / rpm-ostree / Transaction Log       │ │
+│  └────────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+----
+
+== Project Status
+
+[cols="1,3,1"]
+|===
+|Version |Features |Status
+
+|v0.0.5
+|Core TUI, dnf/apt backend, snapshot system
+|✓ Released
+
+|v0.1.0
+|Full reversibility, transaction history
+|In Development
+
+|v0.2.0
+|OS upgrade support, rpm-ostree integration
+|Planned
+
+|v1.0.0
+|Production-ready, all major backends
+|Planned Q4 2025
+|===
+
+== Getting Help
+
+* **Issues**: https://github.com/hyperpolymath/dnfinition/issues[GitHub Issues]
+* **Discussions**: https://github.com/hyperpolymath/dnfinition/discussions[GitHub Discussions]
+* **Security**: See link:../SECURITY.md[SECURITY.md] for reporting vulnerabilities
+
+== License
+
+AGPL-3.0-or-later — Ensuring package management tools remain free and open.

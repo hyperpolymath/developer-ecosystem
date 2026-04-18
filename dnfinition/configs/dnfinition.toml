@@ -1,0 +1,95 @@
+# SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
+# SPDX-License-Identifier: MPL-2.0-or-later
+#
+# DNFinition Configuration
+# Copy to ~/.config/dnfinition/dnfinition.toml
+
+[general]
+# Auto-detect the package manager, or specify one:
+# dnf, dnf5, apt, pacman, zypper, rpm-ostree, pkg, etc.
+default_backend = "auto"
+
+# Confirmation prompts
+confirm_before_install = true
+confirm_before_upgrade = true
+confirm_before_removal = true
+
+[reversibility]
+# Strategy priority: native > filesystem > transaction_log
+# native: Use package manager's built-in snapshots (rpm-ostree, zypper)
+# filesystem: Use btrfs/ZFS/LVM snapshots
+# transaction_log: Log operations for replay/reverse
+strategy_priority = ["native", "filesystem", "transaction_log"]
+
+# Create snapshots before operations
+snapshot_before_install = true
+snapshot_before_upgrade = true
+snapshot_before_removal = false
+snapshot_before_os_upgrade = true  # ALWAYS recommended
+
+# Snapshot retention
+keep_snapshots = 10
+auto_cleanup = true
+cleanup_older_than_days = 30
+
+[reversibility.filesystem]
+# Preferred filesystem for snapshots
+preferred_fs = "btrfs"  # btrfs, zfs, lvm
+
+# Base path for snapshots
+snapshot_path = "/.snapshots/dnfinition"
+
+[reversibility.transaction_log]
+enabled = true
+log_path = "/var/lib/dnfinition/transactions.log"
+keep_logs = 100
+
+[ui]
+# Theme: default, dark, light
+theme = "default"
+
+# Package list display
+show_package_descriptions = true
+show_dependencies = true
+show_reverse_dependencies = false
+highlight_color = "cyan"
+page_size = 20
+
+[ui.keybindings]
+# Navigation
+navigate_up = "k"
+navigate_down = "j"
+page_up = "u"
+page_down = "d"
+
+# Actions
+mark_install = "+"
+mark_remove = "-"
+mark_upgrade = "U"
+apply_transaction = "g"
+cancel = "q"
+search = "/"
+help = "?"
+
+[backends.dnf]
+enabled = true
+cache_expiry = "1h"
+
+[backends.rpm-ostree]
+enabled = true
+auto_stage_updates = false
+
+[backends.apt]
+enabled = true
+
+[backends.pacman]
+enabled = true
+
+[backends.zypper]
+enabled = true
+
+[os_upgrade]
+check_disk_space = true
+min_free_space_gb = 10
+download_only = false
+auto_reboot = false

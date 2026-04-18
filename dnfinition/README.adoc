@@ -1,0 +1,272 @@
+= DNFinition - Universal Package Manager with Reversibility
+
+image:https://img.shields.io/badge/License-MPL_2.0-blue.svg[MPL-2.0-or-later,link="https://opensource.org/licenses/MPL-2.0"]
+image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+
+:toc:
+:sectnums:
+
+image:https://img.shields.io/badge/version-0.0.5-blue.svg[Version]
+image:https://img.shields.io/badge/Ada%2FSPARK-2022-green.svg[Ada/SPARK 2022]
+image:https://img.shields.io/badge/Elixir-1.16-purple.svg[Elixir]
+
+== License & Philosophy
+
+This project must declare **MPL-2.0-or-later** for platform/tooling compatibility.
+
+Philosophy: **Palimpsest**. The Palimpsest-MPL (PMPL) text is provided in `license/PMPL-1.0.txt`, and the canonical source is the palimpsest-license repository.
+image:https://github.com/hyperpolymath/dnfinition/actions/workflows/ada-ci.yml/badge.svg[Ada CI,link="https://github.com/hyperpolymath/dnfinition/actions/workflows/ada-ci.yml"]
+image:https://github.com/hyperpolymath/dnfinition/actions/workflows/spark-proofs.yml/badge.svg[SPARK Proofs,link="https://github.com/hyperpolymath/dnfinition/actions/workflows/spark-proofs.yml"]
+
+== Overview
+
+**DNFinition** is an interactive TUI (Terminal User Interface) package manager that provides:
+
+* **Unified Interface**: Single TUI for dnf, apt, rpm-ostree, pacman, zypper, pkg, and 50+ package managers
+* **Reversibility**: Complete transaction rollback via snapshots, transaction logs, or native mechanisms
+* **OS Upgrades**: Safe system version upgrades with automatic pre-upgrade snapshots
+* **Pretty Output**: Modern interface like nala with comprehensive package information
+* **Browse Mode**: Interactive package browsing like aptitude
+* **Formal Verification**: SPARK-proven transaction safety guarantees
+
+== The Problem DNFinition Solves
+
+=== Current State
+
+* **Multiple package managers**: dnf, apt, pacman, etc. - different commands, different UIs
+* **No guaranteed rollback**: Most package managers can't safely undo operations
+* **Risky upgrades**: OS version upgrades can break systems with no recovery
+* **Poor UX**: Technical output, hard to browse packages, unclear consequences
+* **No transaction safety**: Install fails halfway, system in broken state
+
+=== DNFinition's Solution
+
+* **One interface**: Learn once, use everywhere
+* **Always rollback**: Every operation creates a restore point
+* **Safe upgrades**: Pre-upgrade snapshots, can boot into old version
+* **Beautiful TUI**: Browse packages, see dependencies, preview changes
+* **Atomic operations**: Either succeeds completely or rolls back
+
+== Quick Start
+
+[source,bash]
+----
+# Clone the repository
+git clone https://github.com/hyperpolymath/dnfinition
+cd dnfinition
+
+# Install dependencies (choose your distro)
+just deps-fedora   # Fedora/RHEL
+just deps-debian   # Debian/Ubuntu
+just deps-arch     # Arch
+
+# Build
+just build
+
+# Run
+just run
+
+# Or install system-wide
+just install
+----
+
+== Usage
+
+[source,bash]
+----
+# Launch interactive TUI
+dnfinition
+
+# Command line usage
+dnfinition install vim     # Install package
+dnfinition remove vim      # Remove package
+dnfinition upgrade         # Upgrade all packages
+dnfinition search vim      # Search packages
+dnfinition info vim        # Show package info
+dnfinition history         # Show transaction history
+dnfinition snapshots       # List snapshots
+dnfinition rollback        # Rollback last transaction
+----
+
+=== TUI Keybindings
+
+[cols="1,3"]
+|===
+|Key |Action
+
+|`j`/`k` or `↑`/`↓` |Navigate up/down
+|`u`/`d` or PgUp/PgDn |Page up/down
+|`g`/`G` |Go to top/bottom
+|`+`/`i` |Mark for install
+|`-`/`r` |Mark for remove
+|`U` |Mark for upgrade
+|`g` |Apply transaction
+|`/` |Search
+|`s` |Manage snapshots
+|`h` |Transaction history
+|`R` |Rollback last
+|`?` |Help
+|`q` |Quit
+|===
+
+== Architecture
+
+[source]
+----
+┌─────────────────────────────────────────────────────────┐
+│                   DNFinition TUI                        │
+│  (Ada + ncurses - Interactive Interface)                │
+├─────────────────────────────────────────────────────────┤
+│              Reversibility Layer                        │
+│  (Snapshot Manager + Transaction Log + Rollback Engine) │
+├─────────────────────────────────────────────────────────┤
+│              Backend Abstraction                        │
+│  RPM-Ostree | DNF | APT | Pacman | Zypper | PKG | ...  │
+└─────────────────────────────────────────────────────────┘
+----
+
+=== Supported Package Managers
+
+[cols="1,2,1"]
+|===
+|Backend |Distributions |Snapshot Support
+
+|rpm-ostree |Fedora Kinoite/Silverblue |Native
+|dnf/dnf5 |Fedora, RHEL, Rocky, Alma |Filesystem
+|apt |Debian, Ubuntu, Mint |Filesystem
+|pacman |Arch, Manjaro |Filesystem
+|zypper |openSUSE, SLES |Native (btrfs)
+|pkg |FreeBSD |Filesystem (ZFS)
+|pkg_add |OpenBSD |Transaction Log
+|pkgin |NetBSD |Transaction Log
+|===
+
+=== Snapshot Strategies
+
+1. **Native**: Use package manager's built-in snapshots (rpm-ostree, zypper)
+2. **Filesystem**: Use btrfs/ZFS/LVM snapshots
+3. **Transaction Log**: Log operations for replay/reverse
+4. **Container Image**: Save entire system as container
+
+== Configuration
+
+Configuration file: `~/.config/dnfinition/dnfinition.toml`
+
+[source,toml]
+----
+[general]
+default_backend = "auto"
+confirm_before_install = true
+
+[reversibility]
+snapshot_before_install = true
+snapshot_before_upgrade = true
+snapshot_before_os_upgrade = true
+keep_snapshots = 10
+
+[ui]
+theme = "default"
+show_dependencies = true
+page_size = 20
+----
+
+== Building
+
+=== Prerequisites
+
+**Fedora/RHEL:**
+[source,bash]
+----
+sudo dnf install gcc-gnat gprbuild ncurses-devel btrfs-progs
+----
+
+**Debian/Ubuntu:**
+[source,bash]
+----
+sudo apt install gnat gprbuild libncurses-dev btrfs-progs
+----
+
+**Arch:**
+[source,bash]
+----
+sudo pacman -S gcc-ada gprbuild ncurses btrfs-progs
+----
+
+=== Build Commands
+
+[source,bash]
+----
+just build          # Debug build
+just build-release  # Release build
+just build-spark    # Build with SPARK mode
+just verify         # Run SPARK proofs
+just test           # Run tests
+just install        # Install to /usr/local/bin
+----
+
+== Safety Guarantees
+
+DNFinition uses SPARK formal verification to prove:
+
+* **Snapshot Creation Always Succeeds**: When a supported strategy is available
+* **Rollback Restores Exact State**: System state matches snapshot exactly
+* **Failed Transactions Are Safe**: No partial changes on failure
+* **No Data Loss on Upgrade Failure**: Original version is preserved
+
+== Why Ada?
+
+* **Memory Safety**: No buffer overflows, no undefined behavior
+* **Formal Verification**: SPARK proves correctness mathematically
+* **Strong Typing**: Catch errors at compile time
+* **Perfect for System Tools**: Like package managers require
+
+== Project Structure
+
+[source]
+----
+dnfinition/
+├── dnfinition.gpr           # GNAT project file
+├── src/
+│   ├── dnfinition.adb       # Main entry point
+│   ├── tui/                 # TUI framework
+│   ├── backends/            # Package manager backends
+│   ├── reversibility/       # Snapshot & rollback
+│   ├── platform/            # OS detection
+│   ├── config/              # Configuration
+│   ├── types/               # Core types
+│   └── formal/              # SPARK proofs
+├── configs/
+│   └── dnfinition.toml      # Example configuration
+├── tests/
+│   ├── unit/
+│   └── integration/
+└── docs/
+----
+
+== License
+
+SPDX-License-Identifier: MPL-2.0-or-later
+
+== Contributing
+
+Contributions are welcome! Please see link:CONTRIBUTING.md[CONTRIBUTING.md] for guidelines.
+
+== Roadmap
+
+See link:ROADMAP.scm[ROADMAP.scm] for the detailed path from 0.0.5 to 1.0.0.
+
+* Repository: https://github.com/hyperpolymath/dnfinition
+* Issue Tracker: https://github.com/hyperpolymath/dnfinition/issues
+* Author: Jonathan D.A. Jewell
+
+== OPSM Link
+
+[source]
+----
+OPSM Core
+  |
+  v
+dnfinition (OS-level package manager bridge for OPSM)
+
+----

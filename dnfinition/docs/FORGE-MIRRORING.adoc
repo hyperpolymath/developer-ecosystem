@@ -1,0 +1,135 @@
+= Multi-Forge Mirroring Setup
+:toc:
+
+== Overview
+
+All hyperpolymath repositories can automatically mirror to multiple code forges:
+
+* GitLab (gitlab.com/hyperpolymath)
+* Bitbucket (bitbucket.org/hyperpolymath)
+* Codeberg (codeberg.org/hyperpolymath)
+* SourceHut (git.sr.ht/~hyperpolymath)
+* Radicle (decentralized)
+
+== Required GitHub Organization Settings
+
+=== Secrets (Settings > Secrets > Actions > Organization secrets)
+
+[cols="1,2,1"]
+|===
+|Secret Name |Description |How to Get
+
+|`GITLAB_SSH_KEY`
+|Private SSH key for GitLab
+|Generate with `ssh-keygen -t ed25519`, add public to GitLab SSH Keys
+
+|`BITBUCKET_SSH_KEY`
+|Private SSH key for Bitbucket
+|Generate with `ssh-keygen -t ed25519`, add public to Bitbucket SSH Keys
+
+|`CODEBERG_SSH_KEY`
+|Private SSH key for Codeberg
+|Generate with `ssh-keygen -t ed25519`, add public to Codeberg SSH Keys
+
+|`SOURCEHUT_SSH_KEY`
+|Private SSH key for SourceHut
+|Generate with `ssh-keygen -t ed25519`, add public to SourceHut SSH Keys
+
+|`RADICLE_PASSPHRASE`
+|Passphrase for Radicle identity
+|Your Radicle identity passphrase
+|===
+
+=== Variables (Settings > Variables > Actions > Organization variables)
+
+[cols="1,2"]
+|===
+|Variable Name |Set to `true` to enable
+
+|`GITLAB_MIRROR_ENABLED`
+|Enable GitLab mirroring
+
+|`BITBUCKET_MIRROR_ENABLED`
+|Enable Bitbucket mirroring
+
+|`CODEBERG_MIRROR_ENABLED`
+|Enable Codeberg mirroring
+
+|`SOURCEHUT_MIRROR_ENABLED`
+|Enable SourceHut mirroring
+
+|`RADICLE_MIRROR_ENABLED`
+|Enable Radicle mirroring
+|===
+
+== Initial Setup for Each Forge
+
+=== GitLab
+
+1. Create namespace/group at gitlab.com/hyperpolymath
+2. Repos auto-create on first push
+
+=== Bitbucket
+
+1. Create workspace at bitbucket.org/hyperpolymath
+2. **Repos must be created manually before first push**
+
+=== Codeberg
+
+1. Create user/org at codeberg.org/hyperpolymath
+2. **Repos must be created manually** (push-to-create disabled)
+
+=== SourceHut
+
+1. Create account at sr.ht/~hyperpolymath
+2. Repos auto-create on first push
+
+=== Radicle
+
+1. Install Radicle CLI: `curl -sSf https://radicle.xyz/install | sh`
+2. Initialize identity: `rad auth`
+3. Each repo needs `rad init` locally
+
+== Propagating to All Repos
+
+Run the Julia script to update all repos with the mirror workflow:
+
+[source,bash]
+----
+# Dry run first
+julia scripts/propagate-mirror-workflow.jl --dry-run
+
+# Actually update
+julia scripts/propagate-mirror-workflow.jl
+
+# Update single repo
+julia scripts/propagate-mirror-workflow.jl --repo=dnfinition
+----
+
+== Manual Initial Push
+
+For forges that don't support push-to-create, run this locally:
+
+[source,bash]
+----
+# Create repos on Bitbucket/Codeberg web UI first, then:
+for repo in $(gh repo list hyperpolymath --limit 200 -q '.[].name'); do
+  cd ~/repos/$repo 2>/dev/null || continue
+  git push bitbucket main --force 2>/dev/null || echo "Bitbucket: $repo needs manual repo creation"
+  git push codeberg main --force 2>/dev/null || echo "Codeberg: $repo needs manual repo creation"
+done
+----
+
+== Workflow File Location
+
+Each repo should have:
+
+----
+.github/workflows/mirror.yml
+----
+
+This workflow runs on:
+
+* Push to main/master
+* Tag creation (v*)
+* Manual trigger (workflow_dispatch)

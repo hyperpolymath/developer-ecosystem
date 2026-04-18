@@ -1,0 +1,9 @@
+// SPDX-License-Identifier: MPL-2.0-or-later
+
+---
+
+*DNFinition* — Universal Package Manager with Reversibility
+
+https://github.com/hyperpolymath/dnfinition[GitHub] | https://github.com/hyperpolymath/dnfinition/issues[Issues] | AGPL-3.0-or-later
+
+_One interface. Always rollback. Safe upgrades._
