@@ -1,0 +1,84 @@
+= Testing Report: czech-file-knife
+:author: Claude Code Automated Testing
+:date: 2025-12-29
+:toc:
+
+== Summary
+
+[cols="1,3"]
+|===
+| Status | *PASS*
+| Build | Success (release)
+| Tests | 8/8 passed
+| Execution | All commands work correctly
+|===
+
+== Build Results
+
+=== Command
+[source,bash]
+----
+cargo build --release
+----
+
+=== Outcome
+Build completed successfully in ~67 seconds.
+
+=== Warnings (non-blocking)
+* `cfk-providers`: 2 warnings - unexpected cfg condition `feature = "ceph"`
+* `cfk-cache`: 2 warnings - unused imports
+* `cfk-ios`: 3 warnings - unused imports/variables
+
+== Test Results
+
+All 8 unit tests pass across all crates.
+
+== Functional Testing
+
+[cols="1,1,2"]
+|===
+| Command | Status | Notes
+
+| `cfk --help` | PASS | Shows all available commands
+| `cfk backends` | PASS | Lists local backend as available
+| `cfk ls .` | PASS | Lists directory contents correctly
+| `cfk cat FILE` | PASS | Displays file contents
+| `cfk stat FILE` | PASS | Shows file metadata with cfk:// URI
+| `cfk mkdir DIR` | PASS | Creates directories
+| `cfk cp SRC DST` | PASS | Copies files correctly
+| `cfk mv SRC DST` | PASS | Moves/renames files correctly
+| `cfk rm FILE` | PASS | Removes files/directories
+| `cfk df local` | PASS | Shows disk space (after fix)
+|===
+
+== Fixes Applied
+
+=== 1. Implemented `get_space_info` for local backend
+
+*File:* `cfk-providers/src/local.rs`
+
+*Problem:* `cfk df local` returned "Space information not available"
+
+*Solution:* Implemented Unix `statvfs` call to get actual disk space:
+
+[source,rust]
+----
+#[cfg(unix)]
+{
+    use std::ffi::CString;
+    use std::mem::MaybeUninit;
+    // ... statvfs implementation
+}
+----
+
+*Dependency added:* `libc.workspace = true` in `cfk-providers/Cargo.toml`
+
+== Recommendations
+
+=== Minor (optional)
+1. Add `ceph` feature to `cfk-providers/Cargo.toml` or remove cfg attribute
+2. Run `cargo fix` to clean up unused imports in cfk-cache, cfk-ios
+
+== Conclusion
+
+Project fully functional. All core file operations work correctly on local filesystem.

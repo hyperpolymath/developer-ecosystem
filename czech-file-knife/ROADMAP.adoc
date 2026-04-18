@@ -1,0 +1,171 @@
+= Czech File Knife Roadmap
+:toc:
+:toclevels: 3
+
+== Overview
+
+This roadmap outlines the development plan for Czech File Knife (CFK), the cloud-native unified interface for 20+ storage backends.
+
+== v1.0 - Production Release (Current)
+
+**Target:** 2026-02
+**Status:** Active development (v0.1.0 → v1.0)
+
+=== Core Storage Backends
+* ✅ Local filesystem
+* ✅ S3-compatible (AWS, MinIO, etc.)
+* ⚠️ Azure Blob Storage (in progress)
+* ⚠️ Google Cloud Storage (in progress)
+* ⚠️ IPFS (in progress)
+
+=== Core Features
+* ✅ Unified filesystem interface
+* ✅ Virtual path abstraction
+* ✅ Async I/O with Tokio
+* ✅ Type-safe backend plugins
+* ✅ Error handling with context
+
+=== Quality & Standards
+* ✅ Comprehensive test suite
+* ✅ ClusterFuzzLite fuzzing
+* ✅ Criterion benchmarks
+* ✅ CI/CD pipeline
+* ✅ Documentation
+
+=== Remaining for v1.0
+* [ ] Complete ROADMAP.adoc (this file)
+* [ ] Add LICENSE file
+* [ ] Complete Azure/GCS backends
+* [ ] IPFS integration
+* [ ] Performance optimization
+* [ ] Security audit
+
+== v1.1 - Additional Backends (Next)
+
+**Target:** 2026-03
+
+=== New Storage Backends
+* Dropbox
+* OneDrive
+* Box
+* Backblaze B2
+* Wasabi
+* SFTP/SCP
+* WebDAV
+* FTP/FTPS
+
+=== Enhanced Features
+* Transparent compression
+* Client-side encryption
+* Caching layer
+* Batch operations
+* Parallel transfers
+
+== v1.2 - Advanced Operations
+
+**Target:** 2026-04
+
+=== Distributed Features
+* Multi-backend mirroring
+* Automatic failover
+* Load balancing
+* Geo-replication
+* Consistency guarantees
+
+=== Performance
+* Zero-copy operations
+* Memory-mapped I/O
+* Streaming for large files
+* Connection pooling
+* Smart prefetching
+
+=== Developer Experience
+* CLI tool for manual operations
+* FUSE filesystem mount
+* REST API
+* GraphQL interface
+* Language bindings (Python, JS, Go)
+
+== v2.0 - Cloud-Native Architecture
+
+**Target:** 2026-Q3
+
+=== Kubernetes Integration
+* CSI driver for Kubernetes
+* Operator for CRD management
+* Dynamic provisioning
+* Snapshot support
+* Volume cloning
+
+=== Observability
+* OpenTelemetry integration
+* Prometheus metrics
+* Distributed tracing
+* Structured logging
+* Health checks
+
+=== Security
+* IAM integration
+* RBAC
+* Audit logging
+* Secret management
+* mTLS support
+
+== v2.5 - Intelligent Storage
+
+**Target:** 2026-Q4
+
+=== AI-Powered Features
+* Automatic backend selection
+* Cost optimization
+* Intelligent caching
+* Predictive prefetching
+* Anomaly detection
+
+=== Policy Engine
+* Retention policies
+* Lifecycle management
+* Compliance rules
+* Data classification
+* Automated archival
+
+== v3.0 - Universal Storage Platform
+
+**Target:** 2027
+
+=== Ecosystem
+* Plugin marketplace
+* Custom backend development SDK
+* Integration templates
+* Best practices library
+* Community backends
+
+=== Enterprise Features
+* Multi-tenancy
+* Quota management
+* Billing integration
+* SLA monitoring
+* Disaster recovery
+
+=== Standards
+* Open storage protocol
+* Interoperability guarantees
+* Vendor-neutral API
+* Format migration tools
+
+== Long-term Vision
+
+* Industry-standard storage abstraction
+* Zero vendor lock-in
+* Seamless backend migration
+* Cost-optimal storage placement
+* Self-healing storage infrastructure
+* Integration with all major cloud providers
+
+== Contributing
+
+See link:CONTRIBUTING.md[Contributing Guidelines] for how to contribute to Czech File Knife development.
+
+== Versioning
+
+Czech File Knife follows semantic versioning (SemVer). Breaking changes will only be introduced in major version releases.

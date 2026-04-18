@@ -1,0 +1,219 @@
+= Czech File Knife
+image:https://img.shields.io/badge/License-MPL_2.0-blue.svg[MPL-2.0-or-later,link="https://opensource.org/licenses/MPL-2.0"]
+
+
+
+
+image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+== License & Philosophy
+
+This project must declare **MPL-2.0-or-later** for platform/tooling compatibility.
+
+Philosophy: **Palimpsest**. The Palimpsest-MPL (PMPL) text is provided in `license/PMPL-1.0.txt`, and the canonical source is the palimpsest-license repository.
+
+
+*Cloud-native Swiss File Knife - unified interface for 20+ storage backends*
+
+== Overview
+
+Czech File Knife (CFK) is a universal file management tool that treats all storage
+backends (local, cloud, distributed, exotic) as a unified filesystem.
+
+== Current Status (v0.1.0)
+
+[cols="1,1,3"]
+|===
+| Component | Status | Notes
+
+| *cfk-core* | Stable | Core traits, types, error handling
+| *cfk-cli* | Working | Basic file operations (ls, cp, mv, rm, cat, mkdir, stat)
+| *cfk-providers* | Partial | Local filesystem complete; cloud backends planned
+| *cfk-cache* | Stub | Trait definitions; backend implementations coming
+| *cfk-search* | Stub | Basic filename search; Tantivy integration planned
+| *cfk-vfs* | Stub | FUSE mounting planned for v0.2.0
+| *cfk-integrations* | Working | aria2, agrep, pandoc integrations
+|===
+
+== Installation
+
+=== From Source
+
+[source,bash]
+----
+# Clone the repository
+git clone https://github.com/hyperpolymath/czech-file-knife.git
+cd czech-file-knife
+
+# Build
+cargo build --release
+
+# Install (optional)
+cargo install --path cfk-cli
+----
+
+=== Requirements
+
+- Rust 1.75+ (MSRV)
+- Optional: libfuse3 (for FUSE mounting)
+
+== Quick Start
+
+[source,bash]
+----
+# List files
+cfk ls /path/to/directory
+cfk ls -l -H .              # Long format with human-readable sizes
+
+# Display file contents
+cfk cat /path/to/file.txt
+
+# Copy files
+cfk cp source.txt dest.txt
+cfk cp -f source.txt dest.txt   # Force overwrite
+
+# Move/rename files
+cfk mv old.txt new.txt
+
+# Remove files
+cfk rm file.txt
+cfk rm -r directory/        # Recursive
+
+# Create directories
+cfk mkdir new_dir
+cfk mkdir -p nested/path/dir    # Create parents
+
+# Show file info
+cfk stat file.txt
+
+# List registered backends
+cfk backends
+
+# Show storage info
+cfk df local
+----
+
+== Tech Stack
+
+=== Languages
+[cols="1,3"]
+|===
+| Language | Purpose
+
+| *Rust* | Core engine, providers, cache, CLI
+| *Ada/SPARK* | TUI with formal verification (planned)
+| *Nickel* | Configuration language (planned)
+|===
+
+=== Storage Backends (20+)
+
+==== Currently Working
+- Local filesystem (all OS)
+
+==== Planned for Future Releases
+- *Network*: NFS, SMB/CIFS, SFTP, WebDAV, 9P
+- *Cloud*: Dropbox, Google Drive, OneDrive, Box, S3
+- *Distributed*: IPFS, AFS, Syncthing
+- *Exotic*: Gopher, Gemini, NNTP, BitTorrent, Matrix
+
+=== Serialization Formats
+[cols="1,2"]
+|===
+| Format | Use
+
+| *JSON* | API responses, config
+| *MessagePack* | Binary JSON alternative
+| *CBOR* | Compact binary
+| *Protocol Buffers* | gRPC, cross-language
+| *TOML* | Config files
+|===
+
+=== Transport Layers
+- TCP, QUIC (HTTP/3), UDP
+- Unix sockets, Named pipes
+
+=== Databases (Cache)
+- sled (pure Rust embedded KV)
+- SurrealDB (multi-model)
+- LMDB (via heed)
+- DragonflyDB (Redis-compatible)
+- redb
+
+=== External Integrations
+- aria2 (high-speed downloads)
+- agrep (fuzzy search)
+- pandoc (document conversion)
+- tesseract (OCR)
+- eza (modern ls)
+
+== Project Structure
+
+[source]
+----
+czech-file-knife/
+├── cfk-core/           # Core traits, types, errors
+├── cfk-providers/      # Storage backends + transports
+├── cfk-cache/          # Caching layer (sled/SurrealDB/LMDB)
+├── cfk-search/         # Full-text search (Tantivy)
+├── cfk-vfs/            # FUSE virtual filesystem
+├── cfk-cli/            # Rust CLI
+├── cfk-tui/            # Ada/SPARK TUI (planned)
+└── cfk-integrations/   # External tools (aria2, pandoc, etc.)
+----
+
+== Development
+
+[source,bash]
+----
+# Run tests
+cargo test --workspace
+
+# Build in release mode
+cargo build --release
+
+# Run CLI directly
+cargo run --bin cfk -- ls .
+
+# Check formatting
+cargo fmt --check
+
+# Run lints
+cargo clippy --workspace
+----
+
+== Platform Support
+
+[cols="1,1,1,1,1"]
+|===
+| Platform | CLI | FUSE | Cloud | Status
+
+| Linux x86_64 | Working | Planned | Planned | Primary
+| Linux ARM64 | Working | Planned | Planned | Supported
+| macOS | Working | Planned | Planned | Supported
+| Windows | Working | Planned | Planned | WinFsp
+| RISC-V | Untested | Untested | Untested | Experimental
+|===
+
+== Roadmap
+
+=== v0.1.0 (Current)
+- Core architecture and traits
+- CLI with basic file operations
+- Local filesystem backend
+- Unit tests
+
+=== v0.2.0 (Planned)
+- S3/S3-compatible backend
+- SFTP backend
+- FUSE mounting
+- Tantivy search integration
+
+=== v0.3.0 (Future)
+- Cloud backends (Dropbox, Google Drive, OneDrive)
+- WebDAV backend
+- TUI implementation
+- Caching layer backends
+
+== License
+
+PMPL-1.0-or-later OR Palimpsest-0.8

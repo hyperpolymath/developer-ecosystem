@@ -1,0 +1,36 @@
+= czech-file-knife - Citation Guide
+:toc:
+
+== BibTeX
+
+[source,bibtex]
+----
+@software{czech-file-knife_2025,
+  author = {Polymath, Hyper},
+  title = {czech-file-knife},
+  year = {2025},
+  url = {https://github.com/hyperpolymath/czech-file-knife},
+  license = {AGPL-3.0-or-later}
+}
+----
+
+== Harvard Style
+
+Polymath, H. (2025) _czech-file-knife_ [Computer software]. Available at: https://github.com/hyperpolymath/czech-file-knife
+
+== OSCOLA
+
+Hyper Polymath, 'czech-file-knife' (2025) <https://github.com/hyperpolymath/czech-file-knife>
+
+== MLA
+
+Polymath, Hyper. "czech-file-knife." 2025, github.com/hyperpolymath/czech-file-knife.
+
+== APA 7
+
+Polymath, H. (2025). _czech-file-knife_ [Computer software]. GitHub. https://github.com/hyperpolymath/czech-file-knife
+
+== See Also
+
+* link:../CITATION.cff[CITATION.cff]
+* link:../codemeta.json[codemeta.json]

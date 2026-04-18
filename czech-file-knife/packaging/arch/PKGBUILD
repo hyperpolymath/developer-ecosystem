@@ -1,0 +1,42 @@
+# Maintainer: hyperpolymath
+# Arch Linux PKGBUILD for czech-file-knife
+
+pkgname=czech-file-knife
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Universal file management toolkit with cloud provider integration and virtual filesystem"
+arch=('x86_64' 'aarch64')
+url="https://github.com/hyperpolymath/czech-file-knife"
+license=('AGPL-3.0-or-later')
+depends=('gcc-libs' 'fuse3')
+makedepends=('rust' 'cargo' 'pkg-config')
+optdepends=(
+    'tantivy: Full-text search indexing'
+)
+provides=('cfk')
+conflicts=('czech-file-knife-git')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/hyperpolymath/czech-file-knife/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+    cd "$pkgname-$pkgver"
+    cargo build --release --package cfk-cli
+}
+
+check() {
+    cd "$pkgname-$pkgver"
+    cargo test --release
+}
+
+package() {
+    cd "$pkgname-$pkgver"
+
+    # Install binary
+    install -Dm755 "target/release/cfk" "$pkgdir/usr/bin/cfk"
+
+    # Install license
+    install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+
+    # Install documentation
+    install -Dm644 README.adoc "$pkgdir/usr/share/doc/$pkgname/README.adoc"
+}

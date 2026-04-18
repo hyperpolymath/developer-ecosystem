@@ -1,0 +1,29 @@
+[package]
+name = "cfk-vfs"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "FUSE virtual filesystem for Czech File Knife"
+
+[features]
+default = []
+fuse = ["dep:fuser", "dep:parking_lot", "dep:dashmap"]
+
+[dependencies]
+cfk-core = { path = "../cfk-core" }
+cfk-providers = { path = "../cfk-providers" }
+
+# FUSE (optional - requires libfuse on system)
+fuser = { workspace = true, optional = true }
+parking_lot = { workspace = true, optional = true }
+dashmap = { workspace = true, optional = true }
+
+# Async
+tokio.workspace = true
+async-trait.workspace = true
+
+# Error handling
+thiserror.workspace = true
+
+# Logging
+tracing.workspace = true

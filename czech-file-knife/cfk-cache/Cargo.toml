@@ -1,0 +1,36 @@
+[package]
+name = "cfk-cache"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Offline caching layer for Czech File Knife"
+
+[features]
+default = ["sled"]
+sled = ["dep:sled"]
+surrealdb = ["dep:surrealdb"]
+redb = ["dep:redb"]
+lmdb = ["dep:heed"]
+dragonfly = ["dep:redis"]
+
+[dependencies]
+cfk-core = { path = "../cfk-core" }
+async-trait.workspace = true
+blake3.workspace = true
+bytes.workspace = true
+chrono.workspace = true
+directories.workspace = true
+lz4_flex.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+hex = "0.4"
+
+# Database backends (choose one)
+sled = { version = "0.34", optional = true }
+surrealdb = { version = "2.1.9", optional = true, features = ["kv-mem", "kv-rocksdb"] }
+redb = { version = "3.1", optional = true }
+heed = { version = "0.22", optional = true }  # LMDB wrapper
+redis = { version = "1.0", optional = true, features = ["tokio-comp"] }  # DragonflyDB compatible

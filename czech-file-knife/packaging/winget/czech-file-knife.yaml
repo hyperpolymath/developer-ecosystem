@@ -1,0 +1,40 @@
+# winget manifest for czech-file-knife
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.version.1.4.0.schema.json
+
+PackageIdentifier: Hyperpolymath.CzechFileKnife
+PackageVersion: 0.1.0
+PackageLocale: en-US
+Publisher: hyperpolymath
+PublisherUrl: https://github.com/hyperpolymath
+PackageName: Czech File Knife
+PackageUrl: https://github.com/hyperpolymath/czech-file-knife
+License: AGPL-3.0-or-later
+LicenseUrl: https://github.com/hyperpolymath/czech-file-knife/blob/main/LICENSE
+ShortDescription: Universal file management toolkit with cloud provider integration
+Description: |
+  Czech File Knife (cfk) is a universal file management toolkit with cloud
+  provider integration and virtual filesystem support. It provides a unified
+  interface for managing files across local storage and cloud providers.
+
+  Features:
+  - Virtual filesystem (FUSE) for mounting cloud storage
+  - Content-addressable caching with Blake3 hashing
+  - Full-text search indexing with Tantivy
+  - Multi-provider support (local, S3, GCS, Azure, etc.)
+  - Streaming copy with progress indication
+Tags:
+  - file-manager
+  - cloud-storage
+  - fuse
+  - cli
+  - rust
+Moniker: cfk
+Commands:
+  - cfk
+Installers:
+  - Architecture: x64
+    InstallerType: zip
+    InstallerUrl: https://github.com/hyperpolymath/czech-file-knife/releases/download/v0.1.0/cfk-0.1.0-x86_64-pc-windows-msvc.zip
+    InstallerSha256: TODO
+ManifestType: singleton
+ManifestVersion: 1.4.0

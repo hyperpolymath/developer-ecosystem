@@ -1,0 +1,17 @@
+#!/usr/bin/make -f
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	cargo build --release --package cfk-cli
+
+override_dh_auto_install:
+	install -D -m 755 target/release/cfk debian/czech-file-knife/usr/bin/cfk
+
+override_dh_auto_test:
+	cargo test --release
+
+override_dh_auto_clean:
+	cargo clean
