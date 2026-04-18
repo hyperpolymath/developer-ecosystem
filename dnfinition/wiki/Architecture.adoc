@@ -271,7 +271,7 @@ dnfinition/
 │       └── mix.exs
 │
 ├── dnfinition.gpr              # GPRbuild project
-├── justfile                    # Build automation
+├── Justfile                    # Build automation
 └── config/
     └── config.toml.example
 ----

@@ -47,7 +47,7 @@ Currently seeking core team members. See CONTRIBUTING.md for how to get involved
 
 ### Build System
 - **Maintainer**: Lead Maintainer
-- **Scope**: justfile, CI/CD, Containerfile, flake.nix
+- **Scope**: Justfile, CI/CD, Containerfile, flake.nix
 - **Backup**: TBD
 
 ### Security

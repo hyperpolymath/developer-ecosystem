@@ -146,7 +146,7 @@ ReScript Evangeliser achieves **Bronze-level compliance** with the Rhodium Stand
 - **Evidence**:
   - `deno.json` with locked imports
   - `rescript.json` with pinned compiler version
-  - Deterministic build process via justfile
+  - Deterministic build process via Justfile
 
 ## 10. .well-known/ Directory
 

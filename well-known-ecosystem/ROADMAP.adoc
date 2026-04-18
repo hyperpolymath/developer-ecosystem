@@ -31,7 +31,7 @@ toc::[]
 | ✓ Active
 
 | Project Config
-| EditorConfig, gitignore, gitattributes, justfile
+| EditorConfig, gitignore, gitattributes, Justfile
 | ✓ Complete
 
 | Issue Templates
@@ -50,7 +50,7 @@ toc::[]
 | Category | Notes
 
 | *Core Implementation*
-| No source code — justfile tasks are all TODO
+| No source code — Justfile tasks are all TODO
 
 | *Well-Known Templates*
 | Previously deleted; need recreation

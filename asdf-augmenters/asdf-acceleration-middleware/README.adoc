@@ -81,7 +81,7 @@ asdf-acceleration-middleware/
 ├── docs/                  # Documentation
 ├── examples/              # Example configurations
 ├── .well-known/           # RFC 9116, AI policies
-├── justfile               # Build automation
+├── Justfile               # Build automation
 ├── flake.nix             # Nix reproducible builds
 └── Cargo.toml            # Workspace configuration
 ```

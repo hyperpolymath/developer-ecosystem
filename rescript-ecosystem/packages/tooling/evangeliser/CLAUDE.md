@@ -32,7 +32,7 @@ This repository serves as a resource hub for:
 - TypeScript (use ReScript)
 - Node.js (use Deno)
 - npm/bun (use Deno)
-- Makefile (use justfile)
+- Makefile (use Justfile)
 
 ### Key ReScript Features to Understand
 - **Type Safety**: 100% sound type system with excellent inference
@@ -54,7 +54,7 @@ rescript-evangeliser/
 ├── docs/             # Documentation and guides
 ├── rescript.json     # ReScript build configuration
 ├── deno.json         # Deno configuration
-├── justfile          # Task orchestration (NOT Makefile)
+├── Justfile          # Task orchestration (NOT Makefile)
 ├── Mustfile.epx      # Deployment contract
 └── config.ncl        # Nickel configuration
 ```
@@ -213,7 +213,7 @@ When working on this project:
 - Focus on making ReScript accessible to newcomers
 - Highlight ReScript's unique advantages over TypeScript/JavaScript
 - **Use Deno, not npm/bun**
-- **Use justfile, not Makefile**
+- **Use Justfile, not Makefile**
 - **Use ReScript, not TypeScript**
 - Add SPDX license headers to new source files
 

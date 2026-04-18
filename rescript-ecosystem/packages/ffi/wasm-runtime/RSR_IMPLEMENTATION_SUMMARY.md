@@ -14,7 +14,7 @@ The ReScript WASM Runtime has been successfully upgraded from a basic project to
 - **Documentation**: 3 files (README, CLAUDE.md, PROJECT_SUMMARY.md)
 - **Security**: No formal policy
 - **Community**: No governance
-- **Build**: Basic (justfile only)
+- **Build**: Basic (Justfile only)
 
 ### After RSR Implementation
 - **Score**: **95%** (Silver Tier) ✅
@@ -190,7 +190,7 @@ The ReScript WASM Runtime has been successfully upgraded from a basic project to
 - **Total project files**: 50+ (vs. 39 before)
 - **Documentation files**: 13 (vs. 3 before)
 - **New RSR files**: 11
-- **Updated files**: 2 (justfile, CLAUDE.md)
+- **Updated files**: 2 (Justfile, CLAUDE.md)
 
 ### Lines of Code
 - **Total LOC**: ~9,500 (vs. 6,800 before)

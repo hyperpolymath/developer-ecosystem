@@ -174,7 +174,7 @@ rescript-evangeliser/
 +-- docs/                   # Documentation
 +-- rescript.json           # ReScript configuration
 +-- deno.json               # Deno configuration
-+-- justfile                # Task orchestration
++-- Justfile                # Task orchestration
 +-- Mustfile.epx            # Deployment contract
 +-- config.ncl              # Nickel configuration
 +-- CLAUDE.md               # AI context
@@ -210,7 +210,7 @@ This project follows the *Rhodium Standard Repository (RSR)* framework:
 * *Security First*: See link:SECURITY.md[SECURITY.md]
 * *Open Governance*: TPCF Perimeter 3 (Community Sandbox)
 * *Licensed*: PMPL-1.0-or-later
-* *Build Reproducibility*: Deno + justfile
+* *Build Reproducibility*: Deno + Justfile
 
 See link:docs/RSR_COMPLIANCE.md[RSR_COMPLIANCE.md] for full details.
 

@@ -59,7 +59,7 @@ The aggregate-library project has achieved **GOLD level RSR compliance (100/100)
 - ✅ .well-known/security.txt - RFC 9116 compliant
 - ✅ .well-known/ai.txt - AI training policies
 - ✅ .well-known/humans.txt - Contributor attribution
-- ✅ justfile - 30+ recipes for validation and compliance
+- ✅ Justfile - 30+ recipes for validation and compliance
 - ✅ Version control (Git)
 
 **Additional:**
@@ -149,7 +149,7 @@ The aggregate-library project has achieved **GOLD level RSR compliance (100/100)
 - ✅ 20 operation specifications
 - ✅ Test cases for each operation (YAML format)
 - ✅ Edge case coverage
-- ✅ Validation recipes in justfile
+- ✅ Validation recipes in Justfile
 - ⚠️ No automated test execution (specification repo)
 
 **Test Quality:**
@@ -214,7 +214,7 @@ The aggregate-library project has achieved **GOLD level RSR compliance (100/100)
 ### 9. Build System (9/10) ✅
 
 **Build Tools:**
-- ✅ justfile with 30+ recipes
+- ✅ Justfile with 30+ recipes
 - ✅ Validation automation
 - ✅ Compliance checking
 - ✅ Documentation verification
@@ -282,7 +282,7 @@ The aggregate-library project has achieved **GOLD level RSR compliance (100/100)
 |---------|--------|----------|
 | Comprehensive documentation | ✅ | SPEC_FORMAT.md, CLAUDE.md |
 | .well-known directory | ✅ | security.txt, ai.txt, humans.txt |
-| Build automation | ✅ | justfile (30+ recipes) |
+| Build automation | ✅ | Justfile (30+ recipes) |
 | Test coverage | ⚠️ | Test specs provided (not executable) |
 | Security considerations | ✅ | Comprehensive SECURITY.md |
 
@@ -350,7 +350,7 @@ just rsr           # RSR compliance check
 ✅ Test Cases: 20/20 operations have tests
 ✅ Documentation: 9/9 required files present
 ✅ .well-known: 3/3 files present
-✅ Infrastructure: justfile with 30+ recipes
+✅ Infrastructure: Justfile with 30+ recipes
 ✅ Security: Comprehensive policies
 ✅ Community: TPCF Perimeter 3 compliant
 ✅ Licensing: Dual MIT / Palimpsest v0.8

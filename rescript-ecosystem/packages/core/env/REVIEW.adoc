@@ -73,7 +73,7 @@ MIT OR PMPL-1.0-or-later with Palimpsest philosophical overlay provides flexibil
 
 === High: Justfile Recipe Placeholders
 
-The justfile (`.justfile:1`) contains many TODO placeholders:
+The Justfile (`.justfile:1`) contains many TODO placeholders:
 
 [source,bash]
 ----
@@ -135,7 +135,7 @@ touch RSR_COMPLIANCE.adoc
 touch guix.scm
 ----
 
-2. **Update justfile for ReScript+Deno**:
+2. **Update Justfile for ReScript+Deno**:
 +
 [source,just]
 ----
@@ -195,7 +195,7 @@ rescript-env/
 ├── rescript.json              ❌ Missing
 ├── guix.scm                   ❌ Missing
 ├── RSR_COMPLIANCE.adoc        ❌ Missing
-├── justfile                   ⚠️ Needs ReScript adaptation
+├── Justfile                   ⚠️ Needs ReScript adaptation
 └── README.adoc                ⚠️ Minor inconsistencies
 ----
 

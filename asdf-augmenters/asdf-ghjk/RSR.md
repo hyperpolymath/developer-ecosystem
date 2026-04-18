@@ -122,7 +122,7 @@ See CONTRIBUTING.md and MAINTAINERS.md for details.
 ### Category 7: Build System (✅ Complete)
 
 - [x] Makefile - GNU Make automation
-- [x] justfile - Modern task runner
+- [x] Justfile - Modern task runner
 - [x] flake.nix - Nix reproducible builds
 - [x] Build documentation
 - [x] Development setup script

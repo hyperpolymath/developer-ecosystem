@@ -200,7 +200,7 @@ asdf-ghjk/ (60 files)
     ├── LICENSE.txt (dual MIT + Palimpsest)
     ├── RSR.md
     ├── Makefile
-    ├── justfile
+    ├── Justfile
     ├── flake.nix
     ├── .editorconfig
     ├── .shellcheckrc

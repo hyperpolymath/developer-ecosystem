@@ -67,7 +67,7 @@ NEUROSYM.a2ml, PLAYBOOK.a2ml, or ANCHOR.a2ml in the repository root.
 
 ## Build System
 
-Use `just` (justfile) for all build, test, lint, and format tasks.
+Use `just` (Justfile) for all build, test, lint, and format tasks.
 
 ## References
 

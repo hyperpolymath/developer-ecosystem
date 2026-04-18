@@ -21,7 +21,7 @@ rebuild the ReScript library itself.
 
 [source,bash]
 ----
-# List everything the justfile can do
+# List everything the Justfile can do
 just
 
 # Run the full CRG Grade B test suite (6 independent targets)

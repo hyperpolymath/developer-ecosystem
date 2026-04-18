@@ -40,7 +40,7 @@ RFC 9116 compliance plus extensions:
 ### 3. Build System ✅
 
 Modern, reproducible build infrastructure:
-- ✅ justfile - 40+ build/test/deploy commands
+- ✅ Justfile - 40+ build/test/deploy commands
 - ✅ package.json - NPM dependencies (build-time only)
 - ✅ rescript.json - ReScript compiler configuration
 - ✅ flake.nix - Nix reproducible builds

@@ -88,7 +88,7 @@ The ReScript WASM Runtime project has been successfully upgraded to achieve **Br
 **Status**: Excellent (Multi-Tool Support)
 
 **Implemented**:
-- ✅ justfile (40+ commands)
+- ✅ Justfile (40+ commands)
   - Build, test, deploy, benchmark
   - RSR compliance checking
   - Container management

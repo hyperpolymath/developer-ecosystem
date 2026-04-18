@@ -62,7 +62,7 @@ Security fixes and critical bugs may be merged without full consensus period.
 
 *What*:
 
-* Build system (flake.nix, justfile)
+* Build system (flake.nix, Justfile)
 * Core runtime (Tea_App)
 * Release process
 * Security fixes

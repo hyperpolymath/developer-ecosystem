@@ -68,12 +68,12 @@ check "validate_structure.sh"          '[ -f tests/validate_structure.sh ]'
 check "e2e_test.sh"                    '[ -f tests/e2e_test.sh ]'
 check "property_test.mjs"              '[ -f tests/property_test.mjs ]'
 check "bench_test.mjs"                 '[ -f tests/bench_test.mjs ]'
-check "justfile has test-structure"    'grep -q "^test-structure:" justfile'
-check "justfile has test-unit"         'grep -q "^test-unit:" justfile'
-check "justfile has test-e2e"          'grep -q "^test-e2e:" justfile'
-check "justfile has test-property"     'grep -q "^test-property:" justfile'
-check "justfile has test-bench"        'grep -q "^test-bench:" justfile'
-check "justfile has test-lint"         'grep -q "^test-lint:" justfile'
+check "justfile has test-structure"    'grep -q "^test-structure:" Justfile'
+check "justfile has test-unit"         'grep -q "^test-unit:" Justfile'
+check "justfile has test-e2e"          'grep -q "^test-e2e:" Justfile'
+check "justfile has test-property"     'grep -q "^test-property:" Justfile'
+check "justfile has test-bench"        'grep -q "^test-bench:" Justfile'
+check "justfile has test-lint"         'grep -q "^test-lint:" Justfile'
 
 echo ""
 echo "──────────────────────────────"

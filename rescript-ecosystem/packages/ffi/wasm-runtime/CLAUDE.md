@@ -64,7 +64,7 @@ rescript-wasm-runtime/
 │   └── bundle-size.sh    # Analyze bundle sizes
 ├── rescript.json         # ReScript compiler configuration
 ├── package.json          # NPM dependencies (build-time only)
-├── justfile              # Build system (38+ commands)
+├── Justfile              # Build system (38+ commands)
 ├── config.ncl            # Type-safe Nickel configuration
 ├── Containerfile         # Multi-stage container build
 ├── .gitlab-ci.yml        # CI/CD pipeline

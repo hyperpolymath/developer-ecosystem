@@ -25,7 +25,7 @@ Kith is an Ada-powered TUI application for managing `.well-known` directories wi
 Platform: Fedora Silverblue 43 (Linux 6.17.12-300.fc43.x86_64)
 Toolchain: GNAT 15 (via Fedora toolbox)
 Build System: gprbuild
-Test Runner: just (justfile)
+Test Runner: just (Justfile)
 ----
 
 == Issues Discovered
@@ -96,12 +96,12 @@ All Ada source files were missing SPDX license headers required by the Rhodium S
 - `kith.gpr`
 - `justfile`
 
-==== ISSUE-005: justfile had placeholder commands
+==== ISSUE-005: Justfile had placeholder commands
 
 *Severity:* Moderate +
 *Status:* FIXED
 
-All justfile recipes contained TODO placeholders instead of actual commands.
+All Justfile recipes contained TODO placeholders instead of actual commands.
 
 *Resolution:* Implemented all recipes:
 - `build` - Runs gprbuild in toolbox
@@ -138,7 +138,7 @@ The pre-compiled binary requires `libgnat-15.so` which is not installed on the F
 ./bin/main: error while loading shared libraries: libgnat-15.so: cannot open shared object file
 ----
 
-*Resolution:* Updated justfile to run all commands through `toolbox run`.
+*Resolution:* Updated Justfile to run all commands through `toolbox run`.
 
 === Minor Issues
 
@@ -298,7 +298,7 @@ kith/
 |       +-- aibdp_validation.ads
 |       +-- aibdp_validation.adb
 +-- kith.gpr                    # GNAT project file
-+-- justfile                    # Development tasks
++-- Justfile                    # Development tasks
 +-- TESTING-REPORT.adoc         # This file
 +-- TESTING-REPORT.scm          # Guile state file
 ----

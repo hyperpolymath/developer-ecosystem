@@ -4,7 +4,7 @@
 
 ## Purpose
 
-iseriser is the meta-iser: it generates complete new -iser project scaffolds from a language description manifest. Given a target language or system name and its characteristics, iseriser emits a fully-structured RSR-compliant repository with the standard Rust CLI skeleton, Idris2 ABI stubs, Zig FFI bridge, manifest parser, codegen module, justfile, and all required workflow files. iseriser is the bootstrap tool for the entire -iser family and is used to create new isers consistently and quickly.
+iseriser is the meta-iser: it generates complete new -iser project scaffolds from a language description manifest. Given a target language or system name and its characteristics, iseriser emits a fully-structured RSR-compliant repository with the standard Rust CLI skeleton, Idris2 ABI stubs, Zig FFI bridge, manifest parser, codegen module, Justfile, and all required workflow files. iseriser is the bootstrap tool for the entire -iser family and is used to create new isers consistently and quickly.
 
 ## Module Map
 
@@ -38,6 +38,6 @@ iseriser.toml manifest
         │  intermediate scaffold plan
    ┌────▼────┐
    │ Codegen  │  emit complete <language>iser/ project tree
-   │          │  (src/, ffi/zig/, src/abi/, justfile, workflows, .machine_readable/)
+   │          │  (src/, ffi/zig/, src/abi/, Justfile, workflows, .machine_readable/)
    └─────────┘
 ```

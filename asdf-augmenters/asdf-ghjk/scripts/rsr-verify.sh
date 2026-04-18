@@ -139,11 +139,11 @@ check "CI tests multiple platforms" "grep -q 'ubuntu-latest' .github/workflows/c
 # =============================================================================
 section "Category 7: Build System"
 
-check "Build system exists" "[[ -f Makefile ]] || [[ -f Justfile ]] || [[ -f justfile ]]"
-check "Justfile exists" "[[ -f Justfile ]] || [[ -f justfile ]]"
+check "Build system exists" "[[ -f Makefile ]] || [[ -f Justfile ]] || [[ -f Justfile ]]"
+check "Justfile exists" "[[ -f Justfile ]] || [[ -f Justfile ]]"
 check "Nix/Guix package definition exists" "[[ -f flake.nix ]] || [[ -f guix.scm ]] || [[ -f default.nix ]]"
-check "Build system has test target" "grep -qi 'test' Makefile 2>/dev/null || grep -qi 'test' Justfile 2>/dev/null || grep -qi 'test' justfile 2>/dev/null"
-check "Build system has lint target" "grep -qi 'lint' Makefile 2>/dev/null || grep -qi 'lint' Justfile 2>/dev/null || grep -qi 'lint' justfile 2>/dev/null"
+check "Build system has test target" "grep -qi 'test' Makefile 2>/dev/null || grep -qi 'test' Justfile 2>/dev/null || grep -qi 'test' Justfile 2>/dev/null"
+check "Build system has lint target" "grep -qi 'lint' Makefile 2>/dev/null || grep -qi 'lint' Justfile 2>/dev/null || grep -qi 'lint' Justfile 2>/dev/null"
 check "Dev setup script exists" "[[ -f scripts/setup-dev.sh ]]"
 check "Setup script is executable" "[[ -x scripts/setup-dev.sh ]]"
 

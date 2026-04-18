@@ -177,7 +177,7 @@ well-known-ecosystem/
 ├── LICENSE.txt            # PMPL-1.0 OR PMPL-1.0-or-later
 ├── README.adoc            # This file
 ├── ROADMAP.adoc           # Development roadmap
-├── justfile               # Development tasks (TODO)
+├── Justfile               # Development tasks (TODO)
 ├── .editorconfig          # Editor configuration
 ├── .gitattributes         # Git attributes (RSR-compliant)
 └── .gitignore             # Git ignore (RSR-compliant)

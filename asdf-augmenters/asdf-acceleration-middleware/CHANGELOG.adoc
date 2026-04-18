@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive documentation: README, CONTRIBUTING, CODE_OF_CONDUCT, SECURITY, MAINTAINERS
 - Dual licensing: MIT OR Palimpsest-0.8
 - TPCF (Tri-Perimeter Contribution Framework) implementation
-- Build automation with justfile and Nix flakes
+- Build automation with Justfile and Nix flakes
 - CI/CD pipelines for GitLab and GitHub Actions
 - `.well-known/` directory with security.txt, ai.txt, humans.txt
 - Test infrastructure with unit, integration, and benchmark tests
