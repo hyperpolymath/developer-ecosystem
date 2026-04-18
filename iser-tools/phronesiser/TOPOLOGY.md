@@ -1,0 +1,114 @@
+<!-- SPDX-License-Identifier: PMPL-1.0-or-later -->
+<!-- Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk> -->
+# TOPOLOGY.md — Phronesiser
+
+## Purpose
+
+Phronesiser adds provably safe ethical constraints to AI agent decision-making
+via Phronesis deontic logic. It compiles agent behaviour specifications into
+formally verified constraint sets enforced at runtime with full audit trails.
+
+## Module Map
+
+```
+phronesiser/
+├── src/
+│   ├── main.rs                    # CLI entry point (clap subcommands)
+│   ├── lib.rs                     # Library API
+│   ├── manifest/mod.rs            # phronesiser.toml parser and validator
+│   ├── codegen/mod.rs             # Phronesis constraint code generation
+│   ├── abi/mod.rs                 # Rust-side ABI proof type stubs
+│   ├── definitions/               # Phronesis language definitions
+│   ├── contracts/                 # Constraint contract types
+│   ├── errors/                    # Error types and diagnostics
+│   ├── aspects/
+│   │   ├── security/              # Security-related constraint aspects
+│   │   ├── observability/         # Audit trail and monitoring aspects
+│   │   └── integrity/             # Constraint integrity verification
+│   ├── core/                      # Core constraint evaluation
+│   ├── bridges/                   # Language bridge adapters
+│   └── interface/
+│       ├── abi/                   # Idris2 ABI — formal proofs
+│       │   ├── Types.idr          # DeonticModality, EthicalConstraint,
+│       │   │                      # ValueAlignment, HarmPrevention, AuditDecision
+│       │   ├── Layout.idr         # Constraint evaluation memory layout
+│       │   └── Foreign.idr        # FFI declarations for constraint engine
+│       ├── ffi/                   # Zig FFI — C-ABI bridge
+│       │   ├── build.zig          # Build configuration
+│       │   ├── src/main.zig       # Constraint evaluation engine
+│       │   └── test/              # Integration tests
+│       └── generated/             # Auto-generated C headers
+│           └── abi/
+├── .machine_readable/
+│   ├── 6a2/                       # STATE, META, ECOSYSTEM, AGENTIC, NEUROSYM, PLAYBOOK
+│   ├── anchors/                   # Semantic boundary declarations
+│   ├── policies/                  # Maintenance and governance policies
+│   ├── bot_directives/            # Bot-specific instructions
+│   ├── contractiles/              # Policy enforcement contracts (k9, dust, etc.)
+│   ├── ai/                        # AI agent configuration
+│   ├── configs/                   # Tool configurations (git-cliff, etc.)
+│   └── scripts/lifecycle/         # Lifecycle automation scripts
+├── docs/
+│   ├── architecture/              # THREAT-MODEL, diagrams
+│   ├── theory/                    # Deontic logic theory, Phronesis language spec
+│   ├── developer/                 # ABI-FFI-README, dev guides
+│   └── attribution/               # MAINTAINERS, CITATIONS, CODEOWNERS
+├── container/                     # Stapeln container ecosystem
+├── examples/                      # Example constraint sets
+├── features/                      # Feature specifications
+├── verification/                  # Formal verification artifacts
+├── tests/                         # Rust integration tests
+├── 0-AI-MANIFEST.a2ml             # Universal AI agent entry point
+├── Cargo.toml                     # Rust package manifest
+├── Justfile                       # Task runner
+├── Containerfile                  # OCI build (Chainguard base)
+└── LICENSE                        # PMPL-1.0-or-later
+```
+
+## Data Flow
+
+```
+phronesiser.toml          User defines constraints (deontic rules, value hierarchies,
+        │                 harm prevention boundaries)
+        ▼
+  Rust CLI (main.rs)      Parses manifest, orchestrates pipeline
+        │
+        ▼
+  Codegen (codegen/)      Compiles TOML → Phronesis constraint propositions
+        │
+        ▼
+  Idris2 ABI (abi/)       Proves constraint soundness, completeness, and
+        │                 non-contradiction at compile time
+        ▼
+  Zig FFI (ffi/)          Implements constraint evaluation engine with
+        │                 C-ABI compatibility and zero overhead
+        ▼
+  Runtime Enforcer        Wraps agent actions in constraint checks,
+        │                 produces audit trail
+        ▼
+  Audit Trail             Structured logs: permitted/denied/escalated
+                          with formal justification
+```
+
+## Key Types (Idris2 ABI)
+
+| Type | Purpose |
+|------|---------|
+| `DeonticModality` | Obligation, Permission, Prohibition |
+| `EthicalConstraint` | Named constraint with modality, scope, and formal proposition |
+| `ValueAlignment` | Partially ordered value hierarchy |
+| `HarmPrevention` | Severity-classified harm boundary |
+| `AuditDecision` | Decidable proof: Permitted, Denied, or Escalated |
+| `ConstraintSet` | Composable collection of ethical constraints |
+
+## Integration Points
+
+| System | Relationship |
+|--------|-------------|
+| **iseriser** | Meta-framework; generates -iser scaffolding |
+| **proven** | Shared Idris2 verified library |
+| **typell** | Type theory engine |
+| **PanLL** | Constraint visualisation panels |
+| **BoJ-server** | Constraint management cartridge |
+| **VeriSimDB** | Audit trail backing store |
+| **Hypatia** | Neurosymbolic CI/CD scanning |

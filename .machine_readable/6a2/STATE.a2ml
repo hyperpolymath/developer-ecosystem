@@ -19,6 +19,6 @@ files-changed = 49
 insertions = 8426
 
 [crg]
-grade = "C"
+grade = "D"
 achieved-on = "2026-04-04"
 representative-crate = "opm-canonicalizer"

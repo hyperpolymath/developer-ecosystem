@@ -14,7 +14,7 @@ completion-percentage = 0
 phase = "In development"
 
 [crg]
-grade = "C"
+grade = "E"
 achieved-date = "2026-04-04"
 
 [crg.test-categories]

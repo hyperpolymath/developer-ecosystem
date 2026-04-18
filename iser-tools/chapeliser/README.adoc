@@ -1,0 +1,163 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+= Chapeliser
+Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+:toc: left
+:toclevels: 3
+:icons: font
+:source-highlighter: rouge
+
+== What Is This?
+
+Chapeliser is a **general-purpose Chapel acceleration framework** that lets
+developers scale single-machine applications to distributed clusters without
+learning Chapel.
+
+You describe your workload in a manifest (`chapeliser.toml`), point Chapeliser
+at your code, and it generates the distributed scaffolding — Chapel `coforall`
+loops, data partitioning, result gathering, and the ABI/FFI bridge between your
+application and the Chapel runtime.
+
+== The Problem
+
+Chapel is one of the most powerful parallel programming languages ever built.
+It can distribute computation across thousands of nodes with elegant syntax.
+But almost nobody uses it because:
+
+1. **Steep learning curve** — you must rewrite your application in Chapel or
+   deeply understand its interop model
+2. **No incremental adoption path** — it's all-or-nothing
+3. **Build system complexity** — integrating Chapel with existing Rust/C/Zig
+   projects is non-trivial
+
+Chapeliser solves all three.
+
+== How It Works
+
+[source]
+----
+Your application (Rust, C, Zig)
+        │
+        ▼
+chapeliser.toml  ──► Chapeliser CLI
+        │                │
+        │    ┌───────────┴───────────┐
+        │    │                       │
+        ▼    ▼                       ▼
+   Idris2 ABI            Zig FFI           Chapel wrapper
+   (formal proof of      (C-ABI bridge     (coforall + data
+    data layout +         to Chapel         distribution +
+    partition safety)     runtime)          gather/reduce)
+        │                │                       │
+        └────────┬───────┘                       │
+                 ▼                               │
+          generated/abi/*.h  ◄───────────────────┘
+                 │
+                 ▼
+        Your app, now distributed
+----
+
+=== The Manifest
+
+[source,toml]
+----
+[workload]
+name = "my-scanner"
+entry = "src/batch.rs::scan_all"    # function to distribute
+partition = "per-item"               # split strategy
+gather = "merge"                     # combine strategy
+
+[data]
+input-type = "Vec<PathBuf>"          # what gets distributed
+output-type = "Vec<ScanResult>"      # what comes back
+serialization = "bincode"            # wire format
+
+[scaling]
+min-nodes = 1                        # runs locally if alone
+max-nodes = 256                      # scales to cluster
+grain-size = 50                      # items per Chapel task
+----
+
+You write **zero Chapel code**. Chapeliser generates everything.
+
+=== Partition Strategies
+
+|===
+| Strategy | Description | Best For
+
+| `per-item` | One item per task | File scanning, image processing
+| `chunk` | Fixed-size chunks | Data pipelines, ETL
+| `adaptive` | Dynamic load balancing | Heterogeneous workloads
+| `spatial` | Domain decomposition | Simulation, matrices
+| `keyed` | Group by key | Map-reduce, aggregation
+|===
+
+=== Gather Strategies
+
+|===
+| Strategy | Description
+
+| `merge` | Concatenate all results
+| `reduce` | Apply reduction function (sum, max, min, custom)
+| `tree-reduce` | Logarithmic reduction for associative ops
+| `stream` | Results stream back as they complete
+| `first` | Return first successful result (search)
+|===
+
+== Architecture
+
+Chapeliser follows the hyperpolymath ABI-FFI standard:
+
+* **Idris2 ABI** (`src/abi/`) — Formal proofs that:
+  - Data layouts are consistent across nodes
+  - Partition functions produce complete, non-overlapping splits
+  - Gather functions preserve all results
+  - Serialization round-trips are identity
+
+* **Zig FFI** (`ffi/zig/`) — C-ABI bridge between:
+  - The user's application (any language with C FFI)
+  - The Chapel runtime (`chpl_*` functions)
+  - Memory management across the boundary
+
+* **Chapel codegen** (`src/codegen/`) — Generates:
+  - `coforall` distribution loops
+  - Locale-aware data placement
+  - Communication primitives (GET/PUT/AMO)
+  - Fault tolerance (retry, checkpoint, redistribute)
+
+* **Rust CLI** (`src/`) — The `chapeliser` command:
+  - Parses `chapeliser.toml`
+  - Validates workload description
+  - Generates Chapel + Zig + C header scaffolding
+  - Builds and links everything
+  - Provides `chapeliser run` for execution
+
+== Quick Start
+
+[source,bash]
+----
+# Install
+cargo install chapeliser
+
+# In your project directory, create chapeliser.toml (see above)
+chapeliser init          # generates scaffold from manifest
+chapeliser build         # compiles Chapel wrapper + FFI bridge
+chapeliser run           # executes locally (1 node)
+chapeliser run -n 8      # distributes across 8 nodes
+chapeliser run --cluster my-cluster.toml  # full cluster
+----
+
+== First Consumer: panic-attacker
+
+The first application to be Chapelised is
+https://github.com/hyperpolymath/panic-attacker[panic-attacker]'s
+`mass-panic` (assemblyline) mode — distributing static analysis across
+hundreds of repositories on a compute cluster.
+
+== Status
+
+**Pre-alpha.** Architecture defined, ABI proofs in progress, codegen planned.
+
+== License
+
+SPDX-License-Identifier: PMPL-1.0-or-later

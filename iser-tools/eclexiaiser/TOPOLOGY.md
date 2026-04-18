@@ -1,0 +1,118 @@
+<!-- SPDX-License-Identifier: PMPL-1.0-or-later -->
+<!-- Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk> -->
+# TOPOLOGY — eclexiaiser
+
+## Purpose
+
+Energy, carbon, and resource-cost awareness for existing software via Eclexia
+economics-as-code. Instruments code with energy measurement hooks, generates
+Eclexia constraint annotations, and formally verifies resource bounds.
+
+## Module Map
+
+```
+eclexiaiser/
+├── src/
+│   ├── main.rs                    # CLI entry point (clap subcommands)
+│   ├── lib.rs                     # Library re-exports
+│   ├── manifest/mod.rs            # eclexiaiser.toml parser and validator
+│   ├── codegen/mod.rs             # Eclexia annotation + instrumented source codegen
+│   ├── abi/mod.rs                 # Rust-side ABI module (Idris2 proof types)
+│   ├── definitions/               # Domain type definitions
+│   ├── errors/                    # Error types and diagnostics
+│   ├── contracts/                 # Contractile enforcement hooks
+│   ├── aspects/
+│   │   ├── security/              # Security aspect (audit trail for energy data)
+│   │   ├── observability/         # Observability aspect (metrics, tracing)
+│   │   └── integrity/             # Integrity aspect (measurement tamper detection)
+│   ├── core/                      # Core logic (budget calculation, composition)
+│   ├── bridges/                   # Language-specific instrumentation bridges
+│   └── interface/
+│       ├── abi/                   # Idris2 ABI — formal proofs of resource bounds
+│       │   ├── Types.idr          # EnergyBudget, CarbonIntensity, JouleAnnotation,
+│       │   │                      # ResourceBound, SustainabilityReport
+│       │   ├── Layout.idr         # Energy measurement struct memory layout proofs
+│       │   └── Foreign.idr        # FFI declarations for energy/carbon measurement
+│       ├── ffi/                   # Zig FFI — energy measurement bridge
+│       │   ├── build.zig          # Build config (shared + static lib)
+│       │   ├── src/main.zig       # RAPL/IPMI energy reader, carbon API client,
+│       │   │                      # budget enforcer, report generator
+│       │   └── test/
+│       │       └── integration_test.zig  # ABI compliance + measurement tests
+│       └── generated/
+│           └── abi/               # Auto-generated C headers from Idris2 ABI
+├── container/                     # Stapeln container ecosystem
+├── docs/
+│   ├── architecture/              # THREAT-MODEL.adoc, diagrams
+│   ├── developer/                 # ABI-FFI-README.adoc
+│   ├── reports/                   # Quality, security, compliance, performance, maintenance
+│   ├── standards/                 # Standards compliance docs
+│   └── templates/                 # Contractile templates
+├── examples/                      # Example manifests and instrumented projects
+├── features/                      # BDD feature specs
+├── tests/                         # Integration tests
+├── verification/                  # Formal verification artefacts
+├── .machine_readable/
+│   ├── 6a2/                       # STATE, META, ECOSYSTEM, AGENTIC, NEUROSYM, PLAYBOOK
+│   ├── policies/                  # Maintenance axes, checklist, dev approach
+│   ├── bot_directives/            # Bot-specific instructions
+│   ├── contractiles/              # k9, dust, lust, must, trust
+│   ├── ai/                        # AI configuration
+│   ├── configs/                   # git-cliff, etc.
+│   └── anchors/                   # ANCHOR.a2ml
+└── .github/workflows/             # 17 RSR-standard workflows
+```
+
+## Data Flow
+
+```
+eclexiaiser.toml
+    │  (manifest: function names, energy budgets, carbon limits, grid zone)
+    v
+┌──────────────────────┐
+│  Source Instrumentation │  Parses target code, inserts measurement hooks
+└──────────┬───────────┘
+           v
+┌──────────────────────┐
+│  Eclexia Annotation    │  Generates @requires energy, @provides carbon_report
+│  Codegen               │  Emits .eclexia constraint files
+└──────────┬───────────┘
+           v
+┌──────────────────────┐
+│  Idris2 ABI Proofs     │  Verifies: budgets satisfiable, bounds compose,
+│  (Types.idr)           │  call-graph total fits allocation
+└──────────┬───────────┘
+           v
+┌──────────────────────┐
+│  Zig FFI Bridge        │  RAPL/IPMI energy counters, WattTime/Electricity Maps
+│  (main.zig)            │  API, budget enforcement, report generation
+└──────────┬───────────┘
+           v
+┌──────────────────────┐
+│  Output                │  Sustainability report (CSRD-compatible)
+│                        │  Enforcement violations (compile-time or runtime)
+│                        │  Energy dashboard data (PanLL panel)
+└────────────────────────┘
+```
+
+## Key Domain Types
+
+| Type | Module | Purpose |
+|------|--------|---------|
+| `EnergyBudget` | Types.idr | Per-function energy limit in joules with satisfiability proof |
+| `CarbonIntensity` | Types.idr | gCO2/kWh from grid API, indexed by zone |
+| `JouleAnnotation` | Types.idr | Type-level energy annotation for a function |
+| `ResourceBound` | Types.idr | Composite bound (energy + carbon + time + memory) |
+| `SustainabilityReport` | Types.idr | Aggregated metrics with CSRD field mapping |
+| `EnergyMeasurement` | Layout.idr | C-compatible struct for hardware counter readings |
+| `CarbonQuery` | Layout.idr | C-compatible struct for carbon API request/response |
+
+## Integration Points
+
+- **iseriser** — meta-framework that generated this scaffold
+- **proven** — shared Idris2 verification primitives
+- **typell** — type theory engine for constraint solving
+- **PanLL** — real-time energy dashboard panel
+- **BoJ-server** — remote energy analysis cartridge
+- **VeriSimDB** — historical energy measurement storage
+- **WattTime / Electricity Maps** — external carbon intensity APIs

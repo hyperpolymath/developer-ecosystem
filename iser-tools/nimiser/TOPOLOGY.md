@@ -1,0 +1,99 @@
+<!-- SPDX-License-Identifier: PMPL-1.0-or-later -->
+<!-- Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk> -->
+# Nimiser — Module Topology
+
+## Dependency Graph
+
+```
+nimiser.toml (user manifest)
+    │
+    ▼
+┌─────────────────────────────────────────────┐
+│  src/main.rs                                │
+│  CLI entry point (clap)                     │
+│  Subcommands: init, validate, generate,     │
+│               build, run, info              │
+└──────────┬──────────────────────────────────┘
+           │
+    ┌──────┴──────┐
+    ▼             ▼
+┌────────┐  ┌──────────┐
+│manifest│  │ codegen  │
+│mod.rs  │  │ mod.rs   │
+│        │  │          │
+│ Parse  │  │ Generate │
+│ TOML   │──▶ Nim src  │
+│ Validate│  │          │
+└────────┘  └─────┬────┘
+                  │
+         ┌────────┼────────┐
+         ▼        ▼        ▼
+    ┌─────────┐ ┌────┐ ┌──────┐
+    │Templates│ │Macros│ │Generics│
+    │{.exportc│ │AST  │ │Mono-  │
+    │ .cdecl.}│ │xform│ │morph  │
+    └────┬────┘ └──┬──┘ └──┬───┘
+         │         │       │
+         └─────┬───┘───────┘
+               ▼
+    ┌──────────────────┐
+    │  Nim Source Code  │
+    │  (generated/)     │
+    └────────┬─────────┘
+             │
+             ▼  nim c --app:lib --gc:arc
+    ┌──────────────────┐
+    │  C Library Output │
+    │  .a / .so + .h    │
+    └────────┬─────────┘
+             │
+             ▼
+    ┌──────────────────┐
+    │  Zig FFI Bridge   │
+    │  (nimiser_* fns)  │
+    └──────────────────┘
+```
+
+## Module Map
+
+| Module | Path | Purpose |
+|--------|------|---------|
+| CLI | `src/main.rs` | Clap-based CLI with 6 subcommands |
+| Library | `src/lib.rs` | Public API for programmatic use |
+| Manifest | `src/manifest/mod.rs` | Parse and validate `nimiser.toml` |
+| Codegen | `src/codegen/mod.rs` | Generate Nim templates, macros, generics |
+| ABI (Rust) | `src/abi/mod.rs` | Rust-side ABI types mirroring Idris2 |
+| ABI (Idris2) | `src/interface/abi/Types.idr` | Formal type definitions: NimTemplate, NimMacro, CompileTimeAST, CBackend, NimObject |
+| Layout (Idris2) | `src/interface/abi/Layout.idr` | Memory layout proofs for Nim objects exported as C structs |
+| Foreign (Idris2) | `src/interface/abi/Foreign.idr` | FFI declarations: nimiser_init, nimiser_compile, nimiser_gen_template, etc. |
+| FFI (Zig) | `src/interface/ffi/src/main.zig` | C-ABI implementation of nimiser_* functions |
+| FFI Build | `src/interface/ffi/build.zig` | Zig build system for shared/static library |
+| FFI Tests | `src/interface/ffi/test/integration_test.zig` | Integration tests verifying Zig FFI matches Idris2 ABI |
+
+## Data Flow
+
+1. **User** writes `nimiser.toml` describing library interface (types, functions, strategies)
+2. **Manifest parser** (`src/manifest/`) validates and produces a `Manifest` struct
+3. **Codegen** (`src/codegen/`) generates Nim source files:
+   - Templates for zero-cost generic abstractions
+   - Macros for AST-level compile-time transforms
+   - Generics for monomorphised type specialisation
+4. **Nim compiler** (`nim c --app:lib --gc:arc`) compiles generated Nim to optimised C
+5. **C library** (`.a`/`.so` + `.h`) is the primary output artefact
+6. **Zig FFI** (`src/interface/ffi/`) provides a stable bridge for consumers
+7. **Idris2 ABI** (`src/interface/abi/`) proves the C ABI is correct at compile time
+
+## Verification Seam
+
+```
+Idris2 ABI Proofs ──────────── Zig FFI Implementation
+  Types.idr (NimTemplate,       main.zig (nimiser_init,
+   NimMacro, CBackend)           nimiser_compile, etc.)
+  Layout.idr (NimObject          build.zig (shared/static lib)
+   struct layout proofs)
+  Foreign.idr (FFI             integration_test.zig
+   function signatures)          (verify ABI compliance)
+```
+
+The Idris2 ABI is the **specification**. The Zig FFI is the **implementation**.
+Integration tests verify they agree.

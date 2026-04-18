@@ -1,0 +1,12 @@
+version = 1
+name = "test"
+profile = "default"
+
+[meta]
+shell = "bash"
+
+[policy]
+auto_write = true
+require_explicit_commit = false
+keep_previous = false
+allow_plaintext_secrets = true

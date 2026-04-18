@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# NEUROSYM.a2ml — Neurosymbolic integration metadata for wokelangiser
+# Configuration for Hypatia scanning and symbolic reasoning.
+
+[metadata]
+version = "0.1.0"
+last-updated = "2026-03-21"
+
+[hypatia-config]
+scan-enabled = true
+scan-depth = "standard"  # quick | standard | deep
+report-format = "logtalk"
+
+[symbolic-rules]
+# Custom symbolic rules for wokelangiser
+# - Consent state machine integrity: no transitions outside ValidTransition
+# - WCAG threshold consistency: AA=450, AAA=700 must match across ABI and FFI
+# - ARIA label presence: all accessibility annotations must have non-empty ariaLabel
+# - I18n completeness: every extracted string must have entries for all declared locales
+rules = [
+  { name = "no-unsafe-ffi", pattern = "believe_me|unsafeCoerce|assert_total|sorry", severity = "critical" },
+  { name = "consent-bypass", pattern = "skip.?consent|ignore.?consent|force.?consent", severity = "critical" },
+  { name = "hardcoded-wcag-threshold", pattern = "4\\.5|450|7\\.0|700", severity = "warning", note = "Verify these match Types.idr definitions" },
+  { name = "missing-aria", pattern = "aria.?label.*=.*\"\"", severity = "high" },
+]
+
+[neural-config]
+# Neural pattern detection settings
+confidence-threshold = 0.85
+# model = "hypatia-v2"

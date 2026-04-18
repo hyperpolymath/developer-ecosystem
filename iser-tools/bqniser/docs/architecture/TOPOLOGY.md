@@ -1,0 +1,128 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+
+# bqniser -- Topology
+
+## Overview
+
+BQNiser detects array computation patterns in existing source code and rewrites
+them as optimised BQN array primitives, achieving 10-100x speedups on
+array-heavy workloads via the CBQN runtime.
+
+## Module Map
+
+```
+bqniser/
+├── src/
+│   ├── main.rs                      # CLI entry point (clap subcommands)
+│   ├── lib.rs                       # Library API (load + validate + generate)
+│   ├── manifest/
+│   │   └── mod.rs                   # bqniser.toml parser and validator
+│   ├── codegen/
+│   │   └── mod.rs                   # BQN expression emitter + FFI glue generator
+│   ├── core/                        # Pattern detection engine (AST analysis)
+│   ├── abi/                         # Rust-side ABI type definitions
+│   ├── definitions/                 # BQN primitive definitions and semantics
+│   ├── errors/                      # Error types (thiserror)
+│   ├── bridges/                     # CBQN runtime bridge (call BQN from Rust)
+│   ├── contracts/                   # Contractile integration
+│   ├── aspects/                     # Cross-cutting concerns
+│   └── interface/
+│       ├── abi/                     # Idris2 ABI formal proofs
+│       │   ├── Types.idr            # BQN value types, primitives, ranks
+│       │   ├── Layout.idr           # BQN array memory layout proofs
+│       │   └── Foreign.idr          # CBQN C API FFI declarations
+│       ├── ffi/                     # Zig FFI bridge to CBQN
+│       │   ├── build.zig            # Build config (shared + static lib)
+│       │   ├── src/main.zig         # CBQN embedding: init, eval, call, free
+│       │   └── test/
+│       │       └── integration_test.zig  # FFI correctness tests
+│       └── generated/
+│           └── abi/                 # Auto-generated C headers from Idris2
+├── tests/                           # Rust integration tests
+├── examples/                        # Example bqniser.toml manifests
+├── verification/                    # Formal verification artifacts
+├── container/                       # Stapeln container ecosystem
+├── docs/
+│   ├── architecture/                # This file, threat model
+│   ├── theory/                      # BQN array theory, leading-axis, trains
+│   ├── practice/                    # User guides, pattern catalogue
+│   └── attribution/                 # Citations, acknowledgements
+└── .machine_readable/               # 6a2 metadata, policies, contractiles
+```
+
+## Data Flow
+
+```
+User Source Code                    bqniser.toml
+      │                                 │
+      ▼                                 ▼
+┌──────────────┐               ┌─────────────────┐
+│ AST Parser   │               │ Manifest Parser  │
+│ (tree-sitter │               │ (TOML → config)  │
+│  or syn)     │               └────────┬─────────┘
+└──────┬───────┘                        │
+       │                                │
+       ▼                                ▼
+┌──────────────────────────────────────────┐
+│           Pattern Matcher                │
+│  loop → ¨/⌜    filter → /    sort → ⍋   │
+│  fold → ´      scan → `     join → ∾    │
+│  index → ⊏     reshape → ⥊  reverse → ⌽ │
+└──────────────────┬───────────────────────┘
+                   │
+          ┌────────┴────────┐
+          ▼                 ▼
+┌──────────────┐   ┌────────────────┐
+│ BQN Codegen  │   │ Idris2 ABI     │
+│ (.bqn files, │   │ (equivalence   │
+│  trains,     │   │  proofs for    │
+│  tacit)      │   │  each rewrite) │
+└──────┬───────┘   └────────────────┘
+       │
+       ▼
+┌──────────────────┐
+│ Zig FFI Bridge   │
+│ (CBQN C API:     │
+│  BQN_NewEval,    │
+│  BQN_Call,       │
+│  BQN_ReadF64Arr) │
+└──────┬───────────┘
+       │
+       ▼
+┌──────────────────┐
+│ CBQN Runtime     │
+│ (vectorised      │
+│  execution)      │
+└──────────────────┘
+```
+
+## Key Interfaces
+
+| Interface | From | To | Mechanism |
+|-----------|------|----|-----------|
+| Manifest | User | Rust CLI | TOML parsing (serde) |
+| Source AST | User code | Pattern Matcher | tree-sitter / syn |
+| Pattern → BQN | Pattern Matcher | BQN Codegen | Internal IR |
+| BQN → CBQN | BQN Codegen | Zig FFI | `.bqn` file or inline eval |
+| CBQN C API | Zig FFI | CBQN runtime | C function calls |
+| ABI proofs | Idris2 | Generated headers | Compile-time verification |
+| Rust ↔ Zig | Rust CLI | Zig FFI | C-ABI (shared library) |
+
+## External Dependencies
+
+| Dependency | Role | Link |
+|------------|------|------|
+| CBQN | BQN runtime engine | https://github.com/dzaima/CBQN |
+| BQN specification | Language semantics | https://mlochbaum.github.io/BQN/ |
+| tree-sitter | Multi-language AST parsing | https://tree-sitter.github.io/ |
+| syn | Rust AST parsing | https://docs.rs/syn |
+| clap | CLI argument parsing | https://docs.rs/clap |
+
+## Invariants
+
+1. Every BQN rewrite MUST have an Idris2 equivalence proof before codegen emits it
+2. All CBQN FFI calls go through the Zig bridge (never raw C from Rust)
+3. BQN value memory is managed by CBQN; Zig bridge handles lifecycle
+4. Pattern detection is conservative: only rewrite when confidence is high
+5. Original source code is never modified; BQN alternatives are generated alongside

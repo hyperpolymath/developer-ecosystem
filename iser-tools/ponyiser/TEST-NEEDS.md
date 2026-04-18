@@ -1,0 +1,30 @@
+# TEST-NEEDS.md — ponyiser
+
+## CRG Grade: C — ACHIEVED 2026-04-04
+
+## Current Test State
+
+| Category | Count | Notes |
+|----------|-------|-------|
+| Integration tests (Rust) | 1 | `tests/integration_tests.rs` |
+| Verification tests | Unit-level | `verification/tests/` directory present |
+| FFI tests | Present | `src/interface/ffi/test/` |
+
+## What's Covered
+
+- [x] Integration test framework
+- [x] FFI verification layer
+- [x] Aspect-based organization
+
+## Still Missing (for CRG B+)
+
+- [ ] Property-based testing (proptest)
+- [ ] Fuzzing targets
+- [ ] Performance benchmarks
+- [ ] Platform-specific test matrix
+
+## Run Tests
+
+```bash
+cd /var/mnt/eclipse/repos/ponyiser && cargo test
+```

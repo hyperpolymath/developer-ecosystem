@@ -1,0 +1,15 @@
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# CodeQL disabled - no scannable source code detected
+name: CodeQL Security Analysis
+
+on:
+  workflow_dispatch:  # Manual trigger only
+
+permissions: read-all
+
+jobs:
+  placeholder:
+    runs-on: ubuntu-latest
+    if: false
+    steps:
+      - run: echo "Enable when source code is added"

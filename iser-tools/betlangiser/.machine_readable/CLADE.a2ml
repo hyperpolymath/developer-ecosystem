@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Clade declaration — part of the gv-clade-index registry
+# See: https://github.com/hyperpolymath/gv-clade-index
+
+[identity]
+uuid = "a5ea1382-a34c-5334-8a46-a2ebe904c810"
+primary-forge = "github"
+primary-owner = "hyperpolymath"
+canonical-name = "betlangiser"
+prefixed-name = "ac-betlangiser"
+
+[clade]
+primary = "ac"
+secondary = ["gv"]
+assigned = "2026-03-20"
+rationale = "Acceleration tool — wraps deterministic code in ternary probabilistic distributions"
+
+[forges]
+github = "hyperpolymath/betlangiser"
+gitlab = "hyperpolymath/betlangiser"
+bitbucket = "hyperpolymath/betlangiser"
+
+[lineage]
+type = "member"
+parent = "-iser acceleration framework family (iseriser)"
+born = "2026-03-20"

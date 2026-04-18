@@ -1,0 +1,135 @@
+<!-- SPDX-License-Identifier: PMPL-1.0-or-later -->
+<!-- Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk> -->
+
+# Mylangiser Topology
+
+## Overview
+
+Mylangiser is a progressive-disclosure interface generator. It analyses complex
+API surfaces, assigns cognitive-load complexity scores, and generates layered
+wrappers at three disclosure levels (@beginner, @intermediate, @expert).
+
+## Module Map
+
+```
+mylangiser/
+├── CLI Layer (Rust)
+│   ├── src/main.rs              # Entry point: init, validate, generate, build, run, info
+│   ├── src/lib.rs               # Library interface for programmatic use
+│   ├── src/manifest/            # mylangiser.toml parser and validator
+│   └── src/codegen/             # My-Lang layer generation pipeline
+│
+├── Verified Interface Seams
+│   ├── src/interface/abi/       # Idris2 ABI (The Spec)
+│   │   ├── Types.idr            # DisclosureLevel, ComplexityScore, APIEndpoint,
+│   │   │                        # LayeredWrapper, SmartDefault, Result
+│   │   ├── Layout.idr           # APISurfaceDescriptor, EndpointDescriptor,
+│   │   │                        # WrapperDescriptor memory layouts
+│   │   └── Foreign.idr          # FFI declarations: init, analyse_surface,
+│   │                            # compute_scores, generate_layers, get_level
+│   ├── src/interface/ffi/       # Zig FFI (The Bridge)
+│   │   ├── build.zig            # Build config for libmylangiser (.so/.a)
+│   │   ├── src/main.zig         # FFI implementation: Handle, scoring algorithm,
+│   │   │                        # layer generation, smart default inference
+│   │   └── test/                # Integration tests verifying ABI compliance
+│   └── src/interface/generated/ # Auto-generated C headers (from Idris2 ABI)
+│
+├── Container Layer
+│   ├── Containerfile            # OCI build (Chainguard base)
+│   └── container/               # Stapeln container ecosystem
+│
+└── Governance Layer
+    ├── .machine_readable/6a2/   # STATE, META, ECOSYSTEM, AGENTIC, NEUROSYM, PLAYBOOK
+    ├── .machine_readable/anchors/ANCHOR.a2ml
+    ├── .machine_readable/policies/
+    ├── .machine_readable/contractiles/
+    └── .machine_readable/bot_directives/
+```
+
+## Data Flow
+
+```
+                    mylangiser.toml
+                         │
+                         ▼
+              ┌─────────────────────┐
+              │  Manifest Parser    │  (Rust: src/manifest/)
+              │  Parse endpoints,   │
+              │  types, params      │
+              └─────────┬───────────┘
+                        │
+                        ▼
+              ┌─────────────────────┐
+              │  API Surface        │  (Zig FFI: mylangiser_analyse_surface)
+              │  Analysis           │
+              │  Build endpoint     │
+              │  model              │
+              └─────────┬───────────┘
+                        │
+                        ▼
+              ┌─────────────────────┐
+              │  Complexity         │  (Zig FFI: mylangiser_compute_scores)
+              │  Scoring            │
+              │  Score 0-100 per    │
+              │  endpoint           │
+              └─────────┬───────────┘
+                        │
+                        ▼
+              ┌─────────────────────┐
+              │  Layer Generation   │  (Zig FFI: mylangiser_generate_layers)
+              │  Assign disclosure  │
+              │  levels, compute    │
+              │  smart defaults     │
+              └─────────┬───────────┘
+                        │
+                        ▼
+              ┌─────────────────────┐
+              │  Idris2 ABI Proofs  │  (Idris2: Types.idr, Layout.idr)
+              │  Verify layer       │
+              │  subset correctness │
+              └─────────┬───────────┘
+                        │
+                        ▼
+              ┌─────────────────────┐
+              │  My-Lang Codegen    │  (Rust: src/codegen/)
+              │  Emit @beginner,    │
+              │  @intermediate,     │
+              │  @expert wrappers   │
+              └─────────┬───────────┘
+                        │
+                        ▼
+                  Layered Wrapper
+                  (drop-in library)
+```
+
+## Complexity Scoring Formula
+
+```
+score = (required_params * 3)
+      + (optional_params * 1)
+      + (type_depth * 5)
+      + (error_surface * 2)
+
+Clamped to [0, 100].
+```
+
+Thresholds (configurable in mylangiser.toml):
+- 0-33: @beginner
+- 34-66: @intermediate
+- 67-100: @expert
+
+## Layer Parameter Visibility
+
+| Level          | Parameters visible         | Error messages      |
+|----------------|----------------------------|---------------------|
+| @beginner      | Required only              | Human-readable      |
+| @intermediate  | Required + half optional   | Typed with context  |
+| @expert        | All (required + optional)  | Raw codes + stack   |
+
+## Key Invariants
+
+1. **Layer ordering**: Beginner < Intermediate < Expert (never reversed)
+2. **Parameter monotonicity**: beginner_params <= intermediate_params <= expert_params
+3. **Score bounds**: 0 <= complexity_score <= 100
+4. **Default safety**: smart defaults satisfy parameter type constraints
+5. **Determinism**: same manifest always produces same output

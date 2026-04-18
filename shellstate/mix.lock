@@ -1,0 +1,6 @@
+%{
+  "ex_machina": {:hex, :ex_machina, "2.8.0", "a0e847b5712065055ec3255840e2c78ef9366634d62390839d4880483be38abe", [:mix], [{:ecto, "~> 2.2 or ~> 3.0", [hex: :ecto, repo: "hexpm", optional: true]}, {:ecto_sql, "~> 3.0", [hex: :ecto_sql, repo: "hexpm", optional: true]}], "hexpm", "79fe1a9c64c0c1c1fab6c4fa5d871682cb90de5885320c187d117004627a7729"},
+  "jason": {:hex, :jason, "1.4.4", "b9226785a9aa77b6857ca22832cffa5d5011a667207eb2a0ad56adb5db443b8a", [:mix], [{:decimal, "~> 1.0 or ~> 2.0", [hex: :decimal, repo: "hexpm", optional: true]}], "hexpm", "c5eb0cab91f094599f94d55bc63409236a8ec69a21a67814529e8d5f6cc90b3b"},
+  "stream_data": {:hex, :stream_data, "0.6.0", "e87a9a79d7ec23d10ff83eb025141ef4915eeb09d4491f79e52f2562b73e5f47", [:mix], [], "hexpm", "b92b5031b650ca480ced047578f1d57ea6dd563f5b57464ad274718c9c29501c"},
+  "toml_elixir": {:hex, :toml_elixir, "1.1.0", "ae0b11a77328e3a42dfb260939099f5d3aa5d424b29e444c0b1e203faa994fc3", [:mix], [], "hexpm", "080bbd421bea50a3054ee3b9a97c1121bb815113bb6a78b6c0e91a4a9034f9a9"},
+}
