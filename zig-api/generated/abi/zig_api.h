@@ -50,72 +50,72 @@ void uapi_teardown(void);
  * Result codes  (ZigApi.ABI.Types.resultTag)
  * ========================================================================== */
 
-#define UAPI_OK              0
-#define UAPI_ERR             1
-#define UAPI_INVALID_PARAM   2
-#define UAPI_OUT_OF_MEMORY   3
-#define UAPI_NULL_POINTER    4
-#define UAPI_PATH_DENIED     5
-#define UAPI_PROCESS_FAILED  6
-#define UAPI_TIMEOUT         7
-#define UAPI_NOT_FOUND       8
-#define UAPI_ALREADY_EXISTS  9
-#define UAPI_SLOT_EXHAUSTED  10
+#define UAPI_OK                      0
+#define UAPI_ERR                     1
+#define UAPI_INVALID_PARAM           2
+#define UAPI_OUT_OF_MEMORY           3
+#define UAPI_NULL_POINTER            4
+#define UAPI_PATH_DENIED             5
+#define UAPI_PROCESS_FAILED          6
+#define UAPI_TIMEOUT                 7
+#define UAPI_NOT_FOUND               8
+#define UAPI_ALREADY_EXISTS          9
+#define UAPI_SLOT_EXHAUSTED          10
 
 /* ============================================================================
  * ServerState tags  (ZigApi.ABI.Http.serverStateTag)
  * ========================================================================== */
 
-#define UAPI_SERVER_IDLE      0
-#define UAPI_SERVER_LISTENING 1
-#define UAPI_SERVER_DRAINING  2
-#define UAPI_SERVER_STOPPED   3
+#define UAPI_SERVER_IDLE             0
+#define UAPI_SERVER_LISTENING        1
+#define UAPI_SERVER_DRAINING         2
+#define UAPI_SERVER_STOPPED          3
 
 /* ============================================================================
  * HealthStatus tags  (ZigApi.ABI.Http.healthStatusTag)
  * ========================================================================== */
 
-#define UAPI_HEALTH_SERVING     0
-#define UAPI_HEALTH_NOT_SERVING 1
+#define UAPI_HEALTH_SERVING          0
+#define UAPI_HEALTH_NOT_SERVING      1
 
 /* ============================================================================
  * ConnectorState tags  (ZigApi.ABI.Connector.connectorStateTag)
  * ========================================================================== */
 
-#define UAPI_CONNECTOR_DISCONNECTED 0
-#define UAPI_CONNECTOR_CONNECTING   1
-#define UAPI_CONNECTOR_CONNECTED    2
-#define UAPI_CONNECTOR_DEGRADED     3
-#define UAPI_CONNECTOR_FAILED       4
-#define UAPI_CONNECTOR_DRAINING     5
+#define UAPI_CONNECTOR_DISCONNECTED  0
+#define UAPI_CONNECTOR_CONNECTING    1
+#define UAPI_CONNECTOR_CONNECTED     2
+#define UAPI_CONNECTOR_DEGRADED      3
+#define UAPI_CONNECTOR_FAILED        4
+#define UAPI_CONNECTOR_DRAINING      5
 
 /* ============================================================================
  * ServiceId tags  (ZigApi.ABI.Connector.serviceIdTag)
  * ========================================================================== */
 
-#define UAPI_SERVICE_AMBIENT_OPS   0
-#define UAPI_SERVICE_BOJ           1
-#define UAPI_SERVICE_BURBLE        2
-#define UAPI_SERVICE_ECHIDNA       3
-#define UAPI_SERVICE_GOSSAMER      4
-#define UAPI_SERVICE_GROOVE_BRIDGE 5
-#define UAPI_SERVICE_HYPATIA       6
-#define UAPI_SERVICE_IDAPTIK       7
-#define UAPI_SERVICE_REPOSYSTEM    8
-#define UAPI_SERVICE_STAPELN       9
-#define UAPI_SERVICE_VERISIMDB     10
+#define UAPI_SERVICE_AMBIENT_OPS     0
+#define UAPI_SERVICE_BOJ             1
+#define UAPI_SERVICE_BURBLE          2
+#define UAPI_SERVICE_ECHIDNA         3
+#define UAPI_SERVICE_GOSSAMER        4
+#define UAPI_SERVICE_GROOVE_BRIDGE   5
+#define UAPI_SERVICE_HYPATIA         6
+#define UAPI_SERVICE_IDAPTIK         7
+#define UAPI_SERVICE_REPOSYSTEM      8
+#define UAPI_SERVICE_STAPELN         9
+#define UAPI_SERVICE_VERISIMDB       10
 
 /* ============================================================================
  * HTTP Method tags  (ZigApi.ABI.Http.methodTag)
  * ========================================================================== */
 
-#define UAPI_METHOD_GET     0
-#define UAPI_METHOD_POST    1
-#define UAPI_METHOD_PUT     2
-#define UAPI_METHOD_DELETE  3
-#define UAPI_METHOD_HEAD    4
-#define UAPI_METHOD_OPTIONS 5
-#define UAPI_METHOD_PATCH   6
+#define UAPI_METHOD_GET              0
+#define UAPI_METHOD_POST             1
+#define UAPI_METHOD_PUT              2
+#define UAPI_METHOD_DELETE           3
+#define UAPI_METHOD_HEAD             4
+#define UAPI_METHOD_OPTIONS          5
+#define UAPI_METHOD_PATCH            6
 
 /* ============================================================================
  * Gnosis API server  (ffi/zig/src/gnosis.zig)
@@ -160,6 +160,56 @@ uint8_t uapi_gnosis_state(uint64_t handle);
  * UAPI_HEALTH_NOT_SERVING (1) otherwise.
  */
 uint8_t uapi_gnosis_health(uint64_t handle);
+
+/**
+ * Request context passed to edge handler hooks.
+ * All pointer fields are valid only for the duration of the handler call.
+ */
+typedef struct {
+    const char    *method;    /**< HTTP method, e.g. "GET" (null-terminated). */
+    const char    *path;      /**< Request path, query-stripped (null-terminated). */
+    const uint8_t *body_ptr;  /**< Request body bytes; NULL when empty. */
+    uint32_t       body_len;  /**< Byte length of body_ptr; 0 when empty. */
+} GnosisRequest;
+
+/**
+ * Response written by an edge handler hook.
+ * `body_ptr` must remain valid until uapi_gnosis_write_response returns.
+ */
+typedef struct {
+    uint16_t       status;        /**< HTTP status code, e.g. 200, 404. */
+    uint16_t       _pad;          /**< Reserved; set to 0. */
+    const char    *content_type;  /**< MIME type string (null-terminated). */
+    const uint8_t *body_ptr;      /**< Response body; NULL for zero-length body. */
+    uint32_t       body_len;      /**< Byte length of body_ptr. */
+} GnosisResponse;
+
+/**
+ * Register an edge handler hook for the server identified by `handle`.
+ *
+ * Must be called after uapi_gnosis_create and BEFORE uapi_gnosis_start.
+ * Calling after start returns UAPI_ERR — no hot-swap.
+ * When set, uapi_gnosis_start dispatches every request to `handler_fn`
+ * instead of the built-in gnosis routes.  Pass NULL to revert to built-in.
+ *
+ * Returns UAPI_OK on success, non-zero on failure.
+ */
+uint8_t uapi_gnosis_set_handler(
+    uint64_t      handle,
+    void        (*handler_fn)(const GnosisRequest *req, GnosisResponse *resp)
+);
+
+/**
+ * Convenience helper: fill all fields of a GnosisResponse in one call.
+ * Edge handlers may call this or fill the struct directly.
+ */
+void uapi_gnosis_write_response(
+    GnosisResponse *resp,
+    uint16_t        status,
+    const char     *content_type,
+    const uint8_t  *body_ptr,
+    uint32_t        body_len
+);
 
 /* ============================================================================
  * Service connector pool  (ffi/zig/src/connector.zig)

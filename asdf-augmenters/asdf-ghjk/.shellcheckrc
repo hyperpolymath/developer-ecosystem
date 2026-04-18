@@ -1,0 +1,18 @@
+# ShellCheck configuration
+
+# Enable all optional checks
+enable=all
+
+# External sources are allowed (for asdf and lib files)
+external-sources=true
+
+# Follow source statements
+source-path=SCRIPTDIR
+
+# Disable specific checks
+# SC1090: Can't follow non-constant source
+# SC1091: Not following source (we handle this with source-path)
+disable=SC1090,SC1091
+
+# Set shell dialect
+shell=bash

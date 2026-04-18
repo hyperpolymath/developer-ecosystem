@@ -1,0 +1,39 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+[package]
+name = "asdf-config"
+version = "1.0.0"
+edition = "2021"
+authors = ["Hyperpolymath <hyperpolymath@users.noreply.github.com>"]
+description = "Declarative configuration management for asdf plugins"
+license = "AGPL-3.0-or-later"
+repository = "https://github.com/hyperpolymath/asdf-plugin-configurator"
+keywords = ["asdf", "version-manager", "cli", "configuration"]
+categories = ["command-line-utilities", "development-tools"]
+
+[dependencies]
+clap = { version = "4.5", features = ["derive", "cargo"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_yaml = "0.9"
+toml = "0.8"
+anyhow = "1.0"
+thiserror = "2.0"
+colored = "2.1"
+dirs = "5.0"
+walkdir = "2.5"
+sha2 = "0.10"
+reqwest = { version = "0.12", features = ["blocking", "json"] }
+regex-lite = "0.1"
+tempfile = "3.14"
+
+[dev-dependencies]
+assert_cmd = "2.0"
+predicates = "3.1"
+
+[[bin]]
+name = "asdf-config"
+path = "src/main.rs"
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true

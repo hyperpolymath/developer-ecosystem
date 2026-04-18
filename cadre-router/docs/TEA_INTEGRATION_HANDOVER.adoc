@@ -1,0 +1,623 @@
+= Handover: rescript-tea Router Integration
+:toc:
+:toclevels: 3
+:sectanchors:
+:source-highlighter: rouge
+
+This document specifies the integration contract between `cadre-router` (generic client-side routing) and a proposed `cadre-tea-router` project (rescript-tea specific integration).
+
+== Executive Summary
+
+[cols="1,2"]
+|===
+| Project | Purpose
+
+| `cadre-router`
+| Generic, framework-agnostic client-side URL routing for ReScript. Provides URL parsing, route matching, and browser History API primitives.
+
+| `cadre-tea-router` (proposed)
+| rescript-tea integration layer. Wraps cadre-router with `Tea.Cmd.t`, `Tea.Sub.t`, and TEA-idiomatic patterns.
+|===
+
+The separation ensures:
+
+* cadre-router remains useful for React, rescript-tea, or any other ReScript UI framework
+* rescript-tea users get first-class integration without framework lock-in at the routing layer
+* Learning flows both directions via shared type contracts
+
+== Architecture Overview
+
+[source]
+----
+┌─────────────────────────────────────────────────────────┐
+│                    User Application                      │
+│  (nafa-app-ambient, etc.)                               │
+│                                                          │
+│  type route = Home | MoodInput | Journey(JourneyId.t)   │
+└─────────────────────────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────┐
+│              cadre-tea-router                            │
+│                                                          │
+│  • Tea.Cmd.t navigation commands                        │
+│  • Tea.Sub.t URL change subscriptions                   │
+│  • TEA message/update patterns                          │
+│  • Type-safe <Link> component for vdom                  │
+└─────────────────────────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────┐
+│              cadre-router (this project)                 │
+│                                                          │
+│  • Url.t parsing and serialization                      │
+│  • Parser.t<'a> combinator DSL                          │
+│  • Navigation.t browser History API                     │
+│  • Framework-agnostic primitives                        │
+└─────────────────────────────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────┐
+│              Browser APIs                                │
+│                                                          │
+│  • window.history (pushState, replaceState)             │
+│  • window.location                                       │
+│  • popstate event                                        │
+└─────────────────────────────────────────────────────────┘
+----
+
+== cadre-router: Contract Specification
+
+=== Module: `Url`
+
+Represents a parsed URL with path, query, and fragment.
+
+[source,rescript]
+----
+// Url.resi
+type t = {
+  path: list<string>,
+  query: Belt.Map.String.t<string>,
+  fragment: option<string>,
+}
+
+// Parse from location or string
+let fromString: string => t
+let fromLocation: unit => t  // reads window.location
+
+// Serialize back
+let toString: t => string
+
+// Utilities
+let getQueryParam: (t, string) => option<string>
+let getQueryParamInt: (t, string) => option<int>
+let getQueryParamBool: (t, string) => option<bool>
+----
+
+=== Module: `Parser`
+
+Elm-inspired URL parser combinators.
+
+[source,rescript]
+----
+// Parser.resi
+type t<'a>
+
+// === Path Segment Matchers ===
+
+// Match literal path segment
+let s: string => t<unit>
+
+// Capture string segment
+let str: t<string>
+
+// Capture integer segment
+let int: t<int>
+
+// Custom segment parser (for typed IDs)
+let custom: (string => option<'a>) => t<'a>
+
+// Match end of path
+let top: t<unit>
+
+// === Combinators ===
+
+// Sequential composition: match A then B
+let andThen: (t<'a>, t<'b>) => t<('a, 'b)>
+
+// Operator form: s("journey") </> JourneyId.parser
+let \"</>": (t<'a>, t<'b>) => t<('a, 'b)>
+
+// Transform result
+let map: (t<'a>, 'a => 'b) => t<'b>
+
+// Operator form: parser |> map(...)
+let \"<$>": ('a => 'b, t<'a>) => t<'b>
+
+// Try alternatives in order
+let oneOf: array<t<'a>> => t<'a>
+
+// === Query Parameters ===
+
+// Optional query param
+let query: string => t<option<string>>
+let queryInt: string => t<option<int>>
+let queryBool: string => t<option<bool>>
+
+// Required query param (fails if missing)
+let queryRequired: string => t<string>
+
+// === Execution ===
+
+let parse: (t<'a>, Url.t) => option<'a>
+----
+
+==== Example: Nested Routes with Query Params
+
+[source,rescript]
+----
+// Route definition for nafa-app-ambient style
+type journeySubRoute =
+  | JourneyMap
+  | JourneyLog
+  | JourneySettings
+
+type route =
+  | Home
+  | MoodInput
+  | Journey(JourneyId.t, journeySubRoute)
+  | Profile
+  | NotFound
+
+// Parser with nested routes
+let journeySubParser: Parser.t<journeySubRoute> = Parser.oneOf([
+  Parser.s("map")->Parser.map(_ => JourneyMap),
+  Parser.s("log")->Parser.map(_ => JourneyLog),
+  Parser.s("settings")->Parser.map(_ => JourneySettings),
+  Parser.top->Parser.map(_ => JourneyMap),  // default
+])
+
+let parser: Parser.t<route> = Parser.oneOf([
+  Parser.top->Parser.map(_ => Home),
+  Parser.s("mood")->Parser.map(_ => MoodInput),
+  Parser.s("journey")
+    ->Parser.andThen(JourneyId.parser)
+    ->Parser.andThen(journeySubParser)
+    ->Parser.map((((_, id), sub)) => Journey(id, sub)),
+  Parser.s("profile")->Parser.map(_ => Profile),
+])
+----
+
+=== Module: `Navigation`
+
+Browser History API abstraction (framework-agnostic).
+
+[source,rescript]
+----
+// Navigation.resi
+
+// === Imperative API (for non-TEA usage) ===
+
+let pushUrl: string => unit
+let replaceUrl: string => unit
+let back: unit => unit
+let forward: unit => unit
+
+// === Event Subscription ===
+
+// Callback receives new URL on popstate
+type unsubscribe = unit => unit
+let onUrlChange: (Url.t => unit) => unsubscribe
+
+// === Current State ===
+
+let currentUrl: unit => Url.t
+----
+
+=== Module: `Link` (Optional, for React-based apps)
+
+[source,rescript]
+----
+// Link.resi — only if using @rescript/react
+
+@react.component
+let make: (
+  ~href: string,
+  ~onClick: option<ReactEvent.Mouse.t => unit>=?,
+  ~className: option<string>=?,
+  ~children: React.element,
+) => React.element
+
+// Functor for type-safe route-based links
+module Make: (R: {
+  type t
+  let toString: t => string
+}) => {
+  @react.component
+  let make: (
+    ~route: R.t,
+    ~className: option<string>=?,
+    ~children: React.element,
+  ) => React.element
+}
+----
+
+== cadre-tea-router: Specification
+
+This is the **proposed separate project** for rescript-tea integration.
+
+=== Dependency
+
+[source,json]
+----
+{
+  "dependencies": {
+    "cadre-router": "^1.0.0",
+    "rescript-tea": "^x.x.x"
+  }
+}
+----
+
+=== Module: `TeaRouter`
+
+[source,rescript]
+----
+// TeaRouter.resi
+
+module Make: (Config: {
+  type route
+  type msg
+
+  let parser: CadreRouter.Parser.t<route>
+  let toString: route => string
+  let onRouteChange: route => msg
+  let onNotFound: CadreRouter.Url.t => msg
+}) => {
+  // === Commands ===
+
+  // Navigate to route (pushState)
+  let push: Config.route => Tea.Cmd.t<Config.msg>
+
+  // Navigate without history entry (replaceState)
+  let replace: Config.route => Tea.Cmd.t<Config.msg>
+
+  // Browser back/forward
+  let back: Tea.Cmd.t<Config.msg>
+  let forward: Tea.Cmd.t<Config.msg>
+
+  // === Subscriptions ===
+
+  // Subscribe to URL changes (popstate)
+  let urlChanges: Tea.Sub.t<Config.msg>
+
+  // === Initialization ===
+
+  // Parse current URL on app start
+  let init: unit => (option<Config.route>, Tea.Cmd.t<Config.msg>)
+
+  // === View Helpers ===
+
+  // Type-safe link that emits navigation on click
+  let link: (
+    ~route: Config.route,
+    ~attrs: list<Tea.Html.attribute<Config.msg>>=?,
+    list<Tea.Html.t<Config.msg>>
+  ) => Tea.Html.t<Config.msg>
+
+  // href string for manual use
+  let href: Config.route => Tea.Html.attribute<Config.msg>
+}
+----
+
+=== Usage in nafa-app-ambient
+
+[source,rescript]
+----
+// === File: Route.res ===
+
+type journeySubRoute = JourneyMap | JourneyLog | JourneySettings
+
+type t =
+  | Home
+  | MoodInput
+  | Journey(JourneyId.t, journeySubRoute)
+  | Profile
+
+let parser: CadreRouter.Parser.t<t> = {
+  open CadreRouter.Parser
+  oneOf([
+    top->map(_ => Home),
+    s("mood")->map(_ => MoodInput),
+    s("journey")->andThen(JourneyId.parser)->andThen(journeySubParser)->map(...),
+    s("profile")->map(_ => Profile),
+  ])
+}
+
+let toString = route => switch route {
+  | Home => "/"
+  | MoodInput => "/mood"
+  | Journey(id, sub) => "/journey/" ++ JourneyId.toString(id) ++ journeySubToString(sub)
+  | Profile => "/profile"
+}
+
+// === File: Router.res ===
+
+module Router = TeaRouter.Make({
+  type route = Route.t
+  type msg = Msg.t
+
+  let parser = Route.parser
+  let toString = Route.toString
+  let onRouteChange = route => Msg.RouteChanged(route)
+  let onNotFound = url => Msg.RouteNotFound(url)
+})
+
+// === File: Main.res ===
+
+let init = () => {
+  let (maybeRoute, cmd) = Router.init()
+  let model = {
+    route: maybeRoute->Option.getOr(Route.Home),
+    // ...
+  }
+  (model, cmd)
+}
+
+let update = (msg, model) => switch msg {
+  | Msg.RouteChanged(route) => ({...model, route}, Tea.Cmd.none)
+  | Msg.ClickedJourney(id) => (model, Router.push(Route.Journey(id, JourneyMap)))
+  | Msg.RouteNotFound(url) => ({...model, route: Route.NotFound}, Tea.Cmd.none)
+  // ...
+}
+
+let subscriptions = model => Router.urlChanges
+
+let view = model => {
+  open Tea.Html
+  div([], [
+    Router.link(~route=Route.Home, [text("Home")]),
+    Router.link(~route=Route.Profile, [text("Profile")]),
+    // Renders: <a href="/profile" onclick="...">Profile</a>
+  ])
+}
+----
+
+== Custom ID Types: The JourneyId Pattern
+
+A key requirement is supporting typed IDs like `JourneyId.t` instead of raw strings.
+
+=== Convention in cadre-router
+
+[source,rescript]
+----
+// User defines in their app:
+module JourneyId = {
+  type t = JourneyId(string)  // or newtype, or validated
+
+  let fromString: string => option<t> = str => {
+    // Validation logic (e.g., UUID format, non-empty)
+    if Js.String.length(str) > 0 {
+      Some(JourneyId(str))
+    } else {
+      None
+    }
+  }
+
+  let toString: t => string = (JourneyId(str)) => str
+
+  // Parser for use with cadre-router
+  let parser: CadreRouter.Parser.t<t> =
+    CadreRouter.Parser.custom(fromString)
+}
+----
+
+=== Validation at Parse Time
+
+The parser approach means **invalid IDs are rejected during URL parsing**, not later in the app:
+
+[source,rescript]
+----
+// URL: /journey/invalid!!
+// Parser.parse(Route.parser, url) => None
+
+// URL: /journey/abc-123-def
+// Parser.parse(Route.parser, url) => Some(Journey(JourneyId("abc-123-def"), ...))
+----
+
+== Query Parameter Handling
+
+=== Typed Query Params in cadre-router
+
+[source,rescript]
+----
+// Route with query params: /search?q=hello&page=2
+type route =
+  | Search({ query: string, page: int })
+
+let parser =
+  Parser.s("search")
+  ->Parser.andThen(Parser.queryRequired("q"))
+  ->Parser.andThen(Parser.queryInt("page"))
+  ->Parser.map(((_, q), maybePage) => Search({
+      query: q,
+      page: maybePage->Option.getOr(1)
+    }))
+
+let toString = route => switch route {
+  | Search({query, page}) => "/search?q=" ++ query ++ "&page=" ++ Int.toString(page)
+}
+----
+
+=== In cadre-tea-router
+
+Query params work identically—the TEA layer just wraps the navigation:
+
+[source,rescript]
+----
+// Navigate with query params
+Router.push(Search({query: "hello", page: 2}))
+// => pushState to /search?q=hello&page=2
+----
+
+== Nested Routes
+
+=== Pattern: Sub-Route Variants
+
+[source,rescript]
+----
+type journeySubRoute =
+  | JourneyOverview      // /journey/:id
+  | JourneyMap           // /journey/:id/map
+  | JourneyLog           // /journey/:id/log
+  | JourneySettings      // /journey/:id/settings
+
+type route =
+  | Journey(JourneyId.t, journeySubRoute)
+  // ...
+----
+
+=== Parser Composition
+
+[source,rescript]
+----
+let journeySubParser: Parser.t<journeySubRoute> = Parser.oneOf([
+  Parser.s("map")->Parser.map(_ => JourneyMap),
+  Parser.s("log")->Parser.map(_ => JourneyLog),
+  Parser.s("settings")->Parser.map(_ => JourneySettings),
+  Parser.top->Parser.map(_ => JourneyOverview),  // No sub-path = overview
+])
+
+let journeyParser: Parser.t<(JourneyId.t, journeySubRoute)> =
+  Parser.s("journey")
+  ->Parser.andThen(JourneyId.parser)
+  ->Parser.andThen(journeySubParser)
+  ->Parser.map((((_, id), sub)) => (id, sub))
+----
+
+=== View Dispatch
+
+[source,rescript]
+----
+let viewJourney = (id, subRoute, model) => switch subRoute {
+  | JourneyOverview => JourneyOverview.view(id, model)
+  | JourneyMap => JourneyMap.view(id, model)
+  | JourneyLog => JourneyLog.view(id, model)
+  | JourneySettings => JourneySettings.view(id, model)
+}
+----
+
+== Learning Exchange Protocol
+
+To ensure learning flows between projects:
+
+=== From cadre-router → cadre-tea-router
+
+* Any changes to `Parser.t` API
+* New URL handling capabilities
+* Performance improvements
+* Bug fixes in URL parsing
+
+=== From cadre-tea-router → cadre-router
+
+* Ergonomic issues discovered during TEA integration
+* Missing primitives needed for real apps
+* Type signature improvements
+* Documentation improvements from user feedback
+
+=== Mechanism
+
+1. **Shared test cases**: Both projects run the same URL parsing tests
+2. **Interface file tracking**: `cadre-tea-router` depends on `cadre-router` `.resi` files
+3. **CHANGELOG cross-references**: Breaking changes note impact on sibling project
+4. **Example apps**: nafa-app-ambient serves as integration test for both
+
+== Open Questions
+
+[cols="1,2,1"]
+|===
+| Question | Context | Status
+
+| Hash vs Path routing?
+| Should cadre-router support `#/route` style for static hosting?
+| Decide before v1
+
+| SSR compatibility?
+| Can cadre-router parse URLs server-side for hydration?
+| Design consideration
+
+| Lazy route loading?
+| Should `Parser.t` support async chunk loading?
+| Post-v1
+
+| Route guards?
+| Authentication-gated routes in cadre-tea-router?
+| cadre-tea-router scope
+|===
+
+== Project Naming
+
+Suggested names for the TEA integration project:
+
+* `cadre-tea-router` — clear relationship
+* `tea-cadre` — shorter
+* `rescript-tea-router` — framework-first naming
+
+Recommendation: **`cadre-tea-router`** for consistency.
+
+== Next Steps
+
+=== For cadre-router (this project)
+
+1. Implement `Url` module
+2. Implement `Parser` module with combinators
+3. Implement `Navigation` module (browser APIs)
+4. Add comprehensive tests
+5. Publish to npm/deno
+
+=== For cadre-tea-router (new project)
+
+1. Create repository
+2. Add cadre-router as dependency
+3. Implement `TeaRouter.Make` functor
+4. Implement TEA-compatible `link` helper
+5. Create nafa-app-ambient integration example
+6. Publish to npm
+
+== Appendix: Elm Router Inspiration
+
+The parser combinator design is inspired by Elm's `elm/url` package:
+
+* https://package.elm-lang.org/packages/elm/url/latest/Url-Parser
+* https://guide.elm-lang.org/webapps/url_parsing.html
+
+Key differences from Elm:
+
+* ReScript's module system allows functors for type-safe configuration
+* No `Parser.map2`, `map3`, etc.—use `andThen` chains or tuple destructuring
+* Query param handling is explicit, not magical
+
+== Appendix: rescript-tea Navigation Reference
+
+Current rescript-tea navigation API (for integration reference):
+
+[source,rescript]
+----
+// Tea.Navigation module (existing)
+let pushUrl: string => Tea.Cmd.t<'msg>
+let replaceUrl: string => Tea.Cmd.t<'msg>
+let back: int => Tea.Cmd.t<'msg>
+let forward: int => Tea.Cmd.t<'msg>
+
+// Program with navigation
+let navigationProgram: (
+  Tea.Navigation.Location.t => 'msg,
+  {
+    init: Tea.Navigation.Location.t => ('model, Tea.Cmd.t<'msg>),
+    update: ('msg, 'model) => ('model, Tea.Cmd.t<'msg>),
+    view: 'model => Tea.Html.t<'msg>,
+    subscriptions: 'model => Tea.Sub.t<'msg>,
+  }
+) => Tea.Program.t<'msg, 'model>
+----
+
+`cadre-tea-router` would wrap this with typed routes instead of raw `Location.t`.

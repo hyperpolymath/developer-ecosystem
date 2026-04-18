@@ -1,0 +1,317 @@
+// SPDX-License-Identifier: MPL-2.0-or-later
+= Architecture
+:toc: left
+:toclevels: 3
+:icons: font
+:source-highlighter: rouge
+
+This document describes the internal architecture of DNFinition for developers and contributors.
+
+== Overview
+
+DNFinition uses a hybrid architecture combining the strengths of multiple languages:
+
+* **Ada/SPARK 2022**: Core transaction engine with formal verification
+* **Elixir/OTP**: State management, process supervision, CubDB persistence
+* **Shell**: Backend adapter scripts for package manager interaction
+
+== System Architecture
+
+[source]
+----
+┌─────────────────────────────────────────────────────────────────────────┐
+│                              User Interface                              │
+│  ┌────────────────────────────────────────────────────────────────────┐ │
+│  │                    Terminal UI (Ada)                                │ │
+│  │  ┌──────────┬──────────┬──────────┬──────────┬──────────────────┐  │ │
+│  │  │  Browse  │  Search  │ Install  │  Remove  │    Snapshots     │  │ │
+│  │  └──────────┴──────────┴──────────┴──────────┴──────────────────┘  │ │
+│  └────────────────────────────────────────────────────────────────────┘ │
+├─────────────────────────────────────────────────────────────────────────┤
+│                          Transaction Engine                              │
+│  ┌─────────────────────────────────┬───────────────────────────────────┐ │
+│  │      SPARK Transaction Core     │        Elixir Supervisor          │ │
+│  │   (Formally Verified Safety)    │   (State, Persistence, Async)     │ │
+│  │                                 │                                   │ │
+│  │  • Pre/Post conditions          │  • Transaction GenServer          │ │
+│  │  • Invariant preservation       │  • Snapshot Worker                │ │
+│  │  • Rollback guarantees          │  • History Store (CubDB)          │ │
+│  └─────────────────────────────────┴───────────────────────────────────┘ │
+├─────────────────────────────────────────────────────────────────────────┤
+│                          Backend Adapters                                │
+│  ┌────────┬────────┬───────────┬────────┬────────┬────────┬──────────┐ │
+│  │  dnf   │  apt   │rpm-ostree │ pacman │ zypper │  nix   │ flatpak  │ │
+│  └────────┴────────┴───────────┴────────┴────────┴────────┴──────────┘ │
+│  ┌────────────────────────────────────────────────────────────────────┐ │
+│  │                  Backend Detection & Selection                      │ │
+│  └────────────────────────────────────────────────────────────────────┘ │
+├─────────────────────────────────────────────────────────────────────────┤
+│                          Snapshot Layer                                  │
+│  ┌─────────────┬─────────────┬─────────────┬─────────────────────────┐ │
+│  │   BTRFS     │     ZFS     │     LVM     │   Transaction Log       │ │
+│  │ (Subvol)    │ (Snapshot)  │  (LV Snap)  │    (Fallback)           │ │
+│  └─────────────┴─────────────┴─────────────┴─────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────────┘
+----
+
+== Component Details
+
+=== TUI Layer (Ada)
+
+The terminal user interface is implemented in Ada for reliability.
+
+*Key packages:*
+[source,ada]
+----
+package DNFinition.TUI is
+   procedure Run;
+   procedure Draw_Menu (Items : Menu_Array);
+   procedure Draw_Package_List (Packages : Package_Array);
+   function Get_User_Input return User_Action;
+end DNFinition.TUI;
+----
+
+*Features:*
+
+* ANSI color output
+* Box drawing characters
+* Vim-style navigation (j/k)
+* Modal dialogs for confirmation
+* Progress indicators
+
+=== Transaction Engine
+
+==== SPARK Core (Formally Verified)
+
+The transaction logic uses SPARK for formal verification:
+
+[source,ada]
+----
+package DNFinition.Transaction
+   with SPARK_Mode => On
+is
+   type Transaction_State is (Pending, In_Progress, Committed, Rolled_Back);
+
+   procedure Begin_Transaction (Txn : out Transaction)
+      with Post => Txn.State = Pending;
+
+   procedure Commit (Txn : in out Transaction)
+      with Pre => Txn.State = In_Progress,
+           Post => Txn.State = Committed;
+
+   procedure Rollback (Txn : in out Transaction)
+      with Post => Txn.State = Rolled_Back;
+
+   -- Invariant: System is always in a valid state
+   function System_Consistent return Boolean
+      with Ghost;
+end DNFinition.Transaction;
+----
+
+==== Elixir State Manager
+
+Elixir handles async operations and persistence:
+
+[source,elixir]
+----
+defmodule DNFinition.TransactionServer do
+  use GenServer
+
+  def start_link(opts) do
+    GenServer.start_link(__MODULE__, opts, name: __MODULE__)
+  end
+
+  def begin_transaction(packages, action) do
+    GenServer.call(__MODULE__, {:begin, packages, action})
+  end
+
+  # State stored in CubDB for persistence across restarts
+  def handle_call({:begin, packages, action}, _from, state) do
+    snapshot = create_pre_snapshot(state)
+    txn = %Transaction{
+      id: next_id(state),
+      packages: packages,
+      action: action,
+      snapshot: snapshot,
+      timestamp: DateTime.utc_now()
+    }
+    {:reply, {:ok, txn}, %{state | current: txn}}
+  end
+end
+----
+
+=== Backend Adapters
+
+Each package manager has an adapter implementing a common interface:
+
+[source,ada]
+----
+package DNFinition.Backend is
+   type Backend_Type is (DNF, APT, RPM_Ostree, Pacman, Zypper, Nix, Flatpak);
+
+   type Backend_Interface is interface;
+
+   procedure Install (B : Backend_Interface; Packages : Package_List) is abstract;
+   procedure Remove (B : Backend_Interface; Packages : Package_List) is abstract;
+   procedure Search (B : Backend_Interface; Query : String) is abstract;
+   procedure Upgrade (B : Backend_Interface) is abstract;
+   function List_Installed (B : Backend_Interface) return Package_List is abstract;
+end DNFinition.Backend;
+----
+
+==== DNF Adapter Example
+
+[source,ada]
+----
+package body DNFinition.Backend.DNF is
+   overriding procedure Install (B : DNF_Backend; Packages : Package_List) is
+   begin
+      -- Spawn: dnf install -y package1 package2 ...
+      Execute_Command ("dnf", ("install", "-y") & Package_Names (Packages));
+   end Install;
+
+   overriding procedure Remove (B : DNF_Backend; Packages : Package_List) is
+   begin
+      Execute_Command ("dnf", ("remove", "-y") & Package_Names (Packages));
+   end Remove;
+end DNFinition.Backend.DNF;
+----
+
+=== Snapshot Layer
+
+DNFinition supports multiple snapshot backends:
+
+[cols="1,2,2"]
+|===
+|Backend |Mechanism |Rollback Method
+
+|BTRFS
+|Subvolume snapshots
+|`btrfs subvolume snapshot` / restore
+
+|ZFS
+|Dataset snapshots
+|`zfs snapshot` / `zfs rollback`
+
+|LVM
+|Logical volume snapshots
+|`lvcreate -s` / `lvconvert --merge`
+
+|rpm-ostree
+|OSTree commits
+|`rpm-ostree rollback`
+
+|Transaction Log
+|Package list diff (fallback)
+|Reverse operations
+|===
+
+== Data Flow
+
+=== Install Flow
+
+[source]
+----
+User selects "Install vim"
+        │
+        ▼
+┌─────────────────┐
+│  TUI validates  │
+│  input          │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐     ┌─────────────────┐
+│ Transaction     │────►│ Snapshot        │
+│ Engine: Begin   │     │ Create          │
+└────────┬────────┘     └─────────────────┘
+         │
+         ▼
+┌─────────────────┐
+│ Backend: dnf    │
+│ install vim     │
+└────────┬────────┘
+         │
+    ┌────┴────┐
+    │         │
+    ▼         ▼
+ Success    Failure
+    │         │
+    ▼         ▼
+┌─────────┐ ┌─────────┐
+│ Commit  │ │Rollback │
+│ Store   │ │Snapshot │
+│ History │ └─────────┘
+└─────────┘
+----
+
+== File Structure
+
+[source]
+----
+dnfinition/
+├── src/
+│   ├── ada/
+│   │   ├── dnfinition.adb            # Main entry point
+│   │   ├── dnfinition-tui.ads/.adb   # Terminal UI
+│   │   ├── dnfinition-transaction.ads/.adb  # Transaction engine (SPARK)
+│   │   ├── dnfinition-backend.ads    # Backend interface
+│   │   ├── dnfinition-backend-dnf.adb
+│   │   ├── dnfinition-backend-apt.adb
+│   │   └── dnfinition-snapshot.ads/.adb
+│   │
+│   └── elixir/
+│       ├── lib/
+│       │   ├── dnfinition/
+│       │   │   ├── application.ex
+│       │   │   ├── transaction_server.ex
+│       │   │   ├── snapshot_worker.ex
+│       │   │   └── history_store.ex
+│       │   └── dnfinition.ex
+│       └── mix.exs
+│
+├── dnfinition.gpr              # GPRbuild project
+├── justfile                    # Build automation
+└── config/
+    └── config.toml.example
+----
+
+== SPARK Verification
+
+=== Verified Properties
+
+. **Transaction Atomicity**: All-or-nothing execution
+. **Rollback Correctness**: Rollback restores exact prior state
+. **State Consistency**: System always in valid state
+
+=== Running Proofs
+
+[source,bash]
+----
+# Check mode (fast, syntax and flow)
+gnatprove -P dnfinition.gpr --mode=check
+
+# Prove mode (full verification)
+gnatprove -P dnfinition.gpr --mode=prove --level=2
+
+# Generate proof report
+gnatprove -P dnfinition.gpr --report=all
+----
+
+== Extension Points
+
+=== Adding a New Backend
+
+. Create `dnfinition-backend-yourpm.adb` implementing `Backend_Interface`
+. Add to `Backend_Type` enumeration
+. Register in backend detection logic
+. Add tests
+
+=== Adding a Snapshot Backend
+
+. Implement snapshot/restore procedures
+. Add detection logic
+. Register in snapshot manager
+. Test rollback scenarios
+
+See link:Adding-Backends[Adding Backends] for detailed guide.

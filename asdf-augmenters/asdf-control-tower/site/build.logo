@@ -1,0 +1,103 @@
+; SPDX-License-Identifier: MPL-2.0
+; asdf-control-tower site builder using terrapin-ssg
+; Generates promotional site for hyperpolymath asdf ecosystem
+
+; === Logo Graphics Procedures ===
+
+; Draw a hexagonal hub representing the control tower
+TO HUB :size
+  REPEAT 6 [FORWARD :size RIGHT 60]
+END
+
+; Draw a spoke connecting hub to satellite
+TO SPOKE :length
+  FORWARD :length
+  BACK :length
+END
+
+; Hub-and-spoke pattern representing SCM mirroring architecture
+TO HUB.AND.SPOKE :hubsize :spokelength :spokes
+  HUB :hubsize
+  REPEAT :spokes [
+    SPOKE :spokelength
+    RIGHT 360 / :spokes
+  ]
+END
+
+; Recursive tree for ecosystem growth visualization
+TO TREE :size :depth
+  IF :depth = 0 [STOP]
+  FORWARD :size
+  LEFT 30
+  TREE :size * 0.7 :depth - 1
+  RIGHT 60
+  TREE :size * 0.7 :depth - 1
+  LEFT 30
+  BACK :size
+END
+
+; Gear pattern for tooling/automation
+TO GEAR :radius :teeth
+  MAKE "angle 360 / :teeth
+  REPEAT :teeth [
+    FORWARD :radius * 0.3
+    RIGHT 90
+    FORWARD :radius * 0.15
+    LEFT 90
+    FORWARD :radius * 0.15
+    LEFT 90
+    FORWARD :radius * 0.15
+    RIGHT 90
+    FORWARD :radius * 0.3
+    RIGHT :angle
+  ]
+END
+
+; === Site Definition ===
+
+TO BUILD.SITE
+  SITE "asdf-control-tower
+  OUTDIR "_site
+  TITLE "hyperpolymath asdf ecosystem
+
+  ; Homepage with hub-and-spoke graphic
+  PAGE "index "Home [
+    PENCOLOR "#2563eb
+    HUB.AND.SPOKE 40 80 6
+  ]
+
+  ; Plugins page with tree graphic
+  PAGE "plugins "Plugins [
+    PENCOLOR "#059669
+    TREE 60 4
+  ]
+
+  ; Dashboard page with grid pattern
+  PAGE "dashboard "Dashboard [
+    PENCOLOR "#0891b2
+    REPEAT 4 [HUB 20 PENUP FORWARD 50 PENDOWN]
+  ]
+
+  ; Infrastructure page with gear
+  PAGE "infrastructure "Infrastructure [
+    PENCOLOR "#7c3aed
+    GEAR 50 12
+  ]
+
+  ; Roadmap page
+  PAGE "roadmap "Roadmap [
+    PENCOLOR "#dc2626
+    HUB 30
+    PENUP RIGHT 90 FORWARD 60 PENDOWN
+    HUB 30
+    PENUP RIGHT 90 FORWARD 60 PENDOWN
+    HUB 30
+  ]
+
+  ; Include AsciiDoc content
+  CONTENT "content/
+
+  BUILD
+END
+
+BUILD.SITE

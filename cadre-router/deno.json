@@ -1,0 +1,21 @@
+{
+  "name": "@cadre/router",
+  "version": "0.1.0",
+  "exports": "./src/client/CadreRouter.js",
+  "tasks": {
+    "build": "rescript build",
+    "clean": "rescript clean",
+    "watch": "rescript build -w",
+    "test": "deno test --allow-read tests/"
+  },
+  "imports": {
+    "@rescript/core": "npm:@rescript/core@^1.0.0",
+    "@rescript/react": "npm:@rescript/react@^0.12.0",
+    "rescript": "npm:rescript@^11.0.0"
+  },
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "react"
+  }
+}

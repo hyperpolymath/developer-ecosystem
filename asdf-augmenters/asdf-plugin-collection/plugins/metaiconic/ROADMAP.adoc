@@ -1,0 +1,41 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= asdf-metaiconic-plugin Roadmap
+:toc:
+
+[NOTE]
+====
+**Repository project specification - will be uploaded shortly**
+
+This roadmap will be populated once the metaiconic specification is available.
+====
+
+== Phase 0: Specification (Current)
+
+* [ ] Define what "metaiconic" is
+* [ ] Document installation sources and versioning scheme
+* [ ] Specify platform support matrix
+
+== Phase 1: Core Plugin
+
+* [ ] Implement `bin/list-all` - list available versions
+* [ ] Implement `bin/download` - download specific version
+* [ ] Implement `bin/install` - install downloaded version
+* [ ] Add `bin/help.overview` and `bin/help.config`
+
+== Phase 2: Testing & CI
+
+* [ ] Add plugin tests using https://github.com/asdf-vm/asdf-plugin-template[asdf-plugin-template] patterns
+* [ ] Configure GitHub Actions for testing
+* [ ] Test across platforms (Linux, macOS)
+
+== Phase 3: Distribution
+
+* [ ] Register with https://github.com/asdf-vm/asdf-plugins[asdf-plugins] shortname registry
+* [ ] Document usage in README
+
+== Dependencies
+
+Awaiting:
+
+1. Metaiconic project specification
+2. Release/distribution mechanism for metaiconic binaries or sources

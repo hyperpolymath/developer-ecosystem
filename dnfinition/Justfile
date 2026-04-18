@@ -1,0 +1,144 @@
+# SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+# Justfile for dnfinition - Universal Package Manager
+# Usage: just <recipe>
+
+# Default recipe - show help
+default:
+    @just --list
+
+# === Ada Build Targets ===
+
+# Build Ada in debug mode
+build:
+    @mkdir -p obj bin
+    gprbuild -P dnfinition.gpr -XMODE=debug
+
+# Build Ada in release mode
+build-release:
+    @mkdir -p obj bin
+    gprbuild -P dnfinition.gpr -XMODE=release
+
+# Build Ada for SPARK analysis
+build-spark:
+    @mkdir -p obj bin proof
+    gprbuild -P dnfinition.gpr -XMODE=spark
+
+# Clean Ada build artifacts
+clean-ada:
+    gprclean -P dnfinition.gpr
+    rm -rf obj bin proof
+
+# Run SPARK formal verification
+prove:
+    @mkdir -p proof
+    gnatprove -P dnfinition.gpr --level=2 --timeout=60
+
+# Run SPARK analysis with counterexamples
+prove-verbose:
+    @mkdir -p proof
+    gnatprove -P dnfinition.gpr --level=4 --timeout=120 --counterexamples=on
+
+# === Elixir/Data Layer Targets ===
+
+# Get Elixir dependencies
+deps:
+    cd src/data_layer && mix deps.get
+
+# Compile Elixir data layer
+compile-elixir:
+    cd src/data_layer && mix compile
+
+# Run Elixir tests
+test-elixir:
+    cd src/data_layer && mix test
+
+# Run Elixir tests with coverage
+test-elixir-cover:
+    cd src/data_layer && mix test --cover
+
+# Start Elixir data layer in IEx
+iex:
+    cd src/data_layer && iex -S mix
+
+# Clean Elixir build artifacts
+clean-elixir:
+    cd src/data_layer && mix clean
+    rm -rf src/data_layer/_build src/data_layer/deps
+
+# Format Elixir code
+format-elixir:
+    cd src/data_layer && mix format
+
+# Check Elixir formatting
+check-format-elixir:
+    cd src/data_layer && mix format --check-formatted
+
+# Run Elixir static analysis (if dialyzer is set up)
+dialyzer:
+    cd src/data_layer && mix dialyzer
+
+# === Combined Targets ===
+
+# Build everything (Ada + Elixir)
+all: build compile-elixir
+
+# Build release (Ada + Elixir)
+all-release: build-release compile-elixir
+
+# Clean all build artifacts
+clean: clean-ada clean-elixir
+
+# Run all tests
+test: test-elixir
+    @echo "Note: Ada tests not yet implemented"
+
+# === Development Targets ===
+
+# Run the CLI (debug build)
+run *ARGS: build
+    ./bin/dnfinition {{ARGS}}
+
+# Run with release build
+run-release *ARGS: build-release
+    ./bin/dnfinition {{ARGS}}
+
+# Watch and rebuild Elixir on changes
+watch-elixir:
+    cd src/data_layer && mix compile --force && inotifywait -m -r -e modify lib | while read; do mix compile; done
+
+# === Quality Checks ===
+
+# Run all quality checks
+check: check-format-elixir
+    @echo "Ada style checks via compiler warnings (-gnatwa -gnatyO)"
+
+# Full CI-equivalent check
+ci: all test prove
+    @echo "CI checks complete"
+
+# === Documentation ===
+
+# Generate Elixir docs
+docs-elixir:
+    cd src/data_layer && mix docs
+
+# === Setup ===
+
+# Initial project setup
+setup:
+    @mkdir -p obj bin proof
+    @echo "Getting Elixir dependencies..."
+    cd src/data_layer && mix deps.get
+    @echo "Setup complete. Run 'just build' to compile."
+
+# Install development tools
+install-tools:
+    @echo "Installing Ada tools (requires GNAT)..."
+    @which gprbuild || echo "Install GNAT: 'sudo dnf install gcc-gnat gprbuild'"
+    @which gnatprove || echo "Install SPARK: 'alr install gnatprove'"
+    @echo ""
+    @echo "Installing Elixir tools..."
+    @which elixir || echo "Install Elixir: 'sudo dnf install elixir'"
+    @which mix || echo "Mix should come with Elixir"

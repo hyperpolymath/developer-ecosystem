@@ -1,0 +1,258 @@
+= asdf-acceleration-middleware
+
+[![RSR Compliance](https://img.shields.io/badge/RSR-Silver-silver)](https://rhodium-standard.org)
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)]()
+
+*High-performance middleware and tooling ecosystem for accelerating [asdf](https://asdf-vm.com/) runtime operations.*
+
+== Overview
+
+asdf-acceleration-middleware provides a comprehensive suite of tools and libraries to dramatically speed up asdf operations through intelligent caching, parallel execution, and optimized workflows. Built in Rust for maximum performance and safety.
+
+=== Performance Goals
+
+- *2.5x faster* sequential execution vs. bash
+- *7.5x faster* with 4-way parallelization
+- *11x faster* with 8-way parallelization
+
+=== Key Features
+
+- 🚀 *Parallel Plugin Operations* - Concurrent install, update, and sync
+- 💾 *Multi-Level Caching* - Smart caching with TTL and invalidation
+- 📊 *Real-Time Monitoring* - Performance metrics and health dashboards
+- 🔧 *Auto-Discovery* - Intelligent runtime detection and configuration
+- 🎯 *Type-Safe Configuration* - Nickel-based declarative configs
+- 🔐 *Security-First* - SELinux integration, audit logging
+- 🌐 *Offline-First* - Works air-gapped, no mandatory network calls
+- ⚡ *Zero-Copy Operations* - Memory-efficient processing
+
+== Quick Start
+
+=== Installation
+
+```bash
+= Clone repository
+git clone https://github.com/Hyperpolymath/asdf-acceleration-middleware
+cd asdf-acceleration-middleware
+
+= Build from source
+cargo build --release
+
+= Install CLI tools
+cargo install --path crates/asdf-accelerate
+cargo install --path crates/asdf-bench
+cargo install --path crates/asdf-discover
+cargo install --path crates/asdf-monitor
+```
+
+=== Basic Usage
+
+```bash
+= Accelerate asdf plugin updates
+asdf-accelerate update --all --jobs 8
+
+= Benchmark current performance
+asdf-bench --baseline
+
+= Discover installed runtimes
+asdf-discover scan --format json
+
+= Monitor asdf operations
+asdf-monitor dashboard
+```
+
+== Architecture
+
+=== Workspace Structure
+
+```
+asdf-acceleration-middleware/
+├── crates/
+│   ├── asdf-core/         # Core asdf integration library
+│   ├── asdf-cache/        # Caching layer (Sled-based)
+│   ├── asdf-parallel/     # Parallel execution engine
+│   ├── asdf-config/       # Configuration management (Nickel)
+│   ├── asdf-metrics/      # Metrics and monitoring
+│   ├── asdf-accelerate/   # Main CLI tool
+│   ├── asdf-bench/        # Benchmarking tool
+│   ├── asdf-discover/     # Auto-discovery tool
+│   └── asdf-monitor/      # Monitoring dashboard
+├── docs/                  # Documentation
+├── examples/              # Example configurations
+├── .well-known/           # RFC 9116, AI policies
+├── justfile               # Build automation
+├── flake.nix             # Nix reproducible builds
+└── Cargo.toml            # Workspace configuration
+```
+
+=== Core Libraries
+
+==== asdf-core
+Core abstractions for asdf operations with type-safe wrappers.
+
+==== asdf-cache
+Multi-level caching system:
+- *L1*: In-memory LRU cache
+- *L2*: Sled embedded database
+- *L3*: Filesystem cache
+
+==== asdf-parallel
+Rayon-based parallel execution with intelligent job scheduling.
+
+==== asdf-config
+Nickel-based declarative configuration with validation.
+
+== CLI Tools
+
+=== asdf-accelerate
+
+Main acceleration CLI wrapping asdf commands.
+
+```bash
+= Update all plugins in parallel
+asdf-accelerate update --all --jobs 8 --cache-ttl 3600
+
+= Install multiple runtimes
+asdf-accelerate install nodejs@20.0.0 ruby@3.2.0 --parallel
+
+= Sync plugins with caching
+asdf-accelerate sync --exclude rust --background
+```
+
+=== asdf-bench
+
+Comprehensive benchmarking suite.
+
+```bash
+= Run full benchmark suite
+asdf-bench --all
+
+= Compare with baseline
+asdf-bench --baseline bash --compare
+
+= Generate performance report
+asdf-bench --report html --output ./report.html
+```
+
+=== asdf-discover
+
+Auto-discovery and intelligent configuration.
+
+```bash
+= Scan system for runtimes
+asdf-discover scan --deep
+
+= Generate Nickel configuration
+asdf-discover generate --format nickel --output config.ncl
+
+= Validate existing setup
+asdf-discover validate
+```
+
+=== asdf-monitor
+
+Real-time monitoring and metrics dashboard.
+
+```bash
+= Launch TUI dashboard
+asdf-monitor dashboard
+
+= Export metrics
+asdf-monitor metrics --format prometheus --output metrics.txt
+
+= Health check
+asdf-monitor health
+```
+
+== Configuration
+
+=== Nickel Configuration Example
+
+```nickel
+{
+  asdf = {
+    cache = {
+      enabled = true,
+      ttl = 3600,
+      max_size_mb = 500,
+    },
+    parallel = {
+      max_jobs = 8,
+      strategy = "auto",
+    },
+    plugins = {
+      exclude = ["rust", "golang"],
+      auto_update = true,
+    },
+    notifications = {
+      enabled = true,
+      level = "errors_only",
+    },
+  }
+}
+```
+
+== RSR Compliance
+
+This project adheres to the *Rhodium Standard Repository (RSR)* framework:
+
+- ✅ *Type Safety*: Rust compile-time guarantees
+- ✅ *Memory Safety*: Ownership model, zero `unsafe` blocks in core
+- ✅ *Offline-First*: No mandatory network calls
+- ✅ *Complete Documentation*: README, CONTRIBUTING, CODE_OF_CONDUCT, SECURITY
+- ✅ *Build Reproducibility*: Nix flakes, locked dependencies
+- ✅ *CI/CD*: Automated testing and validation
+- ✅ *Security*: `.well-known/security.txt` (RFC 9116)
+- ✅ *TPCF*: Tri-Perimeter Contribution Framework (Community Sandbox)
+
+*Compliance Level*: Silver (targeting Gold)
+
+== Contributing
+
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+=== TPCF Perimeter
+
+This project operates under *Perimeter 3 (Community Sandbox)*:
+- ✅ Open contributions welcomed
+- ✅ Public issue tracker
+- ✅ Community governance
+- 📋 Code review required
+- 🔐 Maintainer approval for merge
+
+== Security
+
+See [SECURITY.md](SECURITY.md) for security policies and vulnerability reporting.
+
+Security contact: [.well-known/security.txt](.well-known/security.txt)
+
+== License
+
+Dual-licensed under:
+- *Palimpsest-MPL-1.0 License* - See [LICENSE.txt](LICENSE.txt)
+- *Palimpsest License v0.8* - See [LICENSE.txt](LICENSE.txt)
+
+You may use this project under either license.
+
+== Maintainers
+
+See [MAINTAINERS.md](MAINTAINERS.md)
+
+== Acknowledgments
+
+- [asdf-vm](https://asdf-vm.com/) - The extensible version manager
+- [asdf-sync-rs](https://github.com/Hyperpolymath/asdf-sync-rs) - Sibling project for plugin syncing
+- Rhodium Standard Repository framework
+- All contributors!
+
+== Resources
+
+- 📖 [Documentation](docs/)
+- 🐛 [Issue Tracker](https://github.com/Hyperpolymath/asdf-acceleration-middleware/issues)
+- 💬 [Discussions](https://github.com/Hyperpolymath/asdf-acceleration-middleware/discussions)
+- 🚀 [Changelog](CHANGELOG.md)
+
+---
+
+*Built with ❤️ using Rust and the RSR framework*

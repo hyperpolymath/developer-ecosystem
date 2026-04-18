@@ -1,0 +1,125 @@
+= dnfinition — Roadmap
+:toc:
+:sectnums:
+
+== Overview
+
+This roadmap outlines planned development phases for the dnfinition project. Specific milestones and deliverables will be defined once the project specification is uploaded.
+
+== Phases
+
+=== Phase 0: Repository Setup ✅
+
+[cols="1,3,1"]
+|===
+|Item |Description |Status
+
+|Repository infrastructure
+|GitHub workflows, issue templates, CI/CD scaffolding
+|✅ Complete
+
+|Template files
+|Justfile, editorconfig, gitignore
+|✅ Complete
+
+|License
+|Dual MIT OR AGPL-3.0 licensing
+|✅ Complete
+
+|Security policy
+|SECURITY.md template
+|✅ Complete
+|===
+
+=== Phase 1: Specification ⏳
+
+[cols="1,3,1"]
+|===
+|Item |Description |Status
+
+|Project definition
+|Core purpose, scope, and objectives
+|⏳ Pending
+
+|Technical specification
+|Architecture, components, interfaces
+|⏳ Pending
+
+|Requirements document
+|Functional and non-functional requirements
+|⏳ Pending
+|===
+
+=== Phase 2: Design ⏳
+
+[cols="1,3,1"]
+|===
+|Item |Description |Status
+
+|Architecture design
+|System architecture and component design
+|⏳ Pending
+
+|API design
+|Interface definitions and contracts
+|⏳ Pending
+
+|Data model
+|Data structures and schemas
+|⏳ Pending
+|===
+
+=== Phase 3: Implementation ⏳
+
+[cols="1,3,1"]
+|===
+|Item |Description |Status
+
+|Core implementation
+|Primary functionality
+|⏳ Pending
+
+|Testing
+|Unit, integration, and system tests
+|⏳ Pending
+
+|Documentation
+|User and developer documentation
+|⏳ Pending
+|===
+
+=== Phase 4: Release ⏳
+
+[cols="1,3,1"]
+|===
+|Item |Description |Status
+
+|Alpha release
+|Initial functional release for testing
+|⏳ Pending
+
+|Beta release
+|Feature-complete release for broader testing
+|⏳ Pending
+
+|Stable release
+|Production-ready release
+|⏳ Pending
+|===
+
+== Notes
+
+* This roadmap will be updated as the project specification is defined
+* Phase details and timelines are placeholders pending specification upload
+* See link:README.adoc[README.adoc] for current project state
+
+== OPSM Integration
+
+[source]
+----
+OPSM Core
+  |
+  v
+dnfinition (OS-level package manager bridge for OPSM)
+
+----

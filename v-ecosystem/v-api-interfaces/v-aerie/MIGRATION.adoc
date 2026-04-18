@@ -1,0 +1,94 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+= V-lang → Zig Migration Record
+:toc:
+
+== Status
+
+*Port complete 2026-04-17; deletion pending build + integration verification.*
+
+The V-lang API gateway (`src/api/v/`) has been fully ported to idiomatic Zig
+at `src/api/zig/`. The V sources are retained read-only for reference.
+V-lang was banned estate-wide 2026-04-10; see
+link:https://github.com/hyperpolymath/standards/blob/main/VLANG-BAN.adoc[VLANG-BAN.adoc].
+
+== V → Zig File Mapping
+
+[cols="2,2,3"]
+|===
+| V source | Zig replacement | Notes
+
+| `main.v`
+| `src/api/zig/main.zig`
+| Entry point, HTTP server, gRPC listener, protocol dispatch
+
+| `policy.v`
+| `src/api/zig/policy.zig`
+| Policy gate, `PolicyDecision`, `AuditEvent`
+
+| `proof.v`
+| `src/api/zig/proof.zig`
+| SHA-256 proof envelope, UUID v4 generation, RFC 3339 timestamps
+
+| `resolvers.v`
+| `src/api/zig/resolvers.zig`
+| Shared resolution logic for GraphQL/REST/gRPC
+
+| `verb_governance.v`
+| `src/api/zig/verb_governance.zig`
+| Verb governance, trie-prefix matching, stealth timing jitter
+
+| `redis_client.v`
+| `src/api/zig/redis_client.zig`
+| Raw RESP protocol over TCP, cache + audit log
+
+| `librespeed_client.v`
+| `src/api/zig/librespeed_client.zig`
+| HTTP GET to LibreSpeed; shared `httpGet` helper
+
+| `hyperglass_client.v`
+| `src/api/zig/hyperglass_client.zig`
+| HTTP POST to Hyperglass; BGP route hop parsing
+
+| `smokeping_client.v`
+| `src/api/zig/smokeping_client.zig`
+| HTTP GET to SmokePing; CSV + RRD XML parsing
+
+| `verisim_client.v`
+| `src/api/zig/verisim_client.zig`
+| VerisimDB bitemporal client; `dualLogAudit`; shared `auditEventToJson`
+
+| _(inline in V modules)_
+| `src/api/zig/types.zig`
+| All shared domain types extracted into one place
+
+|===
+
+== Build
+
+```bash
+# From repo root:
+zig build              # → zig-out/bin/aerie-gateway
+zig build run          # build + run
+zig build test         # unit tests
+```
+
+== Judgment Calls During Port
+
+V uses garbage-collected heap strings everywhere. The Zig port uses fixed-size
+stack buffers (e.g. `[256]u8` for messages) and per-request arena allocators for
+dynamic data (audit log slices, GraphQL argument strings). This avoids heap
+fragmentation in a long-running server.
+
+V's `TrieNode` with heap map children was replaced by a simple linear scan of
+the 6 hardcoded `RULES` with longest-prefix-wins logic. With only 6 rules this
+is O(6) and avoids pointer-heavy allocation. Phase 2 (YAML-loaded rules) may
+reinstate a trie.
+
+`std.Thread.sleep` is used in place of V's `time.sleep` (the function moved in
+Zig 0.15.2). `std.ArrayList(T)` in 0.15.2 is the unmanaged form (allocator
+passed at each `append` call).
+
+`v_grpc` dependency was dropped entirely. The Phase 1 gRPC layer (4-byte
+length-prefixed JSON) is implemented directly over `std.net.Stream` — no
+external gRPC crate needed at this phase.

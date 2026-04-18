@@ -1,0 +1,126 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+
+= zig-groove-bridge
+
+Dodeca-API multi-protocol connector for the Groove protocol.
+Zig replacement for the banned V-lang `v-groove-bridge`.
+
+== Overview
+
+`zig-groove-bridge` is a snap-on/snap-off connector that discovers local Groove-aware services and presents a unified API surface across all 12 API types:
+REST, gRPC, GraphQL, JSON-RPC, WebSocket, MQTT, AMQP, CoAP, SOAP, Cap'n Proto, SSE, and Groove native.
+
+Attach to any Groove-aware service with a single function call; detach cleanly when done.
+Zero external dependencies — uses only Zig stdlib.
+
+== Quick Start
+
+=== Build
+
+[source,bash]
+----
+zig build
+----
+
+Produces:
+- Shared library: `zig-cache/lib/libgroove_bridge.so` (or `.dylib` on macOS, `.dll` on Windows)
+- Static library: `zig-cache/lib/libgroove_bridge.a`
+
+=== Run Unit Tests
+
+[source,bash]
+----
+zig build test
+----
+
+All unit tests are offline; no services required.
+
+=== Run Integration Tests
+
+[source,bash]
+----
+zig build test-integration
+----
+
+Requires one or more Groove-aware services running on the local machine.
+The bridge probes known ports (8080, 4010, 4020, etc.) and the dynamic Groove range (6460-6500).
+Tests pass even if no services are reachable — they validate discovery logic only.
+
+== Consumer Pattern
+
+The three-call pattern:
+
+[source,zig]
+----
+const bridge = @import("zig-groove-bridge");
+
+// 1. Discover all local services
+var services = try bridge.discoverAll(allocator);
+defer services.deinit();
+
+// 2. Snap on to a named service
+var att = try bridge.attach(allocator, "verisimdb");
+defer att.snapOff();
+
+// 3. Call through the attachment
+const body = try att.get(allocator, "/api/v1/health");
+defer allocator.free(body);
+----
+
+Methods on `Attachment`:
+- `get(allocator, path)` — HTTP GET, returns response body
+- `post(allocator, path, body)` — HTTP POST, returns response body
+- `isLive(allocator)` — check if service is still reachable
+- `baseUrl()` — view the base URL (`http://127.0.0.1:<port>`)
+- `snapOff()` — mark attachment inactive
+
+== Status
+
+Working code with full integration test coverage.
+Part of the unified Zig API stack (`developer-ecosystem/zig-ecosystem/connectors/`).
+Will integrate with `developer-ecosystem/zig-api/` foundation in a later pass.
+
+== Integration Test Prerequisites
+
+To run integration tests meaningfully, one or more of these services should be running locally:
+
+- **VeriSimDB** (port 8080, 8093-8095)
+- **Hypatia** (port 9090)
+- **Stapeln** (port 4010)
+- **Burble** (port 4020)
+- **IDApTIK** (port 4030)
+- **Gossamer** (port 4040)
+- **AmbientOps** (port 4050)
+- **RepoSystem** (port 4060)
+- **BoJ Server** (port 7700)
+- **ECHIDNA** (port 8081)
+
+Consult the Groove protocol reference at `standards/groove-protocol/` for service configuration.
+
+== Architecture
+
+`zig-groove-bridge` implements:
+
+- **Service discovery** — probes known ports + dynamic Groove range (6460-6500)
+- **Groove manifest parsing** — zero-copy JSON substring extraction (no external JSON parser)
+- **Dodeca-API type system** — enum of 12 API surface types
+- **Snap-on attachment** — lightweight wrapper over base URL + health check
+- **HTTP client** — synchronous GET/POST via Zig stdlib `std.http`
+
+No async/await. Attachments are fire-and-forget (no network teardown).
+
+== Files
+
+- `src/main.zig` — main library (622 LOC)
+- `build.zig` — Zig build configuration
+- `test/integration_test.zig` — integration tests (36 LOC)
+- `.gitignore` — standard Zig ignores
+- `README.adoc` — this file
+
+== License
+
+SPDX-License-Identifier: `PMPL-1.0-or-later`
+(Automatic legal fallback: `MPL-2.0` until PMPL achieves formal recognition)
+
+See `LICENSE` in the repository root for full text.

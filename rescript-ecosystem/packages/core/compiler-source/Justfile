@@ -1,0 +1,152 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Justfile for ReScript monorepo
+
+set shell := ["bash", "-euo", "pipefail", "-c"]
+
+[private]
+_platform:
+    @if [[ "${OS:-}" == "Windows_NT" ]]; then \
+        echo "win32-x64"; \
+    else \
+        uname_s="$$(uname -s)"; \
+        uname_m="$$(uname -m)"; \
+        case "$$uname_s-$$uname_m" in \
+            Darwin-arm64) echo "darwin-arm64" ;; \
+            Darwin-*) echo "darwin-x64" ;; \
+            Linux-aarch64|Linux-arm64) echo "linux-arm64" ;; \
+            Linux-*) echo "linux-x64" ;; \
+            *) echo "Unsupported platform: $$uname_s-$$uname_m" >&2; exit 1 ;; \
+        esac; \
+    fi
+
+[private]
+_bin-dir:
+    @platform="$$(just --quiet _platform)"; \
+    echo "packages/@rescript/$$platform/bin"
+
+[private]
+_copy-exe src dest:
+    cp "{{src}}" "{{dest}}"
+    chmod 755 "{{dest}}"
+    @if [[ "${OS:-}" != "Windows_NT" ]] && command -v strip >/dev/null 2>&1; then \
+        strip "{{dest}}" || true; \
+    fi
+
+default:
+    @just --list --unsorted
+
+yarn-install:
+    yarn install
+
+rewatch profile="auto":
+    @build_profile="debug"; \
+    cargo_flags=""; \
+    if [[ "{{profile}}" == "release" ]] || ([[ "{{profile}}" == "auto" ]] && [[ -n "${CI:-}" ]]); then \
+        build_profile="release"; \
+        cargo_flags="--release"; \
+    fi; \
+    cargo build --manifest-path rewatch/Cargo.toml $$cargo_flags; \
+    src="rewatch/target/$$build_profile/rescript"; \
+    if [[ "${OS:-}" == "Windows_NT" ]]; then src="$$src.exe"; fi; \
+    bin_dir="$$(just --quiet _bin-dir)"; \
+    mkdir -p "$$bin_dir"; \
+    just --quiet _copy-exe "$$src" "$$bin_dir/rescript.exe"
+
+compiler:
+    dune build
+    @bin_dir="$$(just --quiet _bin-dir)"; \
+    mkdir -p "$$bin_dir"; \
+    for bin in bsc rescript-editor-analysis rescript-tools; do \
+        src="./_build/install/default/bin/$$bin"; \
+        if [[ ! -f "$$src" ]]; then src="./_build/install/default/bin/$$bin.exe"; fi; \
+        just --quiet _copy-exe "$$src" "$$bin_dir/$$bin.exe"; \
+    done
+
+build: compiler rewatch
+
+lib: yarn-install build
+    yarn workspace @rescript/runtime build
+
+artifacts: lib
+    ./scripts/updateArtifactList.js
+
+bench: compiler
+    ./_build/install/default/bin/syntax_benchmarks
+
+test: lib
+    node scripts/test.js -all
+
+test-analysis: lib
+    just --working-directory tests/analysis_tests clean test
+
+test-reanalyze: lib
+    just --working-directory tests/analysis_tests/tests-reanalyze/deadcode test
+
+benchmark-reanalyze copies="50": lib
+    COPIES={{copies}} just --working-directory tests/analysis_tests/tests-reanalyze/deadcode-benchmark benchmark
+
+test-tools: lib
+    just --working-directory tests/tools_tests clean test
+
+test-syntax: compiler
+    ./scripts/test_syntax.sh
+
+test-syntax-roundtrip: compiler
+    ROUNDTRIP_TEST=1 ./scripts/test_syntax.sh
+
+test-gentype: lib
+    just --working-directory tests/gentype_tests/typescript-react-example clean test
+    just --working-directory tests/gentype_tests/stdlib-no-shims clean test
+
+test-rewatch: lib
+    @rescript_exe="$$(just --quiet _bin-dir)/rescript.exe"; \
+    ./rewatch/tests/suite.sh "$$rescript_exe"
+
+test-all: test test-gentype test-analysis test-tools test-rewatch
+
+playground: playground-compiler playground-cmijs
+
+playground-compiler:
+    dune build --profile browser --build-dir ./_build_playground
+    cp -f ./_build_playground/default/compiler/jsoo/jsoo_playground_main.bc.js packages/playground/compiler.js
+
+playground-cmijs: lib
+    yarn workspace playground build
+
+playground-test: playground
+    yarn workspace playground test
+
+playground-release: playground-test
+    yarn workspace playground upload-bundle
+
+format: yarn-install
+    ./scripts/format.sh
+
+checkformat: yarn-install
+    ./scripts/format_check.sh
+
+clean-rewatch:
+    cargo clean --manifest-path rewatch/Cargo.toml
+    rm -rf rewatch/target
+    @bin_dir="$$(just --quiet _bin-dir)"; \
+    rm -f "$$bin_dir/rescript.exe"
+
+clean-compiler:
+    dune clean
+    @bin_dir="$$(just --quiet _bin-dir)"; \
+    rm -f "$$bin_dir/bsc.exe" "$$bin_dir/rescript-editor-analysis.exe" "$$bin_dir/rescript-tools.exe"
+
+clean-lib:
+    yarn workspace @rescript/runtime rescript clean
+    rm -f packages/@rescript/runtime/.buildstamp
+
+clean-gentype:
+    just --working-directory tests/gentype_tests/typescript-react-example clean
+    just --working-directory tests/gentype_tests/stdlib-no-shims clean
+
+clean-tests: clean-gentype
+
+clean: clean-lib clean-compiler clean-rewatch
+
+dev-container:
+    docker build -t rescript-dev-container docker

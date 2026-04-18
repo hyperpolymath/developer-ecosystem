@@ -1,0 +1,30 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+= LOL v-lol — V-lang Deprecated (2026-04-12)
+:toc:
+
+== Status
+
+The V-lang LOL API bindings in `src/` are *deprecated* as of 2026-04-12
+following the estate-wide V-lang ban (2026-04-10).
+The source was already sidelined (see `src/SIDELINED.adoc`).
+
+== Migration Target: Zig FFI
+
+`v-lol` wrapped `liblol` (the LOL i18n Zig FFI library) with idiomatic V types.
+The canonical replacement is the Zig FFI directly at `../zig-gateway/` which
+links `liblol` without a V shim layer.
+
+[cols="1,1"]
+|===
+| V module (deprecated) | Replacement
+
+| `src/lol.v`   | `../zig-gateway/src/lol_ffi.zig` (direct Zig call)
+| `src/types.v` | `../zig-gateway/src/types.zig`
+| `src/ffi.v`   | `../zig-gateway/src/` (FFI inlined)
+|===
+
+== Next Steps
+
+. Confirm `zig-gateway` compiles and links `liblol` successfully.
+. Delete `src/*.v` and `v.mod` once zig-gateway is healthy.

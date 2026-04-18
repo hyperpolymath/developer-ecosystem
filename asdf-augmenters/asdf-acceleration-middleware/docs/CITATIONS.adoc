@@ -1,0 +1,36 @@
+= asdf-acceleration-middleware - Citation Guide
+:toc:
+
+== BibTeX
+
+[source,bibtex]
+----
+@software{asdf-acceleration-middleware_2025,
+  author = {Polymath, Hyper},
+  title = {asdf-acceleration-middleware},
+  year = {2025},
+  url = {https://github.com/hyperpolymath/asdf-acceleration-middleware},
+  license = {AGPL-3.0-or-later}
+}
+----
+
+== Harvard Style
+
+Polymath, H. (2025) _asdf-acceleration-middleware_ [Computer software]. Available at: https://github.com/hyperpolymath/asdf-acceleration-middleware
+
+== OSCOLA
+
+Hyper Polymath, 'asdf-acceleration-middleware' (2025) <https://github.com/hyperpolymath/asdf-acceleration-middleware>
+
+== MLA
+
+Polymath, Hyper. "asdf-acceleration-middleware." 2025, github.com/hyperpolymath/asdf-acceleration-middleware.
+
+== APA 7
+
+Polymath, H. (2025). _asdf-acceleration-middleware_ [Computer software]. GitHub. https://github.com/hyperpolymath/asdf-acceleration-middleware
+
+== See Also
+
+* link:../CITATION.cff[CITATION.cff]
+* link:../codemeta.json[codemeta.json]

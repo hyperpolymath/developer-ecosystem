@@ -1,0 +1,144 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2024-2025 hyperpolymath
+
+= Bridge-Nginx-Zig Roadmap
+:toc: macro
+:toclevels: 2
+:icons: font
+
+[.lead]
+Development roadmap for the Zig-based Nginx configuration bridge with Ephapax linear token integration.
+
+toc::[]
+
+== Current State
+
+[cols="1,3"]
+|===
+| Phase | Status
+
+| Specification
+| ✅ Complete — Concept defined, repository infrastructure established
+
+| Implementation
+| ⏳ Pending — Source code to be uploaded
+|===
+
+== Phase 1: Foundation
+
+=== 1.1 Core Bridge Implementation
+
+* [ ] `src/bridge.zig` — Main bridge module
+* [ ] `src/token.zig` — Ephapax token handling
+* [ ] `src/validator.zig` — Configuration buffer validation
+* [ ] `src/ffi.zig` — C FFI bindings for Nginx structures
+
+=== 1.2 Build System
+
+* [ ] `build.zig` — Zig build configuration
+* [ ] `justfile` — Task runner recipes
+** `just build` — Compile bridge
+** `just test` — Run test suite
+** `just install-bridge` — Install to system
+
+=== 1.3 Nginx Integration
+
+* [ ] `lib/ngx_ephapax_module.c` — Nginx module wrapper
+* [ ] `lib/ngx_ephapax_module.h` — Header definitions
+* [ ] FFI boundary between Zig and Nginx C structures
+
+== Phase 2: Token System
+
+=== 2.1 Linear Token Semantics
+
+* [ ] Single-use token enforcement
+* [ ] Token consumption tracking
+* [ ] Double-use detection and panic
+* [ ] Token provenance chain
+
+=== 2.2 Ephapax Supervisor Protocol
+
+* [ ] Token request interface
+* [ ] Validated handover protocol
+* [ ] Supervisor heartbeat/health
+* [ ] Token revocation support
+
+== Phase 3: Validation Layer
+
+=== 3.1 Configuration Validation
+
+* [ ] Syntax validation (pre-parse)
+* [ ] Semantic validation (directive checking)
+* [ ] Security policy enforcement
+* [ ] Resource limit validation
+
+=== 3.2 Safety Guarantees
+
+* [ ] Buffer bounds checking
+* [ ] Null pointer protection
+* [ ] Memory safety across FFI boundary
+* [ ] Graceful error propagation to Nginx
+
+== Phase 4: Testing & Quality
+
+=== 4.1 Test Suite
+
+* [ ] Unit tests for Zig modules
+* [ ] Integration tests with Nginx
+* [ ] Fuzz testing for validator
+* [ ] Property-based testing for token semantics
+
+=== 4.2 Documentation
+
+* [ ] API documentation
+* [ ] Architecture decision records (ADRs)
+* [ ] Deployment guide
+* [ ] Troubleshooting guide
+
+== Phase 5: Production Readiness
+
+=== 5.1 Performance
+
+* [ ] Benchmark suite
+* [ ] Zero-copy buffer passing where possible
+* [ ] Latency profiling
+* [ ] Memory usage optimization
+
+=== 5.2 Observability
+
+* [ ] Structured logging
+* [ ] Metrics export (Prometheus-compatible)
+* [ ] Tracing support
+* [ ] Health check endpoints
+
+=== 5.3 Deployment
+
+* [ ] Container image
+* [ ] Guix package definition
+* [ ] Nix flake
+* [ ] Distribution packages (deb/rpm)
+
+== Future Considerations
+
+=== Potential Extensions
+
+* *Multi-instance support* — Bridge multiple Nginx instances
+* *Hot reload* — Seamless configuration updates without restart
+* *Configuration versioning* — Track and rollback configurations
+* *Audit logging* — Complete audit trail of all configuration changes
+
+=== Research Areas
+
+* Integration with other web servers (Caddy, HAProxy)
+* Hardware security module (HSM) integration for token signing
+* Distributed Ephapax supervisor for HA deployments
+
+== Contributing
+
+See link:CONTRIBUTING.md[CONTRIBUTING.md] for how to contribute to this roadmap.
+
+Priority items are tagged with `help wanted` in the issue tracker.
+
+---
+
+_Last updated: 2025_

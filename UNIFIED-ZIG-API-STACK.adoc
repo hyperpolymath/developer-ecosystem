@@ -1,0 +1,481 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+// (MPL-2.0 is the automatic legal fallback until PMPL is formally recognised)
+= Unified Zig API Stack — Authoritative Playbook
+:toc:
+:toc-placement: preamble
+:doctype: article
+
+The canonical reference for every Zig-edge repo wiring into the
+hyperpolymath API stack.  Read this before designing or wiring any
+Zig-facing service boundary.
+
+== TL;DR
+
+The unified-zig-api stack replaces the retired haxadeca-v-api / unified-v-api /
+v-grpc / v-rest / v-zig-ffi / v-idris-abi family.  It is organised as four
+vertically-stacked layers:
+
+[none]
+- *Layer 1 — Idris2 core* (`verification-ecosystem/proven/`): formally verified
+  primitive operations; the ultimate source of trust.
+- *Layer 2 — Idris2 ABI* (`developer-ecosystem/zig-api/src/ZigApi/ABI/`): dependent-type
+  proofs of the C ABI surface — tag round-trips, safe-path soundness, injectivity,
+  memory layout.
+- *Layer 3 — Zig runtime* (`developer-ecosystem/zig-api/ffi/zig/src/`): C-ABI
+  implementations of core, process, gnosis, and connector subsystems;
+  exports the `uapi_*` symbol set.
+- *Layer 4 — C adaptor* (`developer-ecosystem/zig-api/generated/abi/zig_api.h`):
+  auto-generated from the Idris2 ABI; consumed by any language that speaks C FFI.
+
+Edge repos consume from this stack only.  Never re-roll equivalent functionality
+inline.
+
+== The Four Layers
+
+=== Layer 1 — Idris2 core (`verification-ecosystem/proven/`)
+
+*What it is.* A formally verified safety library: 104 modules in
+`src/Proven/` written with `%default total`, zero `believe_me`, zero
+`assert_total`.  Every function is proved to terminate, cover all cases, and
+return a value — no runtime exceptions possible.
+
+*Canonical entry points for consumers.*
+
+[cols="1,3"]
+|===
+| Path | Purpose
+
+| `core-only.ipkg`
+| Minimal package — import only the Idris2 proofs, no FFI dependency.
+  Preferred when you need proof witnesses in your own Idris2 ABI layer.
+
+| `api/`
+| High-level module surface for direct Idris2 consumers.
+
+| `bindings/`
+| Language-specific thin wrappers (18 complete, 102 scaffolded).
+  C, Rust, Python, ReScript bindings are production-ready;
+  others are research-stage.
+
+| `ffi/zig/src/main.zig`
+| Zig bridge: wraps Idris2 RefC output, exposes `proven_ffi_*` C symbols.
+|===
+
+*CRG grade:* C (Beta) — core proven, Rust/Python/C bindings tested; 102
+targets scaffolded.  Never reimplement logic in bindings; call Zig FFI only.
+
+=== Layer 2 — Idris2 ABI (`developer-ecosystem/zig-api/src/ZigApi/ABI/`)
+
+*What it is.* Dependent-type proofs of the C ABI surface shared with the Zig
+runtime.  These proofs run at compile time; any ABI drift is a type error.
+
+*Modules present.*
+
+[cols="1,3"]
+|===
+| File | Content
+
+| `Types.idr`
+| `Platform`, `Result` codes (11 variants), `Handle`, `Slot`, `ValidSlot`,
+  platform pointer-width claims.
+
+| `Http.idr`
+| `Method` (7 variants), `ServerState` (4 variants), `HealthStatus`,
+  `RouteDescriptor`.  Includes `methodTag`, `methodFromTag`, round-trip proofs.
+
+| `Process.idr`
+| `IsSafePath` structural proof, `ExecResult`, `GnosisRenderCmd`.
+  A `GnosisRenderCmd` cannot be constructed for an unsafe path without
+  discharging the `IsSafePath` proof — path safety is mandatory, not advisory.
+
+| `Connector.idr`
+| `ServiceId` (11 variants, 0–10), `ConnectorState` (6 variants),
+  `GrooveManifest`.  `serviceIdTag` + `serviceIdFromTag` with round-trip proof.
+
+| `Layout.idr`
+| Machine-checked memory layout claims: tag-count bounds (all enums fit in u8),
+  pool/sentinel bounds (capacity 64, sentinel 255, 64 < 255),
+  `@sizeOf` claims (handle = 8 bytes, slot = 1 byte).
+
+| `Proofs.idr`
+| Cross-cutting proofs: slot validity (sentinel 255 cannot build `ValidSlot`),
+  round-trip completeness across all five enum types, `SafePath` soundness
+  (empty allowlist denies; head-match accepts), health status contract
+  (200/503 codes, distinctness, 5xx range).
+
+| `Foreign.idr`
+| `%foreign` declarations for every `uapi_*` symbol in the Zig runtime,
+  plus safe `IO` wrappers.  This is the Idris2 entry point for consumers.
+|===
+
+*Package file:* `zig-api/zig-api.ipkg` — includes all seven ABI modules.
+
+=== Layer 3 — Zig runtime (`developer-ecosystem/zig-api/ffi/zig/src/`)
+
+*What it is.* Native C-ABI implementation of the API surface.  Built with
+Zig 0.15.2.  Produces `libzig_api.so` (shared) and `libzig_api.a` (static).
+
+*Modules.*
+
+[cols="1,3"]
+|===
+| Module | Responsibility
+
+| `lib.zig`
+| Root entry point.  Re-exports all `uapi_*` symbols.  Provides the three
+  lifecycle functions: `uapi_init`, `uapi_teardown`, `uapi_version`.
+
+| `core.zig`
+| `Result` enum (mirrors `ZigApi.ABI.Types`), thread-local error storage,
+  `Pool(T, N)` generic with mutex for fixed-capacity slot management.
+
+| `process.zig`
+| Safe-path validation (allowlist prefix match), `runProcess`,
+  `runGnosis` (shells out to the `gnosis` binary on `$PATH`).
+
+| `gnosis.zig`
+| HTTP/1.1 server pool.  Replaces v-grpc + v-rest.  Handles `/render`,
+  `/context`, `/health`, `/`, and gRPC-style `/gnosis.GnosisService/*` paths.
+  `uapi_gnosis_{create,start,stop,destroy,state,health}`.
+  **Edge hook API (2026-04-17):** `uapi_gnosis_set_handler(handle, fn_ptr)` and
+  `uapi_gnosis_write_response` support single-port + path-routed edge dispatch;
+  see §"Canonical single-port shape" below.  When a hook is registered, gnosis
+  calls the edge fn for every request instead of the built-in routes — no
+  separate accept loop needed in the edge repo.
+
+| `connector.zig`
+| 64-slot HTTP connector pool for 11 hyperpolymath services.
+  `uapi_connector_{create,health,call,destroy,state}`.
+  `uapi_connector_call` is the universal request dispatcher.
+|===
+
+*Build:* `just build` from `zig-api/`.  Recipes: `build`, `test`,
+`check-abi`, `test-integration`.
+
+*Current version:* 0.15.2 (matches Zig toolchain; see `ffi/zig/build.zig`).
+
+=== Layer 4 — C adaptor (`developer-ecosystem/zig-api/generated/abi/zig_api.h`)
+
+The machine-readable contract between the Zig runtime and every non-Idris2
+consumer.  Auto-generated from the Idris2 ABI.  *Never edit by hand.*
+
+Exposes: lifecycle (`uapi_init`, `uapi_teardown`, `uapi_version`), all
+`UAPI_OK`/`UAPI_ERR_*`/`UAPI_SERVER_*`/`UAPI_CONNECTOR_*`/`UAPI_SERVICE_*`/
+`UAPI_METHOD_*` constants, and the full `uapi_gnosis_*` and
+`uapi_connector_*` function set.
+
+When the Idris2 ABI changes, the header must be regenerated — not patched
+manually.  The regeneration pipeline is currently manual (see §10).
+
+== How to Consume
+
+=== From Idris2
+
+Import `ZigApi.ABI.Foreign` (which re-exports all seven ABI modules).
+Link against `libzig_api` at build time via the `zig-api.ipkg` package.
+
+[source,idris]
+----
+import ZigApi.ABI.Foreign
+
+main : IO ()
+main = do
+  Ok <- uapiInit | _ => putStrLn "init failed"
+  h  <- gnosisCreate 8091
+  Ok <- gnosisStart h | _ => putStrLn "start failed"
+  -- use the server
+  gnosisStop h
+  gnosisDestroy h
+  uapiTeardown
+----
+
+=== From another Zig project
+
+==== Canonical single-port shape (2026-04-17)
+
+The standard pattern for Zig edge repos is one gnosis pool slot plus
+`uapi_gnosis_set_handler`.  The edge repo *does not* bind its own sockets or
+run its own accept loops — gnosis owns the listener; the edge supplies the
+dispatch function.
+
+[source,zig]
+----
+const c = @cImport(@cInclude("zig_api.h"));
+
+// GnosisRequest and GnosisResponse are defined in zig_api.h.
+// @cImport translates C pointer types to [*c] in Zig.
+// Convert to regular pointers at the top of the handler for ergonomic field
+// access:
+//
+//   const resp: *c.GnosisResponse      = @ptrCast(resp_c);
+//   const req:  *const c.GnosisRequest = @ptrCast(req_c);
+//
+export fn myEdgeHandler(
+    req_c: [*c]const c.GnosisRequest,
+    resp_c: [*c]c.GnosisResponse,
+) callconv(.c) void {
+    const resp: *c.GnosisResponse      = @ptrCast(resp_c);
+    const req:  *const c.GnosisRequest = @ptrCast(req_c);
+
+    const path = std.mem.span(req.path);
+
+    if (std.mem.startsWith(u8, path, "/api/v1/")) {
+        const body = "{\"status\":\"ok\"}";
+        c.uapi_gnosis_write_response(resp_c, 200, "application/json",
+                                     body, body.len);
+    } else {
+        const e = "{\"error\":\"not found\"}";
+        c.uapi_gnosis_write_response(resp_c, 404, "application/json",
+                                     e, e.len);
+    }
+    _ = resp; _ = req; // suppress unused-var warnings if not needed
+}
+
+pub fn main() !void {
+    _ = c.uapi_init();
+    defer c.uapi_teardown();
+
+    const handle = c.uapi_gnosis_create(4000);
+    // Register the edge handler BEFORE uapi_gnosis_start.
+    _ = c.uapi_gnosis_set_handler(handle, &myEdgeHandler);
+    _ = c.uapi_gnosis_start(handle);
+    defer c.uapi_gnosis_stop(handle);
+    defer c.uapi_gnosis_destroy(handle);
+
+    while (c.uapi_gnosis_state(handle) == c.UAPI_SERVER_LISTENING) {
+        std.Thread.sleep(std.time.ns_per_s);
+    }
+}
+----
+
+Key rules for the edge hook:
+
+* Call `uapi_gnosis_set_handler` *after* `uapi_gnosis_create` and *before*
+  `uapi_gnosis_start`.  Calling after start returns `UAPI_ERR`.
+* Pass `NULL` as `handler_fn` to revert to built-in gnosis routes.
+* `GnosisRequest` fields (`method`, `path`, `body_ptr`, `body_len`) are valid
+  only for the duration of the handler call — copy any data you need to keep.
+* `GnosisResponse` fields must be fully populated before the handler returns.
+  Use `uapi_gnosis_write_response` as a convenience or fill the struct directly.
+* `body_ptr` in `GnosisResponse` must remain valid until `uapi_gnosis_write_response`
+  returns — a module-level or stack buffer that outlives the call is fine;
+  an arena-allocated slice freed before return is not.
+
+==== Option B — connector usage only
+
+Link the shared library and `@cImport` the header:
+
+[source,zig]
+----
+const c = @cImport(@cInclude("zig_api.h"));
+
+pub fn main() !void {
+    _ = c.uapi_init();
+    defer c.uapi_teardown();
+    const slot = c.uapi_connector_create(c.UAPI_SERVICE_VERISIMDB,
+                                          "http://127.0.0.1:8100");
+    defer c.uapi_connector_destroy(slot);
+    // ...
+}
+----
+
+Option C — add `libzig_api` as a `build.zig` dependency and import symbols
+directly from the Zig modules (internal use only; C ABI is the stable surface).
+
+=== From Rust
+
+Use `bindgen` to generate Rust bindings from `zig_api.h`, or use the
+scaffolded bindings in `verification-ecosystem/proven/bindings/rust/`
+if you also need proven primitives.  Link against `libzig_api.so`/`.a`.
+
+=== From ReScript / JavaScript via Deno
+
+Use `Deno.dlopen` against `libzig_api.so` (Linux) to call `uapi_*`
+symbols directly.  No Node bindings are available; Deno FFI is the path.
+
+=== From Julia
+
+Use `ccall` against `libzig_api.so`.  Example:
+`ccall((:uapi_init, "libzig_api"), UInt8, ())`.
+Julia-specific wrappers are not yet written; `ccall` is the direct path.
+
+== Wiring a New Edge Repo
+
+A new Zig-edge repo is one that calls hyperpolymath services via
+`libzig_api` or extends the Idris2 ABI with repo-specific types.
+
+**Step 0 (preferred) — use the `zig-edge` Scaffoldia template.**
+
+The template lives at
+`reposystem/scaffoldia/registry/zig/zig-edge.ncl`.
+It wires `build.zig`, `src/main.zig`, `src/abi/` (Types + Foreign + Layout),
+`<name>.ipkg`, `justfile`, `README.adoc`, `.gitignore`, and a minimal CI
+workflow in one shot.  Invoke via Scaffoldia:
+
+[source,bash]
+----
+scaffoldia new zig-edge \
+    --EDGE_NAME=my-gateway \
+    --EDGE_PURPOSE="My service API gateway" \
+    --DEFAULT_PORT=4001 \
+    --HANDLER_PREFIX=myGateway
+----
+
+If Scaffoldia is not yet set up for your workstation, copy
+`reposystem/scaffoldia/registry/zig/zig-edge.ncl`, substitute the four
+`{{PLACEHOLDER}}` values manually, and render with `nickel export`.
+
+Manual wiring (steps below) is the fallback when the template cannot be used.
+
+. *Create from template (manual fallback).* Clone `hyperpolymath/rsr-template-repo`, run
+  `just init`, and customise placeholders.
+. *Add `libzig_api` to `build.zig`.*  Use the pattern from the Scaffoldia
+  template (`zig-edge.ncl` `build_zig` section) — `createModule` +
+  `addAnonymousImport("zig_api", …)` + `addLibraryPath` + `addIncludePath` +
+  `linkSystemLibrary("zig_api", …)`.  Static linkage is required; dynamic
+  linkage does not resolve all `proven_ffi` transitive symbols.  A minimal
+  skeleton (prefer the template over hand-writing this):
++
+[source,zig]
+----
+edge_mod.addLibraryPath(.{ .cwd_relative = zig_api_lib_path });
+edge_mod.addIncludePath(.{ .cwd_relative = zig_api_include_path });
+edge_mod.linkSystemLibrary("zig_api", .{});
+----
+. *Use the canonical single-port + set_handler shape* (see §"Canonical
+  single-port shape" above) for all HTTP-serving edge repos.  **Do not** bind
+  your own sockets or run your own accept loops — gnosis owns the listener.
+  Register your dispatch function with `uapi_gnosis_set_handler` before
+  calling `uapi_gnosis_start`.  Path-route all protocols (REST, GraphQL,
+  gRPC-JSON) inside a single edge handler.  Reference implementations:
+  - `standards/lol/api/zig-gateway/src/main.zig` — LoL gateway (v0.2.0,
+    single-port, path-routed, 3-protocol)
+  - `aerie/src/api/zig/main.zig` — Aerie gateway (single-port, path-routed,
+    REST + GraphQL + gRPC-JSON)
+. *Place repo-specific Idris2 ABI proofs in `src/abi/` of the edge repo.*
+  Import `ZigApi.ABI.Types` and `ZigApi.ABI.Connector` from `zig-api.ipkg`
+  (add it as a dependency in the edge repo's `.ipkg`).  Extend, do not fork.
+. *Use the Groove protocol* for inter-service communication wherever possible
+  (see `standards/groove-protocol/`).  `zig-groove-bridge` in
+  `developer-ecosystem/zig-ecosystem/connectors/zig-groove-bridge/` is the
+  reference consumer — study `src/main.zig` before writing your own discovery
+  or attachment logic.
+. *Do not re-roll connector logic.*  Call `uapi_connector_create` with the
+  appropriate `UAPI_SERVICE_*` tag.  All 11 services have pre-declared IDs.
+
+== Authoritative Component Links
+
+[cols="2,3"]
+|===
+| Component | Canonical path
+
+| proven (Idris2 core)
+| `verification-ecosystem/proven/`
+
+| zig-api Idris2 ABI
+| `developer-ecosystem/zig-api/src/ZigApi/ABI/`
+
+| zig-api Zig runtime
+| `developer-ecosystem/zig-api/ffi/zig/src/`
+
+| zig-api C header
+| `developer-ecosystem/zig-api/generated/abi/zig_api.h`
+
+| zig-groove-bridge (reference edge)
+| `developer-ecosystem/zig-ecosystem/connectors/zig-groove-bridge/`
+
+| bridge-nginx-zig (skeleton)
+| `developer-ecosystem/bridge-nginx-zig/`
+
+| Groove protocol spec
+| `standards/groove-protocol/`
+
+| rsr-template-repo
+| `hyperpolymath/rsr-template-repo` (GitHub)
+|===
+
+== Retirement Note
+
+The following repos are retired.  Their content has been moved to
+`developer-ecosystem/v-ecosystem/v-api-interfaces/` for potential donation to
+the V community.  Do not model any new work on them.
+
+* `developer-ecosystem/v-grpc/`
+* `developer-ecosystem/v-rest/`
+* `developer-ecosystem/v-zig-ffi/`
+* `developer-ecosystem/v-idris-abi/`
+* `developer-ecosystem/haxadeca-v-api/`
+* `developer-ecosystem/unified-v-api/`
+
+The trigger was the estate-wide V-lang ban on 2026-04-10 (V-lang detected via
+`v.mod` / `vpkg.json`; note: `.v` extension is Verilog, not V-lang).
+
+== Current Status
+
+[cols="1,1,3"]
+|===
+| Component | Readiness | Notes
+
+| `proven` (Idris2 core)
+| ACTIVE
+| 104 modules, `%default total`, 0 `believe_me`, 49 tests.
+  18 bindings complete; 102 scaffolded.
+
+| `zig-api` (Idris2 ABI + Zig runtime)
+| PRODUCTION-ADJACENT
+| Idris2 ABI fully proved; Zig runtime builds and passes unit tests;
+  integration tests require `gnosis` binary on `$PATH`.
+
+| `uapi_gnosis_set_handler` + `uapi_gnosis_write_response`
+| ACTIVE (2026-04-17)
+| Edge hook API.  Enables single-port + path-routed dispatch for all edge
+  repos.  `set_handler` registers a C-ABI `GnosisHandlerFn` before start;
+  `write_response` is a convenience fill helper.  Idris2 ABI:
+  `ZigApi.ABI.Foreign.prim__gnosisSetHandler`.  Header: `zig_api.h` lines
+  197–212.
+
+| `proven_header_has_crlf` / `safeHeaderDefault`
+| ACTIVE (2026-04-17)
+| CRLF injection guard wired into `gnosis.zig:writeResponse`.
+  `safeHeaderDefault` calls `proven_header_has_crlf` (formally-verified
+  from libproven_ffi) to validate Content-Type header before serialisation.
+  Fail-closed policy: if CRLF detected or proven errors, response refused
+  with 500 error instead of being sent.
+
+| `zig-groove-bridge`
+| PARTIAL
+| Dodeca-API + discovery logic written; attachment / full Groove manifest
+  negotiation being unblocked.
+
+| `bridge-nginx-zig`
+| SKELETON
+| `build.zig` and directory structure present; HTTP proxy logic not yet written.
+|===
+
+== Open Questions / Deferred
+
+* *proven -> zig-api active wiring.* **Actualised 2026-04-17.**
+  `proven_path_has_traversal` is now called from
+  `zig-api/ffi/zig/src/process.zig:safePathDefault` (line ~73) as a second gate
+  on every gnosis path argument.  It rejects paths that contain `..` components
+  even when they pass the prefix allowlist (e.g. `/tmp/../../../etc/passwd`).
+  `zig-api/ffi/zig/build.zig` links `libproven_ffi.a` built via
+  `verification-ecosystem/proven/ffi/zig/build_standalone.zig`.
+  The two stacks now chain: zig-api is a proven consumer.
+  **Update 2026-04-17 (evening):** `proven_header_has_crlf` now wired into
+  `gnosis.zig:writeResponse` via `safeHeaderDefault` helper; validates
+  Content-Type header for CRLF injection before serialisation.
+
+* *C adaptor auto-regeneration pipeline.* **Resolved 2026-04-17.**
+  `just gen-header` (Bash + Python3 extractor in `scripts/gen-header.sh`)
+  regenerates `generated/abi/zig_api.h` deterministically from the Idris2 ABI
+  source modules.  `just check-header` runs in CI (`zig-api-ci.yml`) and fails
+  the build on any drift.
+
+* *Template repo for new edges.* **Resolved 2026-04-17.**
+  `reposystem/scaffoldia/registry/zig/zig-edge.ncl` is the canonical
+  Scaffoldia template for new Zig edge repos.  It produces `build.zig`,
+  `src/main.zig`, `src/abi/` (Types + Foreign + Layout), `<name>.ipkg`,
+  `justfile`, `README.adoc`, `.gitignore`, and `.github/workflows/ci.yml`
+  pre-wired to the unified stack.  See §"Wiring a New Edge Repo" Step 0.

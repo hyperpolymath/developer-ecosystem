@@ -1,0 +1,285 @@
+// SPDX-License-Identifier: MPL-2.0-or-later
+= Getting Started with DNFinition
+:toc: left
+:toclevels: 3
+:icons: font
+:source-highlighter: rouge
+
+This guide will help you install DNFinition and perform your first operations.
+
+== Prerequisites
+
+DNFinition supports these systems:
+
+* **Fedora 39+** (dnf backend) ✓ Full support
+* **Fedora Silverblue** (rpm-ostree backend) ✓ Full support
+* **Debian 12+** / **Ubuntu 22.04+** (apt backend) ✓ Full support
+* **Arch Linux** (pacman backend) ⚠ Partial support
+* **openSUSE Tumbleweed** (zypper backend) ⚠ Partial support
+
+== Installation
+
+=== Option 1: Build from Source (Recommended)
+
+[source,bash]
+----
+# Clone the repository
+git clone https://github.com/hyperpolymath/dnfinition
+cd dnfinition
+
+# Install dependencies for your distro
+just deps-fedora   # Fedora/RHEL
+just deps-debian   # Debian/Ubuntu
+just deps-arch     # Arch Linux
+
+# Build
+just build
+
+# Install
+just install
+----
+
+=== Option 2: Package Manager (When Available)
+
+[source,bash]
+----
+# Fedora COPR (when available)
+sudo dnf copr enable hyperpolymath/dnfinition
+sudo dnf install dnfinition
+
+# AUR (when available)
+yay -S dnfinition
+----
+
+=== Verify Installation
+
+[source,bash]
+----
+dnfinition --version
+# Output: DNFinition v0.0.5
+
+dnfinition --help
+# Shows all available commands
+----
+
+== First Run
+
+=== Launch the TUI
+
+[source,bash]
+----
+# Launch interactive TUI (requires sudo for package operations)
+sudo dnfinition
+----
+
+You'll see the main menu:
+
+[source]
+----
+╔══════════════════════════════════════════════════════════════════╗
+║                        DNFinition v0.0.5                          ║
+║                Universal Package Manager with Reversibility       ║
+╠══════════════════════════════════════════════════════════════════╣
+║                                                                  ║
+║  [b] Browse Packages                                             ║
+║  [i] Install Package                                             ║
+║  [r] Remove Package                                              ║
+║  [u] Upgrade All                                                 ║
+║  [s] Search Packages                                             ║
+║  [h] Transaction History                                         ║
+║  [n] Snapshots                                                   ║
+║  [R] Rollback Last Transaction                                   ║
+║  [q] Quit                                                        ║
+║                                                                  ║
+║  Backend: dnf | Snapshots: btrfs | Transactions: 42             ║
+╚══════════════════════════════════════════════════════════════════╝
+----
+
+=== Navigation
+
+[cols="1,3"]
+|===
+|Key |Action
+
+|`j` / `k` or `↓` / `↑`
+|Navigate up/down
+
+|`Enter`
+|Select
+
+|`q` / `Esc`
+|Go back / Quit
+
+|`?`
+|Show help
+|===
+
+== Basic Operations
+
+=== Installing a Package
+
+==== Via TUI
+
+. Launch `sudo dnfinition`
+. Press `i` for Install
+. Type the package name (e.g., `vim`)
+. Review the transaction preview
+. Press `y` to confirm
+
+==== Via CLI
+
+[source,bash]
+----
+sudo dnfinition install vim
+----
+
+=== Removing a Package
+
+==== Via TUI
+
+. Press `r` for Remove
+. Type the package name
+. Review dependencies that will be removed
+. Press `y` to confirm
+
+==== Via CLI
+
+[source,bash]
+----
+sudo dnfinition remove vim
+----
+
+=== Searching for Packages
+
+==== Via TUI
+
+. Press `s` for Search
+. Type your search term
+. Browse results with `j`/`k`
+. Press `Enter` to see package details
+. Press `i` to install, `r` to remove
+
+==== Via CLI
+
+[source,bash]
+----
+dnfinition search vim
+----
+
+=== Browsing Packages
+
+. Press `b` for Browse
+. Navigate categories or all packages
+. Use `/` to filter
+. Mark packages with `+` (install) or `-` (remove)
+. Press `g` to apply all marked changes
+
+== Working with Snapshots
+
+=== Automatic Snapshots
+
+DNFinition automatically creates a snapshot before every transaction.
+
+[source]
+----
+Transaction #43: Install vim
+  Created snapshot: pre-txn-43-2025-12-30-12:45:00
+  Status: Success
+----
+
+=== Listing Snapshots
+
+[source,bash]
+----
+dnfinition snapshots
+----
+
+Or press `n` in the TUI.
+
+=== Rolling Back
+
+==== Rollback Last Transaction
+
+[source,bash]
+----
+sudo dnfinition rollback
+----
+
+Or press `R` in the TUI.
+
+==== Rollback to Specific Snapshot
+
+[source,bash]
+----
+sudo dnfinition rollback --snapshot pre-txn-43-2025-12-30-12:45:00
+----
+
+== Transaction History
+
+View all past transactions:
+
+[source,bash]
+----
+dnfinition history
+----
+
+Or press `h` in the TUI.
+
+Output:
+[source]
+----
+Transaction History:
+
+#43  2025-12-30 12:45:00  install  vim, vim-common           ✓ Success
+#42  2025-12-30 12:30:00  remove   nano                      ✓ Success
+#41  2025-12-30 10:00:00  upgrade  200 packages              ✓ Success
+#40  2025-12-29 18:00:00  install  htop                      ✓ Success
+
+Press 'r' to rollback a transaction, 'q' to quit
+----
+
+== Configuration
+
+DNFinition stores configuration in `~/.config/dnfinition/config.toml`:
+
+[source,toml]
+----
+[general]
+backend = "auto"          # auto-detect or force: dnf, apt, pacman
+snapshot_backend = "auto" # auto-detect or force: btrfs, zfs, lvm
+
+[snapshots]
+auto_snapshot = true      # Create snapshot before each transaction
+keep_count = 10           # Number of snapshots to retain
+cleanup_on_success = false # Remove snapshot if transaction succeeds
+
+[ui]
+color = true
+vim_keys = true
+confirm_all = true        # Always confirm before changes
+----
+
+See link:Configuration[Configuration] for all options.
+
+== Next Steps
+
+* link:TUI-Guide[TUI Guide] — Master the interactive interface
+* link:Snapshots[Snapshots & Rollback] — Deep dive into reversibility
+* link:OS-Upgrades[OS Upgrades] — Safe system version upgrades
+* link:Backend-Support[Backend Support] — Understanding package manager backends
+
+== Common Issues
+
+=== "Permission denied"
+
+Package operations require root:
+[source,bash]
+----
+sudo dnfinition install vim
+----
+
+=== "No snapshot backend found"
+
+DNFinition requires btrfs, ZFS, or LVM for snapshots. Without filesystem snapshots, it falls back to transaction logs (limited rollback).
+
+See link:Troubleshooting[Troubleshooting] for more help.

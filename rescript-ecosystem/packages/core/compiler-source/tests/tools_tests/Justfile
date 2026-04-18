@@ -1,0 +1,13 @@
+set shell := ["bash", "-euo", "pipefail", "-c"]
+
+default: test
+
+build:
+    yarn build
+
+test: build
+    ./test.sh
+    yarn build
+
+clean:
+    yarn clean

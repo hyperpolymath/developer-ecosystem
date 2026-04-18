@@ -1,0 +1,425 @@
+= Migration Guide: nafa-app-ambient to cadre-tea-router
+:toc:
+:toclevels: 3
+:sectanchors:
+:source-highlighter: rouge
+
+This guide shows how to migrate nafa-app-ambient from its current Elm-style routing to cadre-tea-router.
+
+== Prerequisites
+
+Add dependencies to your project:
+
+[source,json]
+----
+// rescript.json
+{
+  "bs-dependencies": [
+    "cadre-router",
+    "cadre-tea-router",
+    "rescript-tea"
+  ]
+}
+----
+
+[source,json]
+----
+// deno.json
+{
+  "imports": {
+    "cadre-router": "npm:cadre-router@^0.1.0",
+    "cadre-tea-router": "npm:cadre-tea-router@^0.1.0"
+  }
+}
+----
+
+== Step 1: Define Your Route Type
+
+You likely already have this. Keep it as-is:
+
+[source,rescript]
+----
+// Route.res
+
+// Typed IDs (if not already defined)
+module JourneyId = {
+  type t = JourneyId(string)
+
+  let fromString = (s: string): option<t> =>
+    if Js.String2.length(s) > 0 { Some(JourneyId(s)) } else { None }
+
+  let toString = (JourneyId(s): t): string => s
+
+  // NEW: Parser for cadre-router
+  let parser = CadreRouter.Parser.custom(fromString)
+}
+
+// Sub-routes for journeys
+type journeySub = Overview | Map | Log | Settings
+
+// Main route type
+type t =
+  | Home
+  | MoodInput
+  | Journey(JourneyId.t, journeySub)
+  | Profile
+  | NotFound
+----
+
+== Step 2: Create the Parser
+
+Replace any existing URL parsing with cadre-router's parser combinators:
+
+[source,rescript]
+----
+// Route.res (continued)
+
+let journeySubParser = {
+  open CadreRouter.Parser
+  oneOf([
+    s("map")->map(_ => Map),
+    s("log")->map(_ => Log),
+    s("settings")->map(_ => Settings),
+    top->map(_ => Overview),  // Default when no sub-path
+  ])
+}
+
+let parser = {
+  open CadreRouter.Parser
+  oneOf([
+    // Home: /
+    top->map(_ => Home),
+
+    // Mood: /mood
+    s("mood")->map(_ => MoodInput),
+
+    // Journey: /journey/:id or /journey/:id/map etc.
+    s("journey")
+      ->andThen(JourneyId.parser)
+      ->andThen(journeySubParser)
+      ->map((((_, id), sub)) => Journey(id, sub)),
+
+    // Profile: /profile
+    s("profile")->map(_ => Profile),
+  ])
+}
+----
+
+== Step 3: Create the Serializer
+
+Ensure bidirectional routing (parse ↔ serialize):
+
+[source,rescript]
+----
+// Route.res (continued)
+
+let journeySubToString = sub =>
+  switch sub {
+  | Overview => ""
+  | Map => "/map"
+  | Log => "/log"
+  | Settings => "/settings"
+  }
+
+let toString = route =>
+  switch route {
+  | Home => "/"
+  | MoodInput => "/mood"
+  | Journey(id, sub) => "/journey/" ++ JourneyId.toString(id) ++ journeySubToString(sub)
+  | Profile => "/profile"
+  | NotFound => "/404"
+  }
+----
+
+== Step 4: Update Your Message Type
+
+Add route-related messages if not already present:
+
+[source,rescript]
+----
+// Msg.res
+
+type t =
+  | RouteChanged(Route.t)
+  | UrlNotFound(CadreRouter.Url.t)
+  // ... your existing messages
+  | ClickedJourney(Route.JourneyId.t)
+  | ClickedProfile
+  // etc.
+----
+
+== Step 5: Create the Router Module
+
+This is the key integration point:
+
+[source,rescript]
+----
+// Router.res
+
+module Router = TeaRouter.Make({
+  type route = Route.t
+  type msg = Msg.t
+
+  let parser = Route.parser
+  let toString = Route.toString
+  let onRouteChange = route => Msg.RouteChanged(route)
+  let onNotFound = url => Msg.UrlNotFound(url)
+})
+
+// Re-export for convenience
+let init = Router.init
+let push = Router.push
+let replace = Router.replace
+let back = Router.back
+let forward = Router.forward
+let urlChanges = Router.urlChanges
+let link = Router.link
+let href = Router.href
+----
+
+== Step 6: Update init
+
+[source,rescript]
+----
+// Main.res
+
+let init = () => {
+  let (maybeRoute, routerCmd) = Router.init()
+
+  let model = {
+    route: maybeRoute->Option.getOr(Route.Home),
+    // ... your other initial state
+  }
+
+  (model, routerCmd)
+}
+----
+
+== Step 7: Update update
+
+[source,rescript]
+----
+// Main.res
+
+let update = (msg, model) =>
+  switch msg {
+  // Route changes from URL
+  | Msg.RouteChanged(route) =>
+    ({...model, route}, Tea.Cmd.none)
+
+  | Msg.UrlNotFound(url) =>
+    Js.Console.warn("Unknown URL: " ++ CadreRouter.Url.toString(url))
+    ({...model, route: Route.NotFound}, Tea.Cmd.none)
+
+  // Navigation from UI
+  | Msg.ClickedJourney(id) =>
+    (model, Router.push(Route.Journey(id, Route.Overview)))
+
+  | Msg.ClickedProfile =>
+    (model, Router.push(Route.Profile))
+
+  // ... your other cases
+  }
+----
+
+== Step 8: Update subscriptions
+
+[source,rescript]
+----
+// Main.res
+
+let subscriptions = model => {
+  Tea.Sub.batch([
+    Router.urlChanges,
+    // ... your other subscriptions
+  ])
+}
+----
+
+== Step 9: Update view
+
+Replace manual `<a>` tags with type-safe links:
+
+[source,rescript]
+----
+// Before (manual, error-prone)
+a([href("/journey/" ++ id), onClick(ClickedJourney(id))], [text("View Journey")])
+
+// After (type-safe)
+Router.link(~route=Route.Journey(id, Route.Overview), [text("View Journey")])
+----
+
+Full navigation example:
+
+[source,rescript]
+----
+let viewNav = model => {
+  open Tea.Html
+  nav([class'("main-nav")], [
+    Router.link(~route=Route.Home, ~attrs=[class'("nav-link")], [text("Home")]),
+    Router.link(~route=Route.MoodInput, ~attrs=[class'("nav-link")], [text("Mood")]),
+    Router.link(~route=Route.Profile, ~attrs=[class'("nav-link")], [text("Profile")]),
+  ])
+}
+----
+
+== Step 10: Update Main Program
+
+Use `navigationProgram`:
+
+[source,rescript]
+----
+// Main.res
+
+let main = Tea.Navigation.navigationProgram(
+  _location => Msg.RouteChanged(Route.Home),  // Fallback (router handles real parsing)
+  {
+    init: _ => init(),
+    update,
+    view,
+    subscriptions,
+    shutdown: _ => Tea.Cmd.none,
+  },
+)
+----
+
+== Before/After Comparison
+
+=== Before (Manual Routing)
+
+[source,rescript]
+----
+// Scattered URL handling
+let parseUrl = location => {
+  let path = location.pathname
+  if path == "/" { Home }
+  else if path == "/profile" { Profile }
+  else if Js.String2.startsWith(path, "/journey/") {
+    let id = Js.String2.sliceToEnd(path, ~from=9)
+    Journey(id)  // No validation!
+  }
+  else { NotFound }
+}
+
+// Manual links (typo-prone)
+a([href("/profle")], [text("Profile")])  // Typo won't be caught!
+
+// Manual navigation
+Tea.Navigation.pushUrl("/journey/" ++ id)
+----
+
+=== After (cadre-tea-router)
+
+[source,rescript]
+----
+// Centralized, type-safe
+module Router = TeaRouter.Make({
+  type route = Route.t
+  type msg = Msg.t
+  let parser = Route.parser
+  let toString = Route.toString
+  let onRouteChange = route => Msg.RouteChanged(route)
+  let onNotFound = url => Msg.UrlNotFound(url)
+})
+
+// Type-safe links (compiler catches typos)
+Router.link(~route=Route.Profile, [text("Profile")])
+
+// Type-safe navigation
+Router.push(Route.Journey(journeyId, Route.Overview))
+----
+
+== Checklist
+
+[cols="1,3"]
+|===
+| ☐ | Add cadre-router and cadre-tea-router to dependencies
+| ☐ | Create `JourneyId.parser` using `CadreRouter.Parser.custom`
+| ☐ | Create `Route.parser` using parser combinators
+| ☐ | Create `Route.toString` for serialization
+| ☐ | Add `RouteChanged` and `UrlNotFound` to your message type
+| ☐ | Create `Router.res` with `TeaRouter.Make`
+| ☐ | Update `init` to use `Router.init()`
+| ☐ | Update `update` to handle `RouteChanged` and `UrlNotFound`
+| ☐ | Update `subscriptions` to include `Router.urlChanges`
+| ☐ | Replace `<a>` tags with `Router.link`
+| ☐ | Replace `Tea.Navigation.pushUrl` with `Router.push`
+| ☐ | Test all routes work correctly
+|===
+
+== Advanced: Hash-Based Routing
+
+If deploying to static hosting (GitHub Pages, S3):
+
+[source,rescript]
+----
+// Use HashRouter instead
+module Router = TeaRouter.HashRouter.Make({
+  type route = Route.t
+  type msg = Msg.t
+  let parser = Route.parser
+  let toString = Route.toString
+  let onRouteChange = route => Msg.RouteChanged(route)
+  let onNotFound = url => Msg.UrlNotFound(url)
+})
+
+// URLs will be /#/profile instead of /profile
+----
+
+== Advanced: Query Parameters
+
+For routes with query params like `/search?q=hello&page=2`:
+
+[source,rescript]
+----
+type route =
+  | Search({ query: string, page: option<int> })
+
+let parser = {
+  open CadreRouter.Parser
+  oneOf([
+    s("search")
+      ->andThen(queryRequired("q"))
+      ->andThen(queryInt("page"))
+      ->map((((_, q), page)) => Search({ query: q, page })),
+    // ...
+  ])
+}
+
+let toString = route =>
+  switch route {
+  | Search({ query, page }) =>
+    let pageParam = switch page {
+    | Some(p) => "&page=" ++ Belt.Int.toString(p)
+    | None => ""
+    }
+    "/search?q=" ++ Js.Global.encodeURIComponent(query) ++ pageParam
+  // ...
+  }
+----
+
+== Troubleshooting
+
+=== Route Not Matching
+
+Use `parseWithError` for debugging:
+
+[source,rescript]
+----
+let result = CadreRouter.Parser.parseWithError(Route.parser, url)
+switch result {
+| Ok(route) => Js.Console.log("Matched: " ++ Route.toString(route))
+| Error({ remainingPath, consumedPath, _ }) =>
+  Js.Console.error("Failed to match")
+  Js.Console.error("Consumed: " ++ consumedPath->Belt.List.toArray->Js.Array2.joinWith("/"))
+  Js.Console.error("Remaining: " ++ remainingPath->Belt.List.toArray->Js.Array2.joinWith("/"))
+}
+----
+
+=== Links Not Working
+
+Ensure you're using `Router.link` not raw `<a>` tags. The link helper intercepts clicks and uses `pushState` instead of full page reload.
+
+=== Back Button Not Working
+
+Make sure `Router.urlChanges` is in your subscriptions. This subscription listens for `popstate` events.

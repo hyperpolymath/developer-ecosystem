@@ -1,0 +1,46 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+name: Mirror
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  mirror-gitlab:
+    name: Mirror to GitLab
+    runs-on: ubuntu-latest
+    if: vars.GITLAB_MIRROR_ENABLED == 'true'
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v4
+        with:
+          fetch-depth: 0
+
+      - uses: webfactory/ssh-agent@a6f90b1f127823b31d4d4a8d96047790581349bd # v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.GITLAB_SSH_KEY }}
+
+      - name: Mirror to GitLab
+        run: |
+          git remote add gitlab git@gitlab.com:${{ github.repository }}.git || true
+          git push gitlab --mirror --force
+
+  mirror-bitbucket:
+    name: Mirror to Bitbucket
+    runs-on: ubuntu-latest
+    if: vars.BITBUCKET_MIRROR_ENABLED == 'true'
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v4
+        with:
+          fetch-depth: 0
+
+      - uses: webfactory/ssh-agent@a6f90b1f127823b31d4d4a8d96047790581349bd # v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.BITBUCKET_SSH_KEY }}
+
+      - name: Mirror to Bitbucket
+        run: |
+          git remote add bitbucket git@bitbucket.org:${{ github.repository }}.git || true
+          git push bitbucket --mirror --force

@@ -1,0 +1,81 @@
+{
+  "version": "5",
+  "specifiers": {
+    "npm:@rescript/core@1": "1.6.1_rescript@11.1.4",
+    "npm:@rescript/react@0.12": "0.12.2_react@19.2.3_react-dom@19.2.3__react@19.2.3",
+    "npm:@rescript/react@0.14": "0.14.0_react@19.2.3_react-dom@19.2.3__react@19.2.3",
+    "npm:@rescript/runtime@^12.0.2": "12.1.0",
+    "npm:react-dom@^19.2.3": "19.2.3_react@19.2.3",
+    "npm:react@^19.2.3": "19.2.3",
+    "npm:rescript-tea@0.16": "0.16.0",
+    "npm:rescript@11": "11.1.4"
+  },
+  "npm": {
+    "@rescript/core@1.6.1_rescript@11.1.4": {
+      "integrity": "sha512-vyb5k90ck+65Fgui+5vCja/mUfzKaK3kOPT4Z6aAJdHLH1eljEi1zKhXroCiCtpNLSWp8k4ulh1bdB5WS0hvqA==",
+      "dependencies": [
+        "rescript"
+      ]
+    },
+    "@rescript/react@0.12.2_react@19.2.3_react-dom@19.2.3__react@19.2.3": {
+      "integrity": "sha512-EOF19dLTG4Y9K59JqMjG5yfvIsrMZqfxGC2J/oe9gGgrMiUrzZh3KH9khTcR1Z3Ih0lRViSh0/iYnJz20gGoag==",
+      "dependencies": [
+        "react",
+        "react-dom"
+      ]
+    },
+    "@rescript/react@0.14.0_react@19.2.3_react-dom@19.2.3__react@19.2.3": {
+      "integrity": "sha512-ncOHWK7ujQmff+QMYKRmtwETvJVolzkwRpDa0MFenEXdUz9ZYywNbq+xH9F9RDQeSwC3/4s9JeUQVyTu4fMpHw==",
+      "dependencies": [
+        "react",
+        "react-dom"
+      ]
+    },
+    "@rescript/runtime@12.1.0": {
+      "integrity": "sha512-bvr9RfvBD+JS/6foWCA4l2fLXmUXN0KGqylXQPHt09QxUghqgoCiaWVHaHSx5dOIk/jAPlGQ7zB5yVeMas/EFQ=="
+    },
+    "react-dom@19.2.3_react@19.2.3": {
+      "integrity": "sha512-yELu4WmLPw5Mr/lmeEpox5rw3RETacE++JgHqQzd2dg+YbJuat3jH4ingc+WPZhxaoFzdv9y33G+F7Nl5O0GBg==",
+      "dependencies": [
+        "react",
+        "scheduler"
+      ]
+    },
+    "react@19.2.3": {
+      "integrity": "sha512-Ku/hhYbVjOQnXDZFv2+RibmLFGwFdeeKHFcOTlrt7xplBnya5OGn/hIRDsqDiSUcfORsDC7MPxwork8jBwsIWA=="
+    },
+    "rescript-tea@0.16.0": {
+      "integrity": "sha512-PSOq0pW5k474oPsa0JkBBbtqadFBbaMMu2npRNffW+nfQRExtqW7YiRLNDcla3LCS4FuTDBKpD5s5wHJk2mcpg==",
+      "dependencies": [
+        "rescript-webapi"
+      ]
+    },
+    "rescript-webapi@0.7.0": {
+      "integrity": "sha512-fA1LPXSmQY3HtcIStQ2sHu9Xye1XLxd4JvkGQMupux9Q6Tp/jbcdh7bnCaGwHW6aI1QFmTmA/xWxUMb6oPphsQ=="
+    },
+    "rescript@11.1.4": {
+      "integrity": "sha512-0bGU0bocihjSC6MsE3TMjHjY0EUpchyrREquLS8VsZ3ohSMD+VHUEwimEfB3kpBI1vYkw3UFZ3WD8R28guz/Vw==",
+      "scripts": true,
+      "bin": true
+    },
+    "scheduler@0.27.0": {
+      "integrity": "sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q=="
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "npm:@rescript/core@1",
+      "npm:@rescript/react@0.12",
+      "npm:rescript@11"
+    ],
+    "packageJson": {
+      "dependencies": [
+        "npm:@rescript/react@0.14",
+        "npm:@rescript/runtime@^12.0.2",
+        "npm:react-dom@^19.2.3",
+        "npm:react@^19.2.3",
+        "npm:rescript-tea@0.16"
+      ]
+    }
+  }
+}

@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# asdf/mise tool versions
+# See: https://asdf-vm.com/
+
+rust 1.83.0
+just 1.36.0

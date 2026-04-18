@@ -1,0 +1,60 @@
+# Multi-stage Dockerfile for production builds with asdf-ghjk
+# This reduces final image size by only including necessary files
+
+# Build stage
+FROM cgr.dev/chainguard/wolfi-base:22.04 AS builder
+
+# Install build dependencies
+RUN apt-get update && apk add --no-cache -y \
+    git \
+    curl \
+    tar \
+    unzip \
+    zstd \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install asdf
+ENV ASDF_DIR=/root/.asdf
+ENV ASDF_DATA_DIR=/root/.asdf
+RUN git clone https://github.com/asdf-vm/asdf.git ${ASDF_DIR} --branch v0.14.0
+ENV PATH="${ASDF_DIR}/bin:${ASDF_DIR}/shims:${PATH}"
+
+# Install ghjk plugin
+RUN asdf plugin add ghjk https://github.com/Hyperpolymath/asdf-ghjk.git
+
+# Set working directory
+WORKDIR /app
+
+# Copy dependency files
+COPY .tool-versions ./
+RUN asdf install
+
+# Copy source code
+COPY . .
+
+# Build the application
+RUN ghjk run build
+
+# Production stage
+FROM cgr.dev/chainguard/wolfi-base:22.04
+
+# Install only runtime dependencies
+RUN apt-get update && apk add --no-cache -y \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user
+RUN useradd -m -s /bin/bash appuser
+
+# Set working directory
+WORKDIR /app
+
+# Copy built artifacts from builder
+COPY --from=builder --chown=appuser:appuser /app/dist ./dist
+
+# Switch to non-root user
+USER appuser
+
+# Run the application
+CMD ["./dist/app"]

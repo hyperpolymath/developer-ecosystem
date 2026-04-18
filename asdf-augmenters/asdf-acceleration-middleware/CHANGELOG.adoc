@@ -1,0 +1,81 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+== [Unreleased]
+
+=== Added
+- Initial project structure with Cargo workspace
+- RSR framework compliance documentation
+- Core library crates: asdf-core, asdf-cache, asdf-parallel, asdf-config, asdf-metrics
+- CLI tool crates: asdf-accelerate, asdf-bench, asdf-discover, asdf-monitor
+- Comprehensive documentation: README, CONTRIBUTING, CODE_OF_CONDUCT, SECURITY, MAINTAINERS
+- Dual licensing: MIT OR Palimpsest-0.8
+- TPCF (Tri-Perimeter Contribution Framework) implementation
+- Build automation with justfile and Nix flakes
+- CI/CD pipelines for GitLab and GitHub Actions
+- `.well-known/` directory with security.txt, ai.txt, humans.txt
+- Test infrastructure with unit, integration, and benchmark tests
+- RSR compliance verification tool
+
+=== Changed
+- N/A (initial release)
+
+=== Deprecated
+- N/A
+
+=== Removed
+- N/A
+
+=== Fixed
+- N/A
+
+=== Security
+- Implemented security.txt per RFC 9116
+- Added security audit tooling
+- Configured secure defaults for all components
+
+== [0.1.0] - TBD
+
+=== Added
+- Initial release
+- Core middleware functionality
+- Parallel execution engine
+- Multi-level caching system
+- Configuration management with Nickel
+- Performance monitoring and metrics
+- Auto-discovery of asdf runtimes
+- Benchmarking suite
+- RSR Silver compliance
+
+=== Performance
+- Target: 2.5x speedup sequential vs bash
+- Target: 7.5x speedup with 4-way parallelization
+- Target: 11x speedup with 8-way parallelization
+
+---
+
+== Release Schedule
+
+- **v0.1.0**: Initial release (targeting Q1 2025)
+- **v0.2.0**: Advanced features (Q2 2025)
+- **v1.0.0**: Production-ready (Q3 2025)
+
+== Versioning Policy
+
+- **Major** (1.0.0): Breaking API changes
+- **Minor** (0.1.0): New features, backwards compatible
+- **Patch** (0.0.1): Bug fixes, backwards compatible
+
+== Contributors
+
+See [.well-known/humans.txt](.well-known/humans.txt) for full contributor list.
+
+---
+
+[Unreleased]: https://github.com/Hyperpolymath/asdf-acceleration-middleware/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/Hyperpolymath/asdf-acceleration-middleware/releases/tag/v0.1.0

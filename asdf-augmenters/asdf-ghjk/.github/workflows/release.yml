@@ -1,0 +1,62 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Get version from tag
+        id: get_version
+        run: |
+          if [[ "$GITHUB_REF" =~ ^refs/tags/v ]]; then
+            VERSION=${GITHUB_REF#refs/tags/v}
+          else
+            VERSION="dev"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Extract changelog
+        id: changelog
+        run: |
+          if [ -f "CHANGELOG.md" ]; then
+            # Extract changelog for this version
+            sed -n "/## \[${{ steps.get_version.outputs.version }}\]/,/## \[/p" CHANGELOG.md | sed '$ d' > /tmp/changelog.md
+            if [ -s /tmp/changelog.md ]; then
+              cat /tmp/changelog.md
+            else
+              echo "Release ${{ steps.get_version.outputs.version }}" > /tmp/changelog.md
+            fi
+          else
+            echo "Release ${{ steps.get_version.outputs.version }}" > /tmp/changelog.md
+          fi
+
+      - name: Create Release
+        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+        with:
+          body_path: /tmp/changelog.md
+          draft: false
+          prerelease: ${{ contains(steps.get_version.outputs.version, 'rc') || contains(steps.get_version.outputs.version, 'beta') || contains(steps.get_version.outputs.version, 'alpha') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update asdf plugin repository
+        run: |
+          echo "Plugin released! Users can now install with:"
+          echo "asdf plugin add ghjk https://github.com/${{ github.repository }}.git"

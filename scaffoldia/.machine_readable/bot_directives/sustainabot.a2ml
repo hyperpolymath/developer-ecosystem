@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Bot directive — migrated from SCM on 2026-04-17
+# Media-Type: application/vnd.bot-directive+a2ml
+
+schema_version = "1.0"
+directive_type = "bot-directive"
+bot = "sustainabot"
+scope = "eco/economic standards"
+allow = ["analysis", "reporting", "docs updates"]
+deny = ["code changes without approval"]
+notes = "Focus on measurement and recommendations"

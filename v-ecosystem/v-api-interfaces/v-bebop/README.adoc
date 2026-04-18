@@ -1,0 +1,60 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath Contributors
+= V-lang Bebop FFI Bindings
+
+V-lang FFI bindings for the https://bebop.computer[Bebop] binary
+serialisation protocol, plus IIoT (Industrial Internet of Things)
+client/server examples.
+
+== What Is Here
+
+[cols="1,3"]
+|===
+| File | Purpose
+
+| `bebop_bridge.v`
+| Module binding V to the C ABI defined in `include/bebop_v_ffi.h`.
+  Provides `BebopCtx`, `VBytes`, `VSensorReading`, and the full encode/
+  decode surface.
+
+| `iiot_client.v`
+| IIoT sensor data client. Reads sensor readings, serialises them via
+  Bebop, and sends them over TCP.
+
+| `iiot_server.v`
+| IIoT sensor data server. Receives Bebop-encoded sensor readings over
+  TCP and decodes them.
+
+| `v.mod`
+| V module manifest (`bebop_bridge`, v0.0.1).
+|===
+
+== Provenance
+
+This directory was originally `developer-ecosystem/bebop-v-ffi/v/` in the
+hyperpolymath estate. It was moved here as part of the V-lang community
+transfer (2026-04-17).
+
+The C ABI header (`include/bebop_v_ffi.h`) it binds against lives in the
+`developer-ecosystem/bebop-ffi` repo. That repo is not part of this
+transfer, but the header itself is the stable boundary — you can adapt
+the FFI to any Bebop implementation that exposes the same C ABI.
+
+== Licence
+
+AGPL-3.0-or-later.
+
+NOTE: This differs from the rest of the v-ecosystem bundle (PMPL-1.0-or-later).
+The AGPL licence was applied when the Bebop FFI work was produced and is
+preserved here.
+
+== Building
+
+[source,bash]
+----
+v run iiot_server.v &
+v run iiot_client.v
+----
+
+Requires the `bebop_v_ffi` shared library to be compiled and available.
+The C ABI header is in the upstream `bebop-ffi` repository.

@@ -1,0 +1,46 @@
+# SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
+# SPDX-License-Identifier: MPL-2.0-or-later
+
+name = "dnfinition"
+description = "Universal package manager with reversibility"
+version = "0.0.5"
+authors = ["Jonathan D.A. Jewell"]
+maintainers = ["hyper@hyperpolymath.net"]
+maintainers-logins = ["hyperpolymath"]
+licenses = "AGPL-3.0-or-later"
+website = "https://github.com/hyperpolymath/dnfinition"
+
+long-description = """
+dnfinition is a universal package manager interface with built-in
+reversibility features. It provides a unified CLI for managing packages
+across different package managers (DNF, rpm-ostree) with automatic
+snapshot creation and transaction rollback capabilities.
+
+Features:
+- Unified CLI across package managers
+- Automatic filesystem snapshots (Btrfs, ZFS, LVM)
+- Transaction logging and rollback
+- Parallel downloads with mirror optimization
+- SPARK formal verification for safety-critical code
+"""
+
+tags = ["package-manager", "reversibility", "ada", "spark"]
+
+[[depends-on]]
+gnat = ">=12"
+
+[[depends-on]]
+gnatcoll = "*"
+
+[gpr-externals]
+MODE = ["debug", "release", "spark"]
+
+[gpr-set-externals]
+MODE = "debug"
+
+[build-profiles]
+"*" = "development"
+
+[[actions]]
+type = "post-fetch"
+command = ["mkdir", "-p", "obj", "bin", "proof"]

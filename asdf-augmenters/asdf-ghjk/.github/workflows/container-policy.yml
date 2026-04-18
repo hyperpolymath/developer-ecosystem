@@ -1,0 +1,30 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+name: Container Policy
+on: [push, pull_request]
+
+permissions: read-all
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Enforce container policy
+        run: |
+          # Block new Dockerfiles
+          NEW_DOCKER=$(git diff --name-only --diff-filter=A HEAD~1 2>/dev/null | grep -iE 'dockerfile' || true)
+          if [ -n "$NEW_DOCKER" ]; then
+            echo "New Dockerfile detected. Use Containerfile instead."
+            exit 1
+          fi
+
+          # Check for docker command usage in scripts
+          DOCKER_CMD=$(grep -r "docker build\|docker run\|docker push" --include="*.sh" --include="*.yml" --include="*.yaml" . 2>/dev/null | grep -v "nerdctl\|podman" | head -5 || true)
+          if [ -n "$DOCKER_CMD" ]; then
+            echo "docker command found. Prefer nerdctl or podman:"
+            echo "$DOCKER_CMD"
+          fi
+
+          echo "Container policy check passed"

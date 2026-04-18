@@ -1,0 +1,30 @@
+[package]
+name = "cfk-search"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Full-text search for Czech File Knife"
+
+[features]
+default = []
+tantivy = ["dep:tantivy"]
+
+[dependencies]
+cfk-core = { path = "../cfk-core" }
+
+# Search
+tantivy = { workspace = true, optional = true }
+regex.workspace = true
+
+# Async
+tokio.workspace = true
+async-trait.workspace = true
+
+# Serialization
+serde.workspace = true
+
+# Time
+chrono.workspace = true
+
+# Error handling
+thiserror.workspace = true

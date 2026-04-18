@@ -1,0 +1,30 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# justfile for asdf-plugin-collection
+
+# List all plugins
+list:
+    @ls plugins/ | sort
+
+# Count plugins
+count:
+    @echo "Total plugins:" $(ls plugins/ | wc -l)
+
+# Install a plugin via asdf
+install name:
+    asdf plugin add {{name}} $(pwd)/plugins/{{name}}
+
+# Validate all plugins have bin/list-all
+validate:
+    @for p in plugins/*/; do \
+        name=$(basename "$p"); \
+        if [ -f "$p/bin/list-all" ]; then \
+            echo "OK: $name"; \
+        else \
+            echo "MISSING bin/list-all: $name"; \
+        fi; \
+    done
+
+# Extract a single plugin to a standalone directory
+extract name dest:
+    cp -r plugins/{{name}} {{dest}}
+    cd {{dest}} && git init && git add -A && git commit -m "init: extract {{name}} from asdf-plugin-collection"

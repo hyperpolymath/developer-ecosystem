@@ -1,0 +1,43 @@
+[package]
+name = "cfk-providers"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Storage backend providers for Czech File Knife"
+
+[features]
+default = ["local"]
+local = []
+dropbox = ["oauth2"]
+gdrive = ["oauth2"]
+onedrive = ["oauth2"]
+box = ["oauth2"]
+s3 = []
+ipfs = []
+webdav = []
+afs = []
+ninep = []
+sftp = []
+nfs = []
+smb = []
+syncthing = []
+all = ["local", "dropbox", "gdrive", "onedrive", "box", "s3", "ipfs", "webdav", "afs", "ninep", "sftp", "nfs", "smb", "syncthing"]
+
+[dependencies]
+cfk-core = { path = "../cfk-core" }
+async-trait.workspace = true
+bytes.workspace = true
+chrono.workspace = true
+futures.workspace = true
+reqwest = { workspace = true, optional = true }
+oauth2 = { workspace = true, optional = true }
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+blake3.workspace = true
+libc.workspace = true
+
+[dev-dependencies]
+tempfile = "3.24"

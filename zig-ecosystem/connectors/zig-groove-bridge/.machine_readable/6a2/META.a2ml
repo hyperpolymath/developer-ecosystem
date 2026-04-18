@@ -1,0 +1,33 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# META.a2ml — zig-groove-bridge meta-level information
+[metadata]
+version = "0.1.0"
+last-updated = "2026-04-17"
+
+[project-info]
+license = "PMPL-1.0-or-later"
+author = "Jonathan D.A. Jewell (hyperpolymath)"
+spdx-fallback = "MPL-2.0"
+
+[architecture-decisions]
+decisions = [
+  { adr = "1", title = "Zero external dependencies", status = "accepted", rationale = "Zig stdlib only for minimal surface area" },
+  { adr = "2", title = "Synchronous HTTP only", status = "accepted", rationale = "Service discovery is not latency-critical; simplicity preferred" },
+  { adr = "3", title = "Snap-on/snap-off naming", status = "accepted", rationale = "Metaphor from V-lang bridge; familiar API" },
+  { adr = "4", title = "JSON substring parsing", status = "accepted", rationale = "No JSON library; Groove manifests are simple; comptime string literals for API types" },
+]
+
+[development-practices]
+versioning = "SemVer"
+documentation = "AsciiDoc + doc comments in Zig"
+build-tool = "zig build"
+test-framework = "zig test"
+code-generation = "none"
+
+[maintenance-axes]
+scoping-first = true
+axis-1 = "must > intend > like"
+axis-2 = "corrective > adaptive > perfective"
+axis-3 = "systems > compliance > effects"

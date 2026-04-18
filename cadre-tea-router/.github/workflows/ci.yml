@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+name: CI
+
+on:
+  push:
+    branches: ["*"]
+  pull_request:
+    branches: ["*"]
+
+permissions: read-all
+
+jobs:
+  boundary-check:
+    name: Check module boundaries
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+
+      - name: Forbid cross-pollination from cadre-router
+        run: ./scripts/check-boundaries.sh
+
+  # Future: add build/test jobs when dependencies are published
+  # build:
+  #   name: Build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v6.0.1
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: '20'
+  #     - run: npm ci
+  #     - run: npm run build

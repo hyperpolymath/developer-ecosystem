@@ -1,0 +1,49 @@
+#!/bin/bash
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Pre-commit hook for dnfinition quality checks
+
+set -e
+
+echo "Running pre-commit checks..."
+
+# Check for SPDX headers in new/modified Ada files
+ADA_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ads|adb)$' || true)
+if [ -n "$ADA_FILES" ]; then
+    for f in $ADA_FILES; do
+        if ! head -3 "$f" | grep -q "SPDX-License-Identifier"; then
+            echo "Missing SPDX header: $f"
+            exit 1
+        fi
+    done
+fi
+
+# Check for SPDX headers in new/modified Elixir files
+EX_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ex|exs)$' || true)
+if [ -n "$EX_FILES" ]; then
+    for f in $EX_FILES; do
+        if ! head -3 "$f" | grep -q "SPDX-License-Identifier"; then
+            echo "Missing SPDX header: $f"
+            exit 1
+        fi
+    done
+fi
+
+# Check for unpinned GitHub Actions in workflows
+WF_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.github/workflows/.*\.yml$' || true)
+if [ -n "$WF_FILES" ]; then
+    for f in $WF_FILES; do
+        if grep -qE 'uses:.*@v[0-9]+$' "$f"; then
+            echo "Unpinned GitHub Action in $f - use SHA instead of version tag"
+            exit 1
+        fi
+    done
+fi
+
+# Check for hardcoded secrets patterns
+SECRETS=$(git diff --cached --diff-filter=ACM -U0 | grep -E '^\+.*[Pp]assword.*=.*["\x27]' | head -1 || true)
+if [ -n "$SECRETS" ]; then
+    echo "Potential hardcoded password detected!"
+    exit 1
+fi
+
+echo "Pre-commit checks passed"

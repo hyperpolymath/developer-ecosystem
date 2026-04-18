@@ -1,0 +1,435 @@
+// SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
+// SPDX-License-Identifier: MPL-2.0-or-later
+//
+// Reversible Programming Languages Ecosystem Report
+// Compiled for DNFinition project evaluation
+= Reversible Programming Languages Ecosystem Report
+:toc:
+:sectnums:
+:doctype: article
+
+== Executive Summary
+
+This report surveys the reversible programming language ecosystem to evaluate options for implementing DNFinition's reversibility layer. The key findings are:
+
+1. **No production-ready reversible languages exist** - all are academic/research projects
+2. **Community sizes are extremely small** - typically 1-20 GitHub stars, single-digit contributors
+3. **Tooling is minimal** - no debuggers, IDEs, package managers, or FFI support
+4. **Quantum computing is the primary driver** - most investment goes to quantum languages (Q#, Qiskit)
+5. **Hardware commercialization is beginning** - Vaire Computing raised $4M for reversible chips (2024)
+
+**Recommendation for DNFinition**: Build an Ada-native reversibility DSL inspired by Arrow/Janus semantics, rather than adopting an external reversible language.
+
+== Language Survey
+
+=== Foundational Languages
+
+==== Janus (1982)
+
+[cols="1,3"]
+|===
+|Origin |Caltech, 1982 (Christopher Lutz, Howard Derby)
+|Paradigm |Imperative, structured
+|Status |Academic reference language
+|Implementations |~5 (Haskell, Prolog, JavaScript, DIKU interpreter)
+|GitHub Stars |~14 (Jana interpreter)
+|Last Activity |2020 (Jana)
+|===
+
+**Description**: The original reversible imperative language. Every statement is reversible, and the entire program can run backwards. Features procedure calls with local/delocal for variable management.
+
+**Key Features**:
+
+* `+=`, `-=`, `^=` as reversible assignment operators
+* `if-then-else-fi` with symmetric entry/exit conditions
+* `from-do-loop-until` with entry condition
+* Procedure calls/uncalls
+
+**Strengths**: Well-understood semantics, multiple implementations, r-Turing complete
+**Weaknesses**: No FFI, no types, no modules, purely academic
+
+==== Arrow (2015)
+
+[cols="1,3"]
+|===
+|Origin |Brown University, Eli Rose's honors thesis
+|Paradigm |Imperative with functions
+|Status |Abandoned academic project
+|Implementations |1 (Python, unmaintained)
+|GitHub Stars |~7
+|Last Activity |2015
+|===
+
+**Description**: A Janus-like language that adds first-class functions and improved syntax. The author's thesis provides excellent pedagogical material on reversible computing.
+
+**Strengths**: Better syntax than Janus, function support
+**Weaknesses**: Single unmaintained implementation, no documentation beyond thesis
+
+=== Functional Reversible Languages
+
+==== RFUN (2012-2016)
+
+[cols="1,3"]
+|===
+|Origin |University of Copenhagen (Yokoyama, Axelsen, Glück)
+|Paradigm |First-order functional
+|Status |Research language
+|Implementations |1 (Haskell interpreter)
+|GitHub Stars |~5
+|Last Activity |2016
+|===
+
+**Description**: A reversible functional language with Haskell-inspired syntax. Uses `::a <-> b` to denote invertible functions that "consume" their input.
+
+**Key Features**:
+
+* First-match policy for pattern matching (bidirectional)
+* Linear argument handling
+* R-Turing complete
+
+**Strengths**: Clean functional semantics, rigorous formal foundation
+**Weaknesses**: First-order only, no maintained implementation
+
+==== Theseus (2014)
+
+[cols="1,3"]
+|===
+|Origin |Indiana University (Roshan James, Amr Sabry)
+|Paradigm |Functional, based on type isomorphisms (Π family)
+|Status |Research language
+|Implementations |1 (Haskell)
+|GitHub Stars |~10
+|Last Activity |2018
+|===
+
+**Description**: Named after the Ship of Theseus paradox—the main computation step involves replacing a value with an isomorphic value. Based on the Π family of reversible languages grounded in type isomorphisms.
+
+**Strengths**: Strong theoretical foundations, close to categorical semantics
+**Weaknesses**: Very abstract, no practical tooling
+
+==== CoreFun (2018)
+
+[cols="1,3"]
+|===
+|Origin |University of Southern Denmark
+|Paradigm |Core functional, typed
+|Status |Research language
+|Implementations |Unknown (specification only)
+|GitHub Stars |N/A
+|Last Activity |2018
+|===
+
+**Description**: A typed reversible functional core language with a combined unrestricted/relevant type system. Designed as a compilation target for higher-level reversible languages.
+
+**Strengths**: Clean core semantics, support for ancillary (read-only) variables
+**Weaknesses**: Specification only, intended as intermediate language
+
+==== SPARCL (2020-2025)
+
+[cols="1,3"]
+|===
+|Origin |Tohoku University, University of Bristol (Matsuda, Wang)
+|Paradigm |Partially-invertible functional
+|Status |Active research (most recently updated)
+|Implementations |1 (Haskell prototype)
+|GitHub Stars |12
+|Last Activity |November 2025
+|===
+
+**Description**: SPARCL (System for Partially-Reversible Computation with Linear types) supports *partially* invertible functions—functions that become invertible when some arguments are fixed.
+
+**Key Features**:
+
+* Linear type system based on λ^q_→ (Linear Haskell core)
+* Type constructor distinguishes invertible vs non-invertible data
+* Practical examples: Huffman coding, arithmetic coding, LZ77 compression
+
+**Strengths**: Most actively maintained, practical applications demonstrated, published at ICFP 2020
+**Weaknesses**: Prototype only, Haskell-specific
+
+=== Object-Oriented Languages
+
+==== Joule / ROOPL (2016)
+
+[cols="1,3"]
+|===
+|Origin |University of Copenhagen
+|Paradigm |Object-oriented reversible
+|Status |Research language
+|Implementations |Unknown
+|GitHub Stars |N/A
+|Last Activity |~2016
+|===
+
+**Description**: ROOPL (Reversible Object-Oriented Programming Language) extends reversible computing to the OO paradigm with classes, inheritance, and polymorphism.
+
+==== ROOPL++ (2024)
+
+Recent work (2024) on extending ROOPL with more expressive features.
+
+=== Other Notable Languages
+
+[cols="2,2,1,1,2"]
+|===
+|Language |Type |Stars |Last Updated |Notes
+
+|ISO |Visual reversible |22 |2018 |Most starred, visual paradigm
+|2DTypes |Research |18 |2022 |Type-theoretical
+|YAREL |Flowchart-based |16 |2021 |For circuit synthesis
+|Railway |DSL |8 |2020 |Railway-oriented
+|OmniRev |Incremental |~3 |2021 |For incremental computation
+|Jeopardy |Invertible |~2 |2022 |F#-like syntax
+|===
+
+== Community Assessment
+
+=== GitHub Metrics
+
+Based on the `reversible-programming-language` GitHub topic (16 repositories):
+
+[cols="2,1,1"]
+|===
+|Metric |Value |Assessment
+
+|Total repositories |16 |Very small
+|Maximum stars |22 |Minimal interest
+|Median stars |~5 |Academic projects
+|Active (2024-2025) |2-3 |SPARCL, OmniRev
+|Contributors (typical) |1-3 |Single-researcher projects
+|===
+
+=== Academic Activity
+
+* **RC Conference**: Annual International Conference on Reversible Computation (RC 2025, RC 2026 planned)
+* **Publications**: Regular papers in ICFP, TCS, IFL, PEPM
+* **Research Groups**: DIKU (Copenhagen), Tohoku University, Southern Denmark, Bristol
+
+=== Industry Involvement
+
+**Extremely Limited**:
+
+* **Vaire Computing** (2024): $4M seed funding for reversible hardware chips, not programming languages
+* **No major tech companies** have reversible language projects
+* **Quantum computing companies** (IBM, Google, Microsoft) focus on quantum-specific languages
+
+== Tooling Analysis
+
+=== What Exists
+
+[cols="2,1,3"]
+|===
+|Category |Availability |Details
+
+|Interpreters |Partial |Basic REPLs for Janus, RFUN, SPARCL
+|Compilers |Minimal |Some Janus→PISA translators, partial evaluation
+|Type Checkers |Research |SPARCL, CoreFun have type systems
+|Debuggers |None |No reversible debuggers exist
+|IDEs |None |No editor support, syntax highlighting
+|Package Managers |None |No dependency management
+|FFI |None |No foreign function interfaces
+|Documentation |Academic |Papers only, no tutorials/guides
+|===
+
+=== What's Critically Missing
+
+1. **Foreign Function Interface (FFI)**
+   - Cannot call C/Ada/Rust libraries
+   - Cannot integrate with existing systems
+   - Critical for any practical application
+
+2. **Debuggers**
+   - No step-forward/step-backward debugging
+   - No breakpoints, inspection tools
+   - Ironic given reversibility enables perfect replay
+
+3. **Build Systems / Package Managers**
+   - No way to manage dependencies
+   - No reproducible builds
+   - Cannot share/reuse code
+
+4. **IDE Support**
+   - No syntax highlighting
+   - No autocomplete
+   - No error diagnostics
+
+5. **Documentation & Tutorials**
+   - Only academic papers available
+   - No beginner-friendly resources
+   - No cookbook/examples
+
+6. **Interoperability**
+   - Languages cannot call each other
+   - No common runtime
+   - No shared semantics
+
+== Production Use Assessment
+
+=== Current Reality
+
+**There is NO production use of reversible programming languages.**
+
+All current applications are:
+
+* Academic research
+* Proof-of-concept implementations
+* Quantum computing circuit synthesis
+* Student projects
+
+=== Why Not?
+
+1. **No tooling** - Cannot build real applications
+2. **No FFI** - Cannot integrate with existing systems
+3. **Performance unknown** - No benchmarks against conventional code
+4. **No libraries** - Would need to rewrite everything
+5. **Tiny communities** - No support, no ecosystem
+
+=== Emerging Possibilities
+
+* **Quantum Computing**: Q# has reversibility for adjoints
+* **Database Recovery**: Theoretical interest in reversible transactions
+* **Debugging**: Academic work on "reverse debugging"
+* **Low-Power Computing**: Vaire's hardware may create demand
+
+== Quantum Computing Comparison
+
+=== Quantum Languages with Reversibility
+
+[cols="2,2,2,2"]
+|===
+|Language |Company |Status |Reversibility
+
+|Q# |Microsoft |Production |Adjoint operations
+|Qiskit |IBM |Production |Inverse gates
+|Cirq |Google |Production |Inverse circuits
+|Quipper |Academic |Research |Full reversibility
+|===
+
+**Key Insight**: Quantum languages are the only "reversible" languages seeing real use, but they're for quantum hardware, not classical reversible computing.
+
+== Options for DNFinition
+
+=== Option 1: Adopt Existing Language (Not Recommended)
+
+**Evaluation**:
+|===
+|Criterion |Score |Notes
+
+|Maturity |❌ |All are research prototypes
+|FFI Support |❌ |None exist
+|Ada Integration |❌ |No Ada bindings possible
+|Community |❌ |1-10 developers each
+|Tooling |❌ |No debuggers, build systems
+|===
+
+**Verdict**: Not viable. No existing reversible language can integrate with Ada or provide production reliability.
+
+=== Option 2: Embed Arrow/Janus Interpreter (Possible)
+
+Implement a minimal interpreter for Arrow or Janus in Ada.
+
+**Pros**:
+
+* Use proven reversible semantics
+* Can extend with FFI gradually
+* Educational/novel
+
+**Cons**:
+
+* Performance overhead
+* Maintenance burden
+* Still no tooling
+
+**Effort**: 2-4 months for basic interpreter
+
+=== Option 3: Ada-Native Reversibility DSL (Recommended)
+
+Create an embedded DSL in Ada that captures reversible operation semantics.
+
+**Design**:
+[source,ada]
+----
+--  Reversible operation type
+type Reversible_Op is record
+   Forward  : not null access procedure;
+   Backward : not null access procedure;
+end record;
+
+--  Transaction as sequence of reversible ops
+type Transaction is array (Positive range <>) of Reversible_Op;
+
+--  Execute transaction (can reverse on failure)
+procedure Execute_Transaction
+  (T       : Transaction;
+   Success : out Boolean);
+
+--  Rollback entire transaction
+procedure Rollback_Transaction (T : Transaction);
+----
+
+**Pros**:
+
+* Native Ada performance
+* Full SPARK verification possible
+* Integrates with existing codebase
+* No external dependencies
+
+**Cons**:
+
+* Not a "true" reversible language
+* Less elegant than dedicated syntax
+
+**Effort**: Already partially implemented in current codebase
+
+=== Option 4: Wait for Ecosystem Maturity (Not Recommended)
+
+**Timeline**: 5-10 years minimum based on current trajectory
+
+**Risk**: May never reach production quality
+
+== Recommendations
+
+=== For DNFinition
+
+1. **Use Option 3**: Ada-native reversibility DSL
+2. **Draw inspiration from**: Arrow's semantics, SPARCL's partial invertibility
+3. **Consider future**: Design interface that could wrap external interpreter later
+
+=== For Reversible Languages Research
+
+If contributing to the ecosystem:
+
+1. **Priority: FFI** - The single biggest blocker
+2. **Priority: Debugging tools** - Would be a major contribution
+3. **Priority: Interop standard** - Common intermediate representation
+
+== Appendix: References
+
+=== Academic Papers
+
+* Yokoyama, Glück (2007): "A reversible programming language and its invertible self-interpreter"
+* Matsuda, Wang (2020): "Sparcl: A Language for Partially-Invertible Computation" (ICFP 2020)
+* Axelsen, Glück (2011): "What Do Reversible Programs Compute?"
+* James, Sabry (2014): "Theseus: A High Level Language for Reversible Computing"
+
+=== Web Resources
+
+* TOPPS Janus: https://topps.diku.dk/pirc/?id=janus
+* SPARCL GitHub: https://github.com/kztk-m/sparcl
+* RC Conference: http://www.wikicfp.com/cfp/program?id=2463
+* Arrow Thesis: https://cs.brown.edu/research/pubs/theses/ugrad/2015/rose.eli.pdf
+
+=== Industry
+
+* Vaire Computing: https://www.vaire.co/
+* IEEE Spectrum (2024): "Reversible Computing Has Potential For 4000x More Energy Efficient Computation"
+
+== Conclusion
+
+The reversible programming language ecosystem is in an early academic phase with no production-ready options. While theoretical foundations are solid and research continues, practical tooling is essentially nonexistent. For DNFinition, building an Ada-native reversibility abstraction is the only viable path forward, potentially incorporating reversible language semantics for specific operations where beneficial.
+
+The field may see growth if:
+1. Vaire's reversible hardware creates demand
+2. Quantum computing mainstreams reversible thinking
+3. Energy efficiency becomes critical enough to justify investment
+
+Until then, domain-specific approaches within conventional languages remain the pragmatic choice.

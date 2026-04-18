@@ -1,0 +1,15 @@
+[package]
+name = "cfk-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Core traits and types for Czech File Knife"
+
+[dependencies]
+async-trait.workspace = true
+bytes.workspace = true
+chrono.workspace = true
+futures.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+tokio = { workspace = true, features = ["sync"] }

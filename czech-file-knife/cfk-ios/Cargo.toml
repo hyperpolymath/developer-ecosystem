@@ -1,0 +1,52 @@
+[package]
+name = "cfk-ios"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+description = "iOS File Provider extension for Czech File Knife"
+
+[lib]
+crate-type = ["staticlib", "cdylib"]
+
+[dependencies]
+cfk-core = { path = "../cfk-core" }
+cfk-providers = { path = "../cfk-providers" }
+cfk-cache = { path = "../cfk-cache" }
+
+# FFI
+libc = "0.2"
+once_cell = "1.19"
+
+# Async
+tokio = { workspace = true }
+async-trait.workspace = true
+futures.workspace = true
+
+# Serialization
+serde.workspace = true
+serde_json.workspace = true
+
+# Error handling
+thiserror.workspace = true
+
+# Logging
+tracing.workspace = true
+tracing-subscriber = { workspace = true }
+
+# Time
+chrono.workspace = true
+
+# Bytes
+bytes.workspace = true
+
+[target.'cfg(target_os = "ios")'.dependencies]
+objc = "0.2"
+objc-foundation = "0.1"
+block = "0.1"
+
+[features]
+default = []
+simulator = []  # iOS Simulator builds

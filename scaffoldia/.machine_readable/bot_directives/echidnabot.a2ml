@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Bot directive — migrated from SCM on 2026-04-17
+# Media-Type: application/vnd.bot-directive+a2ml
+
+schema_version = "1.0"
+directive_type = "bot-directive"
+bot = "echidnabot"
+scope = "formal verification and fuzzing"
+allow = ["analysis", "fuzzing", "proof checks"]
+deny = ["write to core modules", "write to bindings"]
+notes = "May open findings; code changes require explicit approval"

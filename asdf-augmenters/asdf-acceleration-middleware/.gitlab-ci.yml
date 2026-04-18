@@ -1,0 +1,183 @@
+# GitLab CI/CD Pipeline for asdf-acceleration-middleware
+
+stages:
+  - check
+  - build
+  - test
+  - security
+  - deploy
+
+variables:
+  CARGO_HOME: $CI_PROJECT_DIR/.cargo
+  RUST_BACKTRACE: "1"
+
+# Cache configuration
+.cargo_cache:
+  cache:
+    key:
+      files:
+        - Cargo.lock
+    paths:
+      - .cargo/
+      - target/
+
+# Rust template
+.rust_job:
+  image: rust:1.70
+  extends: .cargo_cache
+  before_script:
+    - rustc --version
+    - cargo --version
+
+# Format check
+fmt:
+  extends: .rust_job
+  stage: check
+  script:
+    - rustup component add rustfmt
+    - cargo fmt --all -- --check
+
+# Clippy linting
+clippy:
+  extends: .rust_job
+  stage: check
+  script:
+    - rustup component add clippy
+    - cargo clippy --all -- -D warnings
+
+# Check compilation
+check:
+  extends: .rust_job
+  stage: check
+  script:
+    - cargo check --all
+
+# Build in debug mode
+build:debug:
+  extends: .rust_job
+  stage: build
+  script:
+    - cargo build --all
+  artifacts:
+    paths:
+      - target/debug/
+    expire_in: 1 day
+
+# Build in release mode
+build:release:
+  extends: .rust_job
+  stage: build
+  script:
+    - cargo build --release --all
+  artifacts:
+    paths:
+      - target/release/asdf-accelerate
+      - target/release/asdf-bench
+      - target/release/asdf-discover
+      - target/release/asdf-monitor
+    expire_in: 1 week
+  only:
+    - main
+    - tags
+
+# Run tests
+test:unit:
+  extends: .rust_job
+  stage: test
+  script:
+    - cargo test --all -- --nocapture
+  coverage: '/\d+\.\d+% coverage/'
+
+# Run benchmarks
+test:bench:
+  extends: .rust_job
+  stage: test
+  script:
+    - cargo bench --all
+  only:
+    - main
+    - tags
+
+# Integration tests
+test:integration:
+  extends: .rust_job
+  stage: test
+  script:
+    - cargo test --all --test '*'
+
+# RSR compliance verification
+test:rsr:
+  extends: .rust_job
+  stage: test
+  script:
+    - apt-get update && apt-get install -y just
+    - just rsr-verify
+
+# Security audit
+security:audit:
+  extends: .rust_job
+  stage: security
+  script:
+    - cargo install cargo-audit
+    - cargo audit
+  allow_failure: true
+
+# Check for unsafe code
+security:geiger:
+  extends: .rust_job
+  stage: security
+  script:
+    - cargo install cargo-geiger
+    - cargo geiger --all
+  allow_failure: true
+
+# Dependency license check
+security:license:
+  extends: .rust_job
+  stage: security
+  script:
+    - cargo install cargo-license
+    - cargo license
+  allow_failure: true
+
+# Generate documentation
+docs:
+  extends: .rust_job
+  stage: deploy
+  script:
+    - cargo doc --all --no-deps
+  artifacts:
+    paths:
+      - target/doc/
+    expire_in: 1 week
+  only:
+    - main
+
+# Publish to crates.io (manual trigger)
+publish:
+  extends: .rust_job
+  stage: deploy
+  script:
+    - cargo publish --dry-run
+    # Actual publish requires token: cargo publish
+  when: manual
+  only:
+    - tags
+
+# Release artifacts
+release:
+  extends: .rust_job
+  stage: deploy
+  script:
+    - cargo build --release --all
+    - mkdir -p release
+    - cp target/release/asdf-accelerate release/
+    - cp target/release/asdf-bench release/
+    - cp target/release/asdf-discover release/
+    - cp target/release/asdf-monitor release/
+    - tar -czf release/asdf-acceleration-middleware-$CI_COMMIT_TAG.tar.gz release/*
+  artifacts:
+    paths:
+      - release/
+  only:
+    - tags

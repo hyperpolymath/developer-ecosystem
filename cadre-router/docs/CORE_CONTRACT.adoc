@@ -1,0 +1,24 @@
+= Core Contract
+:toc:
+:toclevels: 2
+:sectanchors:
+
+This document is the *source of truth* for what the project guarantees today.
+
+== Invariants
+
+* Determinism: given identical inputs and identical host responses, outputs are identical.
+* Explicit effects: host interaction is explicit and observable (no hidden channels).
+* Versioned surface: public API changes require a version bump and changelog entry.
+
+== What “done” means
+
+A feature is done only when:
+
+* it has at least one golden test, and
+* it has at least one negative/edge test, and
+* its error modes are specified.
+
+== Out of scope
+
+Anything not required to satisfy the invariants is not core.

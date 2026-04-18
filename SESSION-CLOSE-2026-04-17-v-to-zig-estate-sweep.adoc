@@ -1,0 +1,125 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath)
+= SESSION-CLOSE 2026-04-17 — V-lang → Zig estate sweep + donation staging
+:toc:
+:protocol: continuity / planned-session-close
+:session-id: 2026-04-17-v-to-zig-estate-sweep
+
+== 1. Goal
+
+Sweep the estate for V-lang per the 2026-04-10 ban: update standards-repo docs to reflect the ban and Zig replacement; transpile live V code to Zig site-by-site; stage V sources for donation to the V community at `developer-ecosystem/v-ecosystem/`; consolidate duplicates; retain the Coq/Rocq `.v` proof files untouched.
+
+== 2. Last successful milestone
+
+Donation-area cleanup Sonnet completed cleanly (commit `550a223` in `developer-ecosystem`). `v-ecosystem/` is handover-ready. All 4 transpile Sonnets (aerie, volumod, emergency-room — *wait*, still running —, emergency-button) produced build-green Zig replacements except emergency-room which is still mid-flight at time of closure.
+
+== 3. Next action
+
+Restore the three V trees that were **deleted today but should have been moved to `v-ecosystem/`** per the late-session policy clarification:
+- `standards/lol/api/v-lol/` → restore + move to `v-ecosystem/v-api-interfaces/v-lol-i18n-lib/` (or similar descriptive name)
+- `standards/lol/api/v-gateway/` → restore + move to `v-ecosystem/v-api-interfaces/v-lol-gateway/`
+- `verisimdb/connectors/clients/vlang/` → restore + move to `v-ecosystem/v-api-interfaces/v-verisimdb-client/`
+Each needs a proper move commit (git history preserved via `git checkout HEAD -- <path>` restore, then `git mv` / cp + rm as appropriate).
+
+== 4. Blockers
+
+- **Emergency-room transpile** (`systems-ecosystem/ambientops/emergency-room/`) — Sonnet still running at session close. Next session: check its completion notification; commit its output per the commit-asap rule.
+- **Bebop-ffi Zig binding** (`developer-ecosystem/bebop-ffi/`) — Sonnet still running. Is producing `libbebop_v_ffi` which unblocks volumod's `zig build test-ffi`. Commit should happen within its own run.
+- **bebop-ffi GitHub remote does not exist** — `gh api` returned 404 because neither `hyperpolymath/bebop-v-ffi` nor `hyperpolymath/bebop-ffi` exists on GitHub. Repo is local-only. Local origin URL currently points at the target `https://github.com/hyperpolymath/bebop-ffi.git` which would need `gh repo create` before the first push.
+- **K9-SVC pre-commit hook bug** at `/var/mnt/eclipse/repos/.git/hooks/pre-commit` — reports `ERROR: Missing contractile: ...` then `✓ passed`. Exit-code logic is broken. Non-blocking (commits go through) but should be added to active-blockers.md.
+- **rescript-developer-ecosystem is not a donation-staging area** — 6 independent repos co-located in a bare directory, no TRANSFER.adoc, no wrapper. User decision needed: donate individually (each gets its own TRANSFER.adoc) or stand up a container repo.
+- **Idris2 ABI layer for bebop-ffi** — user clarified (#7) that bebop-ffi is not a donation; it has its own hyperpolymath standing, and if it's an FFI/API it should follow the Idris2 ABI + Zig FFI pattern. Current Sonnet is producing the Zig FFI only; ABI layer is a deferred follow-up.
+
+== 5. Commits log (this session)
+
+|===
+| Repo | Commit | Description
+| `systems-ecosystem/ambientops` | `76fbbd9` | dedup recovery/emergency-room via symlinks to emergency-button
+| `aerie` | (see `git log`) | port V-lang API gateway to Zig
+| `verification-ecosystem/volumod` | (see `git log`) | port V-lang audio DSP to Zig
+| `systems-ecosystem/ambientops` | (see `git log`) | port emergency-button to Zig + recovery/ER symlink update
+| `systems-ecosystem/ambientops` | (see `git log`) | delete volumod duplicate (canonical lives in verification-ecosystem)
+| `developer-ecosystem` | `550a223` | v-ecosystem donation cleanup — TRANSFER.adoc rewrite + new entries
+|===
+
+**Uncommitted state at session close:**
+- `developer-ecosystem`: new dirs `v-ecosystem/v-api-interfaces/v-bebop/`, `v-ecosystem/v-api-interfaces/v-proven/`; rename `bebop-v-ffi/` → `bebop-ffi/`; lol/api/v-lol + v-gateway deletions. **Needs commit.**
+- `verification-ecosystem`: deletions of `verisimdb/connectors/clients/vlang/` and `proven/bindings/v/`. **Needs commit (but see next action — may need restore first).**
+- `bebop-ffi`: running Sonnet's work — will commit when done.
+- `systems-ecosystem/ambientops`: running emergency-room Sonnet's work — will commit when done.
+
+== 6. Verifications log
+
+|===
+| Verification | Result
+| `zig build` (aerie) | ✅ exit 0, `aerie-gateway` binary produced
+| `zig build` (volumod) | ✅ exit 0
+| `zig build test` (volumod) | ✅ 47/47 pass
+| `zig build test-ffi` (volumod) | ❌ unresolved `bebop_ctx_*` symbols (blocked on bebop-ffi Zig binding)
+| `zig build` (emergency-button) | ✅ exit 0
+| `zig build test` (emergency-button) | ✅ 36/36 pass
+| `zig build` (zig-gateway/lol) | ✅ exit 0, `lol_gateway` binary produced (earlier in session)
+| Haiku doc-sweep for stale paths | ✅ clean — 1 intentional hit only
+|===
+
+== 7. Decision log
+
+- **v-ecosystem is donation staging, NOT maintenance exception.** Earlier memory framing was wrong; corrected mid-session.
+- **V sources MOVE to v-ecosystem, not delete.** Three sites were mistakenly deleted earlier and need restore+move (see Next Action).
+- **Coq/Rocq `.v` files are NOT V-lang.** Different lifecycle rule: keep unless they break.
+- **Zig is the default replacement** for V; AffineScript is the default for ReScript.
+- **`recovery/emergency-room/src/`** = thin symlink wrapper over canonical `emergency-button/`. Stays as dedup layer. V-symlinks will be removed when V sources leave.
+- **bebop-ffi has its own HP standing.** Not donation; gets Idris2 ABI + Zig FFI pattern.
+- **Commit ASAP policy** (feedback_commit_asap.md): one unit of work = one commit, immediately on completion. No batching, no end-of-session bundles.
+- **Push+merge default** (not yet memorised, user said 2026-04-17): most of the time go straight to push and merge after commit. Need to write `feedback_push_merge_default.md` next session.
+- **Donation areas need "SEEKING MAINTAINER" notice** (not yet implemented): user asked 2026-04-17 for such a notice on v-ecosystem and rescript-developer-ecosystem donation areas. Need to write `feedback_donation_seeking_maintainer_notice.md` + implement.
+- **Spot-fix-memorize-immediately policy** (feedback_spot_fix_memorize_immediately.md): system breakdowns spotted must be fixed + memorised in the same turn.
+
+== 8. Open questions / deferred
+
+1. **rescript-developer-ecosystem** — individual-repo donations or wrap as container repo? (user decision)
+2. **Existing ~40 `v-ecosystem/v-api-interfaces/v-*/` subdirs** — all donation-bound, or cherry-pick? (user decision, not fully answered)
+3. **Push timing for uncommitted work** — user updated rule to "push+merge by default most of the time", but no pushes happened this session. Resume next session.
+4. **Idris2 ABI layer for bebop-ffi** — spawn after Zig binding Sonnet lands.
+5. **Restore + donate** the three wrongly-deleted V trees (see Next Action).
+6. **Behavioural verification** of each transpiled project — the MIGRATION.adoc delete-gate. Build-green is done; behavioural is not.
+7. **`recovery/emergency-room/src/*.v` symlinks** will dangle when emergency-button's V sources eventually leave. Remove them as part of the V-source move.
+
+== 9. Recreation queue
+
+New artefact at `/var/mnt/eclipse/repos/developer-ecosystem/RECREATION-QUEUE.adoc` (created by donation Sonnet). 16 confirmed Zig items + 2-4 AffineScript items. Consult before starting any post-donation rebuild work.
+
+== 10. Memory writes this session
+
+- `feedback_opus_supervise_haiku_first.md`
+- `project_v_to_zig_code_migration_pending.md` (rewritten with today's progress)
+- `feedback_commit_asap.md`
+- `feedback_spot_fix_memorize_immediately.md`
+- `feedback_v_sources_move_not_delete.md`
+- MEMORY.md index updated with pointers to all five.
+
+Pending memory writes (time ran out):
+- `feedback_push_merge_default.md`
+- `feedback_donation_seeking_maintainer_notice.md`
+- `feedback_v_vs_coq_disambiguation.md` (could be folded into v_sources_move_not_delete)
+
+== 11. Recommended next protocol
+
+`repo-intake` on `developer-ecosystem/` to catch up on today's uncommitted state, then resume the V-restore + move work listed in Next Action.
+
+== 12. User invitations
+
+- Confirm naming for the three V-trees to restore and move: `v-lol-i18n-lib` / `v-lol-gateway` / `v-verisimdb-client` (or different names).
+- Answer the open questions at §8.
+- Create the GitHub remote for `bebop-ffi` when ready to push, or point me at the correct owner if it's somewhere other than `hyperpolymath/`.
+- K9-SVC pre-commit hook bug — where does it belong? active-blockers.md?
+
+== 13. Post-condition check
+
+|===
+| Post-condition | State
+| Closure artefact exists | ✅ (this file)
+| Authoring bugs fixed | ⚠️ Deferred — grounding pass not run (credit constraint)
+| Local git branch clean | ⚠️ Multiple repos have uncommitted state — enumerated at §5
+| Next intended action unambiguous | ✅ (§3)
+|===

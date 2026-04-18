@@ -1,0 +1,158 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= Roadmap
+:description: Development roadmap for the hyperpolymath asdf ecosystem
+:keywords: roadmap, planning, features, development
+
+== asdf Ecosystem Roadmap
+
+This roadmap outlines planned development for the hyperpolymath asdf plugin ecosystem and control tower infrastructure.
+
+=== Current State (v1.1)
+
+[cols="1,4"]
+|===
+| Status | Feature
+
+| ✓ Complete
+| Hub-and-spoke mirror workflow
+
+| ✓ Complete
+| SSH known hosts verification
+
+| ✓ Complete
+| Credential security hardening
+
+| ✓ Complete
+| Job timeouts and concurrency controls
+
+| ✓ Complete
+| Promotional website (terrapin-ssg)
+|===
+
+=== Phase 1: Robustness
+
+[cols="1,4"]
+|===
+| Priority | Feature
+
+| High
+| Retry logic for transient network failures
+
+| High
+| Scheduled mirror runs (cron fallback)
+
+| Medium
+| Mirror verification (compare remote refs)
+
+| Medium
+| Workflow status badges
+|===
+
+=== Phase 2: First Plugins
+
+Initial plugin releases targeting cloud-native tooling:
+
+[cols="2,3"]
+|===
+| Plugin | Priority
+
+| asdf-k9s
+| High - Kubernetes dashboard
+
+| asdf-yq
+| High - YAML processing
+
+| asdf-trivy
+| High - Security scanning
+
+| asdf-hadolint
+| Medium - Dockerfile linting
+
+| asdf-buf
+| Medium - Protobuf tooling
+|===
+
+=== Phase 3: Observability
+
+[cols="1,4"]
+|===
+| Priority | Feature
+
+| High
+| Slack/Discord notifications on failure
+
+| Medium
+| Workflow run summaries
+
+| Medium
+| Centralized status dashboard
+
+| Low
+| Metrics collection
+|===
+
+=== Phase 4: Platform Expansion
+
+Additional SCM platforms for mirroring:
+
+* Gitea/Forgejo (self-hosted)
+* SourceHut
+* Azure DevOps
+* Self-hosted Git servers
+
+=== Phase 5: Advanced Features
+
+[cols="1,4"]
+|===
+| Priority | Feature
+
+| Medium
+| Selective branch mirroring
+
+| Medium
+| LFS mirroring support
+
+| Low
+| Tag-only mirroring option
+
+| Low
+| Mirror scheduling/delays
+|===
+
+=== Phase 6: Multi-Repo Management
+
+* Matrix-based workflows for bulk operations
+* Centralized configuration file
+* Automated setup scripts for new repos
+* Cross-repository sync reporting
+
+=== Phase 7: Security Enhancements
+
+[cols="1,4"]
+|===
+| Priority | Feature
+
+| High
+| SSH key rotation automation
+
+| Medium
+| Audit logging
+
+| Medium
+| GPG signature verification
+
+| Low
+| OIDC (keyless) authentication
+|===
+
+== Contributing
+
+We welcome contributions! See our https://github.com/hyperpolymath/asdf-control-tower[GitHub repository] for:
+
+* Issue tracking
+* Pull request guidelines
+* Development setup
+
+== License
+
+All projects are released under **MPL-2.0**.

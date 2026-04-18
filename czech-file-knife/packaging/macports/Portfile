@@ -1,0 +1,36 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+PortSystem          1.0
+PortGroup           cargo 1.0
+PortGroup           github 1.0
+
+github.setup        hyperpolymath czech-file-knife 0.1.0 v
+revision            0
+categories          sysutils
+license             AGPL-3.0-or-later
+maintainers         {hyperpolymath @hyperpolymath}
+description         Universal file management toolkit with cloud provider integration
+long_description    Czech File Knife (cfk) is a universal file management toolkit with \
+                    cloud provider integration and virtual filesystem support. It provides \
+                    a unified interface for managing files across local storage and cloud \
+                    providers including S3, GCS, Azure, and more.
+
+homepage            https://github.com/hyperpolymath/czech-file-knife
+
+checksums           rmd160  SKIP \
+                    sha256  SKIP \
+                    size    SKIP
+
+depends_lib-append  port:macfuse
+
+cargo.crates        # Will be auto-populated by cargo2port
+
+destroot {
+    xinstall -m 755 ${worksrcpath}/target/release/cfk ${destroot}${prefix}/bin/
+}
+
+notes "
+Czech File Knife requires macFUSE to be installed for virtual filesystem features.
+Install with: sudo port install macfuse
+"

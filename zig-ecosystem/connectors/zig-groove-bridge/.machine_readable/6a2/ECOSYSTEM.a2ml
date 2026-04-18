@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# ECOSYSTEM.a2ml — zig-groove-bridge ecosystem position
+[metadata]
+version = "1.0"
+last-updated = "2026-04-17"
+
+[project]
+name = "zig-groove-bridge"
+purpose = "Dodeca-API multi-protocol connector for Groove protocol"
+role = "connector-library"
+
+[position-in-ecosystem]
+category = "zig-ecosystem/connectors"
+parent = "zig-ecosystem"
+tier = "edge-protocol-layer"
+
+[related-projects]
+projects = [
+  { name = "standards/groove-protocol", relationship = "Groove protocol reference" },
+  { name = "developer-ecosystem/zig-api", relationship = "Will integrate as consumer of foundation" },
+  { name = "gossamer", relationship = "potential Groove service consumer" },
+  { name = "burble", relationship = "potential Groove service consumer" },
+  { name = "verisimdb", relationship = "potential Groove service consumer" },
+]

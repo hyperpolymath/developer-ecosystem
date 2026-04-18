@@ -1,0 +1,111 @@
+= asdf-plugin-collection
+// SPDX-License-Identifier: PMPL-1.0-or-later
+:author: Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>
+
+Monorepo of asdf version manager plugins.
+
+== Plugins
+
+[cols="1,2", options="header"]
+|===
+| Plugin | Original Repo
+
+| `ada` | asdf-ada-plugin
+| `age` | asdf-age-plugin
+| `apko` | asdf-apko-plugin
+| `arangodb` | asdf-arangodb-plugin
+| `bebop` | asdf-bebop-plugin
+| `borg` | asdf-borg-plugin
+| `casket-ssg` | asdf-casket-ssg-plugin
+| `cassandra` | asdf-cassandra-plugin
+| `cfssl` | asdf-cfssl-plugin
+| `cobalt` | asdf-cobalt-plugin
+| `cobol` | asdf-cobol-plugin
+| `coredns` | asdf-coredns-plugin
+| `cosign` | asdf-cosign-plugin
+| `couchdb` | asdf-couchdb-plugin
+| `cue` | asdf-cue-plugin
+| `deno` | asdf-deno-plugin
+| `dhall` | asdf-dhall-plugin
+| `doctl` | asdf-doctl-plugin
+| `dragonfly` | asdf-dragonfly-plugin
+| `envoy` | asdf-envoy-plugin
+| `fornax` | asdf-fornax-plugin
+| `fortran` | asdf-fortran-plugin
+| `franklin` | asdf-franklin-plugin
+| `fulcio` | asdf-fulcio-plugin
+| `git-crypt` | asdf-git-crypt-plugin
+| `gitleaks` | asdf-gitleaks-plugin
+| `grype` | asdf-grype-plugin
+| `haproxy` | asdf-haproxy-plugin
+| `hashicorp` | asdf-hashicorp-plugin
+| `httpd` | asdf-httpd-plugin
+| `influxdb` | asdf-influxdb-plugin
+| `kdl-fmt` | asdf-kdl-fmt-plugin
+| `lego` | asdf-lego-plugin
+| `linkerd` | asdf-linkerd-plugin
+| `mariadb` | asdf-mariadb-plugin
+| `mdbook` | asdf-mdbook-plugin
+| `melange` | asdf-melange-plugin
+| `metaiconic` | asdf-metaiconic-plugin
+| `mysql` | asdf-mysql-plugin
+| `neo4j` | asdf-neo4j-plugin
+| `nickel` | asdf-nickel-plugin
+| `ocaml` | asdf-ocaml-plugin
+| `opa` | asdf-opa-plugin
+| `openlitespeed` | asdf-openlitespeed-plugin
+| `openssh` | asdf-openssh-plugin
+| `openssl` | asdf-openssl-plugin
+| `orchid` | asdf-orchid-plugin
+| `pollen` | asdf-pollen-plugin
+| `pomerium` | asdf-pomerium-plugin
+| `rekor` | asdf-rekor-plugin
+| `rescript` | asdf-rescript-plugin
+| `restic` | asdf-restic-plugin
+| `rethinkdb` | asdf-rethinkdb-plugin
+| `security` | asdf-security-plugin
+| `serum` | asdf-serum-plugin
+| `sops` | asdf-sops-plugin
+| `step-ca` | asdf-step-ca-plugin
+| `surrealdb` | asdf-surrealdb-plugin
+| `syft` | asdf-syft-plugin
+| `taplo` | asdf-taplo-plugin
+| `trivy` | asdf-trivy-plugin
+| `ui` | asdf-ui-plugin
+| `varnish` | asdf-varnish-plugin
+| `virtuoso` | asdf-virtuoso-plugin
+| `vlang` | asdf-vlang-plugin
+| `yj` | asdf-yj-plugin
+| `yq` | asdf-yq-plugin
+| `zig` | asdf-zig-plugin
+| `zola` | asdf-zola-plugin
+|===
+
+== Usage
+
+Each plugin directory under `plugins/` is a complete asdf plugin. Use with `asdf plugin add <name> <path>` or inflate to a standalone repo with `git-inflate`.
+
+Example:
+
+[source,bash]
+----
+# Add a plugin from the monorepo
+asdf plugin add deno ./plugins/deno
+
+# Or symlink for development
+ln -s $(pwd)/plugins/deno ~/.asdf/plugins/deno
+----
+
+== Not Included
+
+The following asdf-related repos are kept separate (meta-tools and indexes):
+
+* `asdf-acceleration-middleware` -- meta-tool
+* `asdf-control-tower` -- meta-tool
+* `asdf-plugin-configurator` -- meta-tool
+* `asdf-plugins` -- plugin inventory/index
+* `asdf-ghjk` -- different project
+
+== License
+
+PMPL-1.0-or-later

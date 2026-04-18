@@ -1,0 +1,105 @@
+-- SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
+-- SPDX-License-Identifier: AGPL-3.0-or-later
+
+with "gnatcoll";
+
+project Dnfinition is
+
+   for Source_Dirs use (
+      "src",
+      "src/backends",
+      "src/backends/dnf",
+      "src/backends/rpm_ostree",
+      "src/cli",
+      "src/config",
+      "src/data_layer",
+      "src/platform",
+      "src/reversibility",
+      "src/reversibility/filesystem",
+      "src/tui",
+      "src/types"
+   );
+
+   for Object_Dir use "obj";
+   for Exec_Dir use "bin";
+   for Main use ("dnfinition.adb");
+
+   type Build_Mode is ("debug", "release", "spark");
+   Mode : Build_Mode := external ("MODE", "debug");
+
+   package Compiler is
+      Common_Switches := (
+         "-gnatwa",      -- All warnings
+         "-gnatyO",      -- Check overriding
+         "-gnatwe",      -- Warnings as errors
+         "-gnata",       -- Enable assertions
+         "-gnat2022"     -- Ada 2022 standard
+      );
+
+      case Mode is
+         when "debug" =>
+            for Switches ("Ada") use Common_Switches & (
+               "-g",         -- Debug info
+               "-O0",        -- No optimization
+               "-gnato",     -- Overflow checking
+               "-fstack-check"
+            );
+
+         when "release" =>
+            for Switches ("Ada") use Common_Switches & (
+               "-O2",        -- Optimization level 2
+               "-gnatn",     -- Enable inlining
+               "-fdata-sections",
+               "-ffunction-sections"
+            );
+
+         when "spark" =>
+            for Switches ("Ada") use Common_Switches & (
+               "-g",
+               "-O0",
+               "-gnato"
+            );
+      end case;
+   end Compiler;
+
+   package Binder is
+      case Mode is
+         when "debug" =>
+            for Switches ("Ada") use ("-E");  -- Store tracebacks in exceptions
+
+         when "release" =>
+            for Switches ("Ada") use ();
+
+         when "spark" =>
+            for Switches ("Ada") use ("-E");
+      end case;
+   end Binder;
+
+   package Linker is
+      case Mode is
+         when "debug" =>
+            for Switches ("Ada") use ("-g");
+
+         when "release" =>
+            for Switches ("Ada") use (
+               "-Wl,--gc-sections",  -- Remove unused sections
+               "-s"                  -- Strip symbols
+            );
+
+         when "spark" =>
+            for Switches ("Ada") use ("-g");
+      end case;
+   end Linker;
+
+   package Prove is
+      for Proof_Dir use "proof";
+      for Switches use (
+         "--level=2",           -- Proof effort level
+         "--timeout=60",        -- Per-VC timeout
+         "--memlimit=2000",     -- Memory limit (MB)
+         "--counterexamples=on",
+         "--warnings=continue"
+      );
+   end Prove;
+
+end Dnfinition;

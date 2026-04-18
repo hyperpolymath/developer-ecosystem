@@ -1,0 +1,215 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= Metaiconic Plugin Specification
+:toc: macro
+:toc-title: Contents
+:toclevels: 3
+:icons: font
+
+Specification for asdf-metaiconic-plugin: a unified metadata index and discovery layer for the hyperpolymath asdf plugin ecosystem.
+
+toc::[]
+
+== Purpose
+
+**asdf-metaiconic-plugin** serves as the central metadata registry and discovery service for 68+ asdf plugins. It provides:
+
+* Standardized metadata schema for all plugins
+* Category/tag-based organization
+* Search and discovery capabilities
+* Icon and branding consistency
+* Version compatibility matrix
+* Quality metrics aggregation
+
+== Architecture
+
+----
+┌────────────────────────────────────────────────────────────────┐
+│                     asdf-metaiconic-plugin                      │
+│                    (Metadata Index Layer)                       │
+├────────────────────────────────────────────────────────────────┤
+│  registry/                                                      │
+│  ├── plugins.yaml         # Master plugin list                 │
+│  ├── categories.yaml      # Category definitions               │
+│  ├── icons/               # SVG icons per plugin               │
+│  └── schemas/             # Validation schemas                 │
+├────────────────────────────────────────────────────────────────┤
+│  API (consumed by)                                              │
+│  ├── asdf-ui-plugin       # Visual interface                   │
+│  ├── asdf-plugin-configurator  # CLI tool                      │
+│  └── asdf-control-tower   # Dashboard                          │
+└────────────────────────────────────────────────────────────────┘
+----
+
+== Plugin Metadata Schema
+
+Each plugin entry contains:
+
+[source,yaml]
+----
+plugin:
+  name: "asdf-trivy-plugin"
+  tool: "trivy"
+  display_name: "Trivy"
+  description: "Security scanner for containers and code"
+
+  category: "security"
+  tags:
+    - vulnerability-scanning
+    - container-security
+    - sbom
+
+  upstream:
+    repo: "aquasecurity/trivy"
+    homepage: "https://trivy.dev"
+    license: "Apache-2.0"
+
+  plugin:
+    repo: "hyperpolymath/asdf-trivy-plugin"
+    version: "0.1.0"
+    platforms:
+      - linux-x86_64
+      - linux-aarch64
+      - darwin-x86_64
+      - darwin-aarch64
+
+  icon: "icons/trivy.svg"
+
+  metrics:
+    downloads: null  # Future: fetch from GitHub
+    stars: null
+    last_updated: "2025-12-31"
+----
+
+== Categories
+
+[cols="1,2,3"]
+|===
+| Category | Description | Example Plugins
+
+| `security`
+| Security scanning, secrets, compliance
+| trivy, grype, gitleaks, cosign
+
+| `database`
+| Database servers and tools
+| arangodb, mariadb, neo4j, cassandra
+
+| `config`
+| Configuration languages and tools
+| nickel, dhall, cue, taplo, yq
+
+| `network`
+| Network infrastructure tools
+| coredns, envoy, haproxy, pomerium
+
+| `language`
+| Programming language runtimes
+| ada, fortran, rescript, ocaml
+
+| `build`
+| Build and packaging tools
+| melange, apko, borg, restic
+
+| `crypto`
+| Cryptographic tools
+| age, step-ca, cfssl, lego
+
+| `ssg`
+| Static site generators
+| casket-ssg, zola, cobalt
+|===
+
+== File Structure
+
+----
+asdf-metaiconic-plugin/
+├── SPECIFICATION.adoc      # This file
+├── README.adoc
+├── registry/
+│   ├── plugins.yaml        # Master plugin index
+│   ├── categories.yaml     # Category definitions
+│   ├── compatibility.yaml  # Version compatibility
+│   └── schemas/
+│       ├── plugin.schema.json
+│       └── category.schema.json
+├── icons/
+│   ├── trivy.svg
+│   ├── grype.svg
+│   └── ...
+├── bin/
+│   ├── list-all            # List all registered plugins
+│   ├── search              # Search plugins by name/tag
+│   └── validate            # Validate registry integrity
+└── lib/
+    └── utils.bash
+----
+
+== Integration Points
+
+=== With asdf-ui-plugin
+Provides plugin icons, descriptions, and categories for the visual interface.
+
+=== With asdf-plugin-configurator
+Provides plugin discovery for `asdf-config search <query>` command.
+
+=== With asdf-control-tower
+Provides data source for the ecosystem dashboard.
+
+== API Commands
+
+[source,bash]
+----
+# List all plugins
+asdf metaiconic list
+
+# List plugins by category
+asdf metaiconic list --category security
+
+# Search plugins
+asdf metaiconic search "vulnerability"
+
+# Get plugin metadata
+asdf metaiconic info trivy
+
+# Validate registry
+asdf metaiconic validate
+----
+
+== Quality Metrics (Future)
+
+* CI status aggregation from all 68+ plugins
+* Download statistics (if available)
+* Last update timestamps
+* Compatibility scores
+* Security scan results
+
+== Implementation Phases
+
+[cols="1,2,2"]
+|===
+| Phase | Scope | Status
+
+| 0
+| Infrastructure (mirroring, docs)
+| ✓ Complete
+
+| 1
+| Registry schema + initial 20 plugins
+| Pending
+
+| 2
+| Icons + remaining plugins
+| Pending
+
+| 3
+| Search CLI + API
+| Pending
+
+| 4
+| Metrics aggregation
+| Pending
+|===
+
+== License
+
+AGPL-3.0-or-later

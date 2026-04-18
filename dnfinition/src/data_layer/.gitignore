@@ -1,0 +1,31 @@
+# Build artifacts
+/_build/
+/cover/
+/deps/
+/doc/
+/.fetch
+
+# Configuration files (local)
+/config/*.secret.exs
+.elixir_ls/
+
+# Generated files
+*.beam
+*.ez
+
+# Dialyzer
+/priv/plts/
+
+# Lockfile (ignore for now since we track mix.exs)
+mix.lock
+target/
+node_modules/
+_build/
+deps/
+.cache/
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+build/
+dist/

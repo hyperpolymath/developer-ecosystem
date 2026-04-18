@@ -1,0 +1,68 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Category definitions for hyperpolymath asdf plugin ecosystem
+
+version: "1.0.0"
+
+categories:
+  security:
+    display_name: Security
+    description: Security scanning, secrets management, compliance tools
+    icon: shield
+    color: "#dc3545"
+    plugins_count: 8
+
+  database:
+    display_name: Databases
+    description: Database servers, clients, and management tools
+    icon: database
+    color: "#0d6efd"
+    plugins_count: 6
+
+  config:
+    display_name: Configuration
+    description: Configuration languages, validators, and processors
+    icon: settings
+    color: "#6f42c1"
+    plugins_count: 7
+
+  network:
+    display_name: Network
+    description: Network infrastructure, proxies, DNS, service mesh
+    icon: globe
+    color: "#20c997"
+    plugins_count: 5
+
+  crypto:
+    display_name: Cryptography
+    description: Encryption, PKI, certificates, signing
+    icon: lock
+    color: "#fd7e14"
+    plugins_count: 5
+
+  build:
+    display_name: Build & Package
+    description: Build systems, package managers, container tools
+    icon: package
+    color: "#198754"
+    plugins_count: 6
+
+  language:
+    display_name: Languages
+    description: Programming language runtimes and compilers
+    icon: code
+    color: "#0dcaf0"
+    plugins_count: 8
+
+  ssg:
+    display_name: Static Site Generators
+    description: Static site generators and documentation tools
+    icon: file-text
+    color: "#ffc107"
+    plugins_count: 5
+
+  webserver:
+    display_name: Web Servers
+    description: HTTP servers and load balancers
+    icon: server
+    color: "#6c757d"
+    plugins_count: 4

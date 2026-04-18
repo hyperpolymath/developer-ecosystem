@@ -1,0 +1,287 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-FileCopyrightText: 2025 Hyperpolymath
+
+= Development Roadmap
+:toc: macro
+:toc-title: Phases
+:toclevels: 2
+:icons: font
+
+Unified configuration management for asdf plugins across development environments.
+
+toc::[]
+
+== Project Status Overview
+
+[cols="1,2,1"]
+|===
+|Phase |Description |Status
+
+|Phase 0
+|Infrastructure
+|✓ Complete
+
+|Phase 1
+|Core Foundation
+|Pending
+
+|Phase 2
+|Plugin Management
+|Pending
+
+|Phase 3
+|Team Collaboration
+|Pending
+
+|Phase 4
+|Advanced Features
+|Pending
+
+|Phase 5
+|Enterprise Features
+|Pending
+|===
+
+'''
+
+== Phase 0 - Infrastructure ✓
+
+*Status: Complete*
+
+=== Completed
+
+* [x] Repository initialization
+* [x] Hub-and-spoke SCM mirroring (GitHub → GitLab, Codeberg, Bitbucket)
+* [x] Instant-sync workflow for automatic forge propagation
+* [x] Security-hardened CI/CD workflow:
+** SSH known_hosts pre-configuration (MITM protection)
+** `--force-with-lease` instead of `--force` (history protection)
+** Retry logic with exponential backoff (network resilience)
+** Structured logging with GitHub Actions groups
+** Least-privilege permissions (`read-all`)
+** Pinned action versions using commit SHA
+* [x] Language policy documentation (Hyperpolymath Standard)
+
+'''
+
+== Phase 1 - Core Foundation
+
+*Status: Pending*
+
+=== 1.1 Project Structure
+
+* [ ] Create project scaffolding
++
+----
+bin/           # Executable entry points
+lib/           # Library code
+test/          # Test suites
+docs/          # Documentation
+----
+* [ ] Initialize Rust project with Cargo
+* [ ] Add shell script linting (shellcheck)
+* [ ] Create LICENSE file (AGPL-3.0-or-later)
+* [ ] Create CONTRIBUTING.md guidelines
+* [ ] Create SECURITY.md policy
+
+=== 1.2 Configuration Schema
+
+* [ ] Design configuration schema (YAML primary, TOML alternative)
+* [ ] Support for:
+** Plugin name and source URL
+** Version constraints (semver)
+** Platform-specific configurations
+** Post-install hooks
+** Environment variables
+* [ ] JSON Schema for validation
+* [ ] Nickel schema for complex validation
+
+=== 1.3 Core CLI
+
+* [ ] `asdf-config init` - Initialize configuration in a project
+* [ ] `asdf-config validate` - Validate configuration file
+* [ ] `asdf-config list` - List configured plugins
+* [ ] `asdf-config status` - Show plugin installation status
+
+'''
+
+== Phase 2 - Plugin Management
+
+*Status: Pending*
+
+=== 2.1 Plugin Operations
+
+* [ ] `asdf-config install` - Install all configured plugins
+* [ ] `asdf-config update` - Update plugins to match configuration
+* [ ] `asdf-config sync` - Sync plugin versions across team
+* [ ] `asdf-config export` - Export current setup to configuration
+
+=== 2.2 Version Resolution
+
+* [ ] Support semantic version ranges
+** `^1.0.0` - Compatible with 1.x.x
+** `~1.2.0` - Compatible with 1.2.x
+** `>=1.0 <2.0` - Range specification
+* [ ] Platform-aware version selection
+** linux / darwin / windows
+** arm64 / x86_64
+* [ ] Fallback version chains
+* [ ] Version pinning with lock file support
+
+=== 2.3 Plugin Sources
+
+* [ ] Official asdf plugin registry
+* [ ] Custom Git repositories
+* [ ] Local plugin paths
+* [ ] Plugin aliasing
+
+'''
+
+== Phase 3 - Team Collaboration
+
+*Status: Pending*
+
+=== 3.1 Shared Configurations
+
+* [ ] Team configuration inheritance
+* [ ] Organization-wide defaults
+* [ ] Project-specific overrides
+* [ ] Configuration merging strategies (deep merge, override, append)
+
+=== 3.2 Environment Profiles
+
+* [ ] Development / staging / production profiles
+* [ ] CI-specific configurations
+* [ ] Docker / container optimizations
+* [ ] Minimal installation mode (CI acceleration)
+
+=== 3.3 CI/CD Integration
+
+* [ ] Pre-commit hooks for configuration validation
+* [ ] GitHub Actions workflow templates
+* [ ] GitLab CI templates
+* [ ] Bitbucket Pipelines integration
+* [ ] Generic CI scripts for other platforms
+
+'''
+
+== Phase 4 - Advanced Features
+
+*Status: Pending*
+
+=== 4.1 Security Enhancements
+
+* [ ] Plugin checksum verification (SHA-256)
+* [ ] GPG signature validation
+* [ ] Vulnerability scanning integration
+* [ ] Audit logging for compliance
+* [ ] Secret detection prevention
+
+=== 4.2 Performance
+
+* [ ] Parallel plugin installation
+* [ ] Plugin caching (local and shared)
+* [ ] Incremental updates (diff-based)
+* [ ] Lazy loading for large configurations
+
+=== 4.3 Ecosystem Integration
+
+* [ ] VS Code extension
+* [ ] Neovim plugin
+* [ ] direnv integration
+* [ ] mise/rtx compatibility layer
+* [ ] nix-shell interoperability
+
+'''
+
+== Phase 5 - Enterprise Features
+
+*Status: Pending*
+
+=== 5.1 Compliance
+
+* [ ] Policy enforcement for approved plugins
+* [ ] License compliance checking (SPDX)
+* [ ] Usage analytics (opt-in, privacy-respecting)
+* [ ] Centralized plugin registry (self-hosted option)
+
+=== 5.2 Advanced Workflows
+
+* [ ] Plugin dependency resolution
+* [ ] Conditional plugin installation (feature flags)
+* [ ] Plugin groups and bundles
+* [ ] Migration tooling from other version managers
+** nvm → asdf-nodejs
+** pyenv → asdf-python
+** rbenv → asdf-ruby
+
+'''
+
+== Security Considerations
+
+=== Implemented (Phase 0)
+
+* SSH key management via GitHub organization secrets
+* Pinned GitHub Action versions (commit SHA)
+* Least-privilege workflow permissions
+* SSH known_hosts validation
+* `--force-with-lease` for safe mirroring
+
+=== Planned (Future Phases)
+
+* Plugin source verification
+* Checksum validation for all downloads
+* Security advisory integration
+* Automated dependency updates (Dependabot/Renovate)
+* SBOM generation
+
+'''
+
+== Technology Decisions
+
+=== Core Implementation
+
+[cols="1,1,2"]
+|===
+|Component |Choice |Rationale
+
+|CLI
+|Rust
+|Cross-platform, single binary, performance
+
+|Config Parsing
+|serde + YAML/TOML
+|Rust ecosystem standard
+
+|Validation
+|JSON Schema + Nickel
+|Industry standard + advanced constraints
+
+|Shell Scripts
+|POSIX sh
+|Maximum compatibility
+|===
+
+=== Banned per Hyperpolymath Standard
+
+* No TypeScript/Node.js - Use ReScript for any web UI
+* No Go - Use Rust instead
+* No Python (except SaltStack) - Use Rust/ReScript
+* No Kotlin/Swift - Use Tauri/Dioxus for mobile
+
+'''
+
+== Changelog
+
+=== 2025-12-26
+* Added ROADMAP.adoc and README.adoc
+* Documented complete 5-phase development plan
+
+=== 2025-12-17
+* Added instant-sync workflow for automatic forge propagation
+* Added language policy (Hyperpolymath Standard)
+
+=== 2025-12-17
+* Initial repository setup
+* Hub-and-spoke mirror workflow created
+* Security hardening implemented

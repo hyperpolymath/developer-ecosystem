@@ -1,0 +1,189 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= Plugin Ecosystem Dashboard
+:toc: macro
+:toc-title: Contents
+:icons: font
+
+Central status dashboard for the hyperpolymath asdf plugin ecosystem.
+
+toc::[]
+
+== Ecosystem Overview
+
+[cols="2,1,3"]
+|===
+| Component | Status | Description
+
+| asdf-control-tower
+| ✓ Operational
+| Central hub, mirroring, CI/CD
+
+| asdf-plugin-configurator
+| ⚙️ Phase 1
+| Rust CLI for declarative config
+
+| asdf-metaiconic-plugin
+| ⚙️ Phase 1
+| Metadata registry and discovery
+
+| asdf-ui-plugin
+| ⏳ Planned
+| Visual interface (Tauri/Dioxus)
+
+| asdf-ghjk
+| ✓ Complete
+| ghjk migration bridge
+|===
+
+== Plugin Status Matrix
+
+=== Security Tools (8 plugins)
+
+[cols="2,1,1,1"]
+|===
+| Plugin | CI | Mirror | Version
+
+| asdf-trivy-plugin | ✓ | ✓ | 0.1.0
+| asdf-grype-plugin | ✓ | ✓ | 0.1.0
+| asdf-syft-plugin | ✓ | ✓ | 0.1.0
+| asdf-cosign-plugin | ✓ | ✓ | 0.1.0
+| asdf-gitleaks-plugin | ✓ | ✓ | 0.1.0
+| asdf-age-plugin | ✓ | ✓ | 0.1.0
+| asdf-git-crypt-plugin | ✓ | ✓ | 0.1.0
+| asdf-opa-plugin | ✓ | ✓ | 0.1.0
+|===
+
+=== Database Tools (6 plugins)
+
+[cols="2,1,1,1"]
+|===
+| Plugin | CI | Mirror | Version
+
+| asdf-arangodb-plugin | ✓ | ✓ | 0.1.0
+| asdf-mariadb-plugin | ✓ | ✓ | 0.1.0
+| asdf-neo4j-plugin | ✓ | ✓ | 0.1.0
+| asdf-cassandra-plugin | ✓ | ✓ | 0.1.0
+| asdf-surrealdb-plugin | ✓ | ✓ | 0.1.0
+| asdf-dragonfly-plugin | ✓ | ✓ | 0.1.0
+|===
+
+=== Configuration Languages (7 plugins)
+
+[cols="2,1,1,1"]
+|===
+| Plugin | CI | Mirror | Version
+
+| asdf-nickel-plugin | ✓ | ✓ | 0.1.0
+| asdf-dhall-plugin | ✓ | ✓ | 0.1.0
+| asdf-cue-plugin | ✓ | ✓ | 0.1.0
+| asdf-yq-plugin | ✓ | ✓ | 0.1.0
+| asdf-taplo-plugin | ✓ | ✓ | 0.1.0
+| asdf-yj-plugin | ✓ | ✓ | 0.1.0
+| asdf-kdl-fmt-plugin | ✓ | ✓ | 0.1.0
+|===
+
+=== Network Infrastructure (5 plugins)
+
+[cols="2,1,1,1"]
+|===
+| Plugin | CI | Mirror | Version
+
+| asdf-coredns-plugin | ✓ | ✓ | 0.1.0
+| asdf-envoy-plugin | ✓ | ✓ | 0.1.0
+| asdf-pomerium-plugin | ✓ | ✓ | 0.1.0
+| asdf-linkerd-plugin | ✓ | ✓ | 0.1.0
+| asdf-haproxy-plugin | ✓ | ✓ | 0.1.0
+|===
+
+=== Cryptography & PKI (5 plugins)
+
+[cols="2,1,1,1"]
+|===
+| Plugin | CI | Mirror | Version
+
+| asdf-step-ca-plugin | ✓ | ✓ | 0.1.0
+| asdf-cfssl-plugin | ✓ | ✓ | 0.1.0
+| asdf-lego-plugin | ✓ | ✓ | 0.1.0
+| asdf-rekor-plugin | ✓ | ✓ | 0.1.0
+| asdf-fulcio-plugin | ✓ | ✓ | 0.1.0
+|===
+
+=== Build & Container Tools (6 plugins)
+
+[cols="2,1,1,1"]
+|===
+| Plugin | CI | Mirror | Version
+
+| asdf-apko-plugin | ✓ | ✓ | 0.1.0
+| asdf-melange-plugin | ✓ | ✓ | 0.1.0
+| asdf-restic-plugin | ✓ | ✓ | 0.1.0
+| asdf-borg-plugin | ✓ | ✓ | 0.1.0
+| asdf-hashicorp-plugin | ✓ | ✓ | 0.1.0
+| asdf-sops-plugin | ✓ | ✓ | 0.1.0
+|===
+
+=== Programming Languages (8 plugins)
+
+[cols="2,1,1,1"]
+|===
+| Plugin | CI | Mirror | Version
+
+| asdf-ada-plugin | ✓ | ✓ | 0.1.0
+| asdf-fortran-plugin | ✓ | ✓ | 0.1.0
+| asdf-rescript-plugin | ✓ | ✓ | 0.1.0
+| asdf-ocaml-plugin | ✓ | ✓ | 0.1.0
+| asdf-vlang-plugin | ✓ | ✓ | 0.1.0
+| asdf-cobol-plugin | ✓ | ✓ | 0.1.0
+| asdf-deno-plugin | ✓ | ✓ | 0.1.0
+| asdf-bebop-plugin | ✓ | ✓ | 0.1.0
+|===
+
+=== Static Site Generators (5 plugins)
+
+[cols="2,1,1,1"]
+|===
+| Plugin | CI | Mirror | Version
+
+| asdf-casket-ssg-plugin | ✓ | ✓ | 0.1.0
+| asdf-zola-plugin | ✓ | ✓ | 0.1.0
+| asdf-cobalt-plugin | ✓ | ✓ | 0.1.0
+| asdf-mdbook-plugin | ✓ | ✓ | 0.1.0
+| asdf-pollen-plugin | ✓ | ✓ | 0.1.0
+|===
+
+=== Web Servers (4 plugins)
+
+[cols="2,1,1,1"]
+|===
+| Plugin | CI | Mirror | Version
+
+| asdf-httpd-plugin | ✓ | ✓ | 0.1.0
+| asdf-varnish-plugin | ✓ | ✓ | 0.1.0
+| asdf-openlitespeed-plugin | ✓ | ✓ | 0.1.0
+| asdf-openssh-plugin | ✓ | ✓ | 0.1.0
+|===
+
+== Statistics
+
+[cols="1,1"]
+|===
+| Metric | Value
+
+| Total plugins | 68+
+| Categories | 9
+| With CI/CD | 68+
+| Multi-forge mirrored | 68+
+|===
+
+== Links
+
+* https://github.com/hyperpolymath?tab=repositories&q=asdf[All asdf plugins on GitHub]
+* https://github.com/hyperpolymath/asdf-metaiconic-plugin[Plugin registry]
+* https://github.com/hyperpolymath/asdf-plugin-configurator[CLI tool]
+
+== Legend
+
+* ✓ = Operational / Passing
+* ⚙️ = In Development
+* ⏳ = Planned
+* ✗ = Failing / Blocked

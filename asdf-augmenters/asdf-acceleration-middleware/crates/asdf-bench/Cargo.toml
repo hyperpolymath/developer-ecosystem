@@ -1,0 +1,27 @@
+[package]
+name = "asdf-bench"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+documentation.workspace = true
+keywords.workspace = true
+categories.workspace = true
+rust-version.workspace = true
+
+[[bin]]
+name = "asdf-bench"
+path = "src/main.rs"
+
+[dependencies]
+anyhow = { workspace = true }
+clap = { workspace = true }
+colored = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+asdf-core = { path = "../asdf-core" }
+asdf-metrics = { path = "../asdf-metrics" }
+
+[dev-dependencies]
+criterion = { workspace = true }

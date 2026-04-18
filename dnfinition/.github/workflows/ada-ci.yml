@@ -1,0 +1,123 @@
+# SPDX-License-Identifier: MPL-2.0-or-later
+# SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
+# SPDX-License-Identifier: MPL-2.0-or-later
+
+name: Ada CI
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'src/**/*.ads'
+      - 'src/**/*.adb'
+      - 'dnfinition.gpr'
+      - 'alire.toml'
+      - '.github/workflows/ada-ci.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'src/**/*.ads'
+      - 'src/**/*.adb'
+      - 'dnfinition.gpr'
+      - 'alire.toml'
+
+permissions: read-all
+
+env:
+  ALIRE_VERSION: "2.0.1"
+
+jobs:
+  build:
+    name: Build Ada (${{ matrix.mode }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        mode: [debug, release]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+
+      - name: Install GNAT
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gnat gprbuild
+
+      - name: Create build directories
+        run: mkdir -p obj bin
+
+      - name: Build (${{ matrix.mode }})
+        run: gprbuild -P dnfinition.gpr -XMODE=${{ matrix.mode }} -j0
+
+      - name: Upload binary
+        if: matrix.mode == 'release'
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4
+        with:
+          name: dnfinition-linux-x86_64
+          path: bin/dnfinition
+          retention-days: 7
+
+  spark-prove:
+    name: SPARK Formal Verification
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+
+      - name: Install GNAT and SPARK
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gnat gprbuild gnatprove
+
+      - name: Create directories
+        run: mkdir -p obj bin proof
+
+      - name: Build for SPARK
+        run: gprbuild -P dnfinition.gpr -XMODE=spark -j0
+
+      - name: Run GNATprove
+        run: |
+          gnatprove -P dnfinition.gpr \
+            --level=2 \
+            --timeout=60 \
+            --memlimit=2000 \
+            --warnings=continue \
+            --counterexamples=on \
+            -j0 || true
+        # Note: Using || true as SPARK proofs may have warnings initially
+
+      - name: Upload proof results
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4
+        with:
+          name: spark-proof-results
+          path: proof/
+          retention-days: 30
+
+  style-check:
+    name: Style Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+
+      - name: Install GNAT
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gnat gprbuild
+
+      - name: Check SPDX headers
+        run: |
+          missing_headers=0
+          for file in $(find src -name "*.ads" -o -name "*.adb"); do
+            if ! head -1 "$file" | grep -q "SPDX-FileCopyrightText"; then
+              echo "Missing SPDX header: $file"
+              missing_headers=$((missing_headers + 1))
+            fi
+          done
+          if [ $missing_headers -gt 0 ]; then
+            echo "::error::$missing_headers files missing SPDX headers"
+            exit 1
+          fi
+          echo "All Ada files have SPDX headers"

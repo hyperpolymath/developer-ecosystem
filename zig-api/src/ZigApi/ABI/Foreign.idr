@@ -46,6 +46,12 @@ prim__gnosisState : (handle : Bits64) -> PrimIO Bits8
 %foreign "C:uapi_gnosis_health, libzig_api"
 prim__gnosisHealth : (handle : Bits64) -> PrimIO Bits8
 
+||| Register an edge handler hook.
+||| Call after uapi_gnosis_create and before uapi_gnosis_start.
+||| Returns 0 (ok) on success, non-zero Result tag on failure.
+%foreign "C:uapi_gnosis_set_handler, libzig_api"
+prim__gnosisSetHandler : (handle : Bits64) -> (handler_fn : Bits64) -> PrimIO Bits8
+
 -- ============================================================================
 -- Connector pool  (ffi/zig/src/connector.zig)
 -- ============================================================================

@@ -1,0 +1,109 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+name: Build and Deploy Site
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'site/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v4
+        with:
+          persist-credentials: false
+
+      - name: Install UCBLogo
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ucblogo
+
+      - name: Clone terrapin-ssg
+        run: |
+          git clone --depth 1 https://github.com/hyperpolymath/terrapin-ssg.git /tmp/terrapin-ssg
+
+      - name: Install Asciidoctor
+        run: |
+          sudo gem install asciidoctor
+
+      - name: Build site with terrapin-ssg
+        run: |
+          cd site
+          # Run Logo build script
+          logo build.logo || echo "Logo build completed"
+
+          # Fallback: Build AsciiDoc content directly if Logo output incomplete
+          mkdir -p _site
+
+          # Convert AsciiDoc to HTML
+          for adoc in content/*.adoc; do
+            filename=$(basename "$adoc" .adoc)
+            asciidoctor -o "_site/${filename}.html" \
+              -a stylesheet=https://cdn.jsdelivr.net/npm/@asciidoctor/core@3/dist/css/asciidoctor.min.css \
+              -a source-highlighter=highlight.js \
+              -a icons=font \
+              -a toc=left \
+              -a toclevels=2 \
+              "$adoc"
+          done
+
+          # Create simple navigation
+          cat > _site/nav.html << 'NAVEOF'
+          <style>
+            .site-nav { background: #1e293b; padding: 1rem; margin-bottom: 2rem; }
+            .site-nav a { color: #60a5fa; margin-right: 1.5rem; text-decoration: none; }
+            .site-nav a:hover { text-decoration: underline; }
+            .site-title { color: #f8fafc; font-weight: bold; margin-right: 2rem; }
+          </style>
+          <nav class="site-nav">
+            <span class="site-title">asdf-control-tower</span>
+            <a href="index.html">Home</a>
+            <a href="plugins.html">Plugins</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="infrastructure.html">Infrastructure</a>
+            <a href="roadmap.html">Roadmap</a>
+          </nav>
+          NAVEOF
+
+          # Inject navigation into each page
+          for html in _site/*.html; do
+            if [ "$html" != "_site/nav.html" ]; then
+              sed -i '/<body[^>]*>/r _site/nav.html' "$html"
+            fi
+          done
+
+          rm _site/nav.html
+
+          echo "Site built successfully!"
+          ls -la _site/
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v3
+        with:
+          path: site/_site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4

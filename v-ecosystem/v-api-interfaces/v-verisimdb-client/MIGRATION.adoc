@@ -1,0 +1,42 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+= verisimdb V-lang client — Deprecated (2026-04-12)
+:toc:
+
+== Status
+
+The V-lang VerisimDB client in `src/` is *deprecated* as of 2026-04-12
+following the estate-wide V-lang ban (2026-04-10).
+
+== Migration Target: Rust
+
+The canonical Rust client is in `connectors/clients/rust/` (or use the
+VerisimDB HTTP REST API directly via `reqwest`):
+
+[source,bash]
+----
+# Direct HTTP calls — no client library required for simple use cases
+curl http://verisimdb:8084/api/v1/events
+
+# Rust crate (if available in workspace)
+cargo build -p verisimdb-client
+----
+
+The V client implemented three query patterns against the HTTP REST API:
+
+[cols="1,1"]
+|===
+| V function | Rust / HTTP replacement
+
+| `new_verisimdb_client()`       | `VerisimDbClient::from_env()` (in `aerie-api`)
+| `store_audit(event)`           | `POST /api/v1/events`
+| `query_as_of(time, limit)`     | `GET /api/v1/events?as_of=<time>&limit=<n>`
+| `query_between(start, end, n)` | `GET /api/v1/events?start=<s>&end=<e>&limit=<n>`
+| `query_history(event_id)`      | `GET /api/v1/events/<id>/history`
+| `dual_log_audit(redis, vdb)`   | `aerie-api/src/resolvers.rs` `dual_log()`
+|===
+
+== Next Steps
+
+. Confirm no live code imports from `connectors/clients/vlang/`.
+. Once confirmed, delete `src/*.v` and `v.mod`.

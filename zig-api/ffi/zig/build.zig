@@ -8,12 +8,48 @@
 //   libzig_api.a    — static library (embed in binaries)
 //   unit tests      — all modules under zig build test
 //   integration     — spawns a local gnosis server (zig build test-integration)
+//
+// External dependencies:
+//   libproven_ffi   — verification-ecosystem/proven formally-verified safety
+//                     primitives.  Provides proven_path_has_traversal, which
+//                     process.zig uses as a second gate in safePathDefault.
+//                     Build with:
+//                       cd verification-ecosystem/proven/ffi/zig
+//                       zig build
+//                     Output lands in zig-out/lib/libproven_ffi.a (standard zig build output).
+//                     The default proven_lib_path below points to that location.
 
 const std = @import("std");
+
+/// Path to the directory containing libproven_ffi.a.
+/// Override with -Dproven-lib-path=/absolute/path.
+/// Points to proven's standard zig-out/lib output (not zig-out-standalone —
+/// that symlink was removed 2026-04-17; zig build now outputs to zig-out/ directly).
+const DEFAULT_PROVEN_LIB_PATH =
+    "/var/mnt/eclipse/repos/verification-ecosystem/proven/ffi/zig/zig-out/lib";
+
+/// Path to the directory containing proven.h (the C ABI header).
+const DEFAULT_PROVEN_INCLUDE_PATH =
+    "/var/mnt/eclipse/repos/verification-ecosystem/proven/bindings/c/include";
 
 pub fn build(b: *std.Build) void {
     const target   = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
+
+    // -------------------------------------------------------------------------
+    // Build options — allow callers to override proven library paths
+    // -------------------------------------------------------------------------
+    const proven_lib_path = b.option(
+        []const u8,
+        "proven-lib-path",
+        "Directory containing libproven_ffi.a (default: " ++ DEFAULT_PROVEN_LIB_PATH ++ ")",
+    ) orelse DEFAULT_PROVEN_LIB_PATH;
+
+    const proven_include_path = b.option(
+        []const u8,
+        "proven-include-path",
+        "Directory containing proven.h (default: " ++ DEFAULT_PROVEN_INCLUDE_PATH ++ ")",
+    ) orelse DEFAULT_PROVEN_INCLUDE_PATH;
 
     // -------------------------------------------------------------------------
     // Root module — shared by both library artifacts and the test runner
@@ -24,6 +60,12 @@ pub fn build(b: *std.Build) void {
         .optimize         = optimize,
         .link_libc        = true,
     });
+
+    // Wire proven_ffi: object file + include path so @cImport works if needed,
+    // and so the linker resolves proven_path_has_traversal from process.zig.
+    root_mod.addLibraryPath(.{ .cwd_relative = proven_lib_path });
+    root_mod.addIncludePath(.{ .cwd_relative = proven_include_path });
+    root_mod.linkSystemLibrary("proven_ffi", .{});
 
     // -------------------------------------------------------------------------
     // Shared library — libzig_api.so / libzig_api.dylib / libzig_api.dll
@@ -45,6 +87,9 @@ pub fn build(b: *std.Build) void {
         .optimize         = optimize,
         .link_libc        = true,
     });
+    static_mod.addLibraryPath(.{ .cwd_relative = proven_lib_path });
+    static_mod.addIncludePath(.{ .cwd_relative = proven_include_path });
+    static_mod.linkSystemLibrary("proven_ffi", .{});
     const static = b.addLibrary(.{
         .name        = "zig_api",
         .root_module = static_mod,
@@ -70,6 +115,9 @@ pub fn build(b: *std.Build) void {
         .optimize         = optimize,
         .link_libc        = true,
     });
+    test_mod.addLibraryPath(.{ .cwd_relative = proven_lib_path });
+    test_mod.addIncludePath(.{ .cwd_relative = proven_include_path });
+    test_mod.linkSystemLibrary("proven_ffi", .{});
     const unit_tests = b.addTest(.{
         .root_module = test_mod,
     });

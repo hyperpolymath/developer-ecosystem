@@ -1,0 +1,37 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+name: Quality
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+
+      - name: EditorConfig Check
+        uses: editorconfig-checker/action-editorconfig-checker@6245a824737d548cb0eb2b678a81afeaf780ce1e # main
+
+      - name: ShellCheck
+        run: shellcheck bin/* lib/*.bash 2>/dev/null || true
+
+  secrets:
+    name: Secret Scanner
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+        with:
+          fetch-depth: 0
+
+      - name: TruffleHog
+        uses: trufflesecurity/trufflehog@116e7171542d2f1dad8810f00dcfacbe0b809183 # v3.92.4 # v3
+        with:
+          extra_args: --only-verified

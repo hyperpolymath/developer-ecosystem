@@ -1,0 +1,23 @@
+{
+    "version": "0.1.0",
+    "description": "Universal file management toolkit with cloud provider integration and virtual filesystem",
+    "homepage": "https://github.com/hyperpolymath/czech-file-knife",
+    "license": "AGPL-3.0-or-later",
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/hyperpolymath/czech-file-knife/releases/download/v0.1.0/cfk-0.1.0-x86_64-pc-windows-msvc.zip",
+            "hash": "TODO",
+            "bin": "cfk.exe"
+        }
+    },
+    "checkver": {
+        "github": "https://github.com/hyperpolymath/czech-file-knife"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/hyperpolymath/czech-file-knife/releases/download/v$version/cfk-$version-x86_64-pc-windows-msvc.zip"
+            }
+        }
+    }
+}

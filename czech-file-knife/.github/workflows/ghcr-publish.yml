@@ -1,0 +1,65 @@
+# SPDX-License-Identifier: MPL-2.0-or-later
+name: Publish to GHCR
+
+permissions: read-all
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v4
+
+      - name: Install nerdctl and containerd
+        run: |
+          # Install containerd
+          sudo apt-get update
+          sudo apt-get install -y containerd
+          sudo systemctl start containerd
+
+          # Install nerdctl full (includes containerd, CNI plugins, buildkit)
+          NERDCTL_VERSION=2.2.1
+          curl -fsSL "https://github.com/containerd/nerdctl/releases/download/v${NERDCTL_VERSION}/nerdctl-full-${NERDCTL_VERSION}-linux-amd64.tar.gz" -o /tmp/nerdctl.tar.gz
+          sudo tar -xzf /tmp/nerdctl.tar.gz -C /usr/local
+          sudo mkdir -p /opt/cni/bin
+          sudo cp /usr/local/libexec/cni/* /opt/cni/bin/ 2>/dev/null || true
+
+          # Start buildkitd daemon
+          sudo /usr/local/bin/buildkitd &
+          sleep 3
+
+      - name: Log in to GHCR
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | sudo nerdctl login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build image
+        run: |
+          sudo nerdctl build -f Containerfile -t ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} .
+          sudo nerdctl tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+      - name: Push image
+        run: |
+          sudo nerdctl push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          sudo nerdctl push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+      - name: Tag release version
+        if: github.event_name == 'release'
+        run: |
+          VERSION=${{ github.event.release.tag_name }}
+          sudo nerdctl tag ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${VERSION}
+          sudo nerdctl push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${VERSION}

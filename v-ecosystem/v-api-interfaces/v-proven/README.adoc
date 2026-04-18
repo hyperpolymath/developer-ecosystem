@@ -1,0 +1,244 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+
+= Proven for V
+
+Safe, validated operations library for V applications.
+
+== Installation
+
+[source,bash]
+----
+v install hyperpolymath.proven
+----
+
+Or clone directly:
+
+[source,bash]
+----
+git clone https://github.com/hyperpolymath/proven ~/.vmodules/proven
+----
+
+== Usage
+
+[source,v]
+----
+import proven
+
+fn main() {
+	// Safe math with overflow checking
+	if result := proven.safe_add(1000000000000, 2000000000000) {
+		println('Sum: ${result}')
+	} else {
+		println('Overflow!')
+	}
+
+	// XSS prevention
+	safe_html := proven.escape_html("<script>alert('xss')</script>")
+	// "&lt;script&gt;alert('xss')&lt;/script&gt;"
+
+	// Path safety
+	if proven.has_traversal('../../../etc/passwd') {
+		panic('Dangerous path!')
+	}
+
+	// Email validation
+	result := proven.parse_email('user@example.com')
+	if result.ok {
+		println('Local: ${result.local_part}, Domain: ${result.domain}')
+	} else {
+		println('Invalid: ${result.error}')
+	}
+
+	// IP classification
+	if ip := proven.parse_ipv4('192.168.1.1') {
+		println('Private: ${proven.is_private_ip(ip)}')
+		println('Classification: ${proven.classify_ip(ip)}')
+	}
+
+	// Secure tokens
+	token := proven.generate_token_default()
+	println('CSRF token: ${token}')
+}
+----
+
+== Modules
+
+=== SafeMath
+
+Overflow-checked arithmetic returning optional types:
+
+[source,v]
+----
+import proven
+
+// All operations return optional types
+proven.safe_add(a, b)  // ?i64
+proven.safe_sub(a, b)  // ?i64
+proven.safe_mul(a, b)  // ?i64
+proven.safe_div(a, b)  // ?i64
+
+// Use with if-let pattern
+if result := proven.safe_mul(big_number, another_big) {
+	println(result)
+} else {
+	println('Overflow!')
+}
+
+// Array operations
+proven.safe_sum([i64(1), 2, 3, 4, 5])      // ?i64(15)
+proven.safe_product([i64(2), 3, 4])        // ?i64(24)
+----
+
+=== SafeString
+
+XSS prevention and string sanitization:
+
+[source,v]
+----
+import proven
+
+proven.escape_html('<script>')      // "&lt;script&gt;"
+proven.escape_sql("O'Brien")        // "O''Brien"
+proven.escape_js(user_input)
+proven.url_encode('hello world')    // "hello%20world"
+proven.sanitize_default(input)      // Only alphanumeric + _-
+proven.slugify('Hello World!')      // "hello-world"
+----
+
+=== SafePath
+
+Directory traversal protection:
+
+[source,v]
+----
+import proven
+
+// Check for traversal
+if proven.has_traversal(user_path) {
+	panic('Path traversal detected')
+}
+
+// Sanitize filename
+proven.sanitize_filename('../../../etc/passwd') // "etc_passwd"
+
+// Safe path joining
+result := proven.path_join('/base', 'subdir', 'file.txt')
+if result.ok {
+	println(result.path)
+} else {
+	println('Error: ${result.error}')
+}
+
+// Resolve within base directory
+result := proven.resolve_within('/var/www', user_path)
+if result.ok {
+	// Safe to use result.path
+} else {
+	// Path escape attempt
+}
+----
+
+=== SafeEmail
+
+Email validation with result types:
+
+[source,v]
+----
+import proven
+
+// Simple validation
+if proven.is_valid_email(email) {
+	// Valid format
+}
+
+// Parse with result checking
+result := proven.parse_email(email)
+if result.ok {
+	println('Local: ${result.local_part}, Domain: ${result.domain}')
+} else {
+	println('Error: ${result.error}')
+}
+
+// Check for disposable emails
+proven.is_disposable_email('user@mailinator.com') // true
+
+// Normalize
+proven.normalize_email('User@EXAMPLE.COM') // "User@example.com"
+----
+
+=== SafeNetwork
+
+IP address validation and classification:
+
+[source,v]
+----
+import proven
+
+// Parse IPv4
+if ip := proven.parse_ipv4('192.168.1.1') {
+	println('Loopback: ${proven.is_loopback(ip)}')
+	println('Private: ${proven.is_private_ip(ip)}')
+
+	match proven.classify_ip(ip) {
+		.private { println('Private network') }
+		.loopback { println('Localhost') }
+		.public { println('Public IP') }
+		else {}
+	}
+}
+
+// Validate port
+proven.is_valid_port(8080) // true
+
+// SSRF protection
+if proven.is_private_url(url) {
+	panic('Cannot access private URLs')
+}
+----
+
+=== SafeCrypto
+
+Cryptographic operations:
+
+[source,v]
+----
+import proven
+
+// Secure random generation
+proven.random_bytes(32)
+proven.random_hex(16)
+proven.generate_token_default()
+
+// Hashing
+proven.sha256_hash('data')
+proven.sha512_hash('data')
+
+// HMAC
+proven.hmac_sha256(key, message)
+proven.verify_hmac_sha256(key, message, expected_mac)
+
+// Constant-time comparison (timing attack prevention)
+proven.constant_time_equals_string(actual, expected)
+
+// Password generation
+proven.generate_password_default()
+----
+
+== Provenance
+
+This binding was previously part of the hyperpolymath `verification-ecosystem`
+repo under `proven/bindings/v/`. It was moved here as part of the V-lang
+community transfer (2026-04-17). The hyperpolymath estate is migrating all
+FFI bindings to Zig; this V binding is complete and functional, and is offered
+to the V community as-is.
+
+Zig and Rust alternative bindings for the same library exist in
+`proven/bindings/zig/` and `proven/bindings/rust/` in the upstream repo.
+
+== Licence
+
+PMPL-1.0-or-later.
+
+MPL-2.0 is the automatic legal fallback until PMPL achieves formal legal
+recognition. If your V package registry requires an OSI-approved identifier,
+use `MPL-2.0`.

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: AGPL-3.0-or-later -->
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>czech-file-knife</id>
+    <version>0.1.0</version>
+    <title>Czech File Knife</title>
+    <authors>hyperpolymath</authors>
+    <owners>hyperpolymath</owners>
+    <projectUrl>https://github.com/hyperpolymath/czech-file-knife</projectUrl>
+    <licenseUrl>https://github.com/hyperpolymath/czech-file-knife/blob/main/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+Czech File Knife (cfk) is a universal file management toolkit with cloud
+provider integration and virtual filesystem support.
+
+Features:
+- Virtual filesystem (FUSE) for mounting cloud storage
+- Content-addressable caching with Blake3 hashing
+- Full-text search indexing with Tantivy
+- Multi-provider support (local, S3, GCS, Azure, etc.)
+- Streaming copy with progress indication
+    </description>
+    <summary>Universal file management toolkit with cloud provider integration</summary>
+    <tags>file-manager cloud-storage fuse cli rust</tags>
+    <packageSourceUrl>https://github.com/hyperpolymath/czech-file-knife</packageSourceUrl>
+    <docsUrl>https://github.com/hyperpolymath/czech-file-knife/blob/main/README.adoc</docsUrl>
+    <bugTrackerUrl>https://github.com/hyperpolymath/czech-file-knife/issues</bugTrackerUrl>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>

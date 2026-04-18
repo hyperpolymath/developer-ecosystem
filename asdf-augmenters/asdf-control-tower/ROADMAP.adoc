@@ -1,0 +1,248 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= asdf-control-tower Roadmap
+:toc: auto
+:toclevels: 2
+:icons: font
+
+Development roadmap for the hyperpolymath asdf ecosystem.
+
+== Current State
+
+=== Completed (v1.1)
+
+[cols="1,4,2"]
+|===
+| ✓ | Feature | Location
+
+| ✓
+| Hub-and-spoke mirror workflow (GitHub → GitLab/Codeberg/Bitbucket)
+| `.github/workflows/mirror.yml`
+
+| ✓
+| Instant-sync for automatic forge propagation
+| `.github/workflows/instant-sync.yml`
+
+| ✓
+| SSH known hosts verification
+| `mirror.yml` steps
+
+| ✓
+| Credential security hardening (no persistence, minimal perms)
+| All workflows
+
+| ✓
+| Job timeouts and concurrency controls
+| All workflows
+
+| ✓
+| Promotional website (terrapin-ssg + Asciidoctor)
+| `.github/workflows/pages.yml`, `site/`
+
+| ✓
+| SHA-pinned GitHub Actions
+| All workflows
+|===
+
+=== Not Yet Started
+
+[cols="1,4"]
+|===
+| ✗ | Feature
+
+| ✗
+| Any asdf plugin implementation
+
+| ✗
+| Plugin test infrastructure (bats-core)
+
+| ✗
+| Release automation
+
+| ✗
+| Centralized status dashboard
+|===
+
+== Phase 1: Infrastructure Robustness
+
+Hardening the existing mirroring system.
+
+[cols="1,1,4"]
+|===
+| Priority | Status | Feature
+
+| High
+| Pending
+| Retry logic for transient network failures
+
+| High
+| Pending
+| Scheduled mirror runs (cron fallback)
+
+| Medium
+| Pending
+| Mirror verification (compare remote refs post-push)
+
+| Medium
+| Pending
+| Workflow status badges for README
+|===
+
+== Phase 2: First Plugin Releases
+
+Initial plugin batch targeting cloud-native/DevOps tooling.
+
+=== High Priority
+
+[cols="2,4,2"]
+|===
+| Plugin | Description | Upstream
+
+| asdf-k9s
+| Kubernetes CLI dashboard
+| https://k9scli.io
+
+| asdf-yq
+| YAML/JSON/XML processor
+| https://mikefarah.gitbook.io/yq
+
+| asdf-trivy
+| Vulnerability/misconfiguration scanner
+| https://trivy.dev
+|===
+
+=== Medium Priority
+
+[cols="2,4,2"]
+|===
+| Plugin | Description | Upstream
+
+| asdf-hadolint
+| Dockerfile linter
+| https://github.com/hadolint/hadolint
+
+| asdf-buf
+| Protobuf tooling (lint, generate, breaking change detection)
+| https://buf.build
+|===
+
+=== Plugin Standards
+
+Each plugin must include:
+
+* SHA256 checksum verification
+* bats-core test suite
+* Linux (amd64, arm64) + macOS (Intel, Apple Silicon) support
+* CI/CD via GitHub Actions
+* Multi-forge mirroring (reuse control-tower workflows)
+
+== Phase 3: Observability
+
+[cols="1,1,4"]
+|===
+| Priority | Status | Feature
+
+| High
+| Pending
+| Slack/Discord notifications on mirror failure
+
+| Medium
+| Pending
+| Workflow run summaries (daily/weekly digest)
+
+| Medium
+| Pending
+| Centralized status dashboard (all repos)
+
+| Low
+| Pending
+| Metrics collection (mirror latency, failure rates)
+|===
+
+== Phase 4: Platform Expansion
+
+Additional SCM platforms for mirroring:
+
+[cols="2,4"]
+|===
+| Platform | Notes
+
+| Gitea/Forgejo
+| Self-hosted instances
+
+| SourceHut
+| sr.ht ecosystem
+
+| Azure DevOps
+| Enterprise environments
+
+| Self-hosted Git
+| Generic git+ssh targets
+|===
+
+== Phase 5: Advanced Mirroring
+
+[cols="1,1,4"]
+|===
+| Priority | Status | Feature
+
+| Medium
+| Pending
+| Selective branch mirroring (include/exclude patterns)
+
+| Medium
+| Pending
+| Git LFS mirroring support
+
+| Low
+| Pending
+| Tag-only mirroring option
+
+| Low
+| Pending
+| Mirror scheduling/delays (rate limiting)
+|===
+
+== Phase 6: Multi-Repo Management
+
+Scaling to manage many plugin repositories:
+
+* Matrix-based workflows for bulk operations
+* Centralized configuration file (single source of truth)
+* Automated setup scripts for new repos
+* Cross-repository sync reporting
+* Template repository for new plugins
+
+== Phase 7: Security Enhancements
+
+[cols="1,1,4"]
+|===
+| Priority | Status | Feature
+
+| High
+| Pending
+| SSH key rotation automation
+
+| Medium
+| Pending
+| Audit logging (who pushed what, when)
+
+| Medium
+| Pending
+| GPG signature verification for releases
+
+| Low
+| Pending
+| OIDC (keyless) authentication where supported
+|===
+
+== Contributing
+
+See https://github.com/hyperpolymath/asdf-control-tower[GitHub repository] for:
+
+* Issue tracking
+* Pull request guidelines
+* Development setup
+
+== License
+
+All projects released under **MPL-2.0**.

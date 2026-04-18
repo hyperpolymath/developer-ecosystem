@@ -1,0 +1,23 @@
+# Example configuration for asdf-acceleration-middleware
+
+[cache]
+enabled = true
+ttl_secs = 3600  # 1 hour
+max_size_mb = 500
+l1_capacity = 1000
+
+[parallel]
+# Strategy: "auto", "sequential", or {"fixed": N}
+strategy = "auto"
+fail_fast = false
+max_retries = 0
+
+[notifications]
+enabled = true
+level = "errors_only"  # "all", "errors_only", "completion", "none"
+desktop = true
+
+[plugins]
+exclude = []  # Plugins to exclude from operations
+only = []  # Only operate on these plugins (if specified)
+auto_update = true

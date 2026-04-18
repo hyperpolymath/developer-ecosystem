@@ -1,0 +1,12 @@
+= Maintainers
+
+== Current Maintainers
+
+* hyperpolymath - Primary maintainer
+
+== Responsibilities
+
+* Review and merge pull requests
+* Respond to issues
+* Release new versions
+* Security vulnerability response

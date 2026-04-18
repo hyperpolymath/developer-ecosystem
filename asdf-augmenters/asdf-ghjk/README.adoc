@@ -1,0 +1,404 @@
+= asdf-ghjk
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+
+
+
+image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+
+[![CI](https://github.com/Hyperpolymath/asdf-ghjk/actions/workflows/ci.yml/badge.svg)](https://github.com/Hyperpolymath/asdf-ghjk/actions/workflows/ci.yml)
+
+[ghjk](https://github.com/metatypedev/ghjk) plugin for the [asdf version manager](https://asdf-vm.com).
+
+== Contents
+
+- [Dependencies](#dependencies)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [License](#license)
+
+== What is ghjk?
+
+ghjk is a modern development environment manager and successor to asdf. It provides:
+
+- *Unified package management* across npm, PyPI, crates.io, and more
+- *TypeScript-based task automation* powered by Deno
+- *Reproducible POSIX environments* for development, CI/CD, and containers
+- *Declarative configuration* with environment inheritance
+
+For more details, visit the [ghjk repository](https://github.com/metatypedev/ghjk).
+
+== Dependencies
+
+=== Required
+
+- `bash` - Shell interpreter
+- `curl` - For downloading releases
+- `tar` - For extracting archives
+- `sort`, `grep` - For version parsing
+
+=== ghjk Runtime Dependencies
+
+Once installed, ghjk requires these tools to function:
+
+- `git` - Version control
+- `curl` - HTTP requests
+- `tar` - Archive extraction (GNU tar recommended)
+- `unzip` - ZIP archive extraction
+- `zstd` - Compression tool
+
+The install script will check for these and warn if any are missing.
+
+== Installation
+
+=== asdf Plugin
+
+```bash
+= Add the plugin
+
+asdf plugin add ghjk https://github.com/Hyperpolymath/asdf-ghjk.git
+
+= List all available versions
+
+asdf list all ghjk
+
+= Install a specific version
+
+asdf install ghjk latest
+
+= Set global version
+
+asdf global ghjk latest
+
+= Or set local version for a project
+
+asdf local ghjk 0.3.2
+```
+
+=== Verify Installation
+
+```bash
+= Check installed version
+
+ghjk --version
+
+= Run ghjk help
+
+ghjk --help
+```
+
+== Usage
+
+=== Installing Versions
+
+```bash
+= Install latest version
+
+asdf install ghjk latest
+
+= Install specific version
+
+asdf install ghjk 0.3.2
+
+= Install latest from minor version
+
+asdf install ghjk 0.3
+
+= Install and set as global default
+
+asdf install ghjk latest && asdf global ghjk latest
+```
+
+=== Version Management
+
+```bash
+= List installed versions
+
+asdf list ghjk
+
+= List all available versions
+
+asdf list all ghjk
+
+= Show current version
+
+asdf current ghjk
+
+= Uninstall a version
+
+asdf uninstall ghjk 0.3.1
+
+= Set version for current shell session
+
+asdf shell ghjk 0.3.2
+```
+
+=== Using ghjk
+
+Once installed, initialize a project:
+
+```bash
+= Initialize with TypeScript support
+
+ghjk init ts
+
+= This creates a ghjk.ts configuration file
+
+```
+
+Example `ghjk.ts` configuration:
+
+```typescript
+// ghjk.ts - Development environment configuration
+export { sophon } from "https://deno.land/x/ghjk/mod.ts";
+
+sophon({
+  // Define environment variables
+  env: {
+    DATABASE_URL: "postgresql://localhost/myapp",
+  },
+
+  // Install tools and runtimes
+  installs: [
+    { name: "node", version: "20.0.0" },
+    { name: "python", version: "3.11" },
+  ],
+
+  // Define tasks
+  tasks: {
+    dev: "npm run dev",
+    test: "pytest tests/",
+    build: "npm run build",
+  },
+});
+```
+
+Activate the environment:
+
+```bash
+= Load the ghjk environment
+
+ghjk env
+
+= Or use ghjk to run commands in the environment
+
+ghjk run dev
+ghjk run test
+```
+
+== Configuration
+
+=== Environment Variables
+
+==== `GITHUB_API_TOKEN`
+
+Set this to avoid GitHub API rate limits (especially useful in CI):
+
+```bash
+export GITHUB_API_TOKEN="ghp_your_token_here"
+```
+
+Create a token at [GitHub Settings > Tokens](https://github.com/settings/tokens). No special permissions needed for public repositories.
+
+=== `.tool-versions` Example
+
+```
+= .tool-versions - asdf configuration
+
+ghjk 0.3.2
+nodejs 20.0.0
+python 3.11.0
+```
+
+=== Platform Support
+
+This plugin supports the same platforms as ghjk:
+
+| Platform | Architecture | Status |
+|----------|-------------|---------|
+| Linux    | x86_64      | ✅ Supported |
+| Linux    | aarch64     | ✅ Supported |
+| macOS    | x86_64      | ✅ Supported |
+| macOS    | arm64 (M1+) | ✅ Supported |
+
+== Troubleshooting
+
+=== Common Issues
+
+==== Rate Limit Exceeded
+
+*Error:* `GitHub API rate limit exceeded`
+
+*Solution:* Set `GITHUB_API_TOKEN` environment variable:
+
+```bash
+= In your shell profile (~/.bashrc, ~/.zshrc, etc.)
+
+export GITHUB_API_TOKEN="ghp_your_token_here"
+```
+
+==== Download Failures
+
+*Error:* `Failed to download after 3 attempts`
+
+*Solution:* Check your internet connection and GitHub status. The plugin automatically retries with exponential backoff.
+
+==== Platform Not Supported
+
+*Error:* `Unsupported operating system` or `Unsupported architecture`
+
+*Solution:* Check that your platform is supported. Run:
+
+```bash
+uname -s  # Should be Linux or Darwin
+uname -m  # Should be x86_64, aarch64, or arm64
+```
+
+==== Missing Runtime Dependencies
+
+*Warning:* `Missing recommended runtime dependencies: git tar curl unzip zstd`
+
+*Solution:* Install the missing tools:
+
+```bash
+= Ubuntu/Debian
+
+sudo apt-get install git tar curl unzip zstd
+
+= macOS
+
+brew install git tar curl unzip zstd
+
+= Fedora/RHEL
+
+sudo dnf install git tar curl unzip zstd
+```
+
+==== Checksum Verification Failed
+
+*Error:* `Checksum verification failed`
+
+*Solution:* This indicates a corrupted download. Remove the download and try again:
+
+```bash
+= Remove cached downloads
+
+rm -rf ~/.asdf/downloads/ghjk
+
+= Reinstall
+
+asdf install ghjk <version>
+```
+
+=== Debug Mode
+
+Enable verbose output:
+
+```bash
+= Enable asdf debug mode
+
+export ASDF_DEBUG=1
+
+= Try the operation again
+
+asdf install ghjk latest
+```
+
+=== Getting Help
+
+1. Check the [ghjk documentation](https://github.com/metatypedev/ghjk)
+2. Check the [asdf documentation](https://asdf-vm.com)
+3. Search [existing issues](https://github.com/Hyperpolymath/asdf-ghjk/issues)
+4. Open a [new issue](https://github.com/Hyperpolymath/asdf-ghjk/issues/new)
+
+== Development
+
+=== Testing Locally
+
+```bash
+= Clone the repository
+
+git clone https://github.com/Hyperpolymath/asdf-ghjk.git
+cd asdf-ghjk
+
+= Test list-all
+
+./bin/list-all
+
+= Test download (requires environment variables)
+
+export ASDF_INSTALL_VERSION="0.3.2"
+export ASDF_DOWNLOAD_PATH="/tmp/asdf-ghjk-test"
+export ASDF_INSTALL_PATH="/tmp/asdf-ghjk-install"
+
+./bin/download
+./bin/install
+
+= Verify installation
+
+/tmp/asdf-ghjk-install/bin/ghjk --version
+```
+
+=== Running Tests
+
+```bash
+= Install BATS testing framework
+
+git clone https://github.com/bats-core/bats-core.git test/bats
+
+= Run tests
+
+./test/bats/bin/bats test/
+```
+
+=== Linting
+
+```bash
+= Install ShellCheck
+
+= Ubuntu/Debian: apt-get install shellcheck
+
+= macOS: brew install shellcheck
+
+= Run linting
+
+shellcheck bin/* lib/*.sh
+```
+
+== Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+=== Quick Start
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/my-feature`
+3. Make your changes
+4. Run tests and linting
+5. Commit: `git commit -am 'Add new feature'`
+6. Push: `git push origin feature/my-feature`
+7. Open a Pull Request
+
+== License
+
+See [LICENSE](LICENSE) file for details.
+
+== Related Projects
+
+- [ghjk](https://github.com/metatypedev/ghjk) - The tool this plugin installs
+- [asdf](https://asdf-vm.com) - Version manager framework
+- [asdf-plugins](https://github.com/asdf-vm/asdf-plugins) - Official plugin registry
+
+== Credits
+
+- Developed by the asdf-ghjk maintainers
+- Built on the [asdf plugin template](https://github.com/asdf-vm/asdf-plugin-template)
+- Supports [ghjk](https://github.com/metatypedev/ghjk) by Metatype
+
+---
+
+*Note:* This is an unofficial plugin. For official ghjk support, refer to the [ghjk repository](https://github.com/metatypedev/ghjk).
