@@ -116,8 +116,9 @@ deno run --allow-read --allow-run --allow-env cli.ts ./tests
 [[constraints]]
 == Constraints and planned follow-ups
 
-One constraint was resolved same-day. Two remain, both resolvable with
-small upstream changes.
+Two constraints were resolved same-day (one for v0.2.0, plus the
+three codegen bugs below). Two remain, both resolvable with small
+upstream changes.
 
 === RESOLVED (v0.2.0): one test per file
 
@@ -157,26 +158,36 @@ return is unmarshalled by hand (AffineScript compiles `Bool` → i32, 0/1).
 Record<string, Record<string, ImportValue>>` option, then unify both paths
 behind `AffineModule`.
 
-=== Known AffineScript codegen bugs blocking richer test idioms
+=== RESOLVED (2026-04-19): codegen bugs blocking richer test idioms
 
-Discovered 2026-04-19 while writing the double-track-browser lifecycle
-test pilot. Both are compiler bugs, not harness bugs — fixing them is
-upstream OCaml work on `developer-ecosystem/nextgen-languages/affinescript/
-lib/codegen.ml`.
+Both bugs discovered while writing the double-track-browser lifecycle
+test pilot were fixed upstream in `developer-ecosystem/nextgen-languages/
+affinescript/lib/codegen.ml` the same day. Regression coverage lives in
+`example/codegen_regression_test.affine` and the full
+double-track-browser `extension_lifecycle_test.affine` (10/10 green).
 
-* **Enum-in-match codegen**: a `match` on an enum that returns distinct
-  zero-arity constructors across arms produces invalid WASM (stack
-  imbalance). The ideal form `match s { Uninitialised => Initialised(),
-  ... }` must currently be downgraded to a tagged struct.
-* **Parameter struct-field reads**: `s.field_1_or_later` where `s` is a
-  function parameter of struct type returns 0 regardless of the actual
-  value. First-field reads (`s.tag`) work. Workaround: pass scalars
-  instead of structs when possible, or read fields from let-bound locals
-  before calling into helpers.
+* **Enum-in-match stack imbalance** — `PatCon`-with-args pushed the
+  tag-test boolean onto the stack twice (`LocalTee` + a trailing
+  `LocalGet` on the match-result local), so any arm body that produced
+  an i32 blew up WASM validation with "expected 1 elements on the stack
+  for fallthru, found 2". Fixed by removing the save/restore pair; the
+  field-binding code between them is stack-neutral by construction.
+* **Bare zero-arity variant as an expression** — `Initialised` (no
+  parens) fell through to the `ExprVar` lookup and failed with
+  `UnboundVariable` unless written as `State::Initialised`. Fixed by
+  falling back to `ctx.variant_tags` when `lookup_local` misses, mirroring
+  the existing `ExprCall`-with-variant-tag branch.
+* **Non-first struct-field read from parameter/call-result** — the
+  per-variable `field_layouts` map was only populated for let-bound
+  `ExprRecord` literals, so every other binding path defaulted offsets
+  to 0 and `.field_1_or_later` read the tag byte. Fixed by registering
+  struct layouts globally from `TopType(TyStruct)` and propagating them
+  to (a) function parameters via `p_ty`, (b) call-result lets via a new
+  `fn_ret_structs` map, (c) let-bindings with an explicit type
+  annotation, and (d) let-bindings whose RHS is another tracked variable.
 
-Scaling the harness to richer application-state test suites is gated
-on both. Estate-wide tracking in
-`~/Desktop/AI-WORK-todo.md` §11.
+The harness now supports idiomatic enum-plus-match application-state
+test suites without fallback tagged-struct workarounds.
 
 == Why AffineScript rather than ReScript?
 
