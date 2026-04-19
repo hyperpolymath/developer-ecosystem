@@ -1,0 +1,24 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Example AffineScript test file for affinescript-deno-test.
+//
+// Convention (MVP v0.1.0):
+//   - One test per `.affine` file.
+//   - The test entry point is the function `main`, returning `Bool`.
+//   - The harness uses the filename (without the `_test.affine` / `.test.affine`
+//     suffix) as the Deno.test() case name.
+//
+// This single-test-per-file convention is an MVP constraint driven by the
+// current AffineScript codegen, which hardcodes the exportable-name
+// allowlist in lib/codegen.ml (only `main`, `init_state`, `step_state`,
+// `get_state`, `mission_active` are exported). Multi-test-per-file support
+// is a planned follow-up once the compiler gains a `pub fn` / `@export`
+// keyword.
+//
+// For now: each behaviour you want reported separately needs its own
+// `<name>_test.affine` file.
+
+fn main() -> Bool {
+  let two_plus_three = 2 + 3;
+  let forty_two = 42;
+  (two_plus_three == 5) && (forty_two == 42) && (1 != 2)
+}

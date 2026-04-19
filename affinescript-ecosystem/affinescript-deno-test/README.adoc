@@ -1,0 +1,166 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= affinescript-deno-test
+:toc:
+:icons: font
+
+A Deno test-framework integration for AffineScript. Compiles `.affine` test
+files to WebAssembly via the standard `affinescript` compiler, loads them
+through the existing `@hyperpolymath/affine-js` bridge, and registers each
+as a `Deno.test()` case so `deno test` reports pass/fail in the usual way.
+
+Part of the https://github.com/hyperpolymath/developer-ecosystem[developer-ecosystem]
+monorepo. Sibling tools in the AffineScript ecosystem live alongside this
+component: `affinescript/` (the compiler — actually mirrored from upstream),
+`affinescriptiser/`, `affinescript-vite/`, `rattlescript/`.
+
+== Status
+
+*MVP v0.1.0.* Minimal working harness, one test per file. See
+<<mvp-constraints>> below for the specific limits and planned follow-ups.
+
+== Quick start
+
+[source,bash]
+----
+# Compile + smoke-test the bundled example:
+deno task smoke:test
+# → hello ... ok (1 passed, 0 failed)
+----
+
+== Writing a test
+
+Each test is a single `.affine` file. The entry point is `fn main() -> Bool`;
+return `true` to pass, `false` to fail. Filename ends in `_test.affine` or
+`.test.affine`.
+
+[source,affine]
+----
+// example/addition_test.affine
+// SPDX-License-Identifier: PMPL-1.0-or-later
+fn main() -> Bool {
+  let result = 2 + 3;
+  result == 5
+}
+----
+
+== Running tests
+
+The public API is `runAll(root)` in `mod.ts`:
+
+[source,typescript]
+----
+// driver.ts
+import { runAll } from "@hyperpolymath/affinescript-deno-test";
+
+await runAll("./tests");
+----
+
+Invoke with `deno test`:
+
+[source,bash]
+----
+deno test --allow-read --allow-run --allow-env driver.ts
+----
+
+The runner:
+
+. Walks `root` for `*_test.affine` / `*.test.affine` files
+. Compiles each via `affinescript compile ... -o ....wasm`
+. Loads the WASM (with a minimal WASI `fd_write` stub — AffineScript codegen
+  imports this unconditionally)
+. Registers a `Deno.test()` case named after the file (stripped of the
+  `_test` suffix) that invokes `main` and checks the Bool return
+
+== CLI (smoke-check)
+
+`cli.ts` is a thin smoke-check that prints discovery + compile results
+without running assertions. Useful for CI pipelines that want to fail fast
+on compile errors before invoking `deno test`.
+
+[source,bash]
+----
+deno run --allow-read --allow-run --allow-env cli.ts ./tests
+# Discovered 3 test file(s):
+#   ✓ tests/foo_test.affine → tests/foo_test.wasm
+#   ✓ tests/bar_test.affine → tests/bar_test.wasm
+#   ...
+----
+
+== Configuration
+
+* `AFFINESCRIPT_BIN` env var — absolute path to the `affinescript` compiler.
+  Default: `/var/mnt/eclipse/repos/developer-ecosystem/nextgen-languages/affinescript/_build/install/default/bin/affinescript`
+  (the local dev build). Override when the compiler is installed elsewhere
+  or on `$PATH`.
+
+[[mvp-constraints]]
+== MVP constraints (v0.1.0) and planned follow-ups
+
+Three limits exist only because of the current AffineScript compiler's
+state. All are resolvable with small upstream changes.
+
+=== One test per file
+
+The AffineScript codegen (`lib/codegen.ml` line 1725) hardcodes the
+exportable-name allowlist to
+
+[source,ocaml]
+----
+let export_names = ["main"; "init_state"; "step_state"; "get_state"; "mission_active"]
+----
+
+with no `pub fn` / `@export` / `#[export]` keyword. Any function not on that
+list is internal to the module and cannot be invoked from JS. The harness
+therefore uses `main` as the one sanctioned test slot.
+
+*Planned follow-up:* extend the compiler with a `pub fn` keyword (parser +
+AST + codegen). Once in place, the harness switches to the original design
+of multi-test-per-file via a `test_*` naming convention.
+
+=== WASI `fd_write` imported unconditionally
+
+Every AffineScript WASM output imports `wasi_snapshot_preview1.fd_write`
+even when the program uses no IO. The harness provides a minimal no-op
+stub so tests instantiate cleanly.
+
+*Planned follow-up:* upstream compiler change so pure programs (no `effect
+IO`) skip the WASI import entirely. Until then, the stub is correct and
+harmless.
+
+=== `@hyperpolymath/affine-js` only supplies `env` imports
+
+The existing bridge's `AffineModule.fromBytes` merges custom imports under
+the `env` module key only. For WASM modules that import from a non-`env`
+module (e.g. `wasi_snapshot_preview1`), the harness bypasses `AffineModule`
+and uses raw `WebAssembly.instantiate` plus its own WASI stub. The Bool
+return is unmarshalled by hand (AffineScript compiles `Bool` → i32, 0/1).
+
+*Planned follow-up:* extend `affine-js` to accept a `namespacedImports:
+Record<string, Record<string, ImportValue>>` option, then unify both paths
+behind `AffineModule`.
+
+== Why AffineScript rather than ReScript?
+
+ReScript is the estate's default TypeScript replacement and has a mature
+Deno integration (see `fireflag`). The AffineScript path exists because
+AffineScript has stronger semantics for:
+
+* affine / quantitative types (resource lifecycle tracking)
+* algebraic effects (explicit side-effect boundaries)
+* row polymorphism (extensible records)
+
+Test suites that want to *demonstrate* these properties — e.g. "this
+resource is consumed exactly once", "this protocol sequence is honoured" —
+are a natural fit for AffineScript. Plain behavioural tests can continue
+in ReScript; there's no migration pressure either direction.
+
+The trade-off today: AffineScript's compiler matures while ReScript's is
+mature, so this harness carries the MVP constraints above. As the compiler
+gains `pub fn` / effect-conditional WASI imports / better bridge ergonomics,
+the harness sheds them.
+
+== License
+
+PMPL-1.0-or-later. See the repository root LICENSE file.
+Legal fallback: MPL-2.0 (automatic, per the hyperpolymath License Policy
+Rule 2 in `~/.claude/CLAUDE.md`).
