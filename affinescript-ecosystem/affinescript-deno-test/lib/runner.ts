@@ -3,25 +3,25 @@
 //
 // affinescript-deno-test: runner.ts
 //
-// Loads a compiled AffineScript WASM module and wraps its `main` export as
-// a Deno.test() case. A test passes when `main` returns `true`, fails when
-// it returns `false`.
+// Loads a compiled AffineScript WASM module and wraps every exported function
+// whose name starts with `test_` as a Deno.test() case. A test passes when
+// the function returns `true`, fails when it returns `false`.
 //
-// MVP convention (v0.1.0): one test per .affine file. The export name is
-// always `main` because the current AffineScript codegen (lib/codegen.ml
-// line 1725) hardcodes the exportable-name allowlist to
-//   ["main"; "init_state"; "step_state"; "get_state"; "mission_active"]
-// with no `pub fn` / `@export` keyword. Multi-test-per-file support is a
-// planned follow-up once the compiler gains arbitrary-export syntax.
+// Convention (v0.2.0): each `.affine` file may define multiple tests via
+// the `pub fn test_<name>() -> Bool` syntax. Every `pub fn test_*` export
+// becomes a separate Deno.test() case. Non-`pub` helpers stay internal to
+// the module. This relies on the AffineScript compiler honouring `fd_vis`
+// in its WASM-export decision (commit ce324fa, both codegen.ml and
+// codegen_gc.ml).
 //
 // Uses the existing @hyperpolymath/affine-js bridge for WASM loading and
 // value marshalling, plus a minimal WASI stub for `fd_write` (AffineScript
-// codegen always pulls this import even for programs that never print).
+// codegen imports this unconditionally even for programs that never print).
 
 import { AffineModule } from "@hyperpolymath/affine-js";
 
-/** Convention: the single test export per file is always named this. */
-export const TEST_EXPORT = "main";
+/** Convention: every `pub fn` whose name begins with this prefix is a test. */
+export const TEST_PREFIX = "test_";
 
 /** Result shape returned by AffineScript Bool exports (via affine-js). */
 interface BoolValue {
@@ -30,13 +30,15 @@ interface BoolValue {
 }
 
 /**
- * Derive the Deno.test() case name from the WASM path. Strips the directory
- * and the `.wasm` extension; if the filename ends in `_test` or `.test`,
- * strips that suffix too for readability.
+ * Derive the Deno.test() case name from the file basename + export name.
+ * For a wasm at `/path/to/math_test.wasm` with export `test_add`, yields
+ * `math / add`.
  */
-function caseName(wasmPath: string): string {
+function caseName(wasmPath: string, exportName: string): string {
   const base = wasmPath.split("/").pop() ?? wasmPath;
-  return base.replace(/\.wasm$/, "").replace(/(_test|\.test)$/, "");
+  const fileStem = base.replace(/\.wasm$/, "").replace(/(_test|\.test)$/, "");
+  const caseStem = exportName.replace(/^test_/, "");
+  return `${fileStem} / ${caseStem}`;
 }
 
 /**
@@ -61,10 +63,12 @@ function makeWasiStub(): WebAssembly.ModuleImports {
 }
 
 /**
- * Register a Deno.test() case for the `main` export in the WASM module at
- * `wasmPath`. Path should be absolute; relative paths resolve against CWD.
+ * Register a Deno.test() case for every `test_*` export in the WASM module
+ * at `wasmPath`. Path should be absolute; relative paths resolve against CWD.
  *
- * Side-effect: calls `Deno.test()` exactly once.
+ * Returns the number of tests registered. Throws if no `test_*` exports
+ * are found (indicating a misconfigured file — at least one `pub fn test_*`
+ * is expected).
  */
 export async function registerTestsFromWasm(wasmPath: string): Promise<number> {
   const absolute = wasmPath.startsWith("/")
@@ -84,27 +88,32 @@ export async function registerTestsFromWasm(wasmPath: string): Promise<number> {
   }
 
   const mod = await AffineModule.fromBytes(bytes);
+  const testExports = mod.functionExports.filter((name: string) =>
+    name.startsWith(TEST_PREFIX)
+  );
 
-  if (!mod.functionExports.includes(TEST_EXPORT)) {
+  if (testExports.length === 0) {
     throw new Error(
-      `affinescript-deno-test: no '${TEST_EXPORT}' export found in ${wasmPath}. ` +
+      `affinescript-deno-test: no '${TEST_PREFIX}*' exports found in ${wasmPath}. ` +
         `Available: [${mod.functionExports.join(", ")}]. ` +
-        `Each .affine test file must define 'fn main() -> Bool'.`,
+        `Each test must be declared as 'pub fn test_<name>() -> Bool'.`,
     );
   }
 
-  Deno.test(caseName(wasmPath), () => {
-    const result = mod.call(TEST_EXPORT, { returnType: "bool" }) as BoolValue;
-    if (result.kind !== "bool") {
-      throw new Error(
-        `test '${caseName(wasmPath)}' returned non-bool value: ${JSON.stringify(result)}`,
-      );
-    }
-    if (!result.value) {
-      throw new Error(`test '${caseName(wasmPath)}' returned false`);
-    }
-  });
-  return 1;
+  for (const exportName of testExports) {
+    Deno.test(caseName(wasmPath, exportName), () => {
+      const result = mod.call(exportName, { returnType: "bool" }) as BoolValue;
+      if (result.kind !== "bool") {
+        throw new Error(
+          `test '${exportName}' returned non-bool value: ${JSON.stringify(result)}`,
+        );
+      }
+      if (!result.value) {
+        throw new Error(`test '${exportName}' returned false`);
+      }
+    });
+  }
+  return testExports.length;
 }
 
 /**
@@ -126,28 +135,36 @@ async function registerTestsWithWasi(
     wasi_snapshot_preview1: makeWasiStub(),
   });
 
-  const mainExport = instance.exports[TEST_EXPORT];
-  if (typeof mainExport !== "function") {
+  const testExports = Object.keys(instance.exports).filter(
+    (name) =>
+      typeof instance.exports[name] === "function" &&
+      name.startsWith(TEST_PREFIX),
+  );
+
+  if (testExports.length === 0) {
     const available = Object.keys(instance.exports).join(", ");
     throw new Error(
-      `affinescript-deno-test: no '${TEST_EXPORT}' function export found in ${wasmPath}. ` +
+      `affinescript-deno-test: no '${TEST_PREFIX}*' function exports found in ${wasmPath}. ` +
         `Available: [${available}]. ` +
-        `Each .affine test file must define 'fn main() -> Bool'.`,
+        `Each test must be declared as 'pub fn test_<name>() -> Bool'.`,
     );
   }
 
-  Deno.test(caseName(wasmPath), () => {
-    const raw = (mainExport as () => number)();
-    // AffineScript compiles Bool to i32 (0 = false, 1 = true).
-    if (raw !== 0 && raw !== 1) {
-      throw new Error(
-        `test '${caseName(wasmPath)}' returned non-bool raw value ${raw}; ` +
-          `'main' must have signature 'fn main() -> Bool'`,
-      );
-    }
-    if (raw === 0) {
-      throw new Error(`test '${caseName(wasmPath)}' returned false`);
-    }
-  });
-  return 1;
+  for (const exportName of testExports) {
+    const fn = instance.exports[exportName] as () => number;
+    Deno.test(caseName(wasmPath, exportName), () => {
+      const raw = fn();
+      // AffineScript compiles Bool to i32 (0 = false, 1 = true).
+      if (raw !== 0 && raw !== 1) {
+        throw new Error(
+          `test '${exportName}' returned non-bool raw value ${raw}; ` +
+            `'${exportName}' must have signature 'fn ${exportName}() -> Bool'`,
+        );
+      }
+      if (raw === 0) {
+        throw new Error(`test '${exportName}' returned false`);
+      }
+    });
+  }
+  return testExports.length;
 }

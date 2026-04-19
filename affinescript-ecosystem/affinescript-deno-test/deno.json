@@ -1,7 +1,7 @@
 {
   "//": "SPDX-License-Identifier: PMPL-1.0-or-later",
   "name": "@hyperpolymath/affinescript-deno-test",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "exports": {
     ".": "./mod.ts",
     "./cli": "./cli.ts"

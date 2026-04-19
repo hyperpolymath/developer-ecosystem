@@ -15,8 +15,9 @@ component: `affinescript/` (the compiler — actually mirrored from upstream),
 
 == Status
 
-*MVP v0.1.0.* Minimal working harness, one test per file. See
-<<mvp-constraints>> below for the specific limits and planned follow-ups.
+*v0.2.0.* Multi-test-per-file harness. The "one test per file" MVP
+constraint was resolved same-day via an upstream compiler change (see
+<<constraints>>).
 
 == Quick start
 
@@ -29,19 +30,38 @@ deno task smoke:test
 
 == Writing a test
 
-Each test is a single `.affine` file. The entry point is `fn main() -> Bool`;
-return `true` to pass, `false` to fail. Filename ends in `_test.affine` or
-`.test.affine`.
+Each test case is a top-level `pub fn test_<name>() -> Bool`. Return `true`
+to pass, `false` to fail. One `.affine` file may contain as many test cases
+as you like. Non-`pub` helpers stay internal to the module. Filename ends
+in `_test.affine` or `.test.affine`.
 
 [source,affine]
 ----
-// example/addition_test.affine
+// example/hello_test.affine
 // SPDX-License-Identifier: PMPL-1.0-or-later
-fn main() -> Bool {
+
+pub fn test_addition() -> Bool {
   let result = 2 + 3;
   result == 5
 }
+
+pub fn test_identity() -> Bool {
+  let x = 42;
+  x == 42
+}
+
+fn helper_not_exported() -> Int {
+  99
+}
+
+pub fn test_uses_helper() -> Bool {
+  helper_not_exported() == 99
+}
 ----
+
+The harness reports each test as `<filestem> / <casename>` — e.g. the file
+above produces `hello / addition`, `hello / identity`, `hello / uses_helper`
+under `deno test`.
 
 == Running tests
 
@@ -93,29 +113,27 @@ deno run --allow-read --allow-run --allow-env cli.ts ./tests
   (the local dev build). Override when the compiler is installed elsewhere
   or on `$PATH`.
 
-[[mvp-constraints]]
-== MVP constraints (v0.1.0) and planned follow-ups
+[[constraints]]
+== Constraints and planned follow-ups
 
-Three limits exist only because of the current AffineScript compiler's
-state. All are resolvable with small upstream changes.
+One constraint was resolved same-day. Two remain, both resolvable with
+small upstream changes.
 
-=== One test per file
+=== RESOLVED (v0.2.0): one test per file
 
-The AffineScript codegen (`lib/codegen.ml` line 1725) hardcodes the
-exportable-name allowlist to
+The AffineScript codegen previously hardcoded an exportable-name allowlist
+to `["main"; "init_state"; "step_state"; "get_state"; "mission_active"]`
+with no `pub fn` / `@export` keyword — so only those five names appeared
+in the WASM export list, no matter the source.
 
-[source,ocaml]
-----
-let export_names = ["main"; "init_state"; "step_state"; "get_state"; "mission_active"]
-----
+The fix (AffineScript commit `ce324fa`) makes both `codegen.ml` and
+`codegen_gc.ml` honour the AST's `fd_vis = Public` field in addition to
+the game-hook allowlist. The allowlist is retained verbatim for backward
+compatibility (pre-`pub` programs and the IDApTIK CharacterSelect bridge
+continue to work unchanged).
 
-with no `pub fn` / `@export` / `#[export]` keyword. Any function not on that
-list is internal to the module and cannot be invoked from JS. The harness
-therefore uses `main` as the one sanctioned test slot.
-
-*Planned follow-up:* extend the compiler with a `pub fn` keyword (parser +
-AST + codegen). Once in place, the harness switches to the original design
-of multi-test-per-file via a `test_*` naming convention.
+The harness now uses the expected multi-test convention: any top-level
+`pub fn test_<name>() -> Bool` becomes a separate `Deno.test()` case.
 
 === WASI `fd_write` imported unconditionally
 

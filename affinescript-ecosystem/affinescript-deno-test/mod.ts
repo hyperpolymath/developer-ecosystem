@@ -22,7 +22,7 @@ import { registerTestsFromWasm } from "./lib/runner.ts";
 
 export { compileToWasm, resolveCompilerPath } from "./lib/compile.ts";
 export { DEFAULT_TEST_PATTERN, discoverTestFiles } from "./lib/discover.ts";
-export { TEST_EXPORT, registerTestsFromWasm } from "./lib/runner.ts";
+export { TEST_PREFIX, registerTestsFromWasm } from "./lib/runner.ts";
 
 /**
  * Discover, compile, and register every AffineScript test file under `root`.

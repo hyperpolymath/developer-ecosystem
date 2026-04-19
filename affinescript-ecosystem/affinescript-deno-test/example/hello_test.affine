@@ -1,24 +1,33 @@
 // SPDX-License-Identifier: PMPL-1.0-or-later
 // Example AffineScript test file for affinescript-deno-test.
 //
-// Convention (MVP v0.1.0):
-//   - One test per `.affine` file.
-//   - The test entry point is the function `main`, returning `Bool`.
-//   - The harness uses the filename (without the `_test.affine` / `.test.affine`
-//     suffix) as the Deno.test() case name.
+// Convention (v0.2.0+): each top-level `pub fn test_<name>() -> Bool`
+// becomes a separate Deno.test() case. The harness iterates WASM exports
+// matching `test_*` and wraps each as a test. Returns:
+//   true  → test passes
+//   false → test fails
 //
-// This single-test-per-file convention is an MVP constraint driven by the
-// current AffineScript codegen, which hardcodes the exportable-name
-// allowlist in lib/codegen.ml (only `main`, `init_state`, `step_state`,
-// `get_state`, `mission_active` are exported). Multi-test-per-file support
-// is a planned follow-up once the compiler gains a `pub fn` / `@export`
-// keyword.
-//
-// For now: each behaviour you want reported separately needs its own
-// `<name>_test.affine` file.
+// Non-`pub` helpers stay internal to the module and are not exposed to
+// the test runner.
 
-fn main() -> Bool {
-  let two_plus_three = 2 + 3;
-  let forty_two = 42;
-  (two_plus_three == 5) && (forty_two == 42) && (1 != 2)
+pub fn test_addition() -> Bool {
+  let result = 2 + 3;
+  result == 5
+}
+
+pub fn test_identity() -> Bool {
+  let x = 42;
+  x == 42
+}
+
+pub fn test_inequality() -> Bool {
+  1 != 2
+}
+
+fn helper_not_exported() -> Int {
+  99
+}
+
+pub fn test_uses_helper() -> Bool {
+  helper_not_exported() == 99
 }
