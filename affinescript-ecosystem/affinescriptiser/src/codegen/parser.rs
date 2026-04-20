@@ -54,11 +54,10 @@ pub fn parse_sources(manifest: &Manifest) -> Vec<ResourceSite> {
     let mut sites = Vec::new();
 
     for source in &manifest.sources {
-        let lang = SourceLanguage::from_str(&source.language);
-        if lang.is_none() {
-            // Unknown language — skip (validation should have caught this).
+        // Unknown language — skip (validation should have caught this).
+        let Some(lang) = SourceLanguage::from_str(&source.language) else {
             continue;
-        }
+        };
 
         // Read the source file contents; if unavailable, skip gracefully.
         let content = match std::fs::read_to_string(&source.path) {
@@ -71,7 +70,7 @@ pub fn parse_sources(manifest: &Manifest) -> Vec<ResourceSite> {
             let trimmed = line.trim();
 
             // Skip comments (basic heuristic per language).
-            if is_comment(trimmed, lang.expect("TODO: handle error")) {
+            if is_comment(trimmed, lang) {
                 continue;
             }
 
