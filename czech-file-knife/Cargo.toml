@@ -74,7 +74,7 @@ parking_lot = "0.12"
 dashmap = "6.1"
 
 # Bytes
-bytes = "1.5"
+bytes = "1.11"
 
 # FFI
 libc = "0.2"

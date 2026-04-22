@@ -99,7 +99,7 @@ checksum = "7d902e3d592a523def97af8f317b08ce16b7ab854c1985a0c671e6f15cebc236"
 
 [[package]]
 name = "asdf-accelerate"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "anyhow",
  "asdf-cache",
@@ -119,7 +119,7 @@ dependencies = [
 
 [[package]]
 name = "asdf-bench"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "anyhow",
  "asdf-core",
@@ -133,11 +133,11 @@ dependencies = [
 
 [[package]]
 name = "asdf-cache"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "anyhow",
  "bincode",
- "lru 0.16.3",
+ "lru 0.17.0",
  "serde",
  "serde_json",
  "sled",
@@ -148,7 +148,7 @@ dependencies = [
 
 [[package]]
 name = "asdf-config"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "anyhow",
  "asdf-parallel",
@@ -163,7 +163,7 @@ dependencies = [
 
 [[package]]
 name = "asdf-core"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "anyhow",
  "duct",
@@ -177,7 +177,7 @@ dependencies = [
 
 [[package]]
 name = "asdf-discover"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "anyhow",
  "asdf-core",
@@ -191,7 +191,7 @@ dependencies = [
 
 [[package]]
 name = "asdf-metrics"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "anyhow",
  "serde",
@@ -203,7 +203,7 @@ dependencies = [
 
 [[package]]
 name = "asdf-monitor"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "anyhow",
  "asdf-core",
@@ -216,7 +216,7 @@ dependencies = [
 
 [[package]]
 name = "asdf-parallel"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "anyhow",
  "asdf-core",
@@ -877,6 +877,12 @@ name = "hashbrown"
 version = "0.16.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "841d1cc9bed7f9236f321df977030373f4a4163ae1a7dbfe1a51a2c1a51d9100"
+
+[[package]]
+name = "hashbrown"
+version = "0.17.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4f467dd6dccf739c208452f8014c75c18bb8301b050ad1cfb27153803edb0f51"
 dependencies = [
  "allocator-api2",
  "equivalent",
@@ -1095,11 +1101,11 @@ dependencies = [
 
 [[package]]
 name = "lru"
-version = "0.16.3"
+version = "0.17.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a1dc47f592c06f33f8e3aea9591776ec7c9f9e4124778ff8a3c3b87159f7e593"
+checksum = "0e0b564323a0fb6d54b864f625ae139de9612e27edb944dda37c109f05aac531"
 dependencies = [
- "hashbrown 0.16.1",
+ "hashbrown 0.17.0",
 ]
 
 [[package]]
