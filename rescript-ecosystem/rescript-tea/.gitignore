@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # SPDX-License-Identifier: PMPL-1.0-or-later
 # RSR-compliant .gitignore
 
@@ -105,3 +106,35 @@ sync_report*.txt
 *.cmt
 *.cmti
 *.cmi
+target/
+node_modules/
+_build/
+deps/
+.elixir_ls/
+.cache/
+build/
+dist/
+=======
+# Dependencies
+node_modules/
+
+# ReScript build output
+lib/
+.bsb.lock
+*.bs.js
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+>>>>>>> 992e4b4 (feat: initial implementation of rescript-tea)
