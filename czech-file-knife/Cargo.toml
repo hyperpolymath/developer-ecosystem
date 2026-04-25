@@ -40,7 +40,7 @@ oauth2 = "5.0"
 
 # Hashing & Compression
 blake3 = "1.5"
-lz4_flex = "0.12"
+lz4_flex = "0.13"
 hex = "0.4"
 
 # Time & Errors
