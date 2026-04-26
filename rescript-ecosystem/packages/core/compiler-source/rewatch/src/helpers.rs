@@ -76,12 +76,13 @@ impl StrippedVerbatimPath for PathBuf {
             match component {
                 Component::Prefix(prefix_component) => {
                     if prefix_component.kind().is_verbatim() {
+                        // Invariant: verbatim prefixes always start with "\\?\\"
                         stripped.push(
                             prefix_component
                                 .as_os_str()
                                 .to_string_lossy()
                                 .strip_prefix("\\\\?\\")
-                                .expect("TODO: handle error"),
+                                .expect("invariant: verbatim path prefix always starts with \\\\?\\"),
                         );
                     } else {
                         stripped.push(prefix_component.as_os_str());
@@ -316,7 +317,10 @@ fn add_suffix(base: &str, namespace: &packages::Namespace) -> String {
         | packages::Namespace::NamespaceWithEntry {
             namespace: _,
             entry: _,
-        } => base.to_string() + "-" + &namespace.to_suffix().expect("TODO: handle error"),
+        } => {
+            // Invariant: Namespace::to_suffix() always succeeds for Namespace and NamespaceWithEntry variants
+            base.to_string() + "-" + &namespace.to_suffix().expect("invariant: to_suffix succeeds for non-NoNamespace variants")
+        }
         packages::Namespace::NoNamespace => base.to_string(),
     }
 }
@@ -346,11 +350,11 @@ pub fn contains_ascii_characters(str: &str) -> bool {
 }
 
 pub fn create_path(path: &Path) {
-    fs::DirBuilder::new().recursive(true).create(path).expect("TODO: handle error");
+    fs::DirBuilder::new().recursive(true).create(path).unwrap();
 }
 
 pub fn create_path_for_path(path: &Path) {
-    fs::DirBuilder::new().recursive(true).create(path).expect("TODO: handle error");
+    fs::DirBuilder::new().recursive(true).create(path).unwrap();
 }
 
 pub fn get_bin_dir() -> PathBuf {
@@ -380,7 +384,8 @@ pub fn string_ends_with_any(s: &Path, suffixes: &[&str]) -> bool {
 }
 
 fn path_to_ast_extension(path: &Path) -> &str {
-    let extension = path.extension().expect("TODO: handle error").to_str().expect("TODO: handle error");
+    // Invariant: Source files always have extensions; to_str() never fails on valid Unicode paths
+    let extension = path.extension().expect("invariant: source files have extensions").to_str().expect("invariant: path is valid UTF-8");
     if extension.ends_with("i") { ".iast" } else { ".ast" }
 }
 
@@ -389,9 +394,10 @@ pub fn get_ast_path(source_file: &Path) -> PathBuf {
     let basename = file_path_to_compiler_asset_basename(source_file, &packages::Namespace::NoNamespace);
     let extension = path_to_ast_extension(source_path);
 
+    // Invariant: source_path is a file path from build system and always has a parent directory
     source_path
         .parent()
-        .expect("TODO: handle error")
+        .expect("invariant: source file path has parent directory")
         .join(format!("{basename}{extension}"))
 }
 
@@ -429,7 +435,8 @@ pub fn get_bs_compiler_asset(
         _ => namespace,
     };
 
-    let dir = source_file.parent().expect("TODO: handle error");
+    // Invariant: source_file is always a file with a parent directory
+    let dir = source_file.parent().expect("invariant: source file path has parent directory");
     let basename = file_path_to_compiler_asset_basename(source_file, namespace);
 
     package
@@ -437,7 +444,7 @@ pub fn get_bs_compiler_asset(
         .join(dir)
         .join(format!("{basename}{extension}"))
         .to_str()
-        .expect("TODO: handle error")
+        .expect("invariant: constructed path is valid UTF-8")
         .to_owned()
 }
 
@@ -478,7 +485,8 @@ pub fn is_source_file(extension: &str) -> bool {
 
 pub fn is_non_exotic_module_name(module_name: &str) -> bool {
     let mut chars = module_name.chars();
-    if chars.next().expect("TODO: handle error").is_ascii_uppercase() && chars.all(|c| c.is_ascii_alphanumeric() || c == '_') {
+    // Invariant: module names are non-empty strings validated by the caller
+    if chars.next().expect("invariant: module_name is non-empty").is_ascii_uppercase() && chars.all(|c| c.is_ascii_alphanumeric() || c == '_') {
         return true;
     }
     false
@@ -496,7 +504,8 @@ pub fn format_namespaced_module_name(module_name: &str) -> String {
     // from ModuleName-Namespace to Namespace.ModuleName
     // also format ModuleName-@Namespace to Namespace.ModuleName
     let mut split = module_name.split('-');
-    let module_name = split.next().expect("TODO: handle error");
+    // Invariant: split('') always produces at least one element (the entire string)
+    let module_name = split.next().expect("invariant: str.split() always produces at least one element");
     let namespace = split.next();
     let namespace = namespace.map(|ns| ns.trim_start_matches('@'));
     match namespace {

@@ -131,7 +131,8 @@ pub fn topological_sort(types: &[TypeDef]) -> Vec<&TypeDef> {
     for (name, deps) in &deps_map {
         // Each dependency means 'name' has an incoming edge
         // (dep must come before name in the sorted order)
-        *in_degree.get_mut(name).expect("TODO: handle error") += deps.len();
+        // Invariant: name was inserted into in_degree during initialization above
+        *in_degree.get_mut(name).expect("invariant: all names initialized in in_degree map") += deps.len();
     }
 
     // Start with types that have no dependencies (sorted for deterministic order)
@@ -155,7 +156,8 @@ pub fn topological_sort(types: &[TypeDef]) -> Vec<&TypeDef> {
         let mut newly_ready: Vec<String> = Vec::new();
         for (other_name, other_deps) in &deps_map {
             if other_deps.contains(&name) {
-                let degree = in_degree.get_mut(other_name).expect("TODO: handle error");
+                // Invariant: other_name was inserted into in_degree during initialization
+                let degree = in_degree.get_mut(other_name).expect("invariant: all names initialized in in_degree map");
                 *degree -= 1;
                 if *degree == 0 {
                     newly_ready.push(other_name.clone());
@@ -305,7 +307,8 @@ fn tarjan_dfs(
     if ids[at] == low[at] {
         let mut component = Vec::new();
         loop {
-            let node = stack.pop().expect("TODO: handle error");
+            // Invariant: Tarjan SCC algorithm guarantees stack is non-empty when ids[at] == low[at]
+            let node = stack.pop().expect("invariant: stack non-empty in Tarjan SCC root");
             on_stack[node] = false;
             component.push(node);
             if node == at {

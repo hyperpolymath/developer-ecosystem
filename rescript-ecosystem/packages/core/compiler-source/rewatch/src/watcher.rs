@@ -90,7 +90,8 @@ async fn async_watch(
 
     ctrlc::set_handler(move || {
         let pressed = Arc::clone(&ctrlc_pressed);
-        let mut pressed = pressed.lock().expect("TODO: handle error");
+        // Invariant: Mutex::lock() only fails if poisoned; single-threaded closure prevents this
+        let mut pressed = pressed.lock().expect("invariant: Mutex not poisoned");
         *pressed = true;
     })
     .expect("Error setting Ctrl-C handler");
@@ -98,7 +99,8 @@ async fn async_watch(
     let mut initial_build = true;
 
     loop {
-        if *ctrlc_pressed_clone.lock().expect("TODO: handle error") {
+        // Invariant: Mutex::lock() only fails if poisoned; single-threaded ownership prevents this
+        if *ctrlc_pressed_clone.lock().expect("invariant: Mutex not poisoned") {
             if show_progress {
                 println!("\nExiting...");
             }

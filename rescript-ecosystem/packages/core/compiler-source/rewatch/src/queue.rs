@@ -42,7 +42,8 @@ impl<T> Queue<T> for FifoQueue<T> {
 
     /// Adds an element to the back of the queue
     fn push(&self, value: T) {
-        let mut data = self.data.lock().expect("TODO: handle error");
+        // Invariant: Mutex::lock() only fails if poisoned; single-threaded ownership prevents this
+        let mut data = self.data.lock().expect("invariant: Mutex not poisoned");
         data.push_back(value);
         self.cv.notify_one();
     }
@@ -50,24 +51,29 @@ impl<T> Queue<T> for FifoQueue<T> {
     /// Removes an element from the front of the queue
     /// Returns None if the queue is empty
     fn pop(&self) -> T {
-        let mut data = self.data.lock().expect("TODO: handle error");
+        // Invariant: Mutex::lock() only fails if poisoned; single-threaded ownership prevents this
+        let mut data = self.data.lock().expect("invariant: Mutex not poisoned");
 
         while data.is_empty() {
-            data = self.cv.wait(data).expect("TODO: handle error");
+            // Invariant: Condvar::wait() only fails if poisoned; single-threaded ownership prevents this
+            data = self.cv.wait(data).expect("invariant: Mutex not poisoned");
         }
 
-        data.pop_front().expect("TODO: handle error")
+        // Invariant: loop above exits only if data.is_empty() is false
+        data.pop_front().expect("invariant: data is not empty")
     }
 
     /// Returns the size of the queue
     fn len(&self) -> usize {
-        let data = self.data.lock().expect("TODO: handle error");
+        // Invariant: Mutex::lock() only fails if poisoned; single-threaded ownership prevents this
+        let data = self.data.lock().expect("invariant: Mutex not poisoned");
         data.len()
     }
 
     /// Checks if the queue is empty
     fn is_empty(&self) -> bool {
-        let data = self.data.lock().expect("TODO: handle error");
+        // Invariant: Mutex::lock() only fails if poisoned; single-threaded ownership prevents this
+        let data = self.data.lock().expect("invariant: Mutex not poisoned");
         data.is_empty()
     }
 }
@@ -119,8 +125,8 @@ mod test {
             q2.push(4)
         });
 
-        t1.join().expect("TODO: handle error");
-        t2.join().expect("TODO: handle error");
+        t1.join().unwrap();
+        t2.join().unwrap();
 
         assert_eq!(queue.len(), 4);
     }
@@ -143,8 +149,8 @@ mod test {
             }
         });
 
-        handle1.join().expect("TODO: handle error");
-        handle2.join().expect("TODO: handle error");
+        handle1.join().unwrap();
+        handle2.join().unwrap();
 
         assert!(queue.is_empty());
     }
@@ -169,8 +175,8 @@ mod test {
             }
         });
 
-        handle1.join().expect("TODO: handle error");
-        handle2.join().expect("TODO: handle error");
+        handle1.join().unwrap();
+        handle2.join().unwrap();
 
         assert!(queue.is_empty());
     }

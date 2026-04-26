@@ -221,7 +221,8 @@ impl ProjectContext {
     }
 
     pub fn get_root_path(&self) -> &Path {
-        self.get_root_config().path.parent().expect("TODO: handle error")
+        // Invariant: config.path is always a valid Path with a parent (rescript.json in a directory)
+        self.get_root_config().path.parent().expect("invariant: config.path has parent directory")
     }
 
     /// Returns the local packages relevant for the current context.

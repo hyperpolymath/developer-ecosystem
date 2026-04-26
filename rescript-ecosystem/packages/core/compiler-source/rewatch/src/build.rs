@@ -70,7 +70,8 @@ pub fn get_compiler_args(rescript_file_path: &Path) -> Result<String> {
     };
 
     // make PathBuf from package root and get the relative path for filename
-    let relative_filename = filename.strip_prefix(PathBuf::from(&current_package)).expect("TODO: handle error");
+    // Invariant: filename is always a file within the package directory
+    let relative_filename = filename.strip_prefix(PathBuf::from(&current_package)).expect("invariant: filename is within package directory");
 
     let file_path = PathBuf::from(&current_package).join(filename);
     let contents = helpers::read_file(&file_path).expect("Error reading file");
@@ -247,13 +248,14 @@ pub fn incremental_build(
     };
     let mut current_step = if only_incremental { 1 } else { 2 };
     let total_steps = if only_incremental { 2 } else { 3 };
+    // Invariant: format string is valid; placeholders match ProgressBar template syntax
     pb.set_style(
         ProgressStyle::with_template(&format!(
             "{} {}Parsing... {{spinner}} {{pos}}/{{len}} {{msg}}",
             format_step(current_step, total_steps),
             CODE
         ))
-        .expect("TODO: handle error"),
+        .expect("invariant: ProgressStyle template is valid"),
     );
 
     let timing_parse_start = Instant::now();
@@ -323,18 +325,20 @@ pub fn incremental_build(
     };
 
     let start_compiling = Instant::now();
+    // Invariant: modules count fits in u64 (no realistic project has 2^64 modules)
     let pb = if !plain_output && show_progress {
-        ProgressBar::new(build_state.modules.len().try_into().expect("TODO: handle error"))
+        ProgressBar::new(build_state.modules.len().try_into().expect("invariant: module count fits in u64"))
     } else {
         ProgressBar::hidden()
     };
+    // Invariant: format string is valid; placeholders match ProgressBar template syntax
     pb.set_style(
         ProgressStyle::with_template(&format!(
             "{} {}Compiling... {{spinner}} {{pos}}/{{len}} {{msg}}",
             format_step(current_step, total_steps),
             SWORDS
         ))
-        .expect("TODO: handle error"),
+        .expect("invariant: ProgressStyle template is valid"),
     );
 
     let (compile_errors, compile_warnings, num_compiled_modules) = compile::compile(

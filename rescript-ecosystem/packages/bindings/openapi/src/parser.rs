@@ -134,10 +134,10 @@ mod tests {
             "paths": {}
         }"#;
 
-        let temp = tempfile::NamedTempFile::with_suffix(".json").expect("TODO: handle error");
-        std::fs::write(temp.path(), spec_json).expect("TODO: handle error");
+        let temp = tempfile::NamedTempFile::with_suffix(".json").unwrap();
+        std::fs::write(temp.path(), spec_json).unwrap();
 
-        let spec = parse_spec(temp.path()).expect("TODO: handle error");
+        let spec = parse_spec(temp.path()).unwrap();
         assert_eq!(spec.info.title, "Test");
     }
 }

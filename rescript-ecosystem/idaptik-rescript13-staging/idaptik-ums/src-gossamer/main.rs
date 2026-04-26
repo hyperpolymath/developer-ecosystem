@@ -840,16 +840,16 @@ mod tests {
 
     #[test]
     fn test_save_and_load_roundtrip() {
-        let level = serde_json::to_value(&make_valid_level()).expect("TODO: handle error");
+        let level = serde_json::to_value(&make_valid_level()).unwrap();
         let save_result = cmd_save_level(json!({ "level": level }));
         assert!(save_result.is_ok(), "Save should succeed");
 
-        let save_response = save_result.expect("TODO: handle error");
-        let path = save_response["path"].as_str().expect("TODO: handle error");
+        let save_response = save_result.unwrap();
+        let path = save_response["path"].as_str().unwrap();
         let load_result = cmd_load_level(json!({ "path": path }));
         assert!(load_result.is_ok(), "Load should succeed");
 
-        let loaded = load_result.expect("TODO: handle error");
+        let loaded = load_result.unwrap();
         assert_eq!(
             loaded.get("name").and_then(|v| v.as_str()),
             Some("test_level"),
@@ -867,19 +867,19 @@ mod tests {
         let result = cmd_list_levels(json!({}));
         assert!(result.is_ok(), "list_levels should succeed");
 
-        let entries = result.expect("TODO: handle error");
+        let entries = result.unwrap();
         assert!(entries.is_array(), "Result should be a JSON array");
     }
 
     #[test]
     fn test_validate_command_returns_result() {
         let level = make_valid_level();
-        let json_str = serde_json::to_string(&level).expect("TODO: handle error");
+        let json_str = serde_json::to_string(&level).unwrap();
 
         let result = cmd_validate_level_abi(json!({ "level": json_str }));
         assert!(result.is_ok(), "validate_level_abi should succeed");
 
-        let val = result.expect("TODO: handle error");
+        let val = result.unwrap();
         assert_eq!(
             val.get("valid").and_then(|v| v.as_bool()),
             Some(true),
@@ -890,13 +890,13 @@ mod tests {
     #[test]
     fn test_export_level_config_produces_rescript() {
         let level = make_valid_level();
-        let json_str = serde_json::to_string(&level).expect("TODO: handle error");
+        let json_str = serde_json::to_string(&level).unwrap();
 
         let result = cmd_export_level_config(json!({ "level": json_str }));
         assert!(result.is_ok(), "export_level_config should succeed");
 
-        let output = result.expect("TODO: handle error");
-        let config = output["config"].as_str().expect("TODO: handle error");
+        let output = result.unwrap();
+        let config = output["config"].as_str().unwrap();
         assert!(
             config.contains("levelConfig_test_level"),
             "Export should contain the level config binding"
@@ -916,7 +916,7 @@ mod tests {
         let result = cmd_get_system_info(json!({}));
         assert!(result.is_ok(), "get_system_info should succeed");
 
-        let info = result.expect("TODO: handle error");
+        let info = result.unwrap();
         assert_eq!(
             info["app_name"].as_str(),
             Some("IDApTIK Universal Modding Studio")

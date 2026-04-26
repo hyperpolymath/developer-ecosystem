@@ -342,7 +342,7 @@ fn generate_ast(
     )?;
 
     // generate the dir of the ast_path (it mirrors the source file dir)
-    let ast_parent_path = package.get_build_path().join(ast_path.parent().expect("TODO: handle error"));
+    let ast_parent_path = package.get_build_path().join(ast_path.parent().unwrap());
     helpers::create_path(&ast_parent_path);
 
     /* Create .ast */
@@ -385,7 +385,7 @@ fn generate_ast(
     if let Ok((ast_path, _)) = &result {
         let _ = std::fs::copy(
             Path::new(&build_path_abs).join(ast_path),
-            package.get_ocaml_build_path().join(ast_path.file_name().expect("TODO: handle error")),
+            package.get_ocaml_build_path().join(ast_path.file_name().unwrap()),
         );
     }
     result
@@ -417,7 +417,7 @@ fn filter_ppx_flags(
             .iter()
             .filter(|flag| match flag {
                 config::OneOrMore::Single(str) => include_ppx(str, contents),
-                config::OneOrMore::Multiple(str) => include_ppx(str.first().expect("TODO: handle error"), contents),
+                config::OneOrMore::Multiple(str) => include_ppx(str.first().unwrap(), contents),
             })
             .map(|x| x.to_owned())
             .collect::<Vec<OneOrMore<String>>>()

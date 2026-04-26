@@ -43,11 +43,13 @@ impl ProtoEncoder {
 
     fn write_tag(&mut self, field_number: u32, wire_type: u32) {
         let tag = (field_number << 3) | wire_type;
-        self.buf.write_varint(tag).expect("TODO: handle error");
+        // Invariant: Vec<u8> always accepts write_varint; in-memory writes never fail
+        self.buf.write_varint(tag).expect("invariant: Vec::write_varint cannot fail");
     }
 
     fn write_varint(&mut self, value: u64) {
-        self.buf.write_varint(value).expect("TODO: handle error");
+        // Invariant: Vec<u8> always accepts write_varint; in-memory writes never fail
+        self.buf.write_varint(value).expect("invariant: Vec::write_varint cannot fail");
     }
 
     fn write_sint32(&mut self, value: i32) {
@@ -79,7 +81,8 @@ impl ProtoEncoder {
     }
 
     fn write_bytes(&mut self, data: &[u8]) {
-        self.buf.write_varint(data.len()).expect("TODO: handle error");
+        // Invariant: Vec<u8> always accepts write_varint; in-memory writes never fail
+        self.buf.write_varint(data.len()).expect("invariant: Vec::write_varint cannot fail");
         self.buf.extend_from_slice(data);
     }
 
@@ -160,7 +163,8 @@ impl<'a> ProtoDecoder<'a> {
         if self.remaining() < 4 {
             return Err("Not enough data for fixed32");
         }
-        let bytes: [u8; 4] = self.data[self.pos..self.pos + 4].try_into().expect("TODO: handle error");
+        // Invariant: bounds check above ensures slice is exactly 4 bytes
+        let bytes: [u8; 4] = self.data[self.pos..self.pos + 4].try_into().expect("invariant: slice length verified above");
         self.pos += 4;
         Ok(u32::from_le_bytes(bytes))
     }
@@ -169,7 +173,8 @@ impl<'a> ProtoDecoder<'a> {
         if self.remaining() < 8 {
             return Err("Not enough data for fixed64");
         }
-        let bytes: [u8; 8] = self.data[self.pos..self.pos + 8].try_into().expect("TODO: handle error");
+        // Invariant: bounds check above ensures slice is exactly 8 bytes
+        let bytes: [u8; 8] = self.data[self.pos..self.pos + 8].try_into().expect("invariant: slice length verified above");
         self.pos += 8;
         Ok(u64::from_le_bytes(bytes))
     }
@@ -178,7 +183,8 @@ impl<'a> ProtoDecoder<'a> {
         if self.remaining() < 4 {
             return Err("Not enough data for float");
         }
-        let bytes: [u8; 4] = self.data[self.pos..self.pos + 4].try_into().expect("TODO: handle error");
+        // Invariant: bounds check above ensures slice is exactly 4 bytes
+        let bytes: [u8; 4] = self.data[self.pos..self.pos + 4].try_into().expect("invariant: slice length verified above");
         self.pos += 4;
         Ok(f32::from_le_bytes(bytes))
     }
@@ -187,7 +193,8 @@ impl<'a> ProtoDecoder<'a> {
         if self.remaining() < 8 {
             return Err("Not enough data for double");
         }
-        let bytes: [u8; 8] = self.data[self.pos..self.pos + 8].try_into().expect("TODO: handle error");
+        // Invariant: bounds check above ensures slice is exactly 8 bytes
+        let bytes: [u8; 8] = self.data[self.pos..self.pos + 8].try_into().expect("invariant: slice length verified above");
         self.pos += 8;
         Ok(f64::from_le_bytes(bytes))
     }
@@ -672,11 +679,11 @@ mod tests {
 
         let json = r#"{"name": "Alice", "id": 42}"#;
 
-        let encoded = encode(schema, json).expect("TODO: handle error");
-        let decoded = decode(schema, &encoded).expect("TODO: handle error");
+        let encoded = encode(schema, json).unwrap();
+        let decoded = decode(schema, &encoded).unwrap();
 
-        let original: Value = serde_json::from_str(json).expect("TODO: handle error");
-        let result: Value = serde_json::from_str(&decoded).expect("TODO: handle error");
+        let original: Value = serde_json::from_str(json).unwrap();
+        let result: Value = serde_json::from_str(&decoded).unwrap();
 
         assert_eq!(original["name"], result["name"]);
         assert_eq!(original["id"], result["id"]);
@@ -686,7 +693,7 @@ mod tests {
     fn test_base64_roundtrip() {
         let data = b"Hello, World!";
         let encoded = base64_encode(data);
-        let decoded = base64_decode(&encoded).expect("TODO: handle error");
+        let decoded = base64_decode(&encoded).unwrap();
         assert_eq!(data.to_vec(), decoded);
     }
 }
