@@ -48,7 +48,7 @@ futures = "0.3"
 # Caching
 sled = "0.34"
 bincode = "1.3"
-lru = "0.17"
+lru = "0.18"
 
 # System integration
 duct = "0.13"
