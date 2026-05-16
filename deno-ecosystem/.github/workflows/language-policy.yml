@@ -19,7 +19,7 @@ jobs:
       - name: Check for banned TypeScript files
         run: |
           if find . -name "*.ts" -type f | grep -v node_modules | grep -q .; then
-            echo "ERROR: TypeScript files found. Use ReScript instead."
+            echo "ERROR: TypeScript files found. Use AffineScript instead."
             find . -name "*.ts" -type f | grep -v node_modules
             exit 1
           fi

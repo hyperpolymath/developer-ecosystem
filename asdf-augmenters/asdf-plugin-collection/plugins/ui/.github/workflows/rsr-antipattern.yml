@@ -22,7 +22,7 @@ jobs:
 
           # Check for TypeScript files
           if find . -name "*.ts" -not -path "./node_modules/*" | grep -q .; then
-            echo "::error::TypeScript files found. Use ReScript instead."
+            echo "::error::TypeScript files found. Use AffineScript instead."
             errors=$((errors + 1))
           fi
 
@@ -40,7 +40,7 @@ jobs:
 
           # Check for Python files
           if find . -name "*.py" -not -path "./.venv/*" | grep -q .; then
-            echo "::error::Python files found. Use Julia, Rust, or ReScript instead."
+            echo "::error::Python files found. Use Julia, Rust, or AffineScript instead."
             errors=$((errors + 1))
           fi
 
