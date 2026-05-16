@@ -75,7 +75,7 @@ Per hyperpolymath language policy:
 - ✅ **Rust, Gleam, Elixir**: Optional alternative implementations
 
 **Banned**:
-- ❌ TypeScript (use ReScript instead)
+- ❌ TypeScript (use AffineScript instead)
 - ❌ Node.js, npm, Bun (use Deno instead)
 - ❌ Python, Go (use Rust/Gleam/Elixir instead)
 

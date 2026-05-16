@@ -266,7 +266,7 @@ docs/          # Documentation
 
 * No TypeScript/Node.js - Use ReScript for any web UI
 * No Go - Use Rust instead
-* No Python (except SaltStack) - Use Rust/ReScript
+* No Python (except SaltStack) - Use Rust/AffineScript
 * No Kotlin/Swift - Use Tauri/Dioxus for mobile
 
 '''

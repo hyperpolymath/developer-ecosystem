@@ -19,7 +19,7 @@ jobs:
       - name: Check for TypeScript
         run: |
           if find . -name "*.ts" -o -name "*.tsx" | grep -v node_modules | grep -q .; then
-            echo "::error::TypeScript files found! Use ReScript instead (per RSR policy)"
+            echo "::error::TypeScript files found! Use AffineScript instead (per RSR policy)"
             exit 1
           fi
           echo "✓ No TypeScript files found"
