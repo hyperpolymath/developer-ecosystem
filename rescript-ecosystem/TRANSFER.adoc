@@ -1,0 +1,67 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= ReScript Ecosystem — Community Transfer Bundle
+Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+:toc:
+:toc-placement: preamble
+
+This document describes the hyperpolymath ReScript work consolidated in
+`developer-ecosystem/rescript-ecosystem/` and its transfer position,
+following the estate language-consolidation decision (RS/TS/JS →
+AffineScript → typed-wasm).
+
+== Background
+
+ReScript was used across the hyperpolymath estate for web (TEA), routing,
+bindings, and tooling. The estate is standardising on AffineScript; the
+ReScript corpus is being (a) structurally consolidated here and (b)
+mechanically migrated to AffineScript once the compiler primitives land
+(`affinescript#61–64`). Retiring ReScript is an ecosystem-fit decision —
+too many parallel front-end stacks — not a judgement on ReScript.
+
+This consolidation is **in progress, not complete**. See
+link:MIGRATION.adoc[MIGRATION.adoc] for authoritative per-package state.
+
+== Packages offered
+
+The most transferable, self-contained pieces (each retains its own
+`rescript.json` and builds independently):
+
+=== rescript-tea
+
+The Elm Architecture for ReScript. Consolidated base lives at
+`rescript-ecosystem/rescript-tea/` with a broad module surface
+(`src/tea/`: App, Cmd, Sub, Html, Json, Http, Vdom, Ssr, Svg, Time,
+Keyboard, Mouse, Window, Animationframe, Debug, Render, Test). A
+standalone upstream repo (https://github.com/hyperpolymath/rescript-tea)
+still exists and has diverged; reconciliation is tracked in MIGRATION.adoc
+and the standalone repo is **not yet retired**.
+
+=== Other consolidated packages
+
+`cadre-router`, `cadre-tea-router`, `rescript-evangeliser`,
+`rescript-string-power`, `rescript-vite`, `rescript-dom-mounter`,
+`idaptik-rescript13-staging`, and the `packages/{core,web,bindings,ffi,
+tooling}/*` groups. Population is uneven (some empty scaffolds) — consult
+MIGRATION.adoc before depending on any single package.
+
+== FFI / proven adapters
+
+ReScript↔native adapters and proven FFI seams are preserved **outside**
+the aggregate as connectors — see link:connectors/README.adoc[]. They are
+deliberately not folded into the package tree so consumers can depend on
+the seam without the whole monorepo.
+
+== Successor
+
+Forward TEA development moves to `affinescript-tea` (AffineScript), once
+`affinescript#61–64` land. The ReScript corpus here is the legacy base
+and the reference for the mechanical port.
+
+== Transfer Terms
+
+All work here is offered under **PMPL-1.0-or-later**. PMPL-1.0-or-later is
+the primary stated licence; until it achieves formal legal recognition,
+MPL-2.0 is the automatic operative fallback — no separate request needed.
+If an explicit OSI-approved identifier is required for a package registry,
+MPL-2.0 is available on request. Code is functional and documented where
+noted; population and reconciliation status is per MIGRATION.adoc.

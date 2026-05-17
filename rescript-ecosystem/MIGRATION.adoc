@@ -1,0 +1,128 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+= rescript-ecosystem — Consolidation Migration Record
+:toc:
+
+== Status
+
+Estate language policy: RS/TS/JS → AffineScript → typed-wasm. This
+monorepo is the **structural consolidation target** for scattered
+hyperpolymath ReScript (estate handover Item #12). It is *distinct* from:
+
+* The CI-text guidance sweep (handover Item 9 — complete 2026-05-17).
+* The ReScript→AffineScript port (Epic #7 / Item #8) — blocked on
+  `affinescript#61–64`. **Do not hand-port ReScript ahead of the
+  compiler.**
+
+== Mechanism (authoritative, ruled 2026-05-17)
+
+**In-tree, history-preserving relocation. NOT git submodules.**
+
+A prior session left a half-finished submodule approach: five
+`rescript-ecosystem/*` stanzas in the parent `developer-ecosystem`
+`.gitmodules` that did *not* correspond to gitlinks (the directories were
+already tracked in-tree, git mode `100644`, with empty
+`git submodule status`). Those orphan stanzas have been removed; the
+directories remain in-tree content. This is the canonical mechanism going
+forward, mirroring the `v-ecosystem` precedent.
+
+Per policy `reference-rescript-ecosystem-policy`:
+
+* Per-repo move; **delete from source only after the add here is
+  merged/verified** (reversible until merge).
+* Preserve FFI / proven adapters *outside* the aggregate as
+  `connectors/` (see link:connectors/README.adoc[]).
+* Footgun: never bare-delete a source tree without moving it.
+
+== Physical state (2026-05-17)
+
+Consolidation is **partial**. ~6,361 real `.res` files present.
+
+[cols="2,1,3"]
+|===
+| Location | `.res` | Note
+
+| `rescript/` (top-level)              | 2985 | Largest; not yet grouped
+| `idaptik-rescript13-staging/`        | 176  | Top-level staging
+| `cadre-router/`                      | 54   | Top-level
+| `rescript-tea/` (top-level)          | 27   | **Duplicated** vs `packages/web/tea` (14) — reconcile
+| `rescript-evangeliser/` + `packages/tooling/evangeliser/` | 14+14 | **Duplicated** — reconcile
+| `packages/core/poly-core`            | 7    | Populated
+| `packages/web/full-stack`, `packages/bindings/postgres`, `ppx-proven-record/`, `rescript-deno-starter/`, `rescript-vite-config/` | 0 | Empty scaffolds awaiting source
+|===
+
+Open structural debt: dedupe top-level packages into `packages/<group>/`;
+populate or remove the empty scaffolds; resolve the README target-vs-actual
+gap (README now flagged as target layout, not completed state).
+
+== Package: rescript-tea (origin → target)
+
+*Origin:* https://github.com/hyperpolymath/rescript-tea (standalone repo,
+clean, on `main`, fully pushed).
+*Target:* `rescript-ecosystem/rescript-tea/` (in-tree, committed).
+
+This package is **left to this monorepo** as the canonical ReScript TEA
+home. Ongoing ReScript TEA work happens here, not in the standalone repo.
+
+=== Two-way divergence — RECONCILIATION REQUIRED (not done)
+
+The source repo and this copy diverged in **both** directions; neither is
+a superset. The standalone source repo has therefore **NOT** been retired
+(would be irreversible loss). No ReScript toolchain was available in the
+consolidating session to validate a semantic merge.
+
+Per-module divergence (lines, source ↔ here):
+
+[cols="2,1,1,3"]
+|===
+| Module | source | here | Disposition
+
+| `src/Tea_Sub.{res,resi}`  | 405/99 | 201/51 | source far ahead — needs merge review
+| `src/Tea_Http.{res,resi}` | 388    | 268 (`src/tea/`) | diverged — merge review
+| `src/Tea_Json.{res,resi}` | 354    | 362 | **here ahead** — keep here, port source deltas
+| `src/Tea_Html`, `Tea_App`, `Tea_Cmd`, `Tea`, `Tea_Test` | larger | smaller | diverged — per-module merge review
+| `src/Tea_Layout.{res,resi}` | present | ABSENT | **brought forward** (lossless, additive)
+| `test/Tea_Cmd_test.res`, `test/Tea_Json_test.res` | present | ABSENT | **brought forward** (validate vs canonical modules)
+| `examples/02_http/`, `examples/03_swot_dashboard/` | present | ABSENT | **brought forward**
+|===
+
+This copy additionally carries ~18 Tea modules under `src/tea/`
+(Animationframe, Debug, Keyboard, Mouse, Render, Ssr, Svg, Time, Vdom,
+Window, …) that do not exist in the standalone source — i.e. this copy is
+the richer base for those.
+
+Source-only governance/metadata forms (`.machines_readable/6scm/*.scm`,
+old `.adoc` duplicates) are **intentionally not** carried forward — the
+canonical RSR/a2ml scaffold here supersedes them (SCM→a2ml policy).
+
+=== Exit criteria for retiring the standalone rescript-tea repo
+
+. Per-module semantic merge of the diverged `src/*` (toolchain-validated).
+. Brought-forward tests/examples compile against the canonical modules.
+. Resolve the `rescript-tea` ↔ `packages/web/tea` duplication.
+. Then, and only then: per-repo retirement of
+  https://github.com/hyperpolymath/rescript-tea (reversible until that PR
+  merges).
+
+== Go-forward: affinescript-tea
+
+Per estate policy, the **successor to rescript-tea is `affinescript-tea`**
+(an AffineScript TEA implementation), not continued ReScript TEA feature
+work. `affinescript-tea` does not yet exist and **must not be hand-ported
+now** — it is blocked on the same primitives as `gitbot-fleet#148`:
+`affinescript#61` (`Http.fetch`), `#62` (`Promise`), `#63` (`Json`),
+`#64` (`Dict`). `rescript-tea` here is the consolidated *legacy* base and
+the reference for the eventual mechanical port. See
+link:rescript-tea/SUCCESSOR.adoc[rescript-tea/SUCCESSOR.adoc].
+
+== Next steps
+
+. Per-module reconcile + retire standalone `rescript-tea` (above).
+. Dedupe top-level packages into `packages/<group>/`; populate/remove
+  empty scaffolds.
+. Continue per-repo consolidation of remaining scattered ReScript
+  (estate: `repos` ~1838, `hyperpolymath-archive` 208, `reposystem` 78
+  `.res` — `gitbot-fleet` is **blocked by gitbot-fleet#148**, do not move).
+. Note: parent `developer-ecosystem/.gitmodules` still carries
+  `v-ecosystem/*` stanzas with the same orphan pattern — out of scope
+  here, flagged for the v-ecosystem owner.
