@@ -1,51 +1,26 @@
 {
   "name": "rescript-tea",
-<<<<<<< HEAD
   "version": "1.0.0",
   "description": "The Elm Architecture for ReScript — comprehensive TEA with keyed diffing, HTTP, JSON decoders, SSR, time-travel debugger",
+  "type": "module",
   "main": "src/tea/Tea.res.js",
   "author": "Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>",
   "license": "SEE LICENSE IN LICENSE",
-  "peerDependencies": {
-    "rescript": "^12.0.0",
-    "@rescript/core": "^1.0.0"
-  },
-  "keywords": ["rescript", "elm", "tea", "virtual-dom", "keyed-diffing", "ssr", "http", "json-decoders"]
-=======
-  "version": "0.1.0",
-  "description": "The Elm Architecture for ReScript",
-  "keywords": [
-    "rescript",
-    "elm",
-    "tea",
-    "react",
-    "architecture",
-    "functional"
-  ],
-  "author": "Jonathan D.A. Jewell",
-  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://gitlab.com/hyperpolymath/rescript-tea"
+    "url": "https://github.com/hyperpolymath/rescript-tea"
   },
-  "main": "src/Tea.res.mjs",
+  "keywords": ["rescript", "elm", "tea", "virtual-dom", "keyed-diffing", "ssr", "http", "json-decoders"],
   "scripts": {
     "build": "rescript",
     "clean": "rescript clean",
     "dev": "rescript -w",
-    "test": "node --test lib/es6/test/*.mjs"
+    "test": "node --test test/*.res.js"
+  },
+  "dependencies": {
+    "@rescript/core": "^1.0.0"
   },
   "peerDependencies": {
-    "@rescript/react": ">=0.12.0",
-    "react": ">=18.0.0",
-    "react-dom": ">=18.0.0",
-    "rescript": ">=11.0.0"
-  },
-  "devDependencies": {
-    "@rescript/react": "^0.13.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "rescript": "^11.1.0"
+    "rescript": "^12.0.0"
   }
->>>>>>> 992e4b4 (feat: initial implementation of rescript-tea)
 }

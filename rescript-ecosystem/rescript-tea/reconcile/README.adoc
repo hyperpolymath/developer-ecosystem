@@ -1,0 +1,45 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= rescript-tea — reconciliation holding area
+:toc:
+
+Source-only content brought forward from the standalone repo
+`github.com/hyperpolymath/rescript-tea` that does **not** compile against
+the canonical consolidated package. Preserved here losslessly — **not** in
+`rescript.json` sources — each with a concrete port task. The canonical
+package (`src/tea/`, pure `@rescript/core`) builds green:
+`rescript build` → 75 modules, exit 0 (ReScript 12.2.0).
+
+See ../MIGRATION.adoc "rescript-tea" section for the origin/divergence
+record.
+
+== needs-reactdom-to-core-port/
+
+* `Tea_Layout.{res,resi}` (~750 LOC) — depends on `ReactDOM.Style.t`.
+  The canonical package deliberately dropped `@rescript/react` (it is a
+  pure `@rescript/core` TEA). **Port task:** replace the `ReactDOM`
+  flex/grid style builders with a plain record or `@rescript/core`
+  `Dict`, then move back to `src/tea/`.
+
+== needs-canonical-api-port/
+
+These were written against the *standalone source repo's* API, which has
+diverged from the canonical modules (the documented two-way divergence):
+
+* `test/Tea_Cmd_test.res` — calls `Tea_Cmd.batch([])` (array); canonical
+  `Tea_Cmd.batch` takes `list<Tea_Cmd.t<_>>`. Port to the canonical API.
+* `test/Tea_Json_test.res` — calls `Tea_Json.decodeValue`, absent in the
+  canonical `Tea_Json`. Map to the canonical decoder entrypoint.
+* `examples/02_http/` (`HttpExample.res`) — validate against canonical
+  `Tea_Http`/`Tea_App`; port API drift.
+* `examples/03_swot_dashboard/` (`SwotDashboard.res`) — same.
+
+Once ported, tests/examples can be re-added to `rescript.json` `sources`
+as `type:"dev"` entries and this directory emptied.
+
+== Disposition rule
+
+Nothing here is deleted. Items graduate back into the canonical package
+only after they compile against it. Only when this directory is empty AND
+the per-module source↔canonical merge is complete may the standalone
+`github.com/hyperpolymath/rescript-tea` repo be retired (per-repo PR,
+reversible until merge) — see ../MIGRATION.adoc exit criteria.

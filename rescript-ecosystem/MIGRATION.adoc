@@ -95,14 +95,41 @@ Source-only governance/metadata forms (`.machines_readable/6scm/*.scm`,
 old `.adoc` duplicates) are **intentionally not** carried forward — the
 canonical RSR/a2ml scaffold here supersedes them (SCM→a2ml policy).
 
+=== Build validation (2026-05-17, ReScript 12.2.0 + @rescript/core 1.6.1)
+
+Toolchain installed at `~/dev/tools/languages/rescript/current`
+(PATH-per-use). Two **committed git merge-conflict markers** were found
+and fixed (botched merge `992e4b4`): `rescript.json` and `package.json`
+each had `<<<<<<< HEAD … ======= … >>>>>>>` blocks (HEAD = canonical
+`src/tea` / `@rescript/core`; other = old flat `src` / `@rescript/react`).
+Resolved to the canonical side. No `.res/.resi` carried conflict markers.
+
+**Canonical package now builds green:** `rescript build` →
+`Parsed 75 source files / Compiled 75 modules`, exit 0, sources
+`[{"dir":"src/tea"}]`.
+
+Brought-forward source-only content does **not** compile against the
+canonical API and is preserved losslessly in
+`rescript-tea/reconcile/` (NOT in `sources`), each with a concrete port
+task — see `rescript-tea/reconcile/README.adoc`:
+
+* `Tea_Layout.{res,resi}` (~750 LOC) — `ReactDOM`-coupled; canonical
+  package dropped `@rescript/react`. Port off ReactDOM.
+* `test/Tea_{Cmd,Json}_test.res`, `examples/{02_http,03_swot_dashboard}`
+  — written against the standalone repo's diverged API
+  (`Tea_Json.decodeValue` absent here; `Tea_Cmd.batch` list-vs-array).
+
 === Exit criteria for retiring the standalone rescript-tea repo
 
-. Per-module semantic merge of the diverged `src/*` (toolchain-validated).
-. Brought-forward tests/examples compile against the canonical modules.
+. ✅ Canonical `src/tea` builds green (toolchain-validated).
+. ✅ Config integrity defects (conflict markers) resolved.
+. Port `reconcile/` items to the canonical API; empty that directory.
+. Per-module semantic merge of the diverged `src/*` (e.g. `Tea_Sub`
+  405↔201) against the standalone source — needs side-by-side review.
 . Resolve the `rescript-tea` ↔ `packages/web/tea` duplication.
 . Then, and only then: per-repo retirement of
   https://github.com/hyperpolymath/rescript-tea (reversible until that PR
-  merges).
+  merges, and only after developer-ecosystem#69 merges).
 
 == Go-forward: affinescript-tea
 
