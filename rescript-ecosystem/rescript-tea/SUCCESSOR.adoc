@@ -1,0 +1,40 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= rescript-tea — Successor Notice
+:toc:
+
+== This package is the consolidated *legacy* base
+
+`rescript-ecosystem/rescript-tea/` is the canonical, consolidated home
+for the ReScript Elm Architecture. It is **left to this monorepo**: any
+ReScript TEA changes happen here, not in the standalone
+https://github.com/hyperpolymath/rescript-tea repo (which has diverged and
+is pending reconciliation + retirement — see
+link:../MIGRATION.adoc[../MIGRATION.adoc]).
+
+== Go-forward: affinescript-tea
+
+Per estate language policy (RS/TS/JS → AffineScript → typed-wasm), the
+**successor is `affinescript-tea`** — an AffineScript TEA implementation.
+New TEA feature work targets `affinescript-tea`, not continued ReScript
+feature work here.
+
+=== Do not hand-port yet
+
+`affinescript-tea` does **not** exist and must **not** be hand-translated
+ahead of the compiler. It is blocked on the same primitives as
+`gitbot-fleet#148`:
+
+* `affinescript#61` — `Http.fetch`
+* `affinescript#62` — `Promise`
+* `affinescript#63` — `Json`
+* `affinescript#64` — `Dict`
+
+Until those land, AffineScript cannot express the HTTP/async/JSON/dict
+surface TEA relies on. This `rescript-tea` corpus is the reference for the
+eventual **mechanical** port. Manual ports would diverge from it, need
+redoing, and risk silent semantic drift.
+
+=== Exit
+
+Create/scaffold `affinescript-tea` when `affinescript#61–64` resolve;
+mechanically port from this base; then this package becomes archival.

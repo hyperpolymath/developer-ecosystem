@@ -1,0 +1,37 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= rescript-ecosystem connectors
+:toc:
+
+== Purpose
+
+Per `reference-rescript-ecosystem-policy` and the `v-ecosystem`
+precedent, ReScript↔native **FFI / proven adapters are preserved here,
+outside the aggregate package tree**.
+
+Rationale: a consumer that only needs the FFI seam (e.g. a proven FFI
+adapter, a Zig/WASM bridge) must be able to depend on the connector
+without pulling the entire `rescript-ecosystem` monorepo. Folding adapters
+into `packages/*` would couple the seam to the aggregate.
+
+== Status
+
+Scaffold. No adapters relocated yet. As per-repo consolidation proceeds
+(see link:../MIGRATION.adoc[MIGRATION.adoc]), proven-FFI / native-bridge
+adapters discovered in source repos are moved here — *not* into
+`packages/` — with their origin recorded in MIGRATION.adoc.
+
+== Layout (target)
+
+----
+connectors/
+├── <name>/            # one dir per preserved adapter
+│   ├── README.adoc    # origin repo + seam description
+│   └── …              # adapter sources (in-tree, history-preserving)
+└── README.adoc        # this file
+----
+
+== Not in scope
+
+Application code, framework packages, and bindings belong in
+`packages/<group>/` or as top-level packages, not here. Connectors are
+strictly the FFI/proven-adapter seams.

@@ -4,15 +4,39 @@ Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 :toc: macro
 :toclevels: 3
 
-Consolidated monorepo for all hyperpolymath ReScript packages. 26 packages organized into 5 groups: core libraries, web frameworks, service bindings, FFI bridges, and developer tooling.
+Consolidation monorepo for hyperpolymath ReScript packages. The target
+layout is 5 groups (core, web, bindings, FFI, tooling) plus standalone
+top-level packages; consolidation is **in progress, not complete**.
 
 toc::[]
 
 == Overview
 
-This monorepo consolidates 26 previously-separate ReScript repositories into a single, cohesive workspace. Each package retains its own `rescript.json` and can be built independently, but they share a common root for easier cross-package development.
+This monorepo is the destination for previously-separate hyperpolymath
+ReScript repositories. Consolidation is a live, partial migration — *not*
+a finished state:
 
-== Package Groups
+* Some `packages/*` entries are populated (e.g. `core/poly-core`,
+  `web/tea`, `tooling/evangeliser`); others are empty scaffolds
+  (e.g. `web/full-stack`, `bindings/postgres`) awaiting their source.
+* Several large packages currently live as top-level directories
+  (`rescript/`, `idaptik-rescript13-staging/`, `cadre-router/`,
+  `rescript-tea/`, …) and are *not yet* deduplicated into `packages/`.
+  Note `rescript-tea` currently exists **both** top-level and as
+  `packages/web/tea` — a known duplication pending reconciliation.
+* The mechanism is **in-tree, history-preserving relocation** (not git
+  submodules). Source repos are retired only *after* their content is
+  merged and verified here (reversible until then).
+
+For authoritative per-package origin, status, and outstanding
+reconciliation work, see link:MIGRATION.adoc[MIGRATION.adoc]. For the
+community/transfer position see link:TRANSFER.adoc[TRANSFER.adoc].
+
+== Package Groups (target layout)
+
+NOTE: The tables below describe the *target* organization. Presence here
+does not imply the package is fully populated — consult
+link:MIGRATION.adoc[MIGRATION.adoc] for actual state.
 
 === Core (`packages/core/`)
 

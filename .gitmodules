@@ -52,18 +52,3 @@
 [submodule "v-ecosystem/v-rest"]
 	path = v-ecosystem/v-rest
 	url = git@github.com:hyperpolymath/v-rest.git
-[submodule "rescript-ecosystem/rescript"]
-	path = rescript-ecosystem/rescript
-	url = git@github.com:hyperpolymath/rescript.git
-[submodule "rescript-ecosystem/rescript-evangeliser"]
-	path = rescript-ecosystem/rescript-evangeliser
-	url = git@github.com:hyperpolymath/rescript-evangeliser.git
-[submodule "rescript-ecosystem/rescript-tea"]
-	path = rescript-ecosystem/rescript-tea
-	url = git@github.com:hyperpolymath/rescript-tea.git
-[submodule "rescript-ecosystem/rescript-string-power"]
-	path = rescript-ecosystem/rescript-string-power
-	url = git@github.com:hyperpolymath/rescript-string-power.git
-[submodule "rescript-ecosystem/idaptik-rescript13-staging"]
-	path = rescript-ecosystem/idaptik-rescript13-staging
-	url = git@github.com:hyperpolymath/idaptik-rescript13-staging.git
