@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMLP-1.0-or-later
+// SPDX-License-Identifier: PMPL-1.0-or-later
 @val external initWasm: unit => promise<unit> = "init"
 @val external deriveKey: (array<int>, array<int>) => promise<array<int>> = "deriveKey"
 

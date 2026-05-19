@@ -465,7 +465,7 @@ Dual licensed under:
 
 Users may choose either license.
 
-SPDX-License-Identifier: PMPL-1.0-or-later-or-later
+SPDX-License-Identifier: PMPL-1.0-or-later
 
 ---
 

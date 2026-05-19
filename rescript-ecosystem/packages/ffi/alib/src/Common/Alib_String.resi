@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PLMP-1.0-or-later
+// SPDX-License-Identifier: PMPL-1.0-or-later
 // Alib_String.resi - Interface for branded string types
 // Philosophy: Parse, Don't Validate + Zero-Cost Abstractions
 

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PLMP-1.0-or-later
+// SPDX-License-Identifier: PMPL-1.0-or-later
 // Alib_Result.res - Extended result combinators implementation
 
 type t<'a, 'e> = result<'a, 'e>

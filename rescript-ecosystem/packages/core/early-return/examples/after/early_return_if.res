@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PLMP-1.0-or-later
+// SPDX-License-Identifier: PMPL-1.0-or-later
 // Example: Desugared output (what transformer produces)
 
 let validateAge = (age: int): result<int, string> => {
