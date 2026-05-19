@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DeriveAnyClass #-}
--- SPDX-License-Identifier: PMPL-1.0
+-- SPDX-License-Identifier: PMPL-1.0-or-later
 
 -- | Spindle.Registry - Persistent configuration management for the Hyperpolymath ecosystem.
 --

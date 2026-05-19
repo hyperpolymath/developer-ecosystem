@@ -1,5 +1,5 @@
 {
-  "_comment": "SPDX-License-Identifier: PMPL-1.0 OR PMPL-1.0-or-later",
+  "_comment": "SPDX-License-Identifier: PMPL-1.0-or-later OR PMPL-1.0-or-later",
   "_comment2": "NodeInfo for Fediverse servers",
   "version": "2.1",
   "software": {
