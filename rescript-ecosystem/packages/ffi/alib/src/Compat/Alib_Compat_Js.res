@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PLMP-1.0-or-later
+// SPDX-License-Identifier: PMPL-1.0-or-later
 // Alib_Compat_Js.res - Compatibility layer for Js module
 
 // This module provides type-safe wrappers for common Js module operations

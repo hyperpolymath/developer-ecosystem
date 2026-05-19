@@ -400,7 +400,7 @@ See link:CONTRIBUTING.md[CONTRIBUTING.md] for guidelines.
 
 == Licence
 
-SPDX-License-Identifier: PMPL-1.0-or-later-or-later
+SPDX-License-Identifier: PMPL-1.0-or-later
 
 Copyright (C) 2025 Hyperpolymath
 
