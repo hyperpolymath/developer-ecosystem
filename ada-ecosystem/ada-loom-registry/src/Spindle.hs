@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
--- SPDX-License-Identifier: PMPL-1.0
+-- SPDX-License-Identifier: PMPL-1.0-or-later
 
 -- | Spindle - Parse Nickel configurations into Haskell types.
 --
