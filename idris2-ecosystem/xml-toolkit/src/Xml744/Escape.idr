@@ -48,6 +48,11 @@ infiltrateAttr : String -> String
 infiltrateAttr = concatMap escapeAttrChar . unpack
 
 ||| Exfiltrate: safely extract content from XML (unescape entities)
+|||
+||| The worker `replaceAllChars` recurses on a `Nat` fuel sized to the input.
+||| Each step consumes at least one character of the third argument, so the
+||| fuel bound is never reached in practice — it exists to make termination
+||| structurally obvious to Idris2 without `assert_total` / `assert_smaller`.
 export
 exfiltrate : String -> String
 exfiltrate s =
@@ -58,18 +63,19 @@ exfiltrate s =
       s5 = replaceAll "&apos;" "'" s4
   in s5
   where
+    replaceAllChars : Nat -> List Char -> List Char -> List Char -> List Char
+    replaceAllChars _     _         _  []        = []
+    replaceAllChars _     []        _  xs        = xs
+    replaceAllChars Z     _         _  xs        = xs
+    replaceAllChars (S k) (f :: fs) to (x :: xs) =
+      if isPrefixOf (f :: fs) (x :: xs)
+        then to ++ replaceAllChars k (f :: fs) to (drop (length fs) xs)
+        else x :: replaceAllChars k (f :: fs) to xs
+
     replaceAll : String -> String -> String -> String
     replaceAll from to str =
-      case unpack from of
-        [] => str  -- empty search string, return unchanged
-        (fc :: _) =>
-          case break (== fc) (unpack str) of
-            (before, []) => str
-            (before, (r :: rs)) =>
-              if isPrefixOf (unpack from) (r :: rs)
-                then pack before ++ to ++ replaceAll from to (pack $ drop (length from) (r :: rs))
-                else pack before ++ singleton r ++
-                     replaceAll from to (pack rs)
+      let chars = unpack str
+      in pack (replaceAllChars (length chars) (unpack from) (unpack to) chars)
 
 ||| Check if a string contains any unescaped dangerous characters
 export
