@@ -34,7 +34,7 @@ renderDecl d =
 public export
 record Namespace where
   constructor MkNs
-  prefix : String
+  nsPrefix : String
   uri    : String
 
 ||| Common OOXML namespaces
@@ -53,7 +53,7 @@ nsMarkupCompat = MkNs "mc" "http://schemas.openxmlformats.org/markup-compatibili
 ||| Render namespace as attribute
 export
 renderNs : Namespace -> String
-renderNs ns = "xmlns:" ++ ns.prefix ++ "=\"" ++ ns.uri ++ "\""
+renderNs ns = "xmlns:" ++ ns.nsPrefix ++ "=\"" ++ ns.uri ++ "\""
 
 ||| Full XML document
 public export
