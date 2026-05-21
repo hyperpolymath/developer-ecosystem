@@ -9,15 +9,22 @@ import Data.List
 
 %default total
 
-||| Valid XML name characters (simplified - ASCII subset)
+||| Valid XML name characters (simplified - ASCII subset).
+|||
+||| `public export` so cross-module callers of `unsafeAttrName` / `wAttr` on
+||| string literals can have the auto-implicit `isValidName s = True` proof
+||| discharged by elaboration-time reduction. With plain `export` only the
+||| name is visible and reduction is blocked.
+public export
 isNameStartChar : Char -> Bool
 isNameStartChar c = isAlpha c || c == '_' || c == ':'
 
+public export
 isNameChar : Char -> Bool
 isNameChar c = isNameStartChar c || isDigit c || c == '-' || c == '.'
 
-||| Check if a string is a valid XML name
-export
+||| Check if a string is a valid XML name.
+public export
 isValidName : String -> Bool
 isValidName s = case unpack s of
   [] => False
@@ -28,19 +35,26 @@ public export
 data AttrName : Type where
   MkAttrName : (n : String) -> {auto prf : isValidName n = True} -> AttrName
 
-||| Try to create an attribute name (returns Nothing if invalid)
+||| Try to create an attribute name (returns Nothing if invalid).
+|||
+||| The `with proof` form binds `prf : isValidName s = True` in the matched
+||| branch, which discharges `MkAttrName`'s auto-implicit. Replaces the
+||| previous `decEq (isValidName s) True` form — `decEq` for `Bool` is not in
+||| scope on Idris2 0.8.0 with the current imports.
 export
 attrName : (s : String) -> Maybe AttrName
-attrName s = case decEq (isValidName s) True of
-  Yes prf => Just (MkAttrName s)
-  No _ => Nothing
+attrName s with (isValidName s) proof prf
+  attrName s | True  = Just (MkAttrName s)
+  attrName s | False = Nothing
 
-||| Unsafe attribute name creation (use only for known-good literals)
+||| Attribute-name constructor for string literals whose validity Idris2
+||| can verify at elaboration time. The auto-implicit `isValidName s = True`
+||| is discharged by `Refl` for any literal (or compile-time-known) string.
+||| Replaces the previous `cast (MkAttrName s)` placeholder, which never
+||| compiled (no matching `Cast` instance, and `MkAttrName` needs the proof).
 export
-unsafeAttrName : String -> AttrName
--- PROOF_TODO: Replace cast with actual proof
--- PROOF_TODO: Replace cast with actual proof
-unsafeAttrName s = cast (MkAttrName s)
+unsafeAttrName : (s : String) -> {auto prf : isValidName s = True} -> AttrName
+unsafeAttrName s = MkAttrName s
 
 ||| Common attribute names as constants
 export
@@ -77,9 +91,13 @@ export
 getAttrValue : XmlAttr -> String
 getAttrValue (MkAttr _ v) = exfiltrate v
 
-||| Convenience for common w: namespace attributes (OOXML)
+||| Convenience for common w: namespace attributes (OOXML).
+|||
+||| The auto-implicit proof obligation `isValidName ("w:" ++ n) = True` is
+||| discharged at the call site by `Refl` for any literal `n` (the elaborator
+||| reduces both the string concatenation and `isValidName` on closed terms).
 export
-wAttr : String -> String -> XmlAttr
+wAttr : (n : String) -> {auto prf : isValidName ("w:" ++ n) = True} -> String -> XmlAttr
 wAttr n v = attr (unsafeAttrName ("w:" ++ n)) v
 
 ||| Example: attribute that would break with raw quotes
