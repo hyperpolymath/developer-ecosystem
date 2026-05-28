@@ -96,7 +96,7 @@ To run integration tests meaningfully, one or more of these services should be r
 - **BoJ Server** (port 7700)
 - **ECHIDNA** (port 8081)
 
-Consult the Groove protocol reference at `standards/groove-protocol/` for service configuration.
+Consult the Groove protocol reference at `hyperpolymath/groove-protocol` (GitHub) for service configuration.
 
 == Architecture
 

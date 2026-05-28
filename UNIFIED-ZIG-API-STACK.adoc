@@ -357,7 +357,7 @@ edge_mod.linkSystemLibrary("zig_api", .{});
   Import `ZigApi.ABI.Types` and `ZigApi.ABI.Connector` from `zig-api.ipkg`
   (add it as a dependency in the edge repo's `.ipkg`).  Extend, do not fork.
 . *Use the Groove protocol* for inter-service communication wherever possible
-  (see `standards/groove-protocol/`).  `zig-groove-bridge` in
+  (see `hyperpolymath/groove-protocol`).  `zig-groove-bridge` in
   `developer-ecosystem/zig-ecosystem/connectors/zig-groove-bridge/` is the
   reference consumer — study `src/main.zig` before writing your own discovery
   or attachment logic.
@@ -389,7 +389,7 @@ edge_mod.linkSystemLibrary("zig_api", .{});
 | `developer-ecosystem/bridge-nginx-zig/`
 
 | Groove protocol spec
-| `standards/groove-protocol/`
+| `hyperpolymath/groove-protocol` (GitHub)
 
 | rsr-template-repo
 | `hyperpolymath/rsr-template-repo` (GitHub)
