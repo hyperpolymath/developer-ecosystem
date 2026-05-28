@@ -6,6 +6,7 @@ K9!
 
 {
   pedigree = {
+    name = "setup-repo",
     schema_version = "1.0.0",
     component_type = "repository-setup",
     security = {

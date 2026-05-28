@@ -144,7 +144,9 @@ echo "K9: Rollback complete."
 
 # Export the component
 {
-  pedigree = component_pedigree & { name = "bqniser-deploy" },
+  pedigree = component_pedigree & {
+    name = "bqniser-deploy",
+  },
   deployment = deployment,
   scripts = scripts,
 
