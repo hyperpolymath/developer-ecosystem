@@ -41,6 +41,12 @@ erl_crash.dump
 /lib/bs/
 /.bsb.lock
 
+# npm/yarn anti-patterns (use Deno + deno.json instead)
+package-lock.json
+yarn.lock
+bun.lockb
+.npmrc
+
 # Python (SaltStack only)
 __pycache__/
 *.py[cod]
