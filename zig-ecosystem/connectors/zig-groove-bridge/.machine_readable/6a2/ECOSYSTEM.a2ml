@@ -18,7 +18,7 @@ tier = "edge-protocol-layer"
 
 [related-projects]
 projects = [
-  { name = "standards/groove-protocol", relationship = "Groove protocol reference" },
+  { name = "hyperpolymath/groove-protocol", relationship = "Groove protocol reference" },
   { name = "developer-ecosystem/zig-api", relationship = "Will integrate as consumer of foundation" },
   { name = "gossamer", relationship = "potential Groove service consumer" },
   { name = "burble", relationship = "potential Groove service consumer" },

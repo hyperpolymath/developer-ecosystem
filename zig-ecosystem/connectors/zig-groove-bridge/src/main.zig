@@ -8,7 +8,7 @@
 // across all 12 API types.  Attach to any Groove-aware service with a single
 // call; detach cleanly when done.
 //
-// Groove protocol reference: standards/groove-protocol/
+// Groove protocol reference: hyperpolymath/groove-protocol (GitHub)
 //
 // Usage:
 //   const bridge = @import("zig-groove-bridge");
@@ -85,7 +85,7 @@ const KnownService = struct {
 };
 
 /// Services the bridge probes first, before the open Groove discovery range.
-/// Derived from the canonical PORT-REGISTRY in standards/groove-protocol/.
+/// Derived from the canonical PORT-REGISTRY in hyperpolymath/groove-protocol.
 const KNOWN_SERVICES: []const KnownService = &.{
     .{ .name = "hypatia",    .port = 9090 },
     .{ .name = "stapeln",    .port = 4010 },
