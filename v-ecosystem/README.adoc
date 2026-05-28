@@ -6,6 +6,21 @@ Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 
 Monorepo for V programming language ecosystem tools and bridges.
 
+[NOTE]
+.Estate carve-out
+====
+This directory is the **only** non-archive carve-out for V-lang source in
+the hyperpolymath estate. Per the 2026-05-28 owner directive, Zig is the
+default for APIs/FFIs and Idris2 owns ABIs everywhere else.
+
+The v-ecosystem is exempted in `hypatia/lib/rules/cicd_rules.ex` via the
+`:vlang_detected` rule's `path_allow_prefixes`, which lists
+`developer-ecosystem/v-ecosystem/` as an allowlist prefix. Any V-lang
+work outside this tree (and outside the `asdf-vlang-plugin` /
+`asdf-plugin-collection/plugins/vlang/` toolchain-installer trees) will
+be flagged by hypatia as `cicd_rules/vlang_detected`.
+====
+
 == Projects
 
 === v-rest (Standard)
