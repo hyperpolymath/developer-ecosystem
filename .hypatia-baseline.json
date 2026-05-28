@@ -62,5 +62,13 @@
     "file_pattern": "v-ecosystem/v-deno/**",
     "note": "v-ecosystem/v-deno contains ReScript interop bridge files; V-lang migration completed 2026-05-28, ReScript interop pending.",
     "tracking_issue": "https://github.com/hyperpolymath/developer-ecosystem/issues/pending"
+  },
+  {
+    "severity": "high",
+    "rule_module": "cicd_rules",
+    "type": "banned_language_file",
+    "file": "iser-tools/julianiser/examples/data-pipeline/pipeline.py",
+    "note": "Translation target fixture: Python source used to demonstrate julianiser Python-to-Julia translation patterns. This file exists to be translated AWAY from Python, not as functional Python code.",
+    "tracking_issue": "https://github.com/hyperpolymath/developer-ecosystem/issues/pending"
   }
 ]
