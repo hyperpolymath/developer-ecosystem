@@ -144,7 +144,7 @@ echo "K9: Rollback complete."
 
 # Export the component
 {
-  pedigree = component_pedigree,
+  pedigree = component_pedigree & { name = "rescript-tea-deploy" },
   deployment = deployment,
   scripts = scripts,
 
