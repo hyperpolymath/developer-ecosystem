@@ -1,3 +1,4 @@
+K9!
 # SPDX-License-Identifier: PMPL-1.0-or-later
 # deploy.k9.ncl — {{PROJECT_NAME}} deployment component (Hunt level)
 #
@@ -18,7 +19,7 @@ let component_pedigree = {
   # L1: The Snout — Identity
   # ─────────────────────────────────────────────────────────────
   metadata = {
-    name = "{{SERVICE_NAME}}-deploy",
+    name = "tlaiser-deploy",
     version = "{{VERSION}}",
     breed = "application/vnd.k9+nickel",
     magic_number = "K9!",
@@ -93,7 +94,7 @@ let deployment = {
 
   # Container configuration
   container = {
-    image = "{{REGISTRY}}/{{SERVICE_NAME}}",
+    image = "{{REGISTRY}}/tlaiser",
     port = {{PORT}},
     health_check = "/health",
     readiness_check = "/ready",
@@ -113,7 +114,7 @@ let scripts = {
   pre_deploy = m%"
 #!/bin/sh
 set -eu
-echo "K9: Pre-deployment validation for {{SERVICE_NAME}}..."
+echo "K9: Pre-deployment validation for tlaiser..."
 cd container && selur-compose verify || podman compose --file compose.toml config
 echo "K9: Validation passed."
 "%,
@@ -123,7 +124,7 @@ echo "K9: Validation passed."
 #!/bin/sh
 set -eu
 ENV="${1:-dev}"
-echo "K9: Deploying {{SERVICE_NAME}} to $ENV environment..."
+echo "K9: Deploying tlaiser to $ENV environment..."
 cd container
 ./ct-build.sh
 selur-compose up --detach || podman compose --file compose.toml up --detach
@@ -134,7 +135,7 @@ echo "K9: Deployment to $ENV complete."
   rollback = m%"
 #!/bin/sh
 set -eu
-echo "K9: Rolling back {{SERVICE_NAME}} deployment..."
+echo "K9: Rolling back tlaiser deployment..."
 cd container
 selur-compose down || podman compose --file compose.toml down
 echo "K9: Rollback complete."

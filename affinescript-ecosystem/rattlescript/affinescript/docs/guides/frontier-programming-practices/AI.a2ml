@@ -1,4 +1,5 @@
 (a2ml
+name = "AI"
   (metadata
     (name "Frontier Programming Practices in AffineScript — AI Edition")
     (version "2.0.0")

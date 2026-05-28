@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: PMPL-1.0-or-later
+name = "Mustfile"
 # Mustfile.a2ml — BLANK TEMPLATE
 # Replace this with your project's contractile.
 # See .machine_readable/contractiles/ for a working example.

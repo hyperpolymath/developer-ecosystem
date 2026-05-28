@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: PMPL-1.0-or-later
+name = "MAINTENANCE-CHECKLIST"
 # Cross-repo maintenance baseline (machine-readable canonical)
 
 [metadata]

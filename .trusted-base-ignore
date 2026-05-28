@@ -1,0 +1,20 @@
+# .trusted-base-ignore — path-fragment exemptions for check-trusted-base.sh
+# Format: one path-fragment per line; substring match against file path.
+# Lines starting with # are comments.
+#
+# Rationale for each exemption:
+#
+# idris2-ecosystem/dyadt/ — dyadt (Idris2 claim/verifier library) uses
+#   %partial annotations on recursive functions over structurally-opaque
+#   prover-backend results. Termination is guaranteed by protocol framing
+#   (the prover backend always returns a final answer) but Idris2's
+#   termination checker cannot see through FFI calls. Proof-debt tracked
+#   in idris2-ecosystem/dyadt/PROOF-NEEDS.md.
+#
+# idris2-ecosystem/echidna/ — echidna prover-adapter suite uses %partial
+#   on prover subprocess I/O loops and FFI integration points. Each
+#   adapter wraps an external binary; the loops terminate when the
+#   subprocess closes its stdout. Idris2 cannot verify this statically.
+#   Proof-debt tracked in idris2-ecosystem/echidna/PROOF-NEEDS.md.
+idris2-ecosystem/dyadt/
+idris2-ecosystem/echidna/

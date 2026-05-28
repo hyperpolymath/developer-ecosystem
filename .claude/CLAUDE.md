@@ -65,3 +65,14 @@ For developer tools:
 - SHA-pinned dependencies
 - SPDX license headers on all files
 
+### TypeScript Exemptions (Approved)
+
+Pre-migration TypeScript files that are grandfathered pending AffineScript migration. New TS files
+in non-exempted paths remain blocked.
+
+| Path / Pattern | Rationale | Unblock condition |
+|---|---|---|
+| `affinescript-ecosystem/affinescript-deno-test/**` | Bootstrap shim: TS/Deno test runner used to validate AffineScript output. | When AffineScript self-hosts its test runner. |
+| `aggregate-library/src/test-runner.ts` | Pre-migration test runner in the aggregate library. | When migrated to AffineScript. |
+| `rescript-ecosystem/packages/core/runtime-tools/bin/rrt.ts` | Legacy ReScript runtime tool (upstream fork tooling). | When rescript-ecosystem is migrated or removed. |
+

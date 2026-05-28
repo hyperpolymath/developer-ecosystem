@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: PMPL-1.0-or-later
+name = "0.2-AI-MANIFEST"
 ---
 ### [META]
 id: "wikis-track"

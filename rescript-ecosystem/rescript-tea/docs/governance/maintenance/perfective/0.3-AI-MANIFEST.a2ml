@@ -1,4 +1,5 @@
 # SPDX-License-Identifier: PMPL-1.0-or-later
+name = "0.3-AI-MANIFEST"
 ---
 ### [META]
 id: "governance-unit-perfective"
