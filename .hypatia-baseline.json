@@ -59,16 +59,32 @@
     "severity": "high",
     "rule_module": "cicd_rules",
     "type": "banned_language_file",
-    "file_pattern": "v-ecosystem/v-deno/**",
-    "note": "v-ecosystem/v-deno contains ReScript interop bridge files; V-lang migration completed 2026-05-28, ReScript interop pending.",
+    "file": "iser-tools/julianiser/examples/data-pipeline/pipeline.py",
+    "note": "Translation target fixture: Python source used to demonstrate julianiser Python-to-Julia translation patterns. This file exists to be translated AWAY from Python, not as functional Python code.",
     "tracking_issue": "https://github.com/hyperpolymath/developer-ecosystem/issues/pending"
   },
   {
     "severity": "high",
     "rule_module": "cicd_rules",
     "type": "banned_language_file",
-    "file": "iser-tools/julianiser/examples/data-pipeline/pipeline.py",
-    "note": "Translation target fixture: Python source used to demonstrate julianiser Python-to-Julia translation patterns. This file exists to be translated AWAY from Python, not as functional Python code.",
+    "file_pattern": "czech-file-knife/cfk-ios/**",
+    "note": "cfk-ios is the iOS File Provider Extension for czech-file-knife; requires Swift for NSFileProviderReplicatedExtension (no Tauri/Dioxus equivalent for this specific iOS API).",
+    "tracking_issue": "https://github.com/hyperpolymath/developer-ecosystem/issues/pending"
+  },
+  {
+    "severity": "high",
+    "rule_module": "cicd_rules",
+    "type": "banned_language_file",
+    "file_pattern": "synapse/examples/swift/**",
+    "note": "synapse/examples/swift/ contains auto-generated Swift output from the synapse code generator; this is generated example output, not hand-written Swift.",
+    "tracking_issue": "https://github.com/hyperpolymath/developer-ecosystem/issues/pending"
+  },
+  {
+    "severity": "high",
+    "rule_module": "cicd_rules",
+    "type": "banned_language_file",
+    "file_pattern": "v-ecosystem/**",
+    "note": "v-ecosystem/ is the documented V-lang R&D carve-out (estate-wide policy 2026-04-10). V-lang code (including v.mod manifests) is permitted here as this is the Zig migration target zone. V-lang migration COMPLETED 2026-05-28 across 16 PRs for all non-v-ecosystem paths.",
     "tracking_issue": "https://github.com/hyperpolymath/developer-ecosystem/issues/pending"
   }
 ]
