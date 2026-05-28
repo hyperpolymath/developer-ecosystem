@@ -1,58 +1,66 @@
 [
   {
+    "severity": "high",
     "rule_module": "cicd_rules",
     "type": "banned_language_file",
     "file_pattern": "rescript-ecosystem/**",
-    "rationale": "rescript-ecosystem is a vendor/upstream collection of ReScript libraries and forks; migration to AffineScript tracked in estate migration plan.",
-    "unblock_condition": "When rescript-ecosystem is migrated or archived."
+    "note": "rescript-ecosystem is a vendor/upstream collection of ReScript libraries and forks; migration to AffineScript tracked in estate migration plan.",
+    "tracking_issue": "https://github.com/hyperpolymath/developer-ecosystem/issues/pending"
   },
   {
+    "severity": "high",
     "rule_module": "cicd_rules",
     "type": "banned_language_file",
     "file_pattern": "affinescript-ecosystem/rattlescript/**",
-    "rationale": "rattlescript contains affine-res bridge package (AffineScript↔ReScript interop layer); .res files are the bridge source, not new ReScript.",
-    "unblock_condition": "When affine-res bridge is replaced by AffineScript-native bindings."
+    "note": "rattlescript contains affine-res bridge package (AffineScript<->ReScript interop layer); .res files are the bridge source, not new ReScript.",
+    "tracking_issue": "https://github.com/hyperpolymath/developer-ecosystem/issues/pending"
   },
   {
+    "severity": "high",
     "rule_module": "cicd_rules",
     "type": "banned_language_file",
     "file_pattern": "cadre-router/**",
-    "rationale": "cadre-router is a ReScript library (router primitives); pending migration to AffineScript.",
-    "unblock_condition": "When cadre-router is migrated to AffineScript."
+    "note": "cadre-router is a ReScript library (router primitives); pending migration to AffineScript.",
+    "tracking_issue": "https://github.com/hyperpolymath/developer-ecosystem/issues/pending"
   },
   {
+    "severity": "high",
     "rule_module": "cicd_rules",
     "type": "banned_language_file",
     "file_pattern": "cadre-tea-router/**",
-    "rationale": "cadre-tea-router is a ReScript TEA router; pending migration to AffineScript.",
-    "unblock_condition": "When cadre-tea-router is migrated to AffineScript."
+    "note": "cadre-tea-router is a ReScript TEA router; pending migration to AffineScript.",
+    "tracking_issue": "https://github.com/hyperpolymath/developer-ecosystem/issues/pending"
   },
   {
+    "severity": "high",
     "rule_module": "cicd_rules",
     "type": "banned_language_file",
     "file_pattern": "aggregate-library/**",
-    "rationale": "aggregate-library contains pre-migration ReScript source; migration tracked in estate plan.",
-    "unblock_condition": "When aggregate-library is migrated to AffineScript."
+    "note": "aggregate-library contains pre-migration ReScript source; migration tracked in estate plan.",
+    "tracking_issue": "https://github.com/hyperpolymath/developer-ecosystem/issues/pending"
   },
   {
+    "severity": "high",
     "rule_module": "cicd_rules",
     "type": "banned_language_file",
     "file_pattern": "coq-ecosystem/**",
-    "rationale": "coq-ecosystem/coq-jr contains upstream jsCoq demo .res files; vendored upstream, not estate-authored.",
-    "unblock_condition": "Never — upstream vendored code."
+    "note": "coq-ecosystem/coq-jr contains upstream jsCoq demo .res files; vendored upstream, not estate-authored.",
+    "tracking_issue": "https://github.com/hyperpolymath/developer-ecosystem/issues/pending"
   },
   {
+    "severity": "high",
     "rule_module": "cicd_rules",
     "type": "banned_language_file",
     "file_pattern": "deno-ecosystem/**",
-    "rationale": "deno-ecosystem/projects contains pre-migration ReScript projects; migration tracked in estate plan.",
-    "unblock_condition": "When deno-ecosystem projects are migrated to AffineScript."
+    "note": "deno-ecosystem/projects contains pre-migration ReScript projects; migration tracked in estate plan.",
+    "tracking_issue": "https://github.com/hyperpolymath/developer-ecosystem/issues/pending"
   },
   {
+    "severity": "high",
     "rule_module": "cicd_rules",
     "type": "banned_language_file",
     "file_pattern": "v-ecosystem/v-deno/**",
-    "rationale": "v-ecosystem/v-deno contains ReScript interop bridge files; V-lang migration completed 2026-05-28, ReScript interop pending.",
-    "unblock_condition": "When v-deno ReScript files are migrated to AffineScript."
+    "note": "v-ecosystem/v-deno contains ReScript interop bridge files; V-lang migration completed 2026-05-28, ReScript interop pending.",
+    "tracking_issue": "https://github.com/hyperpolymath/developer-ecosystem/issues/pending"
   }
 ]
