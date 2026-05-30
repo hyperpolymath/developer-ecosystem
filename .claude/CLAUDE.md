@@ -19,14 +19,14 @@ The following files in `.machine_readable/` contain structured project metadata:
 
 | Language/Tool | Use Case | Notes |
 |---------------|----------|-------|
-| **ReScript** | Primary application code | Compiles to JS, type-safe |
+| **AffineScript** | Primary application code | Affine-typed, compiles to typed-wasm or Deno-ESM |
 | **Deno** | Runtime & package management | Replaces Node/npm/bun |
 | **Rust** | Performance-critical, systems, WASM | Preferred for CLI tools |
 | **Tauri 2.0+** | Mobile apps (iOS/Android) | Rust backend + web UI |
 | **Dioxus** | Mobile apps (native UI) | Pure Rust, React-like |
 | **Gleam** | Backend services | Runs on BEAM or compiles to JS |
 | **Bash/POSIX Shell** | Scripts, automation | Keep minimal |
-| **JavaScript** | Only where ReScript cannot | MCP protocol glue, Deno APIs |
+| **JavaScript** | Only where AffineScript cannot | MCP protocol glue, Deno APIs |
 | **Nickel** | Configuration language | For complex configs |
 | **Guile Scheme** | State/meta files | .machine_readable/6a2/STATE.a2ml, .machine_readable/6a2/META.a2ml, .machine_readable/6a2/ECOSYSTEM.a2ml |
 | **Julia** | Batch scripts, data processing | Per RSR |
@@ -37,7 +37,8 @@ The following files in `.machine_readable/` contain structured project metadata:
 
 | Banned | Replacement |
 |--------|-------------|
-| TypeScript | ReScript |
+| TypeScript | AffineScript |
+| ReScript | AffineScript |
 | Node.js | Deno |
 | npm | Deno |
 | Bun | Deno |
@@ -53,7 +54,7 @@ The following files in `.machine_readable/` contain structured project metadata:
 
 For developer tools:
 - **Rust** preferred for CLI tools, git operations
-- **ReScript** for web dashboards (git-hud)
+- **AffineScript** for web dashboards (git-hud)
 - **Deno** for automation scripts
 - **Julia** for batch analysis (oikos metrics)
 
