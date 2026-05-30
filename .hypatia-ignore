@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: MPL-2.0
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# .hypatia-ignore — declared exemptions from hyperpolymath/standards
+# governance-reusable.yml policy rules. Format:
+#
+#   <rule>:<repo-relative-path>
+#
+# Lines starting with `#` and blank lines are ignored.
+#
+# ─── Vendored ReScript compiler test fixtures (rescript-ecosystem/) ─
+#
+# These 6 .res files are unicode-name test inputs for the upstream
+# ReScript compiler build_tests/unicode/ corpus. They live under
+# vendored copies of the rescript-compiler repository and exist only
+# to exercise the compiler's handling of emoji-named directories.
+# Migration target N/A — they are third-party test fixtures, not
+# project source. Removal would happen only if rescript-ecosystem/
+# is itself dropped from the vendor tree.
+#
+cicd_rules/banned_language_file:rescript-ecosystem/packages/core/compiler-source/tests/build_tests/unicode/src/📕annotation/a.res
+cicd_rules/banned_language_file:rescript-ecosystem/packages/core/compiler-source/tests/build_tests/unicode/src/📗block/b.res
+cicd_rules/banned_language_file:rescript-ecosystem/packages/core/compiler-source/tests/build_tests/unicode/src/📙inline/c.res
+cicd_rules/banned_language_file:rescript-ecosystem/rescript/tests/build_tests/unicode/src/📕annotation/a.res
+cicd_rules/banned_language_file:rescript-ecosystem/rescript/tests/build_tests/unicode/src/📗block/b.res
+cicd_rules/banned_language_file:rescript-ecosystem/rescript/tests/build_tests/unicode/src/📙inline/c.res
