@@ -8,7 +8,7 @@ It wraps `cadre-router` with TEA-specific primitives (`Tea.Cmd.t`, `Tea.Sub.t`).
 ## Language Policy
 
 Same as cadre-router - see the Hyperpolymath Standard:
-- **ReScript** for all source code
+- **AffineScript** for all source code (currently .res/.resi; ReScript→AffineScript migration tracked at standards#252)
 - **Deno** for runtime (not Node.js)
 - No TypeScript
 
