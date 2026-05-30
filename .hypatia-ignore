@@ -8,6 +8,12 @@
 #
 # Lines starting with `#` and blank lines are ignored.
 #
+# Note: paths must match the form emitted by `git ls-files`, which
+# quotes non-ASCII bytes with octal escapes by default (see
+# `core.quotepath`). Below, emoji directory names are encoded as the
+# literal "\nnn" octal sequences `git ls-files` produces, with the
+# surrounding double-quotes.
+#
 # ─── Vendored ReScript compiler test fixtures (rescript-ecosystem/) ─
 #
 # These 6 .res files are unicode-name test inputs for the upstream
@@ -18,9 +24,9 @@
 # project source. Removal would happen only if rescript-ecosystem/
 # is itself dropped from the vendor tree.
 #
-cicd_rules/banned_language_file:rescript-ecosystem/packages/core/compiler-source/tests/build_tests/unicode/src/📕annotation/a.res
-cicd_rules/banned_language_file:rescript-ecosystem/packages/core/compiler-source/tests/build_tests/unicode/src/📗block/b.res
-cicd_rules/banned_language_file:rescript-ecosystem/packages/core/compiler-source/tests/build_tests/unicode/src/📙inline/c.res
-cicd_rules/banned_language_file:rescript-ecosystem/rescript/tests/build_tests/unicode/src/📕annotation/a.res
-cicd_rules/banned_language_file:rescript-ecosystem/rescript/tests/build_tests/unicode/src/📗block/b.res
-cicd_rules/banned_language_file:rescript-ecosystem/rescript/tests/build_tests/unicode/src/📙inline/c.res
+cicd_rules/banned_language_file:"rescript-ecosystem/packages/core/compiler-source/tests/build_tests/unicode/src/\360\237\223\225annotation/a.res"
+cicd_rules/banned_language_file:"rescript-ecosystem/packages/core/compiler-source/tests/build_tests/unicode/src/\360\237\223\227block/b.res"
+cicd_rules/banned_language_file:"rescript-ecosystem/packages/core/compiler-source/tests/build_tests/unicode/src/\360\237\223\231inline/c.res"
+cicd_rules/banned_language_file:"rescript-ecosystem/rescript/tests/build_tests/unicode/src/\360\237\223\225annotation/a.res"
+cicd_rules/banned_language_file:"rescript-ecosystem/rescript/tests/build_tests/unicode/src/\360\237\223\227block/b.res"
+cicd_rules/banned_language_file:"rescript-ecosystem/rescript/tests/build_tests/unicode/src/\360\237\223\231inline/c.res"
