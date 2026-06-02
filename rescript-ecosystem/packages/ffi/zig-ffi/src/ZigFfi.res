@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // ReScript-Zig-FFI - Core module for Zig FFI bindings
 
 /**

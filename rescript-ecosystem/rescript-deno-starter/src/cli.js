@@ -1,5 +1,5 @@
 #!/usr/bin/env -S deno run --allow-run --allow-read --allow-write --allow-env --allow-net
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath)
 //
 // rescript-deno — Start ReScript projects with Deno, not npm.
@@ -43,7 +43,7 @@ const RESCRIPT_JSON_TEMPLATE = `{
 }
 `;
 
-const MAIN_RES_TEMPLATE = `// SPDX-License-Identifier: PMPL-1.0-or-later
+const MAIN_RES_TEMPLATE = `// SPDX-License-Identifier: MPL-2.0
 // {{NAME}} — entry point
 
 let greeting = "Hello from ReScript on Deno!"

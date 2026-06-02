@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 # (MPL-2.0 is the automatic legal fallback until PMPL is formally recognised)
 #
@@ -291,7 +291,7 @@ render_decl() {
 # Emit the header
 # ---------------------------------------------------------------------------
 {
-printf '/* SPDX-License-Identifier: PMPL-1.0-or-later                              */\n'
+printf '/* SPDX-License-Identifier: MPL-2.0                              */\n'
 printf '/* Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath)                  */\n'
 printf '/*   <j.d.a.jewell@open.ac.uk>                                              */\n'
 printf '/*                                                                            */\n'

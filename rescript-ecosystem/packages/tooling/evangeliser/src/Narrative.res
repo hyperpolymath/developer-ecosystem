@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Narrative generation for ReScript Evangeliser
 // Philosophy: "Celebrate good, minimize bad, show better"
 // - NEVER shame developers
