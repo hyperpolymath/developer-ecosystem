@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 = Roadmap — rescript-dom-mounter
 
 This roadmap tracks progress on rescript-dom-mounter, the first DOM mounting library with compile-time mathematical safety proofs.

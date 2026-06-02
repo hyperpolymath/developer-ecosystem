@@ -1,5 +1,5 @@
 {
-  "_comment": "SPDX-License-Identifier: PMPL-1.0-or-later OR PMPL-1.0-or-later",
+  "_comment": "SPDX-License-Identifier: MPL-2.0 OR PMPL-1.0-or-later",
   "_comment2": "Matrix server discovery - place at /.well-known/matrix/server",
   "m.server": "{{MATRIX_SERVER_HOSTNAME}}:{{MATRIX_SERVER_PORT}}"
 }

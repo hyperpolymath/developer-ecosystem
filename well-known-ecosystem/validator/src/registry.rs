@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later OR PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0 OR PMPL-1.0-or-later
 // SPDX-FileCopyrightText: 2024-2025 hyperpolymath
 
 //! Well-known resource type registry.

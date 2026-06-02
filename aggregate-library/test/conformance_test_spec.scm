@@ -1,4 +1,4 @@
-;; SPDX-License-Identifier: PMPL-1.0-or-later
+;; SPDX-License-Identifier: MPL-2.0
 ;; aLib Conformance Test Specification Format
 ;;
 ;; This file documents the conformance test format and validation rules

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # aLib Conformance Test Runner Script
 #
 # Runs conformance tests for a given language implementation
