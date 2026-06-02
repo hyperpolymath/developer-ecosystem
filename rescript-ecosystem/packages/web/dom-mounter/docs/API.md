@@ -97,7 +97,7 @@ record SelectorLayout (p : Platform) where
 ### ReScript API
 
 ```rescript
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 
 module ProvenSelector: {
   type validated
@@ -280,7 +280,7 @@ rescript-dom-mounter/
 ### Example 1: Simple Mounting
 
 ```rescript
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 
 let mountApp = () => {
   let selector = ProvenSelector.validate("#root")
@@ -308,7 +308,7 @@ let mountApp = () => {
 ### Example 2: Validation Before Mounting
 
 ```rescript
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 
 let validateAndMount = (selectorStr: string, htmlStr: string): result<unit, string> => {
   // Validate selector
@@ -348,7 +348,7 @@ switch validateAndMount("#app", "<div>Hello</div>") {
 ### Example 3: Batch Mounting
 
 ```rescript
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 
 type mountSpec = {
   selector: string,
@@ -379,7 +379,7 @@ Array.forEachWithIndex(results, (result, idx) => {
 ### Example 4: Dynamic Content with TEA
 
 ```rescript
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 
 // Integration with The Elm Architecture
 type model = {
@@ -486,7 +486,7 @@ let ensureElementExists = (selector: string): bool => {
 ### Unit Tests (Zig FFI)
 
 ```zig
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 test "selector validation" {
     try std.testing.expectEqual(
         @intFromEnum(ValidationResult.valid),
@@ -515,7 +515,7 @@ test "HTML validation" {
 ### Integration Tests (ReScript)
 
 ```rescript
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 open Test
 
 test("validates correct selector", () => {

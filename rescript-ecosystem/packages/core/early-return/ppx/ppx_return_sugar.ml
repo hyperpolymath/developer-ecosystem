@@ -1,4 +1,4 @@
-(* SPDX-License-Identifier: PMPL-1.0-or-later *)
+(* SPDX-License-Identifier: MPL-2.0 *)
 (* PPX transformer for return sugar syntax *)
 (* Transforms %return.X(...) into standard ReScript control flow *)
 

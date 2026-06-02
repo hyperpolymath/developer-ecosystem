@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 #
 # T1 — Structural checks for rescript-string-power.
@@ -53,7 +53,7 @@ echo ""
 echo "── SPDX headers on source files ──"
 for f in src/*.res tests/*.res tools/string-union-gen/src/main.rs; do
     # shellcheck disable=SC2016  # the command is expanded later inside check() by eval
-    check "SPDX in $f" 'grep -q "SPDX-License-Identifier: PMPL-1.0-or-later" "$f"'
+    check "SPDX in $f" 'grep -q "SPDX-License-Identifier: MPL-2.0" "$f"'
 done
 
 echo ""

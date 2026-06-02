@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // SPDX-FileCopyrightText: 2025 Hyperpolymath
 = ReScript HTTP Server
 :toc: macro
@@ -427,7 +427,7 @@ Following the https://github.com/hyperpolymath/rescript-full-stack[ReScript Full
 
 == License
 
-SPDX-License-Identifier: PMPL-1.0-or-later
+SPDX-License-Identifier: MPL-2.0
 
 Copyright (C) 2025 Hyperpolymath
 
