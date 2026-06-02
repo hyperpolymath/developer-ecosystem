@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Pattern Library for ReScript Evangeliser
 // 50+ transformation patterns from JavaScript/TypeScript to ReScript
 

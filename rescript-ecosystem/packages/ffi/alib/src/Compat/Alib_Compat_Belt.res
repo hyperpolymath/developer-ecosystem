@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Alib_Compat_Belt.res - Compatibility layer for Belt migration
 
 // This module helps migrate from Belt to Alib by providing drop-in replacements

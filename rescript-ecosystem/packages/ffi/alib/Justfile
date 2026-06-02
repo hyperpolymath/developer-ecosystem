@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # rescript-alib Justfile - aLib Alpha for ReScript
 # Philosophy: Parse, Don't Validate + Zero-Cost Abstractions + Upstream-First
 

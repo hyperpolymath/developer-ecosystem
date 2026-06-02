@@ -1,5 +1,5 @@
 // Pure ReScript Virtual DOM - No React/JS Framework Dependencies
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 
 // Virtual DOM Node types
 type rec vnode =

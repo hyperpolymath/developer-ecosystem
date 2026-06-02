@@ -3,7 +3,7 @@ image:https://img.shields.io/badge/License-PMPL--1.0-indigo.svg[PMPL-1.0-or-late
 image:https://img.shields.io/badge/Idris-Inside-5E5086?style=flat&logo=idris&logoColor=white[Idris Inside,link="https://github.com/hyperpolymath/proven"]
 image:https://img.shields.io/badge/RSR-compliant-blue[RSR Compliant]
 
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell
 
 = rescript-dom-mounter
