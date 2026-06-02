@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 #
 # T3 — End-to-end test: build the string-union-gen CLI and run it against a
@@ -20,7 +20,7 @@ CLI="$ROOT/tools/string-union-gen/target/release/string-union-gen"
 
 # Create a fixture .res file with @stringUnion annotations
 cat > "$FIXTURE_DIR/Fixture.res" <<'EOF'
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 @stringUnion
 type colour = [#red | #green | #blue]
 

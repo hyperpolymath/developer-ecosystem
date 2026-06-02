@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Alib_Option.res - Extended option utilities implementation
 
 type t<'a> = option<'a>
