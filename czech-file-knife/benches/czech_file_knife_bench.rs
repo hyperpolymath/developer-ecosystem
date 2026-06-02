@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
 fn benchmark_basic_operations(c: &mut Criterion) {

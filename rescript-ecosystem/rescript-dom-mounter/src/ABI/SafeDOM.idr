@@ -1,4 +1,4 @@
--- SPDX-License-Identifier: PMPL-1.0-or-later
+-- SPDX-License-Identifier: MPL-2.0
 -- SafeDOM.idr - Formally verified DOM operations with dependent types
 --
 -- This module provides mathematical proofs that DOM mounting operations

@@ -3,7 +3,7 @@
 // This module implements the C-compatible FFI declared in src/abi/Foreign.idr
 // All types and layouts must match the Idris2 ABI definitions.
 //
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // @author Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 
 const std = @import("std");

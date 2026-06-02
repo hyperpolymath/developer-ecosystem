@@ -1,6 +1,6 @@
 [
   {
-    "_comment": "SPDX-License-Identifier: PMPL-1.0-or-later OR PMPL-1.0-or-later",
+    "_comment": "SPDX-License-Identifier: MPL-2.0 OR PMPL-1.0-or-later",
     "_comment2": "Replace {{PLACEHOLDER}} values with your actual information",
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {

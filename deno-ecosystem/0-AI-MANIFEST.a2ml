@@ -1,5 +1,5 @@
 # 0-AI-MANIFEST.a2ml
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 
 canonical_locations:
   scm_files: .machine_readable/
