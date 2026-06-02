@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # nimiser — C library generation via Nim metaprogramming
 
 # Default: build and test

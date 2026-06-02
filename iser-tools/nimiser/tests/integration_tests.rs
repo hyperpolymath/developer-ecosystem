@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Copyright (c) 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //
 // Integration tests for nimiser.
@@ -72,7 +72,7 @@ fn test_generate_nim_source_content() {
 
     // Must contain the SPDX header.
     assert!(
-        nim_source.contains("SPDX-License-Identifier: PMPL-1.0-or-later"),
+        nim_source.contains("SPDX-License-Identifier: MPL-2.0"),
         "Missing SPDX header"
     );
 

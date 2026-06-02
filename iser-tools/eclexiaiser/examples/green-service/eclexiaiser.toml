@@ -1,5 +1,5 @@
 # Example eclexiaiser manifest for a "green-service" web application.
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 #
 # This manifest declares energy and carbon budgets for two functions:
 # - process_batch: a batch data processing function (50 mJ, 10 mg CO2 max)

@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # futharkiser — Compile annotated array operations to GPU kernels via Futhark
 
 # Default: build and test
@@ -122,7 +122,7 @@ tour:
     echo "  Futharkiser — Guided Tour"
     echo "═══════════════════════════════════════════════════"
     echo ""
-    echo '// SPDX-License-Identifier: PMPL-1.0-or-later'
+    echo '// SPDX-License-Identifier: MPL-2.0'
     echo ""
     echo "Key directories:"
     echo "  src/                      Source code" 

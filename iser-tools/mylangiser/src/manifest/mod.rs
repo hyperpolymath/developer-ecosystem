@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Copyright (c) 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //
 // Manifest module for mylangiser — parses and validates mylangiser.toml manifests
@@ -167,7 +167,7 @@ pub fn init_manifest(path: &str) -> Result<()> {
     if p.exists() {
         anyhow::bail!("mylangiser.toml already exists");
     }
-    let template = r#"# SPDX-License-Identifier: PMPL-1.0-or-later
+    let template = r#"# SPDX-License-Identifier: MPL-2.0
 # mylangiser manifest — progressive-disclosure interface definition
 
 [project]

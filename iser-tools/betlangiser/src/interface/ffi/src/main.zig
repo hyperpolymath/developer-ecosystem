@@ -6,7 +6,7 @@
 // Core functionality: distribution creation, sampling, combination,
 // ternary logic evaluation, and confidence interval computation.
 //
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 
 const std = @import("std");
 

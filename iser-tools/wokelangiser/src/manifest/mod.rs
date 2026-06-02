@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Copyright (c) 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //
 // Manifest module for wokelangiser — parses and validates wokelangiser.toml
@@ -269,7 +269,7 @@ pub fn validate(manifest: &Manifest) -> Result<()> {
 }
 
 /// The default manifest content written by `wokelangiser init`.
-const DEFAULT_MANIFEST: &str = r#"# SPDX-License-Identifier: PMPL-1.0-or-later
+const DEFAULT_MANIFEST: &str = r#"# SPDX-License-Identifier: MPL-2.0
 # wokelangiser.toml — consent, accessibility, and i18n configuration
 # See: https://github.com/hyperpolymath/wokelangiser
 

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Copyright (c) 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //
 // Manifest parser for halideiser.toml.
@@ -219,7 +219,7 @@ pub fn init_manifest(path: &str) -> Result<()> {
         anyhow::bail!("halideiser.toml already exists");
     }
     let template = r#"# halideiser manifest — image/video pipeline description
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 
 [project]
 name = "my_pipeline"

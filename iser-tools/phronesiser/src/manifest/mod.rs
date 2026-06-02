@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Copyright (c) 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //
 // Manifest module for phronesiser — parses and validates phronesiser.toml files
@@ -345,7 +345,7 @@ pub fn init_manifest(path: &str) -> Result<()> {
     std::fs::write(
         &p,
         r#"# phronesiser manifest — ethical constraint definitions
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 
 [project]
 name = "my-agent-project"

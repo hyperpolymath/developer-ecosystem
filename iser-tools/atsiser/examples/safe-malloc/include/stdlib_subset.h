@@ -1,4 +1,4 @@
-/* SPDX-License-Identifier: PMPL-1.0-or-later */
+/* SPDX-License-Identifier: MPL-2.0 */
 /* Subset of stdlib.h for atsiser safe-malloc example.
  *
  * These are the standard C memory allocation functions that atsiser wraps

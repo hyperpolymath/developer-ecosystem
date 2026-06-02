@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 = Betlangiser ABI — Idris2 Interface Definitions
 
 This directory contains formally verified ABI definitions for the

@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # futharkiser manifest — image processing pipeline example
 #
 # Demonstrates all five SOAC patterns (map, reduce, scan, scatter, histogram)

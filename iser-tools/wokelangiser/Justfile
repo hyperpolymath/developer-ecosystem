@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # wokelangiser — consent patterns, accessibility, i18n hooks via WokeLang
 
 # Default: build and test

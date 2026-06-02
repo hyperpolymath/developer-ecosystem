@@ -1,5 +1,5 @@
 # bqniser manifest — array-ops example
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 #
 # Demonstrates all five source-pattern types that bqniser can detect
 # and rewrite as BQN array primitives.

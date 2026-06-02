@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Copyright (c) 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //
 // Manifest module for betlangiser — Parses and validates betlangiser.toml manifests
@@ -336,7 +336,7 @@ pub fn init_manifest(path: &str) -> Result<()> {
     }
 
     let template = r#"# betlangiser manifest — ternary probabilistic modelling
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 
 [project]
 name = "my-model"

@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # Example nimiser manifest: fast-lib
 # A minimal math library generated via Nim metaprogramming.
 

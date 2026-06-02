@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Template: QUICKSTART-MAINTAINER.adoc — packaging, deploying, and maintaining
 // Replace halideiser, {{PACKAGE_NAME}}, {{DEPS}} with actuals
 = halideiser — Quick Start for Platform Maintainers

@@ -3,7 +3,7 @@
 // Builds the Zig FFI bridge to the CBQN runtime as both shared and static
 // libraries.  When CBQN is available as a system library, link it here.
 //
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 
 const std = @import("std");

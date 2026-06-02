@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Copyright (c) 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //
 // Integration tests for oblibeniser Phase 1.
@@ -367,7 +367,7 @@ fn test_end_to_end_file_generation() {
 
     // Verify content of generated files.
     let inverses = std::fs::read_to_string(output_dir.join("inverses.rs")).unwrap();
-    assert!(inverses.contains("SPDX-License-Identifier: PMPL-1.0-or-later"));
+    assert!(inverses.contains("SPDX-License-Identifier: MPL-2.0"));
     assert!(inverses.contains("pub fn db_insert_inverse"));
 
     let audit = std::fs::read_to_string(output_dir.join("audit.rs")).unwrap();

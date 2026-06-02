@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # atsiser — ATS2 linear type wrappers for C memory safety
 
 # Default: build and test
@@ -134,7 +134,7 @@ tour:
     echo "  Atsiser — Guided Tour"
     echo "═══════════════════════════════════════════════════"
     echo ""
-    echo '// SPDX-License-Identifier: PMPL-1.0-or-later'
+    echo '// SPDX-License-Identifier: MPL-2.0'
     echo ""
     echo "Key directories:"
     echo "  src/                      Source code" 
