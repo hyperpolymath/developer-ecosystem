@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Copyright (c) 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //
 // Manifest module for anvomidaviser — Parses and validates anvomidaviser.toml
@@ -115,7 +115,7 @@ pub fn init_manifest(path: &str) -> Result<()> {
     if p.exists() {
         anyhow::bail!("anvomidaviser.toml already exists at {}", p.display());
     }
-    let content = r#"# SPDX-License-Identifier: PMPL-1.0-or-later
+    let content = r#"# SPDX-License-Identifier: MPL-2.0
 # anvomidaviser manifest — ISU figure skating program description
 
 [project]

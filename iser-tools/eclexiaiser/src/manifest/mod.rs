@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Copyright (c) 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //
 // Manifest module for eclexiaiser — parses and validates `eclexiaiser.toml` files
@@ -168,7 +168,7 @@ pub fn init_manifest(path: &str) -> Result<()> {
         anyhow::bail!("eclexiaiser.toml already exists at {}", p.display());
     }
     let template = r#"# eclexiaiser manifest — energy/carbon resource budgets
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 
 [project]
 name = "my-service"

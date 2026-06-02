@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # atsiser example: safe-malloc
 #
 # Wraps standard C memory allocation (malloc/free/realloc) with ATS2 linear

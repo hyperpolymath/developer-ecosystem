@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # phronesiser — Add provably safe ethical constraints to AI agents
 
 # Default: build and test

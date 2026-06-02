@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Copyright (c) 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //
 // Manifest parser for atsiser.toml.
@@ -272,7 +272,7 @@ pub fn init_manifest(path: &str) -> Result<()> {
         anyhow::bail!("atsiser.toml already exists");
     }
     let template = r#"# atsiser manifest — C to ATS2 linear type wrapping
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 
 [project]
 name = "my-c-library"

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 = Reversible Database Example
 :author: Jonathan D.A. Jewell
 :email: j.d.a.jewell@open.ac.uk

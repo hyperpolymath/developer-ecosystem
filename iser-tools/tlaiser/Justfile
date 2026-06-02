@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # tlaiser — Extract state machines and model-check with TLA+/PlusCal
 
 # Default: build and test

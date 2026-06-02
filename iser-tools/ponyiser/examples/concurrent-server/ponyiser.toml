@@ -1,5 +1,5 @@
 # ponyiser manifest — Concurrent TCP server example
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 #
 # This example demonstrates how ponyiser wraps a concurrent server in
 # Pony reference capabilities to guarantee data-race freedom.

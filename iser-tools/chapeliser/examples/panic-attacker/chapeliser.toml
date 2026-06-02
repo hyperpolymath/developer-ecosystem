@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # Chapeliser manifest for panic-attacker's mass-panic (assemblyline) mode.
 # Distributes static analysis of hundreds of repositories across a Chapel cluster.
 

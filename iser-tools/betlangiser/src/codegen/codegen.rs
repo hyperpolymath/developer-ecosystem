@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Copyright (c) 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //
 // Code generation module — Generates Betlang source code from parsed
@@ -61,7 +61,7 @@ fn emit_header(code: &mut String, project_name: &str) {
     )
     .expect("TODO: handle error");
     writeln!(code, "// Project: {}", project_name).expect("TODO: handle error");
-    writeln!(code, "// SPDX-License-Identifier: PMPL-1.0-or-later").expect("TODO: handle error");
+    writeln!(code, "// SPDX-License-Identifier: MPL-2.0").expect("TODO: handle error");
     writeln!(code).expect("TODO: handle error");
     writeln!(code, "module {} where", sanitize_identifier(project_name)).expect("TODO: handle error");
     writeln!(code).expect("TODO: handle error");

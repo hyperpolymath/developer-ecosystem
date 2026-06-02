@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Copyright (c) 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //
 // CBQN FFI bridge generator for bqniser.
@@ -31,7 +31,7 @@ fn generate_c_header(program: &BQNProgram) -> Result<String> {
     let mut out = String::new();
 
     // Header guard and preamble.
-    out.push_str("/* SPDX-License-Identifier: PMPL-1.0-or-later */\n");
+    out.push_str("/* SPDX-License-Identifier: MPL-2.0 */\n");
     out.push_str(&format!(
         "/* bqniser FFI bridge for project: {} */\n",
         program.project_name
@@ -93,7 +93,7 @@ fn generate_zig_impl(program: &BQNProgram) -> Result<String> {
     let mut out = String::new();
 
     // Preamble.
-    out.push_str("// SPDX-License-Identifier: PMPL-1.0-or-later\n");
+    out.push_str("// SPDX-License-Identifier: MPL-2.0\n");
     out.push_str(&format!(
         "// bqniser FFI bridge (Zig) for project: {}\n",
         program.project_name

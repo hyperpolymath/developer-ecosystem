@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Copyright (c) 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //
 // Manifest module for ephapaxiser — Parses and validates ephapaxiser.toml configuration.
@@ -218,7 +218,7 @@ pub fn init_manifest(path: &str) -> Result<()> {
         );
     }
 
-    let content = r#"# SPDX-License-Identifier: PMPL-1.0-or-later
+    let content = r#"# SPDX-License-Identifier: MPL-2.0
 # ephapaxiser manifest — Enforce single-use linear type semantics on resources
 
 [project]

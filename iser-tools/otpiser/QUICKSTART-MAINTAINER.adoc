@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Template: QUICKSTART-MAINTAINER.adoc — packaging, deploying, and maintaining
 // Replace otpiser, {{PACKAGE_NAME}}, {{DEPS}} with actuals
 = otpiser — Quick Start for Platform Maintainers

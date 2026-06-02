@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 //
 // Integration tests for Chapeliser CLI.
@@ -1127,7 +1127,7 @@ fn test_aspect_chapel_spdx_header() {
         .unwrap();
 
         assert!(
-            chpl.contains("SPDX-License-Identifier: PMPL-1.0-or-later"),
+            chpl.contains("SPDX-License-Identifier: MPL-2.0"),
             "Chapel for partition '{partition}' missing SPDX header"
         );
     }
@@ -1169,7 +1169,7 @@ fn test_aspect_zig_spdx_header() {
         let zig = fs::read_to_string(dir.path().join(format!("zig/{safe_name}_ffi.zig"))).unwrap();
 
         assert!(
-            zig.contains("SPDX-License-Identifier: PMPL-1.0-or-later"),
+            zig.contains("SPDX-License-Identifier: MPL-2.0"),
             "Zig for gather '{gather}' missing SPDX header"
         );
     }
@@ -1278,7 +1278,7 @@ fn test_aspect_header_spdx() {
 
     let h = fs::read_to_string(dir.path().join("include/mass_panic_chapeliser.h")).unwrap();
     assert!(
-        h.contains("SPDX-License-Identifier: PMPL-1.0-or-later"),
+        h.contains("SPDX-License-Identifier: MPL-2.0"),
         "C header missing SPDX header"
     );
 }
@@ -1291,7 +1291,7 @@ fn test_aspect_build_script_spdx() {
 
     let build = fs::read_to_string(dir.path().join("build.sh")).unwrap();
     assert!(
-        build.contains("SPDX-License-Identifier: PMPL-1.0-or-later"),
+        build.contains("SPDX-License-Identifier: MPL-2.0"),
         "Build script missing SPDX header"
     );
 }

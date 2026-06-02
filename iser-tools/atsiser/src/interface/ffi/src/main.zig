@@ -6,7 +6,7 @@
 // The FFI provides: C source analysis engine, ownership graph construction,
 // ATS2 wrapper generation, and round-trip ATS2 → C compilation.
 //
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 
 const std = @import("std");
 
