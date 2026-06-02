@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // SPDX-FileCopyrightText: 2026 Hyperpolymath
 //
 // Tauri_Command_test.res - Tests for Tauri_Command bridge pattern

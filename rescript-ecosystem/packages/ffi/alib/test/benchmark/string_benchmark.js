@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Benchmark suite proving zero-cost abstractions
 
 import { Email, Slug, NonEmptyString } from "../../src/Common/Alib_String.res.js";
