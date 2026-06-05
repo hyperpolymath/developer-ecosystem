@@ -4,6 +4,44 @@
 
 [metadata]
 project = "developer-ecosystem"
+last-updated = "2026-06-05"
 author = "Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>"
-license = "PMPL-1.0-or-later"
+license = "MPL-2.0"
 standard = "RSR 2026"
+
+[maintenance-axes]
+axis-1 = "must > intend > like"
+axis-2 = "corrective > adaptive > perfective"
+axis-3 = "systems > compliance > effects"
+scoping-first = true
+idris-unsound-scan = "believe_me/assert_total"
+audit-focus = "systems in place, documentation explains actual state, safety/security accounted for, observed effects reviewed"
+compliance-focus = "seams/compromises/exception register, bounded exceptions, anti-drift checks"
+effects-evidence = "benchmark execution/results and maintainer status dialogue/review"
+
+[architecture]
+type = "monorepo"
+primary-language = "AffineScript (go-forward); ReScript (legacy migration source)"
+build-system = "Deno (JS), Cargo (Rust), Dune (OCaml)"
+package-management = "Guix (primary), Nix (fallback), Deno (JS deps)"
+container-runtime = "Podman (never Docker)"
+task-runner = "just"
+
+[adr]
+# ADR entries for load-bearing architectural decisions
+# Format: id = "decision (status)"
+language-policy-2026-05-25 = "AffineScript as primary application language estate-wide; ReScript legacy until #488 migration (ACCEPTED)"
+ts-exemptions = "Three approved TS exemption paths in CLAUDE.md (ACCEPTED)"
+bot-directives-rename = "agent_instructions/ → bot_directives/ estate-wide rename (ACCEPTED 2026-06-05)"
+contractiles-schema-v2 = "6-verb contractile schema (must/trust/bust/adjust/dust/intend) — lust removed 2026-04-18 (ACCEPTED)"
+license-flip-mpl2 = "PMPL-1.0-or-later stamps flipped to MPL-2.0 across estate in phases (#103-#107) (ACCEPTED)"
+
+[governance]
+code-review = "PR required; Hypatia reviews for language policy compliance"
+merge-bot = "gitbot-fleet (auto-merge on green CI)"
+security-scan = "Hypatia security bot; panic-attack assail"
+ci = "GitHub Actions; reusable workflows from hyperpolymath/standards"
+
+[notes]
+v-lang-status = "Estate-wide V-lang carve-out documented in docs/v-ecosystem/. Community handoff to alex@vlang.io completed 2026-04-12 via TRANSFER.adoc."
+rescript-status = "ReScript demoted to legacy 2026-05-25. No new .res files. Existing .res stays until #488 migration assistant is available."

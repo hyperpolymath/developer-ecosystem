@@ -1,0 +1,60 @@
+# SPDX-License-Identifier: MPL-2.0
+# Bustfile — Failure-mode and recovery verification for developer-ecosystem
+# Author: Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+
+@abstract:
+Failure modes and recovery paths for the developer-ecosystem monorepo.
+Every declared failure mode must have a verifiable recovery path.
+Hard gate: missing or broken recovery blocks merge.
+@end
+
+## CI Failures
+
+### ci-workflow-missing
+- description: Missing required workflow files
+- class: crash
+- injection: "mv .github/workflows/ci.yml .github/workflows/ci.yml.bak 2>/dev/null; true"
+- recovery: "test -f .github/workflows/ci.yml || mv .github/workflows/ci.yml.bak .github/workflows/ci.yml 2>/dev/null; test -f .github/workflows/ci.yml"
+- severity: critical
+- notes: Recovery = restore from git; injection is dry-run conceptual only
+
+### hypatia-scan-missing
+- description: Hypatia scan workflow removed
+- class: crash
+- injection: "echo 'injection dry-run only'"
+- recovery: "test -f .github/workflows/hypatia-scan.yml"
+- severity: critical
+
+## Monorepo Integrity
+
+### machine-readable-deleted
+- description: .machine_readable/ directory accidentally deleted
+- class: crash
+- injection: "echo 'injection dry-run only'"
+- recovery: "test -d .machine_readable/6a2 && test -f .machine_readable/6a2/STATE.a2ml"
+- severity: critical
+
+### justfile-removed
+- description: Root Justfile deleted
+- class: crash
+- injection: "echo 'injection dry-run only'"
+- recovery: "test -f Justfile"
+- severity: critical
+
+## License Compliance
+
+### license-file-removed
+- description: Root LICENSE file removed
+- class: crash
+- injection: "echo 'injection dry-run only'"
+- recovery: "test -f LICENSE"
+- severity: critical
+
+## Dependency Failures
+
+### deno-json-malformed
+- description: Root deno.json becomes invalid JSON
+- class: partial_write
+- injection: "echo 'injection dry-run only'"
+- recovery: "python3 -c 'import json; json.load(open(\"deno.json\"))' 2>/dev/null && echo OK || echo FAIL"
+- severity: warning

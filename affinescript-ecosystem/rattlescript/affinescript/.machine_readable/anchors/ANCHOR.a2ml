@@ -5,7 +5,7 @@
 # the language scope from bot-drift back to user intent. This ANCHOR is
 # retroactive: the project predates the ANCHOR.a2ml convention, and a full
 # .machine_readable/ suite upgrade (anchors/, CLADE.a2ml, contractiles/,
-# agent_instructions/, integrations/, top-level .contractile files) is deferred
+# bot_directives/, integrations/, top-level .contractile files) is deferred
 # as separate work — see STATE.a2ml [deferred-upgrade].
 
 id: "org.hyperpolymath.affinescript"
@@ -145,7 +145,7 @@ notes: >
   This is the first ANCHOR.a2ml written for AffineScript. The repository
   predates the ANCHOR convention and predates significant portions of the
   current hyperpolymath .machine_readable/ suite (CLADE.a2ml, contractiles/
-  as a .machine_readable/ subdirectory, agent_instructions/, integrations/,
+  as a .machine_readable/ subdirectory, bot_directives/, integrations/,
   and top-level .contractile instance files). The existing root-level
   contractiles/ directory contains 5 of the 7 current contractile types
   (dust, k9, lust, must, trust — missing adjust and intend).

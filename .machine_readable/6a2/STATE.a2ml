@@ -5,13 +5,18 @@
 [metadata]
 project = "developer-ecosystem"
 version = "0.1.0"
-last-updated = "2026-04-12"
+last-updated = "2026-06-05"
 status = "active"
 
 [project-context]
 name = "developer-ecosystem"
-completion-percentage = 45
-phase = "V-lang estate retired; zig-api Phase 1+2 complete; v-ecosystem connectors expanded for community handoff"
+completion-percentage = 55
+phase = "license-stamps-flipped-to-MPL-2.0; bot_directives-rename-done; contractiles-currency-pass-2026-06-05"
+
+[session-2026-06-05-currency-checkpoint]
+summary = "Currency checkpoint (claude/zen-knuth-6hoEt branch). Tasks completed: (1) agent_instructions→bot_directives rename already done at root; external references fixed in 8 files across affinescript-ecosystem and rescript-ecosystem satellite subdirs. (2) Contractiles: INDEX.a2ml + _base.ncl added; missing verb dirs created (adjust/, bust/, intend/) each with Xfile.a2ml + canonical .ncl runner; must/trust/dust runners (must.ncl/trust.ncl/dust.ncl) added alongside existing Xfile.a2ml. (3) svc/k9 templates already present. (4) 6a2 files refreshed. (5) README/EXPLAINME currency-only fixes. (6) License scan flagged."
+files-changed = "~20 (currency + contractile files)"
+note = "k9.ncl + .manifest.a2ml tridents for must/trust/bust/dust deferred — see DEFERRED section in Intentfile.a2ml"
 
 [session-2026-04-12-v-ecosystem-connectors]
 summary = "All 95 v-api-interfaces connectors expanded to ≥201 lines. 45 stubs (previously 100–185 lines) given protocol constants, 5–8 public methods, helpers, and 3–5 tests. Batches: network-protocols (14), app/infra (15), specialized/security (14), imap (1). Commit d98a18c. V-lang work complete for TRANSFER.adoc community handoff to alex@vlang.io."
@@ -22,3 +27,23 @@ insertions = 8426
 grade = "D"
 achieved-on = "2026-04-04"
 representative-crate = "opm-canonicalizer"
+note = "D is the baseline achieved; no regression. Upward movement blocked on test suite expansion and formal verification work."
+
+[language-policy]
+status = "active-migration"
+primary-language = "AffineScript (go-forward, 2026-05-25 policy)"
+legacy-language = "ReScript (existing .res files, no new .res files permitted)"
+banned = ["TypeScript", "Python", "Go", "Node.js", "npm", "Bun"]
+approved-ts-exemptions = [
+  "affinescript-ecosystem/affinescript-deno-test/**",
+  "aggregate-library/src/test-runner.ts",
+  "rescript-ecosystem/packages/core/runtime-tools/bin/rrt.ts"
+]
+
+[contractiles]
+index-present = true
+_base-present = true
+verb-coverage = "must, trust, dust (Xfile.a2ml + .ncl); adjust, bust, intend (Xfile.a2ml + .ncl)"
+trident-coverage = "none (k9.ncl + manifest.a2ml deferred for all 6 verbs)"
+lust-present = false
+note = "All 6 verbs have minimum Xfile.a2ml + runner .ncl. Tridents (k9.ncl + manifest) are template-repo derived work — deferred."
