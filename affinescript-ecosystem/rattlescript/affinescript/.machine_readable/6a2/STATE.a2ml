@@ -197,7 +197,7 @@ missing = [
   ".machine_readable/contractiles/ (should migrate from root contractiles/)",
   ".machine_readable/contractiles/adjust/",
   ".machine_readable/contractiles/intend/",
-  ".machine_readable/agent_instructions/",
+  ".machine_readable/bot_directives/",
   ".machine_readable/integrations/",
   ".machine_readable/ADJUST.contractile (top-level instance)",
   ".machine_readable/INTENT.contractile (top-level instance)",

@@ -35,7 +35,8 @@ ____
 |===
 | Technology | Learn More
 
-| **ReScript** | https://rescript-lang.org (satellites: rescript-evangeliser, cadre-router)
+| **AffineScript** | https://github.com/hyperpolymath/affinescript (go-forward primary language as of 2026-05-25)
+| **ReScript** (legacy) | https://rescript-lang.org (satellites: rescript-evangeliser, cadre-router — legacy until #488 migration)
 | **Deno** | https://deno.land (satellites: scaffoldia scripts, developer-ux automation)
 | **Rust** | https://www.rust-lang.org (git tools performance layer)
 | **Elixir** | https://elixir-lang.org (oikos, vext)

@@ -59,7 +59,7 @@ developer-ecosystem/
 │   │   └── scaffoldia/         # Community-driven scaffolding
 │   │
 │   └── developer-ux/           # Developer experience tools
-│       ├── rescript-evangeliser/  # ReScript teaching extension
+│       ├── rescript-evangeliser/  # Nextgen languages evangeliser (AffineScript flagship, ReScript legacy)
 │       ├── recon-silly-ation/  # Doc reconciliation system
 │       └── nickel-config-reporter/ # Config auditing
 ----
@@ -145,11 +145,11 @@ A developer-centred, modular, and community-driven repo scaffolding engine.
 
 Repositories focused on improving the developer experience.
 
-=== rescript-evangeliser
+=== rescript-evangeliser (→ nextgen-languages-evangeliser)
 
 "Celebrate good, minimize bad, show better"
 
-A VS Code extension that teaches JavaScript developers ReScript through progressive code transformation, without shame.
+A pattern detection engine and educational toolkit that teaches developers next-generation type-safe languages (AffineScript flagship, ReScript legacy) through progressive code transformation — without shame. Previously ReScript-only; now multi-target with AffineScript as the go-forward language (2026-05-25 policy).
 
 === recon-silly-ation
 

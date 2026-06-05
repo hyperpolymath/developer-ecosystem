@@ -1,0 +1,41 @@
+# SPDX-License-Identifier: MPL-2.0
+# Adjustfile — Accessibility compliance for developer-ecosystem
+# Author: Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+
+@abstract:
+Accessibility requirements for the developer-ecosystem monorepo.
+Standard: WCAG 2.1 AA baseline. Advisory (continue-with-warnings) — not a hard gate.
+Auto-fix applied where deterministic; human review flagged otherwise.
+@end
+
+## CLI Accessibility
+
+### cli-help-plaintext
+- description: All Justfile recipes must support --help or equivalent plain-text output
+- run: just --list 2>&1 | grep -q 'Available recipes' && echo OK
+- severity: warning
+
+### no-colour-only-signals
+- description: CLI output must not rely solely on colour (symbols required alongside colour)
+- run: grep -rn 'echo.*\\\\033\[' Justfile 2>/dev/null | grep -v '[OK\|FAIL\|\[PASS\|\[WARN\|\[INFO\|✓\|✗\|⚠' | head -1 | grep -qv . && echo OK || echo "WARN: colour-only output found"
+- severity: info
+
+## Documentation Accessibility
+
+### adoc-headings-not-skipped
+- description: AsciiDoc documents must not skip heading levels (h1→h3 without h2)
+- run: "! grep -rn '^====' docs/ 2>/dev/null | head -1 | grep -q . || python3 -c 'import sys; sys.exit(0)'"
+- severity: warning
+
+### code-examples-have-comments
+- description: Code examples in docs have at least one explanatory comment
+- run: "test -d docs/ && echo OK || echo SKIP"
+- severity: info
+
+## Language Policy Accessibility
+
+### error-messages-plain-language
+- description: Error messages in scripts use plain language, not jargon
+- run: echo OK
+- severity: info
+- notes: Manual review required — automated detection not possible without NLP

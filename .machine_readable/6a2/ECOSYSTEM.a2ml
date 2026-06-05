@@ -4,7 +4,37 @@
 
 [metadata]
 project = "developer-ecosystem"
+last-updated = "2026-06-05"
 ecosystem = "hyperpolymath"
 
 [position]
-type = "component"
+type = "monorepo"
+role = "central hub for developer workflow tools — git operations, repo management, scaffolding, developer UX"
+parent = "hyperpolymath estate"
+
+[satellites]
+# Active satellite project areas within this monorepo
+git-tools = ["git-hud", "gitloom", "git-reunify", "git-seo", "polysafe-gitfixer", "vext"]
+repo-management = ["oikos", "robot-repo-automaton", "grim-repo", "robot-vacuum-cleaner"]
+scaffolding = ["scaffoldia"]
+developer-ux = ["rescript-evangeliser (→ nextgen-languages-evangeliser)", "recon-silly-ation", "nickel-config-reporter"]
+ecosystems = ["affinescript-ecosystem", "rescript-ecosystem", "zig-ecosystem", "v-ecosystem (legacy/community-handoff)", "deno-ecosystem", "julia-ecosystem", "coq-ecosystem", "idris2-ecosystem", "iser-tools"]
+cadre = ["cadre-router", "cadre-tea-router"]
+zig-api = ["zig-api (Phase 1+2 complete)"]
+
+[compile-targets]
+affinescript = "hyperpolymath/affinescript (primary language compiler)"
+typed-wasm = "hyperpolymath/typed-wasm (AffineScript compile target)"
+
+[shared-tools]
+standards = "hyperpolymath/standards (RSR, k9-svc, reusable workflows)"
+verisimdb = "hyperpolymath/verisimdb (panic-attack scan results, cross-repo analytics)"
+
+[external-relationships]
+v-lang-handoff = "Community handoff to alex@vlang.io completed 2026-04-12 (TRANSFER.adoc)"
+affinescript-policy = "AffineScript is the go-forward primary language (2026-05-25 policy refresh)"
+
+[status-as-of-2026-06-05]
+license-stamps = "MPL-2.0 (flipped from PMPL-1.0-or-later in phases #103-#107)"
+contractiles = "6 verbs (must/trust/bust/adjust/dust/intend) — Xfile.a2ml + .ncl for all; tridents deferred"
+bot-directives = "root .machine_readable/bot_directives/ correct; satellite sub-project dirs pending rename"

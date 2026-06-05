@@ -110,9 +110,9 @@ nickel eval .github/ci.k9.ncl
 
 K9 contractiles integrate with other RSR standards:
 
-**STATE.scm**:: K9 components can generate or validate STATE.scm
-**ECOSYSTEM.scm**:: K9 can automate cross-repo operations
-**META.scm**:: K9 can enforce architectural decisions
+**STATE.a2ml**:: K9 components can generate or validate STATE.a2ml
+**ECOSYSTEM.a2ml**:: K9 can automate cross-repo operations
+**META.a2ml**:: K9 can enforce architectural decisions
 
 == Security Best Practices
 
