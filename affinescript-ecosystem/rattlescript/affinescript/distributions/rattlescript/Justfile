@@ -44,3 +44,6 @@ update-affinescript:
     git -C ../.. submodule update --remote
     git add ../..
     git commit -m "chore(affinescript): advance pointer to latest release"
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

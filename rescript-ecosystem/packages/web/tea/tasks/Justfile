@@ -137,3 +137,6 @@ rsr-audit:
     @test -f CHANGELOG.md && echo "✓ CHANGELOG.md" || echo "✗ CHANGELOG.md"
     @test -f flake.nix && echo "✓ flake.nix" || echo "✗ flake.nix"
     @test -d .well-known && echo "✓ .well-known/" || echo "✗ .well-known/"
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

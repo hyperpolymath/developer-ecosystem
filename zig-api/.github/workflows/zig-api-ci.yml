@@ -11,7 +11,6 @@
 #   test          — runs `just test`  (zig build test)
 
 name: zig-api CI
-
 on:
   push:
     paths:
@@ -19,10 +18,8 @@ on:
   pull_request:
     paths:
       - 'zig-api/**'
-
 permissions:
   contents: read
-
 jobs:
   # --------------------------------------------------------------------------
   # header-drift: regenerate zig_api.h from Idris2 ABI and fail on any diff.
@@ -38,14 +35,11 @@ jobs:
     defaults:
       run:
         working-directory: zig-api
-
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
       - name: Regenerate header and check for drift
         run: just check-header
-
   # --------------------------------------------------------------------------
   # build: compile the Zig FFI layer (shared + static libraries).
   # --------------------------------------------------------------------------
@@ -57,15 +51,12 @@ jobs:
     defaults:
       run:
         working-directory: zig-api
-
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
       - name: Install just
         run: |
           curl -sSfL https://just.systems/install.sh | bash -s -- --to /usr/local/bin
-
       - name: Install Zig
         run: |
           ZIG_VERSION=0.15.0-dev.672+b15e2d572
@@ -73,10 +64,8 @@ jobs:
               | tar -xJ --strip-components=1 -C /usr/local
         env:
           ZIG_VERSION: "0.15.0-dev.672+b15e2d572"
-
       - name: Build
         run: just build
-
   # --------------------------------------------------------------------------
   # test: run Zig unit tests.
   # --------------------------------------------------------------------------
@@ -89,15 +78,12 @@ jobs:
     defaults:
       run:
         working-directory: zig-api
-
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
       - name: Install just
         run: |
           curl -sSfL https://just.systems/install.sh | bash -s -- --to /usr/local/bin
-
       - name: Install Zig
         run: |
           ZIG_VERSION=0.15.0-dev.672+b15e2d572
@@ -105,6 +91,5 @@ jobs:
               | tar -xJ --strip-components=1 -C /usr/local
         env:
           ZIG_VERSION: "0.15.0-dev.672+b15e2d572"
-
       - name: Test
         run: just test

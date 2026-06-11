@@ -1,16 +1,13 @@
 # SPDX-License-Identifier: PMPL-1.0-or-later
 name: CI
-
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
-
+    branches: [main, develop]
 env:
   CARGO_TERM_COLOR: always
   RUST_BACKTRACE: 1
-
 jobs:
   check:
     name: Check
@@ -20,7 +17,6 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - run: cargo check --all
-
   fmt:
     name: Format
     runs-on: ubuntu-latest
@@ -30,7 +26,6 @@ jobs:
         with:
           components: rustfmt
       - run: cargo fmt --all -- --check
-
   clippy:
     name: Clippy
     runs-on: ubuntu-latest
@@ -41,7 +36,6 @@ jobs:
           components: clippy
       - uses: Swatinem/rust-cache@v2
       - run: cargo clippy --all -- -D warnings
-
   test:
     name: Test
     runs-on: ${{ matrix.os }}
@@ -56,7 +50,6 @@ jobs:
           toolchain: ${{ matrix.rust }}
       - uses: Swatinem/rust-cache@v2
       - run: cargo test --all
-
   bench:
     name: Benchmark
     runs-on: ubuntu-latest
@@ -65,7 +58,6 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - run: cargo bench --all
-
   security:
     name: Security Audit
     runs-on: ubuntu-latest
@@ -75,7 +67,6 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - run: cargo install cargo-audit
       - run: cargo audit
-
   coverage:
     name: Code Coverage
     runs-on: ubuntu-latest
@@ -88,7 +79,6 @@ jobs:
       - uses: codecov/codecov-action@v3
         with:
           files: ./cobertura.xml
-
   rsr-compliance:
     name: RSR Compliance
     runs-on: ubuntu-latest
@@ -98,7 +88,6 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - run: cargo install just
       - run: just rsr-verify
-
   docs:
     name: Documentation
     runs-on: ubuntu-latest

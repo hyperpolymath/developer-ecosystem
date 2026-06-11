@@ -209,3 +209,6 @@ aspect:
     #!/usr/bin/env bash
     set -euo pipefail
     bash tests/aspect/aspect_tests.sh
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

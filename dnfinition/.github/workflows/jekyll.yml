@@ -1,20 +1,16 @@
 # SPDX-License-Identifier: MPL-2.0-or-later
 name: Deploy Jekyll site to Pages
-
 on:
   push:
     branches: [main]
   workflow_dispatch:
-
 permissions:
   contents: read
   pages: write
   id-token: write
-
 concurrency:
   group: pages
   cancel-in-progress: false
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -36,7 +32,6 @@ jobs:
           JEKYLL_ENV: production
       - name: Upload artifact
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
-
   deploy:
     environment:
       name: github-pages

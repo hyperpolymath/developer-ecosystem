@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: PMPL-1.0-or-later
 name: Build and Deploy Site
-
 on:
   push:
     branches: [main, master]
@@ -8,16 +7,13 @@ on:
       - 'site/**'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
-
 permissions:
   contents: read
   pages: write
   id-token: write
-
 concurrency:
   group: pages-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,20 +22,16 @@ jobs:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v4
         with:
           persist-credentials: false
-
       - name: Install UCBLogo
         run: |
           sudo apt-get update
           sudo apt-get install -y ucblogo
-
       - name: Clone terrapin-ssg
         run: |
           git clone --depth 1 https://github.com/hyperpolymath/terrapin-ssg.git /tmp/terrapin-ssg
-
       - name: Install Asciidoctor
         run: |
           sudo gem install asciidoctor
-
       - name: Build site with terrapin-ssg
         run: |
           cd site
@@ -90,12 +82,10 @@ jobs:
 
           echo "Site built successfully!"
           ls -la _site/
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v3
         with:
           path: site/_site
-
   deploy:
     needs: build
     runs-on: ubuntu-latest

@@ -10,3 +10,6 @@ test: build
 
 clean:
     yarn clean
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

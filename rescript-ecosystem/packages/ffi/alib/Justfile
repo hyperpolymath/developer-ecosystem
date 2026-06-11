@@ -270,3 +270,6 @@ ci: clean-full build test bench validate-scm validate-contractiles
 # Pre-commit hook: format, build, test
 pre-commit: format build test-unit
     @echo "✅ Pre-commit checks passed"
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

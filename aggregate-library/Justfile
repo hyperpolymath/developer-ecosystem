@@ -335,3 +335,6 @@ version:
     @echo "Common Library Specification"
     @echo "License: Dual MIT / Palimpsest v0.8"
     @echo "Repository: https://github.com/Hyperpolymath/aggregate-library"
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

@@ -6,12 +6,10 @@ stages:
   - build
   - security
   - deploy
-
 variables:
   DOCKER_DRIVER: overlay2
   DOCKER_TLS_CERTDIR: "/certs"
   PODMAN_USERNS: keep-id
-
 # Default settings
 default:
   image: alpine:latest
@@ -19,7 +17,6 @@ default:
     - echo "Starting job..."
   after_script:
     - echo "Job completed."
-
 # Templates
 .cache_template: &cache_config
   cache:
@@ -28,7 +25,6 @@ default:
       - node_modules/
       - .cache/
       - vendor/
-
 # Lint stage
 lint:shell:
   stage: lint
@@ -38,7 +34,6 @@ lint:shell:
   only:
     changes:
       - "**/*.sh"
-
 lint:yaml:
   stage: lint
   image: sdesbure/yamllint
@@ -48,7 +43,6 @@ lint:yaml:
     changes:
       - "**/*.yml"
       - "**/*.yaml"
-
 lint:markdown:
   stage: lint
   image: node:lts-alpine
@@ -58,7 +52,6 @@ lint:markdown:
   only:
     changes:
       - "**/*.md"
-
 # Test stage
 test:unit:
   stage: test
@@ -76,7 +69,6 @@ test:unit:
     paths:
       - htmlcov/
     expire_in: 1 week
-
 test:integration:
   stage: test
   image: python:3.11-slim
@@ -89,7 +81,6 @@ test:integration:
   script:
     - pip install -r requirements.txt
     - pytest tests/integration
-
 # Build stage
 build:podman:
   stage: build
@@ -103,7 +94,6 @@ build:podman:
   only:
     - main
     - tags
-
 build:binary:
   stage: build
   image: rust:latest
@@ -113,7 +103,6 @@ build:binary:
     paths:
       - target/release/
     expire_in: 1 month
-
 # Security stage
 security:sast:
   stage: security
@@ -124,7 +113,6 @@ security:sast:
     reports:
       sast: semgrep-report.json
   allow_failure: true
-
 security:dependency-scan:
   stage: security
   image: aquasec/trivy:latest
@@ -134,7 +122,6 @@ security:dependency-scan:
     reports:
       dependency_scanning: trivy-report.json
   allow_failure: true
-
 security:container-scan:
   stage: security
   image: aquasec/trivy:latest
@@ -143,7 +130,6 @@ security:container-scan:
   only:
     - main
   allow_failure: true
-
 # Deploy stage
 deploy:staging:
   stage: deploy
@@ -157,7 +143,6 @@ deploy:staging:
     url: https://staging.example.com
   only:
     - main
-
 deploy:production:
   stage: deploy
   image: alpine:latest
@@ -171,3 +156,8 @@ deploy:production:
   only:
     - tags
   when: manual
+trufflehog:
+  stage: security
+  image: trufflesecurity/trufflehog:latest
+  script:
+    - trufflehog git file://. --only-verified --fail

@@ -11,3 +11,6 @@ test:
 
 clean:
     dune clean
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

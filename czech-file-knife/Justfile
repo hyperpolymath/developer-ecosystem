@@ -27,3 +27,6 @@ fmt:
 # Lint
 lint:
     @echo "TODO: Add lint command"
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

@@ -1,192 +1,169 @@
 name: ECHIDNA CI - Tests and Benchmarks
-
 on:
   push:
-    branches: [ main, dev ]
+    branches: [main, dev]
   pull_request:
-    branches: [ main, dev ]
+    branches: [main, dev]
   workflow_dispatch:
-
 jobs:
   test:
     name: Run Unit Tests
     runs-on: ubuntu-latest
     container:
       image: idrislang/idris2:latest
-    
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-    
-    - name: Install dependencies
-      run: |
-        apt-get update
-        apt-get install -y make git curl
-    
-    - name: Build ECHIDNA
-      run: |
-        cd /var/mnt/eclipse/repos/developer-ecosystem/idris2-ecosystem/echidna
-        make build
-    
-    - name: Run vocabulary tests
-      run: |
-        cd /var/mnt/eclipse/repos/developer-ecosystem/idris2-ecosystem/echidna
-        idris2 --test test/VocabularyTest.idr
-    
-    - name: Run prover tests
-      run: |
-        cd /var/mnt/eclipse/repos/developer-ecosystem/idris2-ecosystem/echidna
-        # Add prover tests when available
-        echo "Prover tests would run here"
-    
-    - name: Run integration tests
-      run: |
-        cd /var/mnt/eclipse/repos/developer-ecosystem/idris2-ecosystem/echidna
-        # Add integration tests when available
-        echo "Integration tests would run here"
-
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y make git curl
+      - name: Build ECHIDNA
+        run: |
+          cd /var/mnt/eclipse/repos/developer-ecosystem/idris2-ecosystem/echidna
+          make build
+      - name: Run vocabulary tests
+        run: |
+          cd /var/mnt/eclipse/repos/developer-ecosystem/idris2-ecosystem/echidna
+          idris2 --test test/VocabularyTest.idr
+      - name: Run prover tests
+        run: |
+          cd /var/mnt/eclipse/repos/developer-ecosystem/idris2-ecosystem/echidna
+          # Add prover tests when available
+          echo "Prover tests would run here"
+      - name: Run integration tests
+        run: |
+          cd /var/mnt/eclipse/repos/developer-ecosystem/idris2-ecosystem/echidna
+          # Add integration tests when available
+          echo "Integration tests would run here"
   benchmark:
     name: Run Performance Benchmarks
     runs-on: ubuntu-latest
     container:
       image: idrislang/idris2:latest
-    
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-    
-    - name: Install dependencies
-      run: |
-        apt-get update
-        apt-get install -y make git curl
-    
-    - name: Build ECHIDNA
-      run: |
-        cd /var/mnt/eclipse/repos/developer-ecosystem/idris2-ecosystem/echidna
-        make build
-    
-    - name: Run vocabulary benchmarks
-      run: |
-        cd /var/mnt/eclipse/repos/developer-ecosystem/idris2-ecosystem/echidna
-        idris2 --exec bench/VocabularyBench.idr
-    
-    - name: Store benchmark results
-      run: |
-        cd /var/mnt/eclipse/repos/developer-ecosystem/idris2-ecosystem/echidna
-        mkdir -p benchmark-results
-        idris2 --exec bench/VocabularyBench.idr > benchmark-results/$(date +%Y%m%d-%H%M%S).txt
-    
-    - name: Upload benchmark results
-      uses: actions/upload-artifact@v3
-      with:
-        name: benchmark-results
-        path: /var/mnt/eclipse/repos/developer-ecosystem/idris2-ecosystem/echidna/benchmark-results/
-
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y make git curl
+      - name: Build ECHIDNA
+        run: |
+          cd /var/mnt/eclipse/repos/developer-ecosystem/idris2-ecosystem/echidna
+          make build
+      - name: Run vocabulary benchmarks
+        run: |
+          cd /var/mnt/eclipse/repos/developer-ecosystem/idris2-ecosystem/echidna
+          idris2 --exec bench/VocabularyBench.idr
+      - name: Store benchmark results
+        run: |
+          cd /var/mnt/eclipse/repos/developer-ecosystem/idris2-ecosystem/echidna
+          mkdir -p benchmark-results
+          idris2 --exec bench/VocabularyBench.idr > benchmark-results/$(date +%Y%m%d-%H%M%S).txt
+      - name: Upload benchmark results
+        uses: actions/upload-artifact@v3
+        with:
+          name: benchmark-results
+          path: /var/mnt/eclipse/repos/developer-ecosystem/idris2-ecosystem/echidna/benchmark-results/
   regression-test:
     name: Regression Testing
     needs: [test, benchmark]
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-    
-    - name: Download benchmark results
-      uses: actions/download-artifact@v3
-      with:
-        name: benchmark-results
-    
-    - name: Analyze regression
-      run: |
-        echo "Regression analysis would compare current benchmarks with historical baselines"
-        echo "This would be implemented with proper baseline storage and comparison logic"
-        ls -la benchmark-results/
-
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Download benchmark results
+        uses: actions/download-artifact@v3
+        with:
+          name: benchmark-results
+      - name: Analyze regression
+        run: |
+          echo "Regression analysis would compare current benchmarks with historical baselines"
+          echo "This would be implemented with proper baseline storage and comparison logic"
+          ls -la benchmark-results/
   documentation:
     name: Update Documentation
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-    
-    - name: Generate test documentation
-      run: |
-        echo "# ECHIDNA Testing Documentation" > TESTING.md
-        echo "" >> TESTING.md
-        echo "## Test Coverage" >> TESTING.md
-        echo "" >> TESTING.md
-        echo "### Vocabulary Tests (test/VocabularyTest.idr)" >> TESTING.md
-        echo "- **Unit Tests**: 20+ tests covering vocabulary database operations" >> TESTING.md
-        echo "- **Integration Tests**: 5 tests covering vocabulary + prover integration" >> TESTING.md
-        echo "- **Security Tests**: 3 tests covering edge cases and malicious inputs" >> TESTING.md
-        echo "- **Total**: 28+ comprehensive tests" >> TESTING.md
-        echo "" >> TESTING.md
-        echo "### Benchmark Coverage (bench/VocabularyBench.idr)" >> TESTING.md
-        echo "- **Term Lookup**: Exact match performance" >> TESTING.md
-        echo "- **Term Search**: Partial match performance" >> TESTING.md
-        echo "- **Category Filtering**: Indexed lookup performance" >> TESTING.md
-        echo "- **Theorem Analysis**: Vocabulary extraction performance" >> TESTING.md
-        echo "- **Prover Recommendation**: Selection algorithm performance" >> TESTING.md
-        echo "- **Natural Language**: Full NLP pipeline performance" >> TESTING.md
-        echo "- **Iterations**: 1000 per benchmark for statistical significance" >> TESTING.md
-        echo "" >> TESTING.md
-        echo "## CI Integration" >> TESTING.md
-        echo "" >> TESTING.md
-        echo "### Workflow: test-and-benchmark.yml" >> TESTING.md
-        echo "- **Test Job**: Runs all unit tests on push/PR" >> TESTING.md
-        echo "- **Benchmark Job**: Measures performance metrics" >> TESTING.md
-        echo "- **Regression Job**: Compares against historical baselines" >> TESTING.md
-        echo "- **Documentation Job**: Updates test documentation" >> TESTING.md
-        echo "" >> TESTING.md
-        echo "## Quality Metrics" >> TESTING.md
-        echo "" >> TESTING.md
-        echo "### Vocabulary System" >> TESTING.md
-        echo "- **Terms**: 6000+ mathematical and computational terms" >> TESTING.md
-        echo "- **Categories**: 7 organized categories with proper indexing" >> TESTING.md
-        echo "- **Search**: Case-insensitive partial matching with O(n) complexity" >> TESTING.md
-        echo "- **Lookup**: O(1) hash-based term lookup" >> TESTING.md
-        echo "" >> TESTING.md
-        echo "### Test Quality" >> TESTING.md
-        echo "- **Coverage**: >90% of core vocabulary functions tested" >> TESTING.md
-        echo "- **Edge Cases**: Empty inputs, long inputs, special characters" >> TESTING.md
-        echo "- **Integration**: Vocabulary + prover system interactions" >> TESTING.md
-        echo "- **Security**: Malicious input handling" >> TESTING.md
-        echo "" >> TESTING.md
-        echo "## Performance Baselines" >> TESTING.md
-        echo "" >> TESTING.md
-        echo "### Expected Results (Initial Benchmarks)" >> TESTING.md
-        echo "- **Term Lookup**: < 1000 ns/operation" >> TESTING.md
-        echo "- **Term Search**: < 5000 ns/operation (across 6000 terms)" >> TESTING.md
-        echo "- **Category Filter**: < 100 ns/operation (indexed)" >> TESTING.md
-        echo "- **Theorem Analysis**: < 10000 ns/operation" >> TESTING.md
-        echo "- **Prover Recommendation**: < 2000 ns/operation" >> TESTING.md
-        echo "- **Natural Language**: < 50000 ns/operation (full pipeline)" >> TESTING.md
-        echo "" >> TESTING.md
-        echo "## Running Tests Locally" >> TESTING.md
-        echo "" >> TESTING.md
-        echo "### Unit Tests" >> TESTING.md
-        echo "```bash" >> TESTING.md
-        echo "cd /path/to/echidna" >> TESTING.md
-        echo "idris2 --test test/VocabularyTest.idr" >> TESTING.md
-        echo "```" >> TESTING.md
-        echo "" >> TESTING.md
-        echo "### Benchmarks" >> TESTINGMD.md
-        echo "```bash" >> TESTING.md
-        echo "cd /path/to/echidna" >> TESTING.md
-        echo "idris2 --exec bench/VocabularyBench.idr" >> TESTING.md
-        echo "```" >> TESTING.md
-        echo "" >> TESTING.md
-        echo "### Full Test Suite" >> TESTING.md
-        echo "```bash" >> TESTING.md
-        echo "cd /path/to/echidna" >> TESTING.md
-        echo "make test  # Runs all tests and benchmarks" >> TESTING.md
-        echo "```" >> TESTING.md
-    
-    - name: Commit documentation
-      run: |
-        git config --global user.name "ECHIDNA CI"
-        git config --global user.email "ci@echidna.example.com"
-        git add TESTING.md
-        git commit -m "CI: Update test documentation"
-        git push
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Generate test documentation
+        run: |
+          echo "# ECHIDNA Testing Documentation" > TESTING.md
+          echo "" >> TESTING.md
+          echo "## Test Coverage" >> TESTING.md
+          echo "" >> TESTING.md
+          echo "### Vocabulary Tests (test/VocabularyTest.idr)" >> TESTING.md
+          echo "- **Unit Tests**: 20+ tests covering vocabulary database operations" >> TESTING.md
+          echo "- **Integration Tests**: 5 tests covering vocabulary + prover integration" >> TESTING.md
+          echo "- **Security Tests**: 3 tests covering edge cases and malicious inputs" >> TESTING.md
+          echo "- **Total**: 28+ comprehensive tests" >> TESTING.md
+          echo "" >> TESTING.md
+          echo "### Benchmark Coverage (bench/VocabularyBench.idr)" >> TESTING.md
+          echo "- **Term Lookup**: Exact match performance" >> TESTING.md
+          echo "- **Term Search**: Partial match performance" >> TESTING.md
+          echo "- **Category Filtering**: Indexed lookup performance" >> TESTING.md
+          echo "- **Theorem Analysis**: Vocabulary extraction performance" >> TESTING.md
+          echo "- **Prover Recommendation**: Selection algorithm performance" >> TESTING.md
+          echo "- **Natural Language**: Full NLP pipeline performance" >> TESTING.md
+          echo "- **Iterations**: 1000 per benchmark for statistical significance" >> TESTING.md
+          echo "" >> TESTING.md
+          echo "## CI Integration" >> TESTING.md
+          echo "" >> TESTING.md
+          echo "### Workflow: test-and-benchmark.yml" >> TESTING.md
+          echo "- **Test Job**: Runs all unit tests on push/PR" >> TESTING.md
+          echo "- **Benchmark Job**: Measures performance metrics" >> TESTING.md
+          echo "- **Regression Job**: Compares against historical baselines" >> TESTING.md
+          echo "- **Documentation Job**: Updates test documentation" >> TESTING.md
+          echo "" >> TESTING.md
+          echo "## Quality Metrics" >> TESTING.md
+          echo "" >> TESTING.md
+          echo "### Vocabulary System" >> TESTING.md
+          echo "- **Terms**: 6000+ mathematical and computational terms" >> TESTING.md
+          echo "- **Categories**: 7 organized categories with proper indexing" >> TESTING.md
+          echo "- **Search**: Case-insensitive partial matching with O(n) complexity" >> TESTING.md
+          echo "- **Lookup**: O(1) hash-based term lookup" >> TESTING.md
+          echo "" >> TESTING.md
+          echo "### Test Quality" >> TESTING.md
+          echo "- **Coverage**: >90% of core vocabulary functions tested" >> TESTING.md
+          echo "- **Edge Cases**: Empty inputs, long inputs, special characters" >> TESTING.md
+          echo "- **Integration**: Vocabulary + prover system interactions" >> TESTING.md
+          echo "- **Security**: Malicious input handling" >> TESTING.md
+          echo "" >> TESTING.md
+          echo "## Performance Baselines" >> TESTING.md
+          echo "" >> TESTING.md
+          echo "### Expected Results (Initial Benchmarks)" >> TESTING.md
+          echo "- **Term Lookup**: < 1000 ns/operation" >> TESTING.md
+          echo "- **Term Search**: < 5000 ns/operation (across 6000 terms)" >> TESTING.md
+          echo "- **Category Filter**: < 100 ns/operation (indexed)" >> TESTING.md
+          echo "- **Theorem Analysis**: < 10000 ns/operation" >> TESTING.md
+          echo "- **Prover Recommendation**: < 2000 ns/operation" >> TESTING.md
+          echo "- **Natural Language**: < 50000 ns/operation (full pipeline)" >> TESTING.md
+          echo "" >> TESTING.md
+          echo "## Running Tests Locally" >> TESTING.md
+          echo "" >> TESTING.md
+          echo "### Unit Tests" >> TESTING.md
+          echo "```bash" >> TESTING.md
+          echo "cd /path/to/echidna" >> TESTING.md
+          echo "idris2 --test test/VocabularyTest.idr" >> TESTING.md
+          echo "```" >> TESTING.md
+          echo "" >> TESTING.md
+          echo "### Benchmarks" >> TESTINGMD.md
+          echo "```bash" >> TESTING.md
+          echo "cd /path/to/echidna" >> TESTING.md
+          echo "idris2 --exec bench/VocabularyBench.idr" >> TESTING.md
+          echo "```" >> TESTING.md
+          echo "" >> TESTING.md
+          echo "### Full Test Suite" >> TESTING.md
+          echo "```bash" >> TESTING.md
+          echo "cd /path/to/echidna" >> TESTING.md
+          echo "make test  # Runs all tests and benchmarks" >> TESTING.md
+          echo "```" >> TESTING.md
+      - name: Commit documentation
+        run: |
+          git config --global user.name "ECHIDNA CI"
+          git config --global user.email "ci@echidna.example.com"
+          git add TESTING.md
+          git commit -m "CI: Update test documentation"
+          git push

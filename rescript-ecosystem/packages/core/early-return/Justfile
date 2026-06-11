@@ -106,3 +106,6 @@ check-rsr:
     @test -f MAINTAINERS.adoc && echo "  ✓ MAINTAINERS.adoc"
     @test -d .machine_readable/6scm && echo "  ✓ .machine_readable/6scm/"
     @test -f Justfile && echo "  ✓ Justfile"
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

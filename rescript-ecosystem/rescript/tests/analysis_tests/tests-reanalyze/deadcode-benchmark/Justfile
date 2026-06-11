@@ -53,3 +53,6 @@ time-reactive: generate build
     @echo ""
     @echo "Reactive mode (3 runs - first is cold, subsequent are warm):"
     @dune exec rescript-tools -- reanalyze -config -ci -timing -reactive -runs 3 >/dev/null
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

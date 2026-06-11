@@ -150,3 +150,6 @@ clean: clean-lib clean-compiler clean-rewatch
 
 dev-container:
     docker build -t rescript-dev-container docker
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

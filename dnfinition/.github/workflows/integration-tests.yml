@@ -1,14 +1,11 @@
 # SPDX-License-Identifier: MPL-2.0-or-later
 name: Integration Tests
-
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-
 permissions: read-all
-
 jobs:
   ada-tests:
     name: Ada Integration Tests
@@ -16,24 +13,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-
       - name: Setup Alire
         uses: alire-project/setup-alire@v3
         with:
           toolchain: gnat_native^14 gprbuild^22
-
       - name: Build project
         run: alire build
-
       - name: Build tests
         run: |
           gprbuild -P dnfinition.gpr -XBUILD_MODE=test
-
       - name: Run reversibility chain test
         run: |
           ./bin/reversibility_chain_test || true
-        continue-on-error: true  # May fail without Elixir data layer
-
+        continue-on-error: true # May fail without Elixir data layer
   elixir-tests:
     name: Elixir Integration Tests
     runs-on: ubuntu-latest
@@ -43,26 +35,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-
       - name: Setup Elixir
         uses: erlef/setup-beam@v1
         with:
           elixir-version: '1.16'
           otp-version: '26'
-
       - name: Install dependencies
         run: mix deps.get
-
       - name: Compile
         run: mix compile --warnings-as-errors
-
       - name: Run unit tests
         run: mix test --exclude integration
-
       - name: Run IPC protocol tests
         run: mix test --only integration
-        continue-on-error: true  # May need Ada component running
-
+        continue-on-error: true # May need Ada component running
   e2e-tests:
     name: End-to-End Tests
     runs-on: ubuntu-latest
@@ -70,33 +56,27 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-
       - name: Setup Alire
         uses: alire-project/setup-alire@v3
         with:
           toolchain: gnat_native^14 gprbuild^22
-
       - name: Setup Elixir
         uses: erlef/setup-beam@v1
         with:
           elixir-version: '1.16'
           otp-version: '26'
-
       - name: Build Ada
         run: alire build
-
       - name: Build Elixir
         run: |
           cd src/data_layer
           mix deps.get
           mix compile
-
       - name: Start Elixir data layer
         run: |
           cd src/data_layer
           mix run --no-halt &
           sleep 5  # Wait for startup
-
       - name: Run E2E reversibility test
         run: |
           ./bin/reversibility_chain_test

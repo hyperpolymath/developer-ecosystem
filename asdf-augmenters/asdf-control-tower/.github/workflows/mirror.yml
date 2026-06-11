@@ -1,18 +1,14 @@
 # SPDX-License-Identifier: PMPL-1.0-or-later
 name: Mirror to GitLab/Codeberg/Bitbucket
-
 on:
   push:
     branches: [main, master]
   workflow_dispatch:
-
 permissions: read-all
-
 # Prevent concurrent mirror runs to avoid race conditions
 concurrency:
   group: mirror-${{ github.ref }}
   cancel-in-progress: false
-
 jobs:
   mirror-gitlab:
     runs-on: ubuntu-latest
@@ -39,7 +35,6 @@ jobs:
           git push gitlab --all --force
           git push gitlab --tags --force
           echo "✓ Successfully mirrored to GitLab"
-
   mirror-codeberg:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -65,7 +60,6 @@ jobs:
           git push codeberg --all --force
           git push codeberg --tags --force
           echo "✓ Successfully mirrored to Codeberg"
-
   mirror-bitbucket:
     runs-on: ubuntu-latest
     timeout-minutes: 10

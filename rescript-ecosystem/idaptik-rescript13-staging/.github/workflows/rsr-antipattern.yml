@@ -6,17 +6,13 @@
 # Allows: ReScript, Deno, WASM, Rust, OCaml, Haskell, Guile/Scheme
 
 name: RSR Anti-Pattern Check
-
 on:
   push:
     branches: [main, master, develop]
   pull_request:
     branches: [main, master, develop]
-
-
 permissions:
   contents: read
-
 jobs:
   antipattern-check:
     runs-on: ubuntu-latest
@@ -24,7 +20,6 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
       - name: Check for TypeScript
         run: |
           # Exclude: node_modules, bindings/deno (Deno FFI), .d.ts (type decls),
@@ -44,7 +39,6 @@ jobs:
             exit 1
           fi
           echo "✅ No new TypeScript files (legacy src/ engine excluded during migration)"
-
       - name: Check for Go
         run: |
           if find . -name "*.go" | grep -q .; then
@@ -53,7 +47,6 @@ jobs:
             exit 1
           fi
           echo "✅ No Go files"
-
       - name: Check for Python (non-SaltStack)
         run: |
           PY_FILES=$(find . -name "*.py" | grep -v salt | grep -v _states | grep -v _modules | grep -v pillar | grep -v venv | grep -v __pycache__ || true)
@@ -63,7 +56,6 @@ jobs:
             exit 1
           fi
           echo "✅ No non-SaltStack Python files"
-
       - name: Check for npm lockfiles
         run: |
           if [ -f "yarn.lock" ]; then
@@ -76,7 +68,6 @@ jobs:
             exit 1
           fi
           echo "✅ No npm lockfiles (package-lock.json tolerated alongside deno.json during migration)"
-
       - name: Check for tsconfig
         run: |
           # tsconfig.json tolerated during TS→ReScript migration when rescript.json/bsconfig.json present
@@ -85,7 +76,6 @@ jobs:
             exit 1
           fi
           echo "✅ tsconfig check passed (tolerated alongside ReScript during migration)"
-
       - name: Verify Deno presence (if package.json exists)
         run: |
           if [ -f "package.json" ]; then
@@ -94,7 +84,6 @@ jobs:
             fi
           fi
           echo "✅ Deno configuration check complete"
-
       - name: Summary
         run: |
           echo "╔════════════════════════════════════════════════════════════╗"

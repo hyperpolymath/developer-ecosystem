@@ -106,3 +106,6 @@ validate:
     @[ -f Justfile ] && echo "Justfile: OK"
     @[ -f config/metadata.ncl ] && echo "Nickel Config: OK"
     @[ -f src/Main.res ] && echo "ReScript Source: OK"
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

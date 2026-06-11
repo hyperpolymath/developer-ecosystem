@@ -47,3 +47,6 @@ test: verify
 # Prepare a release
 release VERSION: release-build verify
     @echo "Release v{{VERSION}} — build and verification passed"
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

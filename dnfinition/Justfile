@@ -142,3 +142,6 @@ install-tools:
     @echo "Installing Elixir tools..."
     @which elixir || echo "Install Elixir: 'sudo dnf install elixir'"
     @which mix || echo "Mix should come with Elixir"
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

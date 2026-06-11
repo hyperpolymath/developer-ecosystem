@@ -7,16 +7,13 @@ stages:
   - build
   - test
   - validate
-
 variables:
   ZIG_VERSION: "0.13.0"
-
 # Cache Zig downloads between jobs
 cache:
   key: zig-${ZIG_VERSION}
   paths:
     - zig/
-
 .install_zig: &install_zig
   before_script:
     - |
@@ -26,18 +23,16 @@ cache:
       fi
     - export PATH="$PWD/zig:$PATH"
     - zig version
-
 # Stage: Lint
 lint:format:
   stage: lint
-  <<: *install_zig
+  !!merge <<: *install_zig
   script:
     - zig fmt --check src/
     - zig fmt --check build.zig
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-
 lint:spdx:
   stage: lint
   script:
@@ -52,11 +47,10 @@ lint:spdx:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-
 # Stage: Build
 build:
   stage: build
-  <<: *install_zig
+  !!merge <<: *install_zig
   script:
     - zig build
     - ./zig-out/bin/synapse --help
@@ -67,20 +61,18 @@ build:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-
 # Stage: Test
 test:unit:
   stage: test
-  <<: *install_zig
+  !!merge <<: *install_zig
   script:
     - zig build test
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-
 test:generate:
   stage: test
-  <<: *install_zig
+  !!merge <<: *install_zig
   needs: ["build"]
   script:
     - ./zig-out/bin/synapse --input examples/rust/models.rs --output examples/swift/Generated.swift
@@ -96,7 +88,6 @@ test:generate:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-
 # Stage: Validate
 validate:rsr:
   stage: validate
@@ -124,11 +115,10 @@ validate:rsr:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-
 # Release job (manual trigger on tags)
 release:
   stage: validate
-  <<: *install_zig
+  !!merge <<: *install_zig
   script:
     - zig build -Doptimize=ReleaseSafe
     - |
@@ -144,3 +134,8 @@ release:
   rules:
     - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/
   when: manual
+trufflehog:
+  stage: security
+  image: trufflesecurity/trufflehog:latest
+  script:
+    - trufflehog git file://. --only-verified --fail

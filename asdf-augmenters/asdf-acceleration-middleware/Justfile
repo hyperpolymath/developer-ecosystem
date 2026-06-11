@@ -203,3 +203,6 @@ stats:
 # Help for specific recipe
 help recipe:
     @just --show {{recipe}}
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

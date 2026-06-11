@@ -1,58 +1,43 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 name: CI
-
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-
 permissions:
   contents: read
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-
       - name: Set up OCaml
         uses: ocaml/setup-ocaml@4c1df9105efb7a8b996c21e052e4fb8b64a8f2fc # v3
         with:
           ocaml-compiler: "5.1"
-
       - name: Install dependencies
         run: opam install . --deps-only --with-test --with-doc
-
       - name: Build
         run: opam exec -- dune build
-
       - name: Run tests
         run: opam exec -- dune runtest
-
       - name: Check formatting
         run: opam exec -- dune build @fmt
-
   lint:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-
       - name: Set up OCaml
         uses: ocaml/setup-ocaml@4c1df9105efb7a8b996c21e052e4fb8b64a8f2fc # v3
         with:
           ocaml-compiler: "5.1"
-
       - name: Install dependencies
         run: opam install . --deps-only
-
       - name: Build
         run: opam exec -- dune build
-
       - name: Lint with odoc
         run: opam exec -- dune build @doc
         continue-on-error: true

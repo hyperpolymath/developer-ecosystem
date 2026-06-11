@@ -6,7 +6,6 @@
 # Requires: CARGO_REGISTRY_TOKEN secret
 
 name: Publish to crates.io
-
 on:
   push:
     tags:
@@ -23,43 +22,33 @@ on:
         required: false
         default: ''
         type: string
-
 permissions: read-all
-
 env:
   CARGO_TERM_COLOR: always
   RUST_BACKTRACE: 1
-
 jobs:
   publish:
     name: Publish crates
     runs-on: ubuntu-latest
     permissions:
       contents: read
-
     steps:
       - name: Checkout
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v4
-
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@f7ccc83f9ed1e5b9c81d8a67d7ad1a747e22a561 # stable
         with:
           toolchain: stable
-
       - name: Cache cargo
         uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5 # v2
-
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y pkg-config libssl-dev libfuse3-dev libsqlite3-dev
-
       - name: Verify workspace builds
         run: cargo build --workspace --release
-
       - name: Run workspace tests
         run: cargo test --workspace
-
       # Publish in dependency order with delays for index updates
       - name: Publish cfk-core
         if: github.event.inputs.crate == '' || github.event.inputs.crate == 'cfk-core'
@@ -72,7 +61,6 @@ jobs:
             cargo publish -p cfk-core
             sleep 30  # Wait for crates.io index update
           fi
-
       - name: Publish cfk-providers
         if: github.event.inputs.crate == '' || github.event.inputs.crate == 'cfk-providers'
         env:
@@ -84,7 +72,6 @@ jobs:
             cargo publish -p cfk-providers
             sleep 30
           fi
-
       - name: Publish cfk-cache
         if: github.event.inputs.crate == '' || github.event.inputs.crate == 'cfk-cache'
         env:
@@ -96,7 +83,6 @@ jobs:
             cargo publish -p cfk-cache
             sleep 30
           fi
-
       - name: Publish cfk-search
         if: github.event.inputs.crate == '' || github.event.inputs.crate == 'cfk-search'
         env:
@@ -108,7 +94,6 @@ jobs:
             cargo publish -p cfk-search
             sleep 30
           fi
-
       - name: Publish cfk-vfs
         if: github.event.inputs.crate == '' || github.event.inputs.crate == 'cfk-vfs'
         env:
@@ -120,7 +105,6 @@ jobs:
             cargo publish -p cfk-vfs
             sleep 30
           fi
-
       - name: Publish cfk-integrations
         if: github.event.inputs.crate == '' || github.event.inputs.crate == 'cfk-integrations'
         env:
@@ -132,7 +116,6 @@ jobs:
             cargo publish -p cfk-integrations
             sleep 30
           fi
-
       - name: Publish cfk-cli
         if: github.event.inputs.crate == '' || github.event.inputs.crate == 'cfk-cli'
         env:
@@ -143,7 +126,6 @@ jobs:
           else
             cargo publish -p cfk-cli
           fi
-
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2

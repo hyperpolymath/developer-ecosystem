@@ -45,3 +45,6 @@ build-release:
 check:
     @just lint
     find src app -name '*.hs' -exec ormolu --mode check {} +
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

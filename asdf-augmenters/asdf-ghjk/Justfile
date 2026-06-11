@@ -371,3 +371,6 @@ docker-up:
 docker-down:
     @echo "🐳 Stopping Docker Compose..."
     @cd examples && docker-compose down
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

@@ -1,18 +1,14 @@
 # SPDX-License-Identifier: PMPL-1.0-or-later
 # Deploy Jekyll site to GitHub Pages
 name: Deploy Jekyll with GitHub Pages dependencies preinstalled
-
 on:
   push:
     branches: ["main"]
   workflow_dispatch:
-
 permissions: read-all
-
 concurrency:
   group: "pages"
   cancel-in-progress: false
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -32,7 +28,6 @@ jobs:
           destination: ./_site
       - name: Upload artifact
         uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
-
   deploy:
     environment:
       name: github-pages

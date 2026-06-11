@@ -17,3 +17,6 @@ test-reanalyze-order-independence:
 clean:
     just --working-directory deadcode clean
     just --working-directory termination clean
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true
