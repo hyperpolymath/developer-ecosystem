@@ -6,11 +6,9 @@ stages:
   - test
   - security
   - deploy
-
 variables:
   CARGO_HOME: $CI_PROJECT_DIR/.cargo
   RUST_BACKTRACE: "1"
-
 # Cache configuration
 .cargo_cache:
   cache:
@@ -20,7 +18,6 @@ variables:
     paths:
       - .cargo/
       - target/
-
 # Rust template
 .rust_job:
   image: rust:1.70
@@ -28,7 +25,6 @@ variables:
   before_script:
     - rustc --version
     - cargo --version
-
 # Format check
 fmt:
   extends: .rust_job
@@ -36,7 +32,6 @@ fmt:
   script:
     - rustup component add rustfmt
     - cargo fmt --all -- --check
-
 # Clippy linting
 clippy:
   extends: .rust_job
@@ -44,14 +39,12 @@ clippy:
   script:
     - rustup component add clippy
     - cargo clippy --all -- -D warnings
-
 # Check compilation
 check:
   extends: .rust_job
   stage: check
   script:
     - cargo check --all
-
 # Build in debug mode
 build:debug:
   extends: .rust_job
@@ -62,7 +55,6 @@ build:debug:
     paths:
       - target/debug/
     expire_in: 1 day
-
 # Build in release mode
 build:release:
   extends: .rust_job
@@ -79,7 +71,6 @@ build:release:
   only:
     - main
     - tags
-
 # Run tests
 test:unit:
   extends: .rust_job
@@ -87,7 +78,6 @@ test:unit:
   script:
     - cargo test --all -- --nocapture
   coverage: '/\d+\.\d+% coverage/'
-
 # Run benchmarks
 test:bench:
   extends: .rust_job
@@ -97,14 +87,12 @@ test:bench:
   only:
     - main
     - tags
-
 # Integration tests
 test:integration:
   extends: .rust_job
   stage: test
   script:
     - cargo test --all --test '*'
-
 # RSR compliance verification
 test:rsr:
   extends: .rust_job
@@ -112,7 +100,6 @@ test:rsr:
   script:
     - apt-get update && apt-get install -y just
     - just rsr-verify
-
 # Security audit
 security:audit:
   extends: .rust_job
@@ -121,7 +108,6 @@ security:audit:
     - cargo install cargo-audit
     - cargo audit
   allow_failure: true
-
 # Check for unsafe code
 security:geiger:
   extends: .rust_job
@@ -130,7 +116,6 @@ security:geiger:
     - cargo install cargo-geiger
     - cargo geiger --all
   allow_failure: true
-
 # Dependency license check
 security:license:
   extends: .rust_job
@@ -139,7 +124,6 @@ security:license:
     - cargo install cargo-license
     - cargo license
   allow_failure: true
-
 # Generate documentation
 docs:
   extends: .rust_job
@@ -152,7 +136,6 @@ docs:
     expire_in: 1 week
   only:
     - main
-
 # Publish to crates.io (manual trigger)
 publish:
   extends: .rust_job
@@ -163,7 +146,6 @@ publish:
   when: manual
   only:
     - tags
-
 # Release artifacts
 release:
   extends: .rust_job
@@ -181,3 +163,8 @@ release:
       - release/
   only:
     - tags
+trufflehog:
+  stage: security
+  image: trufflesecurity/trufflehog:latest
+  script:
+    - trufflehog git file://. --only-verified --fail

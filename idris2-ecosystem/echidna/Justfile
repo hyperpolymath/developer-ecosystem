@@ -446,3 +446,5 @@ dvl : dev
 help : default
 h : default
 ? : default
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

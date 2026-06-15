@@ -6,15 +6,12 @@ stages:
   - build
   - test
   - deploy
-
 variables:
   TECHSTACK_MODE: enforce
   TECHSTACK_FATAL_EXIT: "true"
-
 # =============================================================================
 # TECHSTACK VALIDATION STAGE
 # =============================================================================
-
 techstack:audit:
   stage: validate
   image: registry.gitlab.com/ada-lang/gnat:latest
@@ -33,7 +30,6 @@ techstack:audit:
     paths:
       - techstack.log
     expire_in: 1 week
-
 techstack:learning:
   stage: validate
   image: registry.gitlab.com/ada-lang/gnat:latest
@@ -49,11 +45,9 @@ techstack:learning:
       - learning_report.md
     expire_in: 1 month
   allow_failure: true
-
 # =============================================================================
 # BUILD STAGE
 # =============================================================================
-
 build:ada:
   stage: build
   image: registry.gitlab.com/ada-lang/gnat:latest
@@ -63,7 +57,6 @@ build:ada:
     paths:
       - bin/
     expire_in: 1 day
-
 build:spark-verify:
   stage: build
   image: registry.gitlab.com/spark/spark-community:latest
@@ -74,11 +67,9 @@ build:spark-verify:
       - gnatprove/
     expire_in: 1 week
   allow_failure: true
-
 # =============================================================================
 # TEST STAGE
 # =============================================================================
-
 test:unit:
   stage: test
   image: registry.gitlab.com/ada-lang/gnat:latest
@@ -91,7 +82,6 @@ test:unit:
   artifacts:
     reports:
       junit: test_results.xml
-
 test:integration:
   stage: test
   image: registry.gitlab.com/ada-lang/gnat:latest
@@ -116,11 +106,9 @@ test:integration:
       rm test_repo/test.py
       ./bin/techstack_main audit test_repo --mode=enforce --fatal-exit
       echo "PASS: Rust-only repo passes"
-
 # =============================================================================
 # DEPLOY STAGE
 # =============================================================================
-
 deploy:release:
   stage: deploy
   image: registry.gitlab.com/ada-lang/gnat:latest
@@ -135,14 +123,17 @@ deploy:release:
       - techstack-enforcer-*.tar.gz
   rules:
     - if: $CI_COMMIT_TAG
-
 # =============================================================================
 # TEMPLATES
 # =============================================================================
-
 .techstack-check:
   stage: validate
   script:
     - techstack-enforcer audit . --mode=enforce --fatal-exit
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+trufflehog:
+  stage: security
+  image: trufflesecurity/trufflehog:latest
+  script:
+    - trufflehog git file://. --only-verified --fail

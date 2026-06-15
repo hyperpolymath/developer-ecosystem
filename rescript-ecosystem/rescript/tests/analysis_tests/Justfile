@@ -17,3 +17,6 @@ clean:
     just --working-directory tests-generic-jsx-transform clean
     just --working-directory tests-incremental-typechecking clean
     just --working-directory tests-reanalyze clean
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

@@ -63,3 +63,6 @@ install:
 # Generate Cargo.lock
 lock:
     cd {{validator_dir}} && cargo generate-lockfile
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

@@ -21,3 +21,6 @@ list-packages:
 stats:
     #!/usr/bin/env bash
     for group in core web bindings ffi tooling; do count=$(find packages/$group -type f | wc -l); printf "  %-12s %5d files\n" $group $count; done
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

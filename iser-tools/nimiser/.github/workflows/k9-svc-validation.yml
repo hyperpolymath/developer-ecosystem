@@ -1,6 +1,5 @@
 name: K9-SVC Validation
 on: [push, pull_request]
-
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -10,7 +9,7 @@ jobs:
         run: |
           #!/bin/bash
           set -euo
-          
+
           # Check all contractiles exist
           for file in must trust dust lust adjust intend; do
             if [ ! -f ".machine_readable/contractiles/$file/${file}file.a2ml" ]; then
@@ -18,10 +17,10 @@ jobs:
               exit 1
             fi
           done
-          
+
           echo "✓ All contractiles present"
-          
+
           # Basic syntax validation
           find .machine_readable/contractiles -name "*.a2ml" -exec grep -l "SPDX-License-Identifier" {} \; | wc -l
-          
+
           echo "✓ Contractile validation passed"

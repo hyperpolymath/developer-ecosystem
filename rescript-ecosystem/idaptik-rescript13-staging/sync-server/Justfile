@@ -19,3 +19,6 @@ test:
 # Install dependencies
 deps:
     mix deps.get
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

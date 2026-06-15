@@ -74,3 +74,6 @@ release VERSION:
     git tag -a "v{{VERSION}}" -m "Release v{{VERSION}}"
     @echo "=== Release Complete ==="
     @echo "To push: git push && git push --tags"
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: MPL-2.0
 name: CI
-
 on:
   push:
     branches: [master, 11.0_release]
@@ -8,20 +7,16 @@ on:
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+"
       - "v[0-9]+.[0-9]+.[0-9]+-*"
-
   pull_request:
     branches: [master, 11.0_release]
-
 concurrency:
   group: ci-${{ github.ref }}-1
   # Cancel previous builds for pull requests only.
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
-
 env:
   OCAMLRUNPARAM: b
   RUST_BACKTRACE: "1"
   RUSTFLAGS: "-Dwarnings"
-
 jobs:
   build-compiler:
     outputs:
@@ -61,19 +56,15 @@ jobs:
             node-target: win32-x64
             rust-target: x86_64-pc-windows-gnu
             exe-suffix: ".exe"
-
           # Verify that the compiler still builds with the oldest OCaml version we support.
           - os: ubuntu-24.04
             ocaml_compiler: ocaml-variants.5.0.0+options,ocaml-option-static
             node-target: linux-x64
             rust-target: x86_64-unknown-linux-musl
-
     runs-on: ${{matrix.os}}
-
     env:
       # When changing the setup-ocaml version, also adjust it in the setup step further below.
       SETUP_OCAML_VERSION: 3.4.6 # OPAM <2.6.0
-
     steps:
       - name: "Windows: Set git config"
         if: runner.os == 'Windows'
@@ -81,19 +72,15 @@ jobs:
           git config --system core.autocrlf false
           git config --system core.eol lf
           git config --system core.longpaths true
-
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-
       - name: Use Node.js
         uses: actions/setup-node@49933ea5288caeca8642195f2b846b8bbe245a93 # v4
         with:
           cache: yarn
           node-version-file: .nvmrc
-
       - name: Install npm packages
         run: yarn install
-
       - name: Install dependencies (Linux)
         if: runner.os == 'Linux'
         uses: awalsh128/cache-apt-pkgs-action@v1.4.3
@@ -102,14 +89,12 @@ jobs:
           # plus OPAM wants cmake
           packages: bubblewrap darcs g++-multilib gcc-multilib mercurial musl-tools rsync cmake
           version: v4
-
       - name: Restore rewatch build cache
         id: rewatch-build-cache
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4
         with:
           path: rewatch/target
           key: rewatch-build-v3-${{ matrix.rust-target }}-${{ hashFiles('rewatch/src/**', 'rewatch/Cargo.lock') }}
-
       - name: Determine Rust toolchain version
         id: rust-version
         shell: bash
@@ -120,7 +105,6 @@ jobs:
             exit 1
           fi
           echo "version=${version}" >> "$GITHUB_OUTPUT"
-
       - name: Install rust toolchain
         if: steps.rewatch-build-cache.outputs.cache-hit != 'true'
         uses: dtolnay/rust-toolchain@master
@@ -128,22 +112,18 @@ jobs:
           toolchain: ${{ steps.rust-version.outputs.version }}
           targets: ${{ matrix.rust-target }}
           components: clippy, rustfmt
-
       - name: Build rewatch
         if: steps.rewatch-build-cache.outputs.cache-hit != 'true'
         run: |
           cargo build --manifest-path rewatch/Cargo.toml --target ${{ matrix.rust-target }} --release
-
       - name: Lint rewatch
         if: steps.rewatch-build-cache.outputs.cache-hit != 'true'
         run: |
           cargo clippy --manifest-path rewatch/Cargo.toml --all-targets --all-features
-
       - name: Run rewatch unit tests
         if: steps.rewatch-build-cache.outputs.cache-hit != 'true'
         run: |
           cargo test --manifest-path rewatch/Cargo.toml --release
-
       - name: Copy rewatch binary
         run: |
           cp rewatch/target/${{ matrix.rust-target }}/release/rescript${{ matrix.exe-suffix }} rescript
@@ -151,17 +131,15 @@ jobs:
           cp rewatch/target/${{ matrix.rust-target }}/release/rescript${{ matrix.exe-suffix }} rewatch/target/release
           ./scripts/copyExes.js --rewatch
         shell: bash
-
       # matrix.ocaml_compiler may contain commas
       - name: Get OPAM cache key
         shell: bash
         run: echo "opam_cache_key=opam-env-v8-${{ matrix.os }}-${{ env.SETUP_OCAML_VERSION }}-${{ matrix.ocaml_compiler }}-${{ hashFiles('*.opam') }}" | sed 's/,/-/g' >> $GITHUB_ENV
-
       - name: Restore OPAM environment
         id: cache-opam-env
         uses: actions/cache/restore@v5
         with:
-          path: |
+          path: |-
             ${{ runner.tool_cache }}/opam
             ~/.opam
             _opam

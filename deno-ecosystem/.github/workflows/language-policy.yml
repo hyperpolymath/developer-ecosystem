@@ -1,21 +1,17 @@
 # SPDX-License-Identifier: MPL-2.0
 # SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
 name: Language Policy Enforcement
-
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-
 permissions: read-all
-
 jobs:
   enforce-language-policy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-
       - name: Check for banned TypeScript files
         run: |
           if find . -name "*.ts" -type f | grep -v node_modules | grep -q .; then
@@ -24,7 +20,6 @@ jobs:
             exit 1
           fi
           echo "✓ No TypeScript files found"
-
       - name: Check for banned Go files
         run: |
           if find . -name "*.go" -type f | grep -q .; then
@@ -33,7 +28,6 @@ jobs:
             exit 1
           fi
           echo "✓ No Go files found"
-
       - name: Check for banned Python files (except SaltStack)
         run: |
           if find . -name "*.py" -type f | grep -v salt | grep -v node_modules | grep -q .; then
@@ -42,7 +36,6 @@ jobs:
             exit 1
           fi
           echo "✓ No unauthorized Python files found"
-
       - name: Verify ReScript configuration exists
         run: |
           if [ ! -f rescript.json ]; then
@@ -50,7 +43,6 @@ jobs:
             exit 1
           fi
           echo "✓ rescript.json found"
-
       - name: Allow Erlang/Elixir files (BEAM side)
         run: |
           echo "✓ Erlang (.erl) and Elixir (.ex, .exs) files are allowed for BEAM integration"

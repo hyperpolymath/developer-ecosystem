@@ -6,10 +6,8 @@ on:
     branches: [main]
     paths:
       - 'escape-hatch/**'
-
 permissions:
   contents: read
-
 jobs:
   PR:
     runs-on: ubuntu-latest

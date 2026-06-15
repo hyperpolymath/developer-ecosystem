@@ -9,9 +9,7 @@
 # Integrates finishing-bot validation concepts before publishing
 
 name: JSR Publish
-
 permissions: read-all
-
 on:
   push:
     tags:
@@ -26,7 +24,6 @@ on:
         options:
           - 'true'
           - 'false'
-
 jobs:
   validate:
     name: Release Validation (finishing-bot concepts)
@@ -34,7 +31,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-
       # ============================================================
       # Placeholder Detection (finishing-bot: placeholder scanner)
       # ============================================================
@@ -49,7 +45,6 @@ jobs:
           else
             echo "✓ No placeholders found"
           fi
-
       # ============================================================
       # License Validation (finishing-bot: license validator)
       # ============================================================
@@ -67,7 +62,6 @@ jobs:
             exit 1
           fi
           echo "✓ All source files have SPDX headers"
-
       - name: Check LICENSE file exists
         run: |
           if [ ! -f LICENSE ]; then
@@ -75,7 +69,6 @@ jobs:
             exit 1
           fi
           echo "✓ LICENSE file present"
-
       # ============================================================
       # Version Consistency (finishing-bot: claim verifier)
       # ============================================================
@@ -96,7 +89,6 @@ jobs:
           else
             echo "No version tag detected, skipping tag validation"
           fi
-
   build-and-test:
     name: Build and Test
     runs-on: ubuntu-latest
@@ -104,24 +96,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-
       - name: Setup Deno
         uses: denoland/setup-deno@5fae568d37c3b73449009674875529a984555dd1 # v2
         with:
           deno-version: v2.x
-
       - name: Install dependencies
         run: deno install
-
       - name: Build ReScript
         run: deno task build
-
       - name: Run tests
         run: deno task test
-
       - name: Type check compiled output
         run: deno task check
-
   publish:
     name: Publish to JSR
     runs-on: ubuntu-latest
@@ -132,21 +118,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-
       - name: Setup Deno
         uses: denoland/setup-deno@5fae568d37c3b73449009674875529a984555dd1 # v2
         with:
           deno-version: v2.x
-
       - name: Install and build
         run: |
           deno install
           deno task build
-
       - name: Publish (dry run)
         if: ${{ github.event.inputs.dry_run == 'true' || github.event_name != 'push' }}
         run: deno publish --dry-run
-
       - name: Publish to JSR
         if: ${{ github.event.inputs.dry_run != 'true' && github.event_name == 'push' }}
         run: deno publish

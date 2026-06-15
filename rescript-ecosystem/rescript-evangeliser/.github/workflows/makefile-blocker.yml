@@ -6,7 +6,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-
       - name: Block Makefiles
         run: |
           MAKEFILES=$(find . -maxdepth 3 -type f \( -name "Makefile" -o -name "makefile" -o -name "GNUmakefile" \) 2>/dev/null || true)
@@ -20,7 +19,6 @@ jobs:
             exit 1
           fi
           echo "No Makefile found (justfile policy enforced)"
-
       - name: Verify justfile exists
         run: |
           if [ ! -f "justfile" ]; then

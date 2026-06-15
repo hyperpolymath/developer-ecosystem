@@ -7,7 +7,6 @@
     "./affinescript-ecosystem/affinescript-deno-test",
     "./affinescript-ecosystem/rattlescript/affinescript/packages/affine-js",
     "./affinescript-ecosystem/rattlescript/affinescript/packages/affine-ts",
-    "./aggregate-library",
     "./cadre-router",
     "./cadre-router/tea-router-pkg",
     "./cadre-tea-router",

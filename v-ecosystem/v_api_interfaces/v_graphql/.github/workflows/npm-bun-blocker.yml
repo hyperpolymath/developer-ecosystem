@@ -1,9 +1,7 @@
 # SPDX-License-Identifier: PMPL-1.0-or-later
 name: NPM/Bun Blocker
 on: [push, pull_request]
-
 permissions: read-all
-
 jobs:
   check:
     runs-on: ubuntu-latest

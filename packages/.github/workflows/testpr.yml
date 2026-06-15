@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: MPL-2.0
 on: pull_request
-
 jobs:
   default:
     runs-on: ubuntu-latest

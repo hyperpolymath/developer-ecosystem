@@ -51,15 +51,11 @@ plugins:
       homepage: https://sigstore.dev
       license: Apache-2.0
 
-  - name: asdf-gitleaks-plugin
-    tool: gitleaks
     display_name: Gitleaks
     description: Secret scanning tool for git repositories
     category: security
     tags: [secret-scanning, git]
     upstream:
-      repo: gitleaks/gitleaks
-      homepage: https://gitleaks.io
       license: MIT
 
   - name: asdf-age-plugin

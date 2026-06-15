@@ -8,3 +8,6 @@ list:
 # Run a command in all projects
 each cmd:
     @for d in projects/*/; do echo "=== $(basename $d) ==="; (cd "$d" && {{cmd}}); done
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

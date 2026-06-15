@@ -28,3 +28,6 @@ validate:
 extract name dest:
     cp -r plugins/{{name}} {{dest}}
     cd {{dest}} && git init && git add -A && git commit -m "init: extract {{name}} from asdf-plugin-collection"
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

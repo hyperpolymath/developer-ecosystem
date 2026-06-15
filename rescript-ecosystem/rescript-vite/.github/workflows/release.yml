@@ -5,14 +5,11 @@
 # Builds artifacts, generates changelog via git-cliff, creates a GitHub Release,
 # and produces SLSA provenance attestations.
 name: Release
-
 on:
   push:
     tags:
       - 'v*'
-
 permissions: read-all
-
 jobs:
   build:
     name: Build Artifacts
@@ -21,7 +18,6 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-
       - name: Build
         run: |
           echo "Build your artifacts here"
@@ -31,13 +27,11 @@ jobs:
           #   zig build -Doptimize=ReleaseFast
           #   gleam build
           #   mix release
-
-      # TODO: Upload build artifacts if needed
-      # - uses: actions/upload-artifact@ea165f8d65b6db9a8b71b5c2d1a090c0daf9c8bb # v4
-      #   with:
-      #     name: release-artifacts
-      #     path: target/release/
-
+        # TODO: Upload build artifacts if needed
+        # - uses: actions/upload-artifact@ea165f8d65b6db9a8b71b5c2d1a090c0daf9c8bb # v4
+        #   with:
+        #     name: release-artifacts
+        #     path: target/release/
   changelog:
     name: Generate Changelog
     runs-on: ubuntu-latest
@@ -50,16 +44,13 @@ jobs:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           fetch-depth: 0
-
       - name: Extract version from tag
         id: version
         run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
-
       - name: Install git-cliff
         run: |
           curl -sSfL https://github.com/orhun/git-cliff/releases/latest/download/git-cliff-$(uname -m)-unknown-linux-gnu.tar.gz \
             | tar -xz --strip-components=1 -C /usr/local/bin/ git-cliff-*/git-cliff
-
       - name: Generate changelog for this release
         id: cliff
         run: |
@@ -71,18 +62,15 @@ jobs:
             echo "$CHANGELOG"
             echo "CLIFF_EOF"
           } >> "$GITHUB_OUTPUT"
-
       - name: Update full CHANGELOG.md
         run: |
           git cliff --output CHANGELOG.md
-
       - name: Upload updated CHANGELOG.md
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: changelog
           path: CHANGELOG.md
           retention-days: 5
-
   release:
     name: Create GitHub Release
     needs: [build, changelog]
@@ -91,13 +79,11 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-
       # TODO: Download build artifacts if uploading to the release
       # - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
       #   with:
       #     name: release-artifacts
       #     path: artifacts/
-
       - name: Create GitHub Release
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2
         with:
@@ -110,7 +96,6 @@ jobs:
           #   artifacts/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   provenance:
     name: SLSA Provenance
     needs: [build]

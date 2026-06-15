@@ -1,21 +1,17 @@
 # SPDX-License-Identifier: MPL-2.0
 name: RSR Language Policy
-
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-
 permissions: read-all
-
 jobs:
   check-banned-patterns:
     name: Check for banned languages/patterns
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      
       - name: Check for TypeScript
         run: |
           if find . -name "*.ts" -o -name "*.tsx" | grep -v node_modules | grep -q .; then
@@ -23,7 +19,6 @@ jobs:
             exit 1
           fi
           echo "✓ No TypeScript files found"
-      
       - name: Check for Go
         run: |
           if find . -name "*.go" | grep -q .; then
@@ -31,7 +26,6 @@ jobs:
             exit 1
           fi
           echo "✓ No Go files found"
-      
       - name: Check for npm/Node artifacts
         run: |
           if [ -f "package-lock.json" ] || [ -d "node_modules" ]; then
@@ -39,7 +33,6 @@ jobs:
             exit 1
           fi
           echo "✓ No npm artifacts found"
-      
       - name: Check for Python (non-SaltStack)
         run: |
           banned_py=$(find . -name "*.py" | grep -v -E "(salt|pillar|states|_modules|_states)" | head -1)
@@ -48,7 +41,6 @@ jobs:
             exit 1
           fi
           echo "✓ No banned Python files found"
-      
       - name: Check for Makefiles
         run: |
           if [ -f "Makefile" ] || [ -f "makefile" ] || find . -name "*.mk" | grep -q .; then

@@ -175,7 +175,6 @@ EOF
 # Run security audit
 security:
     @echo "=== Security Audit ==="
-    @command -v gitleaks >/dev/null && gitleaks detect --source . --verbose || echo "gitleaks not installed"
     @echo "Security audit complete"
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -252,3 +251,6 @@ todos:
 # Open in editor
 edit:
     ${EDITOR:-code} .
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

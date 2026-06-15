@@ -189,3 +189,6 @@ guix-build:
 # Show help for a specific recipe
 help RECIPE:
     @just --show {{RECIPE}}
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

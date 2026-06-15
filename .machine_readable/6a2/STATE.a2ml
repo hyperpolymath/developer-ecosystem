@@ -36,7 +36,6 @@ legacy-language = "ReScript (existing .res files, no new .res files permitted)"
 banned = ["TypeScript", "Python", "Go", "Node.js", "npm", "Bun"]
 approved-ts-exemptions = [
   "affinescript-ecosystem/affinescript-deno-test/**",
-  "aggregate-library/src/test-runner.ts",
   "rescript-ecosystem/packages/core/runtime-tools/bin/rrt.ts"
 ]
 

@@ -20,3 +20,6 @@ tidy:
 build target="native":
     @echo "Building {{target}}..."
     @nicaug build --arch {{target}}
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

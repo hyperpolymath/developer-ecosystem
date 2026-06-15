@@ -308,3 +308,6 @@ super-check:
     @command -v deno >/dev/null 2>&1 && echo "✓ Deno available" || echo "✗ Deno missing"
     @command -v wasm-pack >/dev/null 2>&1 && echo "○ wasm-pack available" || echo "○ wasm-pack optional (for WASM builds)"
     @echo "Environment check complete."
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

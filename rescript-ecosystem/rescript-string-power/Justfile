@@ -153,3 +153,6 @@ info:
     @echo "Owner:       {{OWNER}}"
     @echo "CRG Grade:   $(just crg-grade)"
     @echo "Test targets: 6 (T1 structure, T2 unit, T3 e2e, T4 property, T5 bench, T6 lint)"
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

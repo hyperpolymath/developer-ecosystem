@@ -97,3 +97,6 @@ ci-check:
 clean:
     rm -f docs/*.tmp
 EOF
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true

@@ -61,3 +61,6 @@ clean:
 # Setup Rust WASM target
 setup:
     rustup target add wasm32-unknown-unknown
+
+secret-scan-trufflehog:
+    @command -v trufflehog >/dev/null && trufflehog filesystem . --only-verified || true
