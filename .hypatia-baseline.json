@@ -35,14 +35,6 @@
     "severity": "high",
     "rule_module": "cicd_rules",
     "type": "banned_language_file",
-    "file_pattern": "aggregate-library/**",
-    "note": "aggregate-library contains pre-migration ReScript source; migration tracked in estate plan.",
-    "tracking_issue": "https://github.com/hyperpolymath/developer-ecosystem/issues/pending"
-  },
-  {
-    "severity": "high",
-    "rule_module": "cicd_rules",
-    "type": "banned_language_file",
     "file_pattern": "coq-ecosystem/**",
     "note": "coq-ecosystem/coq-jr contains upstream jsCoq demo .res files; vendored upstream, not estate-authored.",
     "tracking_issue": "https://github.com/hyperpolymath/developer-ecosystem/issues/pending"
