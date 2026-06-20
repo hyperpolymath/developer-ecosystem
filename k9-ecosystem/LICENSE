@@ -1,0 +1,14 @@
+SPDX-License-Identifier: MPL-2.0
+SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+
+This project is licensed under the Mozilla Public License, version 2.0
+(MPL-2.0-or-later), consistent with the hyperpolymath estate's Palimpsest
+philosophy.
+
+The canonical MPL-2.0 text is provided by the estate at
+`developer-ecosystem/license/` and by the upstream palimpsest-license
+repository. When this directory is extracted into its own repository, copy the
+full MPL-2.0 text to `license/MPL-2.0.txt` alongside this notice
+(see BOOTSTRAP.md).
+
+Each source file additionally carries an SPDX `License-Identifier` header.

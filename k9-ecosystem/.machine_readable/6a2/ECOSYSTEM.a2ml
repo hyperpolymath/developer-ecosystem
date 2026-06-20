@@ -1,0 +1,33 @@
+# SPDX-License-Identifier: MPL-2.0
+# SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+# ECOSYSTEM.a2ml — Ecosystem position
+
+[metadata]
+project = "k9-ecosystem"
+last-updated = "2026-06-20"
+ecosystem = "hyperpolymath"
+
+[position]
+type = "aggregator-hub"
+role = "canonical home of the K9 self-validating configuration format — owns the spec + conformance suite, aggregates the implementations and tooling as submodules"
+parent = "hyperpolymath estate"
+staged-in = "developer-ecosystem/k9-ecosystem (pending extraction to standalone repo — see BOOTSTRAP.md)"
+
+[members]
+# Aggregated as git submodules, grouped by role (see .gitmodules)
+implementations = ["k9-rs (reference, Rust/crates.io)", "k9_ex (Elixir/Hex)", "k9_gleam (Gleam/Hex)", "k9-deno (Deno/JSR)", "k9-haskell (Haskell/Hackage)"]
+tooling = ["tree-sitter-k9", "vscode-k9", "pandoc-k9"]
+ci = ["k9-validate-action", "k9-pre-commit"]
+examples = ["k9-showcase"]
+
+[owns]
+spec = "spec/SPEC.adoc (v0.1 draft; k9-rs normative until ratified)"
+conformance = "conformance/fixtures/ (canonical-projection golden tests, all implementations)"
+
+[related-projects]
+# relationship types: sibling-standard, dependency, dependent, inspiration, potential-consumer
+standards = { name = "hyperpolymath/standards", relationship = "dependent", note = "references k9-svc as a reusable standard" }
+developer-ecosystem = { name = "developer-ecosystem", relationship = "dependent", note = "contractile tridents consume .k9.ncl (k9.ncl); also potential dev-ux home for vscode-k9" }
+
+[integration-points]
+# Each implementation member is obligated to run conformance/fixtures/.

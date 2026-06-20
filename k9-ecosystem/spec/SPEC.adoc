@@ -1,0 +1,109 @@
+// SPDX-License-Identifier: MPL-2.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+= K9 Format Specification
+:revnumber: 0.1.0-draft
+:revdate: 2026-06-20
+:toc: left
+:icons: font
+
+[IMPORTANT]
+====
+*Status: DRAFT (v0.1).* This text is reconstructed from the living K9 corpus
+(the `*.k9.ncl` deployment components across the estate), the
+`hyperpolymath/k9-validate-action` validator, and `k9-rs`. Where they disagree,
+the *validator + `k9-rs` are normative* and this text is the bug. Open questions
+are marked `[OPEN]`.
+====
+
+== 1. Overview
+
+K9 is a self-validating configuration format for *software component
+declarations*. A K9 document describes one component — its identity, target,
+security posture, self-checks, and recipes — so the file is both documentation
+and an executable, authorisable contract.
+
+Two surfaces are defined:
+
+* *`.k9`* — plain-text surface.
+* *`.k9.ncl`* — https://nickel-lang.org[Nickel] surface (the form used across the
+  estate today). Evaluation is delegated to a Nickel-aware tool (e.g.
+  `pandoc-k9`); parsers without an evaluator detect it distinctly (`k9-rs`
+  returns `K9Error::NickelFormat`).
+
+== 2. File preamble (required)
+
+[cols="1,3", options="header"]
+|===
+| Rule | Requirement
+| Magic | The *first non-empty line MUST be exactly* `K9!`
+| Licence | An SPDX `License-Identifier` SHOULD appear within the first 10 lines
+|===
+
+The validator treats a missing magic line or a missing `pedigree` block as
+*errors*; a missing SPDX line, `version`/`schema_version`, or security level as
+*warnings*.
+
+== 3. The Pedigree
+
+Every document MUST contain a `pedigree = { … }` record — the component's
+self-description. Canonically it is organised in *five layers*:
+
+[cols="1,1,3", options="header"]
+|===
+| Layer | Key | Holds
+| L1 — The Snout   | `metadata`   | Identity: `name`, `version`, `breed` (a MIME-like type, e.g. `application/vnd.k9+nickel`), `magic_number`, `license`, `description`
+| L2 — The Scent   | `target`     | Environment: `os`, `requires_*`, resource minimums
+| L3 — The Leash   | `security`   | Trust tier + capability flags (section 4)
+| L4 — The Gut     | `validation` | `checksum`, `pedigree_version`, authorisation state
+| L5 — The Muscle  | `recipes`    | Named build/deploy/verify commands
+|===
+
+The pedigree SHOULD carry a top-level `schema_version` (or `version`) and a
+`security_level`/`leash` so it validates without warnings. `[OPEN]` whether
+`security_level` is required at pedigree top level or may be inferred from
+`security.trust_level`.
+
+== 4. The Leash — trust levels
+
+`security.trust_level` (and the top-level `security_level`) take one of three
+tiers, given as Nickel enum tags:
+
+[cols="1,3", options="header"]
+|===
+| Level | Meaning
+| `'Kennel` | Most restricted — sandboxed, minimal capabilities, no side effects
+| `'Yard`   | Intermediate — controlled exposure
+| `'Hunt`   | Least restricted — may execute shell commands; REQUIRES explicit
+authorisation (a signature / handshake) before execution
+|===
+
+Capability flags (`allow_network`, `allow_subprocess`, `allow_filesystem_write`,
+…) further constrain the component. A `'Hunt` component MUST NOT run until
+authorised (`validation.hunt_authorized = true` after signature verification).
+Signatures are Ed25519. `[OPEN]` exact signature envelope.
+
+== 5. Recipes
+
+`recipes` is a record of named commands (e.g. `build`, `validate`, `deploy`,
+`migrate`, `rollback`). Multi-line scripts use Nickel string blocks (`m%"…"%`).
+
+== 6. Surfaces and canonical projection
+
+For cross-implementation conformance, a document projects to canonical JSON:
+the `pedigree` record (and any sibling top-level keys) as JSON, Nickel enum tags
+rendered as their bare string (`'Kennel` → `"Kennel"`), records in declaration
+order. A `.k9.ncl` document is evaluated first, then projected; a `.k9` document
+is parsed natively. Both surfaces MUST yield the same projection. See
+`../conformance/fixtures/` for worked examples.
+
+== 7. Conformance
+
+Every implementation MUST reproduce each fixture's `expected.json` from its
+input. The fixtures are the executable form of this spec; an `[OPEN]` item is
+closed by adding a fixture that pins the behaviour.
+
+== 8. Versioning
+
+This spec is versioned independently of any implementation; implementations
+declare the spec version they target. Breaking changes bump the minor version
+while in `0.x`.

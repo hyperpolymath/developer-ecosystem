@@ -1,0 +1,36 @@
+// SPDX-License-Identifier: MPL-2.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+= K9 Members
+
+Member repositories are aggregated here as *git submodules*, grouped by role.
+They are empty until populated — run `just init` (or
+`bash scripts/init-submodules.sh`) from the hub root.
+
+----
+members/
+├── implementations/   # parsers + renderers, one per language
+│   ├── k9-rs          # Rust    (reference implementation, crates.io)
+│   ├── k9_ex          # Elixir  (Hex)
+│   ├── k9_gleam       # Gleam   (Hex / Gleam)
+│   ├── k9-deno        # Deno    (JSR)
+│   └── k9-haskell     # Haskell (Hackage)
+├── tooling/           # format + editor support
+│   ├── tree-sitter-k9 # grammar + bindings
+│   ├── vscode-k9      # VS Code extension
+│   └── pandoc-k9      # Pandoc integration for .k9.ncl
+├── ci/                # validation hooks
+│   ├── k9-validate-action  # GitHub Action
+│   └── k9-pre-commit       # pre-commit hook
+└── examples/
+    └── k9-showcase    # worked examples
+----
+
+Each member stays idiomatic to its own ecosystem (its own build tool, version,
+release cadence, and package registry). The hub pins each to a specific commit;
+`just update` advances those pins.
+
+== Conformance obligation
+
+Every *implementation* member is expected to run the shared fixtures in
+`../conformance/fixtures/` and match the documented expected output. This is the
+contract that keeps five independent parsers behaving identically.

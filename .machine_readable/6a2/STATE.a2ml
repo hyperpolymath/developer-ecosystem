@@ -13,6 +13,10 @@ name = "developer-ecosystem"
 completion-percentage = 55
 phase = "license-stamps-flipped-to-MPL-2.0; bot_directives-rename-done; contractiles-currency-pass-2026-06-05"
 
+[session-2026-06-20-k9-ecosystem-scaffold]
+summary = "Scaffolded the k9-ecosystem aggregator hub under k9-ecosystem/ (staged for extraction to a standalone primary). Owns the K9 spec (spec/SPEC.adoc v0.1 draft) + conformance suite; aggregates 11 members (k9-rs/k9_ex/k9_gleam/k9-deno/k9-haskell + tree-sitter-k9/vscode-k9/pandoc-k9 + k9-validate-action/k9-pre-commit + k9-showcase) as git submodules via k9-ecosystem/.gitmodules. Added Justfile, scripts/init-submodules.sh, BOOTSTRAP.md, and 6a2 governance. Reasoning: members must stay standalone for their registries/toolchains; hub gives one spec + conformance source-of-truth. Staged here because a new top-level repo was outside session scope."
+files-changed = "18 (16 new under k9-ecosystem/, ECOSYSTEM.a2ml + STATE.a2ml indexed)"
+
 [session-2026-06-05-currency-checkpoint]
 summary = "Currency checkpoint (claude/zen-knuth-6hoEt branch). Tasks completed: (1) agent_instructions→bot_directives rename already done at root; external references fixed in 8 files across affinescript-ecosystem and rescript-ecosystem satellite subdirs. (2) Contractiles: INDEX.a2ml + _base.ncl added; missing verb dirs created (adjust/, bust/, intend/) each with Xfile.a2ml + canonical .ncl runner; must/trust/dust runners (must.ncl/trust.ncl/dust.ncl) added alongside existing Xfile.a2ml. (3) svc/k9 templates already present. (4) 6a2 files refreshed. (5) README/EXPLAINME currency-only fixes. (6) License scan flagged."
 files-changed = "~20 (currency + contractile files)"

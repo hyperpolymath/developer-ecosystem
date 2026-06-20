@@ -1,0 +1,19 @@
+// SPDX-License-Identifier: MPL-2.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+= K9 Specification
+
+* link:SPEC.adoc[*SPEC.adoc*] — the canonical K9 format specification (v0.1 draft).
+
+== Status
+
+The format is at *v0.1 draft*. `k9-rs` is the normative reference until the spec
+is ratified. This `spec/` directory is the single source of truth: changes to
+the format land here first, then propagate to the implementations, gated by the
+link:../conformance/[conformance suite].
+
+== Change process
+
+1. Propose the change as a PR against `SPEC.adoc`.
+2. Add or amend fixtures in `../conformance/fixtures/` demonstrating it.
+3. Update each implementation submodule to satisfy the new fixtures.
+4. Bump the spec `:revnumber:` when merged.
