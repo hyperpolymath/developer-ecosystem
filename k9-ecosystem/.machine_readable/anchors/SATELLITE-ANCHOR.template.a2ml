@@ -1,0 +1,36 @@
+# SPDX-License-Identifier: MPL-2.0
+# SPDX-FileCopyrightText: 2026 {{AUTHOR}} ({{OWNER}}) <{{AUTHOR_EMAIL}}>
+# ANCHOR.a2ml — satellite anchor template. Copy into a K9 member repo at
+# .machine_readable/anchors/ANCHOR.a2ml and fill the {{...}} fields.
+
+[metadata]
+version = "1.0.0"
+last-updated = "{{CURRENT_DATE}}"
+
+[anchor]
+schema = "hyperpolymath.anchor/1"
+repo = "{{OWNER}}/{{REPO}}"
+authority = "satellite"
+
+[identity]
+project = "{{PROJECT_NAME}}"
+kind = "{{PROJECT_KIND}}"            # implementation | tooling | ci | examples
+one-sentence = "{{PROJECT_PURPOSE}}"
+
+[upstream]
+# Canonical owner of the K9 format. This satellite may extend but not redefine it.
+canonical = "hyperpolymath/k9-ecosystem"
+spec-version = "0.1.0-draft"          # MUST equal an existing k9-ecosystem [spec-version].current
+conformance = "hyperpolymath/k9-ecosystem//conformance/fixtures"
+
+[satellite-policy]
+must-pin-upstream = true
+must-run-conformance = true           # reproduce conformance fixtures' expected.json
+redefines-spec = false
+
+[golden-path]
+smoke-test-command = ["just test"]
+success-criteria = [
+  "Conformance fixtures reproduced",
+  "Pinned spec-version exists upstream",
+]

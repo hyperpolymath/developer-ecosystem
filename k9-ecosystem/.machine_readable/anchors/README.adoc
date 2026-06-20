@@ -1,0 +1,40 @@
+// SPDX-License-Identifier: MPL-2.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+= K9 Anchors — single source of truth, enforced
+
+The K9 format has *one writer and many pinned readers*. This directory holds the
+mechanism that keeps them from drifting silently.
+
+== Roles
+
+* `ANCHOR.a2ml` — the *hub* anchor. Declares `authority = upstream-canonical`
+  and `semantic-authority.owns` the K9 spec (`spec/SPEC.adoc`) and conformance
+  suite. Publishes `[spec-version].current` — the version every member pins. The
+  hub is itself a *satellite of `developer-ecosystem`* for governance.
+* `SATELLITE-ANCHOR.template.a2ml` — copied into each member repo as
+  `.machine_readable/anchors/ANCHOR.a2ml`, with `authority = satellite` and an
+  `[upstream]` block pinning `spec-version`.
+
+== The contract (pin + verify, not hardlink)
+
+[cols="1,2,2", options="header"]
+|===
+| Artifact | Pin | Drift check
+| Spec prose | satellite cites `spec-version` | anchor-drift job: pinned version must exist upstream
+| Conformance fixtures | submodule / published artifact | conformance run: impl output != `expected.json` -> red
+| Derived grammars (tree-sitter, TextMate, JSON schema) | generated from the spec | regenerate-&-diff job: stale -> red
+| Vendored governance | stamped via `{{OWNER}}` templating + content hash | `a2ml-validate-action` re-stamp, fail on hash diff
+|===
+
+The enforcer is `hyperpolymath/k9-validate-action`: an *anchor-drift* job asserts
+every satellite pins an existing upstream `spec-version` and (where vendored) that
+governance hashes match. A drifted satellite cannot merge — the CI check is the
+hardlink: versioned and loud.
+
+== Propagation status
+
+* [x] Hub anchor (this PR)
+* [ ] `k9-rs` flipped `upstream-canonical -> satellite` (reference behaviour, not spec authority)
+* [ ] Satellite anchors stamped across the remaining members
+* [ ] anchor-drift job added to `k9-validate-action`
+* [ ] generate-from-spec + regen-diff wired for `tree-sitter-k9` / `vscode-k9`
