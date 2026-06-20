@@ -14,8 +14,11 @@ completion-percentage = 20
 phase = "hub scaffolded and staged inside developer-ecosystem; awaiting extraction to standalone repo and live submodule wiring"
 
 [session-2026-06-20-hub-scaffold]
-summary = "Created the k9-ecosystem aggregator hub: README, .gitmodules (11 members grouped implementations/tooling/ci/examples), Justfile + scripts/init-submodules.sh, spec/SPEC.adoc (v0.1 draft) + spec/README, conformance/ suite with the 'minimal' fixture (component.k9 + expected.json), members/README, LICENSE, BOOTSTRAP.md, and 6a2 governance. Staged at developer-ecosystem/k9-ecosystem/ because the session scope did not permit creating a new top-level repo."
+summary = "Created the k9-ecosystem aggregator hub: README, .gitmodules (11 members grouped implementations/tooling/ci/examples), Justfile + scripts/init-submodules.sh, spec/SPEC.adoc (v0.1 draft) + spec/README, conformance/ suite with the 'minimal' fixture (component.k9.ncl + expected.json), members/README, LICENSE, BOOTSTRAP.md, and 6a2 governance. Staged at developer-ecosystem/k9-ecosystem/ because the session scope did not permit creating a new top-level repo."
 files-added = 16
+
+[session-2026-06-20-dogfood-fix]
+summary = "Fixed the Dogfood Gate 'Validate K9 contracts' failure on PR #120. The minimal fixture was a YAML-like sketch from the k9-rs README and lacked the K9! magic line and a 'pedigree = { }' block, so k9-validate-action errored. Rewrote it as a valid Nickel K9 contract (component.k9.ncl) modelled on the live corpus (K9! magic, SPDX, five-layer pedigree, 'Kennel leash), realigned expected.json and rewrote spec/SPEC.adoc to the actually-enforced format. The other three red checks on the PR (workflow security linter, trufflehog, deno @cadre/router duplicate) are pre-existing on main and untouched by this diff."
 
 [next-actions]
 extract = "Promote to standalone hyperpolymath/k9-ecosystem (BOOTSTRAP.md option A)"

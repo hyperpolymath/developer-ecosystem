@@ -12,16 +12,17 @@ contract that keeps five independent parsers (`k9-rs`, `k9_ex`, `k9_gleam`,
 conformance/
 └── fixtures/
     └── <case>/
-        ├── component.k9     # input (also <case>/component.k9.ncl where relevant)
-        └── expected.json    # canonical projection (see ../spec/SPEC.adoc §7)
+        ├── component.k9.ncl   # input (Nickel surface; or component.k9 for the plain surface)
+        └── expected.json      # canonical projection (see ../spec/SPEC.adoc §6)
 ----
 
 == Contract
 
-For each fixture, an implementation parses `component.k9` and emits the canonical
-JSON projection. The result MUST be *structurally equal* to `expected.json`
-(key order per declaration order, `security` lower-cased). Whitespace and
-insignificant formatting are ignored.
+For each fixture, an implementation produces the canonical JSON projection from
+the input — evaluating the Nickel surface (`.k9.ncl`) or parsing the plain
+surface (`.k9`) — and the result MUST be *structurally equal* to `expected.json`
+(records in declaration order; Nickel enum tags rendered as bare strings, e.g.
+`'Kennel` -> `"Kennel"`). Whitespace and insignificant formatting are ignored.
 
 == Wiring an implementation
 

@@ -1,21 +1,21 @@
 {
-  "component": "hello-svc",
-  "version": "0.1.0",
   "pedigree": {
-    "origin": "https://github.com/hyperpolymath/hello-svc",
-    "author": "Jonathan D.A. Jewell",
-    "license": "MPL-2.0"
-  },
-  "security": "kennel",
-  "recipe": {
-    "tool": "cargo",
-    "command": "build --release"
-  },
-  "contracts": [
-    {
-      "name": "binary-exists",
-      "check": "test -x target/release/hello-svc",
-      "severity": "error"
+    "schema_version": "1.0.0",
+    "security_level": "Kennel",
+    "metadata": {
+      "name": "hello-svc",
+      "version": "0.1.0",
+      "breed": "application/vnd.k9+nickel",
+      "magic_number": "K9!",
+      "license": "MPL-2.0"
+    },
+    "security": {
+      "trust_level": "Kennel",
+      "allow_network": false,
+      "allow_subprocess": false
+    },
+    "recipes": {
+      "build": "cargo build --release"
     }
-  ]
+  }
 }
