@@ -1,0 +1,120 @@
+// SPDX-License-Identifier: MPL-2.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+= K9 Format Specification
+:revnumber: 0.1.0-draft
+:revdate: 2026-06-20
+:toc: left
+:icons: font
+
+[IMPORTANT]
+====
+*Status: DRAFT (v0.1).* This document is the working canonical specification for
+the K9 format. Until it is ratified, `k9-rs` is the *normative reference
+implementation*: where this text and `k9-rs` disagree, `k9-rs` wins and this
+text is the bug. Open questions are marked `[OPEN]`.
+====
+
+== 1. Overview
+
+K9 is a self-validating configuration format for *software component
+declarations*. A K9 document describes one component and the checks that prove
+it is what it claims to be.
+
+Two surface syntaxes are defined:
+
+* *`.k9`* — a YAML-like, indentation-structured plain-text format, parsed
+  natively by every implementation.
+* *`.k9.ncl`* — a https://nickel-lang.org[Nickel] document. Implementations
+  without a Nickel evaluator MUST detect this form and report it distinctly
+  (e.g. `k9-rs` returns `K9Error::NickelFormat`); evaluation is delegated to a
+  Nickel-aware tool such as `pandoc-k9`.
+
+Both surfaces denote the same abstract model (sections 3–6) and MUST produce
+the same canonical projection (section 7).
+
+== 2. Document structure
+
+A document declares exactly one `component` with a name, a `version`, and the
+sections below. Indentation is significant; two spaces per level is the
+canonical style.
+
+[source,yaml]
+----
+component: <name>
+  version: <semver>
+  pedigree: { ... }     # section 3
+  security: <level>     # section 4
+  recipe: { ... }       # section 5
+  contracts: [ ... ]    # section 6
+----
+
+`component` and `version` are REQUIRED. `pedigree`, `security`, `recipe`, and
+`contracts` are each OPTIONAL but RECOMMENDED.
+
+== 3. Pedigree — provenance
+
+[cols="1,1,3", options="header"]
+|===
+| Key | Required | Meaning
+| `origin`  | yes | Source URL of the component (HTTPS)
+| `author`  | yes | Responsible author or maintainer
+| `license` | no  | SPDX license identifier
+| `hashes`  | no  | Supply-chain hashes (SHA-256+). `[OPEN]` exact key shape TBD
+|===
+
+MD5 and SHA-1 MUST NOT be used for `hashes`.
+
+== 4. SecurityLevel
+
+A single enumerated value describing the trust tier (shared with the K9 Nickel
+component model):
+
+[cols="1,3", options="header"]
+|===
+| Level | Meaning
+| `kennel` | Most restricted — trusted, sandboxed, minimal surface
+| `yard`   | Intermediate — controlled exposure
+| `hunt`   | Least restricted — operates in the open
+|===
+
+`[OPEN]` Whether levels are case-insensitive on input is reference-defined; the
+canonical projection (section 7) lower-cases them.
+
+== 5. Recipe — build / assembly
+
+[cols="1,1,3", options="header"]
+|===
+| Key | Required | Meaning
+| `tool`    | yes | Build tool (e.g. `cargo`, `mix`, `gleam`, `deno`, `cabal`)
+| `command` | yes | Arguments passed to the tool
+|===
+
+== 6. Contracts — runtime invariants
+
+`contracts` is an ordered list. Each entry:
+
+[cols="1,1,3", options="header"]
+|===
+| Key | Required | Meaning
+| `name`     | yes | Stable identifier for the invariant
+| `check`    | yes | Shell command; exit code 0 = satisfied
+| `severity` | yes | `error` \| `warn` \| `info`
+|===
+
+A K9 validator runs each `check`; a failing `error` contract fails validation,
+`warn` and `info` are reported without failing. `[OPEN]` ordering/short-circuit
+semantics across multiple failures to be pinned by the conformance suite.
+
+== 7. Canonical projection
+
+For cross-implementation conformance, a parsed document projects to canonical
+JSON: object keys in declaration order, `security` lower-cased, `contracts` as a
+JSON array, no implementation-specific fields. See
+`../conformance/fixtures/` for worked examples. Every implementation MUST emit a
+projection that is structurally equal to the fixture's `expected.json`.
+
+== 8. Versioning
+
+This spec is versioned independently of any implementation. Implementations
+declare the spec version they target. Breaking changes bump the minor version
+while in `0.x`.

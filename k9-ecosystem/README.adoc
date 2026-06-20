@@ -1,0 +1,128 @@
+// SPDX-License-Identifier: MPL-2.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+image:https://img.shields.io/badge/License-MPL_2.0-blue.svg[MPL-2.0-or-later,link="https://opensource.org/licenses/MPL-2.0"]
+image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+= K9 Ecosystem
+Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+:toc: left
+:toclevels: 3
+:icons: font
+:revnumber: 0.1.0
+:revdate: 2026-06-20
+
+[NOTE]
+====
+This directory is the *standalone `k9-ecosystem` hub*, staged inside
+`developer-ecosystem/` for delivery. Its intended end-state is its own
+top-level repository (`hyperpolymath/k9-ecosystem`). See
+link:BOOTSTRAP.md[BOOTSTRAP.md] for the one-command extraction.
+====
+
+== What is K9?
+
+*K9* is a self-validating configuration format for software component
+declarations. Each component carries its own provenance, security posture,
+build recipe, and runtime contracts, so that a `.k9` file is both
+*documentation* and an *executable check*.
+
+Each component declares:
+
+[cols="1,3", options="header"]
+|===
+| Field | Meaning
+| *Pedigree* | Provenance — origin URL, author, license, supply-chain hashes
+| *SecurityLevel* | Three-tier model: `Kennel` / `Yard` / `Hunt`
+| *Recipe* | Build or assembly instructions (tool + command)
+| *Contracts* | Runtime invariants with check commands and severity levels
+|===
+
+Two surface formats are defined:
+
+* `.k9` — YAML-like plain-text format, parsed natively
+* `.k9.ncl` — https://nickel-lang.org[Nickel] format (requires the Nickel evaluator)
+
+The canonical format definition lives in link:spec/SPEC.adoc[`spec/SPEC.adoc`];
+the shared cross-implementation test suite lives in link:conformance/[`conformance/`].
+
+== Why this hub exists
+
+The K9 family spans five language implementations plus editor, CI, and
+documentation tooling — eleven repositories in all. They are kept as
+*independent repositories* (each idiomatic to its package registry and tooling)
+and *aggregated here as git submodules*. This gives one source of truth for the
+spec, one conformance suite every implementation tests against, and one front
+door — without forcing a monorepo on toolchains that expect standalone repos
+(crates.io, Hex, Hackage, JSR, the Tree-sitter CLI, the VS Code Marketplace,
+pre-commit, and GitHub Actions).
+
+== Members
+
+Run `just init` (or `scripts/init-submodules.sh`) to populate the submodules.
+
+=== Implementations (parsers + renderers)
+
+[cols="1,1,2", options="header"]
+|===
+| Repo | Language | Registry
+| `k9-rs`      | Rust    | crates.io (reference implementation)
+| `k9_ex`      | Elixir  | Hex
+| `k9_gleam`   | Gleam   | Hex / Gleam
+| `k9-deno`    | Deno    | JSR
+| `k9-haskell` | Haskell | Hackage
+|===
+
+=== Tooling (format + editor)
+
+[cols="1,3", options="header"]
+|===
+| Repo | Purpose
+| `tree-sitter-k9` | Tree-sitter grammar + bindings
+| `vscode-k9`      | VS Code language extension
+| `pandoc-k9`      | Pandoc integration for `.k9.ncl` (Nickel) files
+|===
+
+=== CI / validation
+
+[cols="1,3", options="header"]
+|===
+| Repo | Purpose
+| `k9-validate-action` | GitHub Action — validates `.k9` files in CI
+| `k9-pre-commit`      | pre-commit hook — validates `.k9` files locally
+|===
+
+=== Examples
+
+[cols="1,3", options="header"]
+|===
+| Repo | Purpose
+| `k9-showcase` | Worked examples and demonstrations
+|===
+
+== Quick start
+
+[source,sh]
+----
+# clone with all members
+git clone --recurse-submodules <hub-url>
+cd k9-ecosystem
+
+# or, after a plain clone
+just init          # = git submodule update --init --recursive
+
+just status        # show member checkout state
+just update        # fast-forward every member to its tracked commit
+----
+
+== Relationship to the wider estate
+
+* `hyperpolymath/standards` references *k9-svc* (the Rust crate lib name,
+  `k9_svc`) as a reusable standard; the `.k9.ncl` form is woven into the
+  `developer-ecosystem` *contractile tridents* (`k9.ncl`). This hub is the
+  home of the *format* itself, distinct from those consumers.
+* `vscode-k9` may also be cross-referenced as a `developer-ux` satellite of
+  `developer-ecosystem`; a submodule can be aggregated by more than one hub.
+
+== License
+
+MPL-2.0-or-later. SPDX headers are carried on every file. See link:LICENSE[LICENSE].

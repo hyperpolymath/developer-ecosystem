@@ -1,0 +1,34 @@
+# SPDX-License-Identifier: MPL-2.0
+# SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# k9-ecosystem hub — submodule orchestration.
+# These recipes assume this directory is a repository root (post-extraction).
+
+# List available recipes
+default:
+    @just --list
+
+# Populate every member submodule
+init:
+    git submodule update --init --recursive
+
+# Add all members from scratch (first-time wiring; idempotent)
+wire:
+    bash scripts/init-submodules.sh
+
+# Fast-forward every member to its tracked commit
+update:
+    git submodule update --remote --merge
+
+# Show checkout state of every member
+status:
+    git submodule status --recursive
+
+# Run a command in every member, e.g. `just foreach 'git status -s'`
+foreach CMD:
+    git submodule foreach --recursive '{{CMD}}'
+
+# Verify the canonical spec and conformance fixtures are present
+check-spec:
+    test -f spec/SPEC.adoc && echo "spec present"
+    test -d conformance/fixtures && echo "conformance fixtures present"

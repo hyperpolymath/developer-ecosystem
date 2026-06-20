@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: MPL-2.0
+# Submodule build artifacts (members manage their own; never commit theirs here)
+**/target/
+**/_build/
+**/build/
+**/node_modules/
+**/.deno/
+**/dist-newstyle/
+*.log
+.DS_Store

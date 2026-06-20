@@ -1,0 +1,14 @@
+component: hello-svc
+  version: 0.1.0
+  pedigree:
+    origin: https://github.com/hyperpolymath/hello-svc
+    author: Jonathan D.A. Jewell
+    license: MPL-2.0
+  security: kennel
+  recipe:
+    tool: cargo
+    command: build --release
+  contracts:
+    - name: binary-exists
+      check: test -x target/release/hello-svc
+      severity: error

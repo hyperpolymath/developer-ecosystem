@@ -1,0 +1,44 @@
+// SPDX-License-Identifier: MPL-2.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+= K9 Conformance Suite
+
+Language-agnostic fixtures that *every* implementation must satisfy. This is the
+contract that keeps five independent parsers (`k9-rs`, `k9_ex`, `k9_gleam`,
+`k9-deno`, `k9-haskell`) behaving identically.
+
+== Layout
+
+----
+conformance/
+└── fixtures/
+    └── <case>/
+        ├── component.k9     # input (also <case>/component.k9.ncl where relevant)
+        └── expected.json    # canonical projection (see ../spec/SPEC.adoc §7)
+----
+
+== Contract
+
+For each fixture, an implementation parses `component.k9` and emits the canonical
+JSON projection. The result MUST be *structurally equal* to `expected.json`
+(key order per declaration order, `security` lower-cased). Whitespace and
+insignificant formatting are ignored.
+
+== Wiring an implementation
+
+Each implementation member adds a thin test that walks `fixtures/`, parses each
+input, and compares against `expected.json`. Suggested integration:
+
+* `k9-rs` — a `#[test]` iterating the fixtures directory
+* `k9_ex` / `k9_gleam` — an ExUnit / gleeunit case
+* `k9-deno` — a `Deno.test` over the fixtures
+* `k9-haskell` — an HUnit/`tasty` golden test
+
+The fixtures are intentionally implementation-free so they can be vendored or
+referenced (git submodule / sparse checkout) by each member.
+
+== Adding a fixture
+
+1. Create `fixtures/<case>/component.k9`.
+2. Generate `expected.json` with the reference implementation (`k9-rs`) and
+   eyeball it against link:../spec/SPEC.adoc[the spec].
+3. Confirm every implementation passes before merging.
