@@ -1,0 +1,63 @@
+# SPDX-License-Identifier: MPL-2.0
+# SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+# ANCHOR.a2ml — authoritative anchor for the k9-ecosystem hub.
+
+[metadata]
+version = "1.0.0"
+last-updated = "2026-06-20"
+
+[anchor]
+schema = "hyperpolymath.anchor/1"
+repo = "hyperpolymath/k9-ecosystem"
+authority = "upstream-canonical"
+purpose = [
+  "Own the canonical K9 format specification and conformance suite.",
+  "Define what K9 implementations (satellites) may extend but not redefine.",
+  "Publish the spec version that every satellite must pin.",
+]
+
+[identity]
+project = "k9-ecosystem"
+kind = "specification-hub"
+one-sentence = "Canonical home of the K9 self-validating configuration format: owns the spec and conformance suite, aggregates the implementations and tooling."
+domain = "software-component-declaration"
+
+[semantic-authority]
+policy = "canonical"
+owns = [
+  "K9 format specification (spec/SPEC.adoc)",
+  "Conformance suite and reference behavior (conformance/fixtures/)",
+  "K9 invariant definitions and the SecurityLevel / Leash model",
+]
+
+[semantic-authority-files]
+language-spec = "spec/SPEC.adoc"
+conformance = "conformance/fixtures/"
+
+[spec-version]
+# The version satellites pin. Bump on ratified spec changes.
+current = "0.1.0-draft"
+
+[governance-authority]
+# The hub is itself a satellite of the estate standards for governance:
+# the anchor schema, contractile model, and ECOSYSTEM.a2ml meta-layer are owned upstream.
+upstream = "hyperpolymath/developer-ecosystem"
+pins-schema = "hyperpolymath.anchor/1"
+
+[satellite-policy]
+# Obligations the hub places on every K9 member (implementation / tooling / ci / examples):
+must-pin-upstream = true
+must-declare-authority = true
+must-have-anchor = true
+must-run-conformance = true
+
+[implementation-policy]
+allowed = ["AsciiDoc", "Markdown", "Nickel", "Just", "Shell", "TOML"]
+forbidden = ["Node.js", "npm"]
+
+[golden-path]
+smoke-test-command = ["just check-spec"]
+success-criteria = [
+  "spec/SPEC.adoc present and versioned",
+  "conformance/fixtures present",
+]
