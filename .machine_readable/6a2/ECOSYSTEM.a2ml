@@ -18,7 +18,7 @@ git-tools = ["git-hud", "gitloom", "git-reunify", "git-seo", "polysafe-gitfixer"
 repo-management = ["oikos", "robot-repo-automaton", "grim-repo", "robot-vacuum-cleaner"]
 scaffolding = ["scaffoldia"]
 developer-ux = ["rescript-evangeliser (→ nextgen-languages-evangeliser)", "recon-silly-ation", "nickel-config-reporter"]
-ecosystems = ["affinescript-ecosystem", "rescript-ecosystem", "zig-ecosystem", "v-ecosystem (legacy/community-handoff)", "deno-ecosystem", "julia-ecosystem", "coq-ecosystem", "idris2-ecosystem", "iser-tools"]
+ecosystems = ["affinescript-ecosystem", "rescript-ecosystem", "zig-ecosystem", "v-ecosystem (legacy/community-handoff)", "deno-ecosystem", "julia-ecosystem", "coq-ecosystem", "idris2-ecosystem", "iser-tools", "k9-ecosystem (staged; pending extraction to standalone primary — see k9-ecosystem/BOOTSTRAP.md)"]
 cadre = ["cadre-router", "cadre-tea-router"]
 zig-api = ["zig-api (Phase 1+2 complete)"]
 

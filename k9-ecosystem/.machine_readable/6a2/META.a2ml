@@ -1,0 +1,31 @@
+# SPDX-License-Identifier: MPL-2.0
+# SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+# META.a2ml — Architecture decisions and development practices
+
+[metadata]
+project = "k9-ecosystem"
+last-updated = "2026-06-20"
+
+[decision.hub-plus-submodules]
+status = "accepted"
+date = "2026-06-20"
+decision = "Aggregate the K9 family as a hub repo with members as git submodules, rather than a single monorepo or scattered standalone repos."
+rationale = "Several members cannot be subdirectories without breaking their toolchains: tree-sitter-k9 (tree-sitter CLI + bindings expect a repo named tree-sitter-* at root), k9-validate-action (consumed as owner/repo@ref; Marketplace needs its own repo), k9-pre-commit (consumers reference the repo URL; .pre-commit-hooks.yaml at root), vscode-k9 (vsce per-extension publishing). The five implementations each publish to a different registry (crates.io/Hex/Hackage/JSR) with independent versioning. A hub still gives one spec source-of-truth, one conformance suite, and one front door."
+follows = "developer-ecosystem satellites + *-ecosystem submodule pattern"
+
+[decision.standalone-primary]
+status = "accepted"
+date = "2026-06-20"
+decision = "k9-ecosystem is its own top-level primary, not nested under developer-ecosystem."
+rationale = "developer-ecosystem's charter is developer workflow tooling; K9 is a configuration format/standard with a different audience. Nesting muddies both charters. Staged inside developer-ecosystem only as a delivery vehicle (session scope); end-state is standalone (BOOTSTRAP.md)."
+
+[decision.naming]
+status = "accepted"
+date = "2026-06-20"
+decision = "Umbrella named 'k9-ecosystem', not 'k9-svc'."
+rationale = "k9-svc is already the Rust crate lib name (k9_svc, 'self-validating configuration') and a referenced standard in hyperpolymath/standards; reusing it as the umbrella would collide. 'k9-ecosystem' matches the estate's *-ecosystem convention."
+
+[practices]
+spec-first = "Format changes land in spec/ first, gated by conformance/ fixtures, then propagate to implementations."
+spdx = "MPL-2.0 SPDX header on every file."
+languages = "Docs in AsciiDoc/Markdown; machine-readable in .a2ml (TOML); orchestration in just + minimal Bash; configs in Nickel. No banned languages introduced."

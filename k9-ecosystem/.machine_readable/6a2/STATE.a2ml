@@ -1,0 +1,30 @@
+# SPDX-License-Identifier: MPL-2.0
+# SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+# STATE.a2ml — Project state checkpoint
+
+[metadata]
+project = "k9-ecosystem"
+version = "0.1.0"
+last-updated = "2026-06-20"
+status = "scaffolded"
+
+[project-context]
+name = "k9-ecosystem"
+completion-percentage = 20
+phase = "hub scaffolded and staged inside developer-ecosystem; awaiting extraction to standalone repo and live submodule wiring"
+
+[session-2026-06-20-hub-scaffold]
+summary = "Created the k9-ecosystem aggregator hub: README, .gitmodules (11 members grouped implementations/tooling/ci/examples), Justfile + scripts/init-submodules.sh, spec/SPEC.adoc (v0.1 draft) + spec/README, conformance/ suite with the 'minimal' fixture (component.k9.ncl + expected.json), members/README, LICENSE, BOOTSTRAP.md, and 6a2 governance. Staged at developer-ecosystem/k9-ecosystem/ because the session scope did not permit creating a new top-level repo."
+files-added = 16
+
+[session-2026-06-20-dogfood-fix]
+summary = "Fixed the Dogfood Gate 'Validate K9 contracts' failure on PR #120. The minimal fixture was a YAML-like sketch from the k9-rs README and lacked the K9! magic line and a 'pedigree = { }' block, so k9-validate-action errored. Rewrote it as a valid Nickel K9 contract (component.k9.ncl) modelled on the live corpus (K9! magic, SPDX, five-layer pedigree, 'Kennel leash), realigned expected.json and rewrote spec/SPEC.adoc to the actually-enforced format. The other three red checks on the PR (workflow security linter, trufflehog, deno @cadre/router duplicate) are pre-existing on main and untouched by this diff."
+
+[next-actions]
+extract = "Promote to standalone hyperpolymath/k9-ecosystem (BOOTSTRAP.md option A)"
+wire = "Run scripts/init-submodules.sh to populate the 11 member submodules"
+cross-link = "Update each member's 6a2/ECOSYSTEM.a2ml to reference k9-ecosystem (bidirectional graph)"
+spec = "Ratify SPEC.adoc; resolve the [OPEN] items via conformance fixtures"
+
+[blockers]
+new-repo-scope = "Creating/pushing hyperpolymath/k9-ecosystem is outside this session's repo scope; needs scope grant or manual extraction"

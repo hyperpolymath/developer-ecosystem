@@ -1,0 +1,48 @@
+# SPDX-License-Identifier: MPL-2.0
+# SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# K9 ecosystem members, grouped by role.
+# Inert while staged inside developer-ecosystem (git only reads the root
+# .gitmodules). Becomes active once this directory is extracted to its own
+# repository — see BOOTSTRAP.md.
+
+# --- Implementations -------------------------------------------------------
+[submodule "members/implementations/k9-rs"]
+	path = members/implementations/k9-rs
+	url = git@github.com:hyperpolymath/k9-rs.git
+[submodule "members/implementations/k9_ex"]
+	path = members/implementations/k9_ex
+	url = git@github.com:hyperpolymath/k9_ex.git
+[submodule "members/implementations/k9_gleam"]
+	path = members/implementations/k9_gleam
+	url = git@github.com:hyperpolymath/k9_gleam.git
+[submodule "members/implementations/k9-deno"]
+	path = members/implementations/k9-deno
+	url = git@github.com:hyperpolymath/k9-deno.git
+[submodule "members/implementations/k9-haskell"]
+	path = members/implementations/k9-haskell
+	url = git@github.com:hyperpolymath/k9-haskell.git
+
+# --- Tooling ---------------------------------------------------------------
+[submodule "members/tooling/tree-sitter-k9"]
+	path = members/tooling/tree-sitter-k9
+	url = git@github.com:hyperpolymath/tree-sitter-k9.git
+[submodule "members/tooling/vscode-k9"]
+	path = members/tooling/vscode-k9
+	url = git@github.com:hyperpolymath/vscode-k9.git
+[submodule "members/tooling/pandoc-k9"]
+	path = members/tooling/pandoc-k9
+	url = git@github.com:hyperpolymath/pandoc-k9.git
+
+# --- CI / validation -------------------------------------------------------
+[submodule "members/ci/k9-validate-action"]
+	path = members/ci/k9-validate-action
+	url = git@github.com:hyperpolymath/k9-validate-action.git
+[submodule "members/ci/k9-pre-commit"]
+	path = members/ci/k9-pre-commit
+	url = git@github.com:hyperpolymath/k9-pre-commit.git
+
+# --- Examples --------------------------------------------------------------
+[submodule "members/examples/k9-showcase"]
+	path = members/examples/k9-showcase
+	url = git@github.com:hyperpolymath/k9-showcase.git
