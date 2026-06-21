@@ -1,0 +1,237 @@
+// SPDX-License-Identifier: MPL-2.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath)
+= SESSION-CLOSE 2026-06-21 — K9 satellite/hub fan-out + TS-exemption parser
+:toc:
+:protocol: continuity / planned-session-close
+:session-id: 2026-06-21-k9-fanout-ts-parser
+
+== 1. Goal / scope
+
+Three intertwined threads on the K9 ecosystem:
+
+* the *satellite/hub fan-out* — extract a coordination hub, flip `k9-rs`
+  from source-of-truth to satellite, wire cross-repo drift enforcement and
+  tree-sitter/vscode generation across the 11 K9 member repos;
+* the *TS-exemption parser bug* — the shared governance check flags the
+  approved `rrt.ts` exemption; and
+* an explanatory thread on *why `rrt.ts` is TypeScript, not AffineScript*.
+
+== 2. Verified situation at close (2026-06-21)
+
+* *`hyperpolymath/k9-ecosystem` now EXISTS* (created 2026-06-21 01:16Z,
+  updated 14:16Z; public; Nickel; charter = "conformance, membership,
+  cross-repo drift enforcement; pins spec + governance from
+  hyperpolymath/standards"). The hub-creation blocker is *resolved*.
+** The staged copy still lives here on `claude/nice-hopper-fzl2bl` at
+   `f911392b` ("Add k9-ecosystem aggregator hub (staged for extraction)")
+   plus `d2300b85` (dogfood-gate fix). Whether the live repo was populated
+   *from* this staging is unverified (k9-ecosystem is out of scope).
+* *`k9-ecosystem` and `standards` are NOT in this session's scope* and are
+  not checked out. `list_repos`/`add_repo` tooling is *unavailable*, so
+  neither can be added from here.
+* *Fan-out has not reached the member repos*: `k9-rs` and
+  `k9-validate-action` have 0 open PRs; `tree-sitter-k9` has only a stale
+  Dependabot bump. No satellite-anchor PRs, no `k9-rs` flip, no drift job,
+  no generation wiring.
+* *TS parser fix not landed/observable*: the only repo where `rrt.ts`
+  trips the check is `developer-ecosystem`, pinned pre-fix.
+* *All 12 in-scope repos clean* (0 uncommitted / 0 unpushed).
+  `developer-ecosystem` was on `claude/ci-hygiene`; moved to
+  `claude/nice-hopper-fzl2bl` for this close record.
+
+== 3. Parser bug — root location (for a standards-scoped fix)
+
+* Governance is centralized: every repo's `.github/workflows/governance.yml`
+  is a thin wrapper for
+  `hyperpolymath/standards/.github/workflows/governance-reusable.yml`. The
+  per-repo `ts-blocker.yml` was deleted and folded in.
+* The TS-exemption parser lives in `standards` (`governance-reusable.yml`
+  plus its script). *Prime hypothesis (UNCONFIRMED — standards out of
+  scope):* exemption path cells are read from the `CLAUDE.md` markdown
+  table without stripping the surrounding backticks, so the literal
+  `+`…/rrt.ts`+` never equals the on-disk path; exact-path exemptions
+  silently never match. A complete hand-off brief for a standards-scoped
+  agent was produced this session (see §5.3 E-1).
+
+== 4. Consumer-pin surface (corrected)
+
+An earlier in-session claim ("bump pins across developer-ecosystem + the
+k9 repos") was *wrong*. Verified by grep across all checkouts:
+
+* Only *2* files pin `governance-reusable.yml@861b5e9` (frozen):
+  `developer-ecosystem/.github/workflows/governance.yml` and
+  `k9-validate-action/.github/workflows/governance.yml`. These need a
+  manual SHA bump to receive the fix.
+* All other consumers (the other 10 K9 repos + ~115 developer-ecosystem
+  sub-projects) pin `@main`, so they auto-receive the fix on merge.
+* Aside (parked): the 2 frozen pins are the policy-*compliant* ones; the
+  `@main` majority is itself unpinned drift vs the "SHA-pinned
+  dependencies" rule — separate cleanup.
+
+== 5. Triage (response to the close-out request)
+
+=== 5.1 Completed in this quick run
+
+* This `SESSION-CLOSE` record + a `STATE.a2ml` session block — the durable
+  handoff (the container is ephemeral; nothing else here was committable).
+* Tracking issue filed for the member-side fan-out (see E-3) on `k9-rs`
+  (clean tracker, in-scope).
+
+=== 5.2 Discard
+
+* The `.governance-allowlist` workaround — superseded by the decision to
+  fix the parser at source. Do not pursue.
+* Re-litigating settled decisions (hub-first extraction; fan-out after
+  developer-ecosystem#124) — both resolved.
+
+=== 5.3 Allocate to issues
+
+* *E-1 — `standards` (CANNOT file from here, out of scope):* fix the
+  TS-exemption parser (strip backticks/whitespace on the path cell) +
+  regression test covering all 3 exemptions and a near-miss; record the
+  new `governance-reusable.yml` SHA. Hand-off brief ready.
+* *E-2 — `developer-ecosystem` + `k9-validate-action`:* after E-1 merges,
+  bump the 2 frozen `governance-reusable.yml@861b5e9` pins to the fixed
+  SHA. Small, in-scope, ready.
+* *E-3 — `k9-rs` / `k9-ecosystem`:* member-side fan-out — satellite
+  anchor, flip `k9-rs` source→satellite, drift job on `k9-validate-action`,
+  tree-sitter + vscode generation. Filed on `k9-rs`; true home is
+  `k9-ecosystem` when scoped.
+* *E-4 — `developer-ecosystem`:* reconcile the exemption-list drift (§6.1).
+* *E-5 — `developer-ecosystem`:* remove the staged `k9-ecosystem` hub copy
+  once the live repo is verified populated (reversible-move discipline).
+
+=== 5.4 Sketch areas + doc entries (recommended, NOT scaffolded blind)
+
+* In *k9-ecosystem* (when scoped): `membership.ncl` (member registry),
+  `drift/` (cross-repo drift rules), `conformance/` (K9 contract
+  conformance). These define the anchor schema members import — sketching
+  them in members now would guess the schema. Hold until the hub is scoped.
+* In *k9-rs*: a `docs/satellite/` stub describing the satellite
+  relationship + anchor import — safe to add once the hub schema exists.
+* Machine docs: each member's `.machine_readable/6a2/ECOSYSTEM.a2ml` should
+  gain `satellite-of = "k9-ecosystem"` as part of the flip.
+
+=== 5.5 Cleanup
+
+* *Branches:* `developer-ecosystem` carries `claude/ci-hygiene`
+  (trufflehog drop, aggregate-library extraction) and
+  `claude/nice-hopper-fzl2bl` (k9-ecosystem staging, dogfood gate).
+  Reconcile/merge and prune once their PRs land. NOTE: an explicit
+  `git fetch origin claude/nice-hopper-fzl2bl` returned "couldn't find
+  remote ref" — the remote branch may have been deleted post-merge; verify
+  before pruning the local branch.
+* *Docs:* `k9-rs/.machine_readable/6a2/STATE.a2ml` still carries
+  META-TEMPLATE identity (`{{PLACEHOLDER}}`, "the TEMPLATE's evolution") —
+  de-template to k9-rs's real identity (Rust impl of the K9 format),
+  matching the `docs(state): replace rsr-template-repo residue` campaign in
+  sibling repos.
+* *Config / contractiles 6a2:* `developer-ecosystem` contractile *tridents*
+  (`k9.ncl` + `manifest.a2ml`) remain deferred for all 6 verbs
+  (`trident-coverage = none`); `lust` absent. Pre-existing estate debt —
+  leave unless prioritized.
+* *Policy:* drop or relocate the now-stale
+  `aggregate-library/src/test-runner.ts` row in `.claude/CLAUDE.md`
+  (extracted by #119). Left for the user — it is policy.
+
+== 6. Drift / findings (machine ↔ human doc mismatches)
+
+. *TS exemptions:* `.claude/CLAUDE.md` table = 3 rows;
+  `.machine_readable/6a2/STATE.a2ml` `approved-ts-exemptions` = 2 (omits
+  aggregate-library). `#119` extracted aggregate-library to its own repo,
+  so its path is stale in CLAUDE.md → *STATE is canonical; CLAUDE.md should
+  drop/relocate the row.*
+. *Wiki stale for K9:* `docs/wikis/Home.md` describes developer-ecosystem
+  as a 30+ satellite hub (Git Tools / Repo Mgmt / Scaffolding / Developer
+  UX). It does *not* mention the K9 ecosystem, the `k9-ecosystem` hub, the
+  satellite/hub model, or the governance-reusable consolidation.
+. *k9-rs identity residue:* its `STATE.a2ml` is still the template META
+  file rather than k9-rs's own state.
+
+== 7. Wiki & documentation assessment (dev / maintainer / user)
+
+Answer to "is the wiki up to date with the fullest representation, split by
+audience": *partially — strong scaffolding, but not yet a complete
+pedagogical body, and stale for K9.*
+
+*What exists and is good:* audience-split quickstarts already present
+(`QUICKSTART-DEV/MAINTAINER/USER.adoc`) in both repos; an in-repo *signpost*
+wiki (`docs/wikis/Home.md`) that correctly defers to canonical `docs/`; LLM
+warmups (`llm-warmup-dev.md`, `llm-warmup-user.md`); deep governance / audit
+/ decision scaffolding under `k9-rs/docs/`.
+
+*Gaps for "beyond setup / really engage":*
+
+* *End users:* no conceptual "what is a K9 self-validating component /
+  contractile, and why" narrative; quickstarts are run-throughs, not mental
+  models. No worked end-to-end example of authoring + validating a K9
+  contract.
+* *Developers:* no "how the pieces fit" map
+  (`k9-rs` ↔ `k9-ecosystem` ↔ `standards` ↔ tree-sitter/vscode); the
+  governance-reusable wrapper model is undocumented; contributing docs are
+  generic RSR, not K9-specific.
+* *Maintainers:* the membership + drift-enforcement model (the entire point
+  of `k9-ecosystem`) is undocumented; the pin policy (`@main` vs SHA) is
+  undocumented; cross-member release/sync is undocumented.
+* *Currency:* `Home.md` predates the K9 hub entirely.
+
+*Recommended structure* (lives in `docs/`, signposted from the wiki):
+
+* `docs/concepts/` (users): what K9 is, contractiles, the self-validation
+  model, a worked example.
+* `docs/developer/` (devs): architecture map, the satellite/hub model, the
+  governance-reusable wrapper, the generation pipeline (tree-sitter→vscode),
+  the local dev loop.
+* `docs/governance/` (maintainers): membership + drift enforcement, pin
+  policy, cross-member release/sync, the exemption process.
+
+This is a documentation *epic*, not a quick-run item — recommend an issue +
+staged authoring.
+
+== 8. Blockers
+
+* *Scope:* `k9-ecosystem` and `standards` not in session scope; not
+  checked out.
+* *Tooling:* `list_repos`/`add_repo` unavailable → cannot self-add repos;
+  `send_later` unavailable → no self-scheduled re-check.
+* *Net:* nothing further on the fan-out or parser fix is executable from
+  this session.
+
+== 9. Decision log
+
+* Hub extracted first (`k9-ecosystem`) — done externally; live repo exists.
+* Parser fixed at source in `standards`, not via a per-repo allowlist
+  workaround.
+* Consumer-side delivery for the parser fix = *2 pin bumps only*
+  (corrected from "all k9 repos").
+* aggregate-library exemption is stale post-#119; STATE is canonical,
+  CLAUDE.md to be reconciled.
+* No autonomous edits to policy (`CLAUDE.md`), to out-of-scope repos, or
+  destructive branch ops at close.
+
+== 10. Recommended next protocol
+
+. Scope `k9-ecosystem` → run the member-side fan-out (E-3), then sketch the
+  hub schema (§5.4).
+. Scope `standards` (or run the hand-off brief elsewhere) → fix the parser
+  (E-1) → bump the 2 pins (E-2).
+. Reconcile the exemption drift (E-4) + de-template `k9-rs` STATE.
+. Schedule the documentation epic (§7).
+
+== 11. User invitations
+
+* Add `k9-ecosystem` and/or `standards` to this session's scope to unblock
+  the above.
+* Confirm direction on the aggregate-library exemption (drop vs relocate to
+  the new repo's policy).
+* Approve the docs epic + audience structure in §7, or adjust.
+
+== 12. Post-condition check
+
+|===
+| Post-condition | State
+| Durable session record written (this file) + STATE.a2ml block | ✅
+| No work lost to the ephemeral container | ✅
+| In-scope repos clean; developer-ecosystem on designated branch | ✅
+| Fan-out / parser fix blocked on scope, fully documented for handoff | ✅
+|===
