@@ -5,13 +5,18 @@
 [metadata]
 project = "developer-ecosystem"
 version = "0.1.0"
-last-updated = "2026-06-05"
+last-updated = "2026-06-21"
 status = "active"
 
 [project-context]
 name = "developer-ecosystem"
 completion-percentage = 55
 phase = "license-stamps-flipped-to-MPL-2.0; bot_directives-rename-done; contractiles-currency-pass-2026-06-05"
+
+[session-2026-06-21-k9-fanout-ts-parser-close]
+summary = "Planned session-close triage of the K9 satellite/hub fan-out + TS-exemption parser threads. Verified: hyperpolymath/k9-ecosystem now EXISTS (created 2026-06-21) — the hub staged on 2026-06-20 was extracted to a standalone repo externally; hub-creation blocker resolved. k9-ecosystem + standards are NOT in session scope and list_repos/add_repo are unavailable, so neither the member-side fan-out nor the parser fix is executable from here. Fan-out has not reached the member repos (k9-rs, k9-validate-action: 0 open PRs). TS parser bug traced to hyperpolymath/standards governance-reusable.yml (per-repo ts-blocker.yml deleted/folded in); unverifiable from here. Consumer-pin surface corrected: only 2 files frozen at governance-reusable.yml@861b5e9 (developer-ecosystem, k9-validate-action); all other consumers pin @main and auto-receive the fix on merge."
+files-changed = "2 (SESSION-CLOSE-2026-06-21 + this block)"
+note = "Full triage: SESSION-CLOSE-2026-06-21-k9-fanout-ts-parser.adoc. Drift: approved-ts-exemptions here (2) is canonical vs CLAUDE.md table (3) — aggregate-library extracted by #119, so the CLAUDE.md row is stale. Wiki (docs/wikis/Home.md) is stale for K9. k9-rs STATE.a2ml still carries META-TEMPLATE residue. No autonomous policy/out-of-scope/destructive edits at close."
 
 [session-2026-06-20-k9-ecosystem-scaffold]
 summary = "Scaffolded the k9-ecosystem aggregator hub under k9-ecosystem/ (staged for extraction to a standalone primary). Owns the K9 spec (spec/SPEC.adoc v0.1 draft) + conformance suite; aggregates 11 members (k9-rs/k9_ex/k9_gleam/k9-deno/k9-haskell + tree-sitter-k9/vscode-k9/pandoc-k9 + k9-validate-action/k9-pre-commit + k9-showcase) as git submodules via k9-ecosystem/.gitmodules. Added Justfile, scripts/init-submodules.sh, BOOTSTRAP.md, and 6a2 governance. Reasoning: members must stay standalone for their registries/toolchains; hub gives one spec + conformance source-of-truth. Staged here because a new top-level repo was outside session scope."
