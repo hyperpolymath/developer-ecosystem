@@ -1,5 +1,5 @@
 {
-  "name": "@hyperpolymath/rescript-poly-core",
+  "name": "@hyperpolymath/rescript-create-poly",
   "version": "0.1.0",
   "exports": "./src/PolyCore.res.js",
   "tasks": {
