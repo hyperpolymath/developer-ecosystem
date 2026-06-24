@@ -1,5 +1,5 @@
 = v-graphdb
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 Multi-dialect graph database protocol connector for the V-Ecosystem API interfaces layer.
 Supports Neo4j Bolt (Cypher), Apache TinkerPop (Gremlin), and W3C SPARQL endpoints through a unified client interface.

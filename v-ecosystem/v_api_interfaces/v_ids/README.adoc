@@ -1,5 +1,5 @@
 = v_ids
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 Intrusion Detection System protocol types for the V-Ecosystem API interfaces
 layer. Maps to `proven-servers/protocols/proven-ids`.

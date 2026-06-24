@@ -1,5 +1,5 @@
 = v-ntp
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 NTPv4 (RFC 5905) time synchronisation client for the V-Ecosystem API interfaces layer.
 Supports unicast time queries over UDP, clock offset and delay calculation, stratum inspection, and kiss-of-death handling.

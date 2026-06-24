@@ -1,5 +1,5 @@
 = v-stun
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 STUN (RFC 8489) client for NAT traversal and reflexive address discovery
 

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // V-API-Interfaces - Unified Hexadeca-Connector standard for V-lang.
 //
 // Consolidates sixteen bidirectional API interfaces into a single high-rigor suite.

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MPL-2.0
 // Transition.res - Route transition hooks for animations
 
 // Transition direction (useful for slide animations)

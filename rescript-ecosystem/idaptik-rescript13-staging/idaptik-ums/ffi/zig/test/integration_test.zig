@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // integration_test.zig -- Integration tests for the IDApTIK UMS Zig FFI.
 // Author: Jonathan D.A. Jewell
 //

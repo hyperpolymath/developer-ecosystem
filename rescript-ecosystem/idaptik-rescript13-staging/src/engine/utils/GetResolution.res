@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Resolution detection for ReScript
 
 @val @scope("window") external devicePixelRatio: float = "devicePixelRatio"

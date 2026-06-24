@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // V-Ecosystem Federation protocol connector for SAML/OIDC/CAS identity federation
 // Author: Jonathan D.A. Jewell
 //

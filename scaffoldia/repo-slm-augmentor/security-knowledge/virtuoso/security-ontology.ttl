@@ -6,7 +6,7 @@
 @prefix wf: <https://hyperpolymath.dev/ontology/workflow#> .
 @prefix gh: <https://hyperpolymath.dev/ontology/github#> .
 
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # Security Knowledge Ontology for GitHub Workflow Analysis
 # Compatible with Virtuoso Open Source
 

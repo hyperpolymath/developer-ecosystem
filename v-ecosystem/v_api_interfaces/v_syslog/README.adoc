@@ -1,5 +1,5 @@
 = v_syslog
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 Syslog server (RFC 5424 and RFC 3164) for log collection in the V-Ecosystem
 API interfaces layer. Maps to `proven-servers/protocols/proven-syslog`.

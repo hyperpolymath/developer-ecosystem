@@ -1,5 +1,5 @@
 = v-lpd
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 Line Printer Daemon protocol for print queue management
 

@@ -1,5 +1,5 @@
 = v-sparql
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 SPARQL query engine with federated endpoints and graph pattern matching
 

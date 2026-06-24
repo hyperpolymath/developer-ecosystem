@@ -1,7 +1,7 @@
 = asdf-acceleration-middleware
 
 [![RSR Compliance](https://img.shields.io/badge/RSR-Silver-silver)](https://rhodium-standard.org)
-image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/License-MPL--2.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen)]()
 
 *High-performance middleware and tooling ecosystem for accelerating [asdf](https://asdf-vm.com/) runtime operations.*

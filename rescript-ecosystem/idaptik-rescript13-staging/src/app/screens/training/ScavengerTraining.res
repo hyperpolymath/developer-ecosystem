@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // ScavengerTraining  Find the USB drive, avoid the microchip trap
 //
 // Teaches the player that not every item is safe to grab.

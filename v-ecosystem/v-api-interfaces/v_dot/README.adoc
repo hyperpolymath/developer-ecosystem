@@ -1,5 +1,5 @@
 = v-dot
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 DNS over TLS (DoT) connector for encrypted DNS resolution (RFC 7858)
 

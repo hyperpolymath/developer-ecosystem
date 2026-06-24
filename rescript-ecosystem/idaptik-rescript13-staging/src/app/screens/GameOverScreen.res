@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Game Over Screen  shown when the hacker is detected/caught
 //
 // Full-screen dark overlay with red "DETECTED" header, failure reason,

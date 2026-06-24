@@ -1,4 +1,4 @@
-;; SPDX-License-Identifier: AGPL-3.0-or-later
+;; SPDX-License-Identifier: MPL-2.0
 ;; META.scm - Architectural decisions and project meta-information
 ;; Media-Type: application/meta+scheme
 

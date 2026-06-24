@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Inventory  physical toolkit system (ADR-0009)
 //
 // Jessica carries a small, finite set of physical items in her kit.

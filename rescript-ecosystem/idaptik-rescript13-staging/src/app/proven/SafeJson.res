@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // SafeJson  Non-throwing JSON parsing and typed field extraction
 //
 // Pure ReScript equivalent of proven's ProvenSafeJson module. In the

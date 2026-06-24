@@ -1,5 +1,5 @@
 #!/bin/bash -eu
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # ClusterFuzzLite build script for IDApTIK
 #
 # Builds fuzz targets from escape-hatch (Rust).

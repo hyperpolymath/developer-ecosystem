@@ -5,7 +5,7 @@
 set -euo pipefail
 
 ERRORS=0
-SPDX_PATTERN="^# SPDX-License-Identifier:PMPL-1.0-or-later
+SPDX_PATTERN="^# SPDX-License-Identifier:MPL-2.0
 
 for workflow in .github/workflows/*.yml .github/workflows/*.yaml; do
     [ -f "$workflow" ] || continue

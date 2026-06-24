@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Guard NPC  full enemy hierarchy with distinct AI behaviours
 //
 // ADR-0004: Static patrols for basic guards, heat map AI for elites.

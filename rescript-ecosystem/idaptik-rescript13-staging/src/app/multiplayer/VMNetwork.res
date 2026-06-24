@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // VMNetwork.res  Tier 5: Multi-VM networking
 //
 // Each network device in the game can host its own VM instance.

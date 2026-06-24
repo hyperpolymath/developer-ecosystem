@@ -1,5 +1,5 @@
 = v-triplestore
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 SPARQL 1.1 Protocol client for RDF triple stores within the V-Ecosystem API interfaces layer.
 Supports SELECT, CONSTRUCT, ASK, and DESCRIBE queries, plus SPARQL Update operations (INSERT DATA, DELETE DATA, LOAD, CLEAR).

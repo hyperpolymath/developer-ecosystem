@@ -1,5 +1,5 @@
 = v-trpc
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 Type-safe RPC over HTTP for the V-Ecosystem API interfaces layer.
 Provides a tRPC-inspired router where procedures are registered with explicit input validators and typed handler functions, enabling compile-time schema safety.

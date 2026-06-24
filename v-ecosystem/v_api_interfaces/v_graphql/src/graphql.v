@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // V-Ecosystem GraphQL Runtime
 //
 // Exposes Gnosis stateful artefact rendering via GraphQL:

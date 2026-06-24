@@ -1,4 +1,4 @@
--- SPDX-License-Identifier: MIT
+-- SPDX-License-Identifier: MPL-2.0
 -- | XML 7/44 Toolkit - Type-safe XML infiltration and exfiltration
 -- |
 -- | Named after the infamous "Line 7, Column 44" error that occurs

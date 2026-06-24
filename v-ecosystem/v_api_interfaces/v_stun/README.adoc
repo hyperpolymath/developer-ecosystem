@@ -1,5 +1,5 @@
 = v_stun
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 Session Traversal Utilities for NAT (STUN) message construction, XOR address
 mapping, fingerprint computation, and binding request/response handling for the

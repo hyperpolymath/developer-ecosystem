@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Coprocessor_Backends.res  Coprocessor backend registry and initialisation.
 //
 // Registers ALL 10 coprocessor backends from 3 consolidated files:

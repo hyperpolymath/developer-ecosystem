@@ -1,5 +1,5 @@
 = v-configmgmt
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 Configuration management connector for declarative infrastructure state
 

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MPL-2.0
 // TeaRouter_test.res - Tests for TEA router integration
 
 // Test harness

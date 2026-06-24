@@ -1,5 +1,5 @@
 = v-mqtt
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 Minimal MQTT 3.1.1 client for the V-Ecosystem API interfaces layer.
 Implements CONNECT, PUBLISH, SUBSCRIBE, UNSUBSCRIBE, PINGREQ, and DISCONNECT over raw TCP at QoS 0 (fire and forget), without external library dependencies.

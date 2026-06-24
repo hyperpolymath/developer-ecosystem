@@ -1,5 +1,5 @@
 = v-doq
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 DNS over QUIC (DoQ) connector for encrypted DNS resolution (RFC 9250)
 

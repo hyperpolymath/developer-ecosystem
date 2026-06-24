@@ -1068,5 +1068,5 @@ The AffineScript submarine damage system creates **realistic, component-based da
 **Version:** Alpha-1
 **Document Status:** Complete damage system specification
 
-SPDX-License-Identifier: AGPL-3.0-or-later
+SPDX-License-Identifier: CC-BY-SA-4.0
 SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell and contributors

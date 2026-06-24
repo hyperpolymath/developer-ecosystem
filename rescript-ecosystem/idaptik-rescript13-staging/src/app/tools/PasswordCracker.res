@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Password Cracker  brute force / dictionary attack mini-game
 // Wired into Terminal.res as the `crack` command
 

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 = hyperpolymath asdf Ecosystem
 :description: A curated collection of asdf plugins for modern development workflows
 :keywords: asdf, version manager, plugins, polyglot, development tools

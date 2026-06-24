@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MPL-2.0
 // SPDX-FileCopyrightText: 2024 Synapse Contributors
 //
 // SYNAPSE Build Configuration

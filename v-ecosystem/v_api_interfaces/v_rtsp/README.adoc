@@ -1,5 +1,5 @@
 = v_rtsp
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 RTSP protocol types and server for the V-Ecosystem API interfaces layer.
 Implements streaming session management, transport negotiation, and

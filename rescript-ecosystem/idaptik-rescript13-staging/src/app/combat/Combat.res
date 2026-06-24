@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Combat  Per-frame collision dispatcher for physical combat
 // Checks player against all entities: stomp, charge, contact damage,
 // and solid body collision (guards block player movement).

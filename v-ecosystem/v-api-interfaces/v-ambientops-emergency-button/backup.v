@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Quick backup functionality with preview mode
 // CRIT-002 fix: Path validation to prevent command injection
 

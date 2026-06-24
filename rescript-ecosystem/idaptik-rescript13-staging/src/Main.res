@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Main entry point for ReScript
 
 // Side-effect import for @pixi/sound (triggers plugin registration)

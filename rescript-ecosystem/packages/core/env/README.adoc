@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: CC-BY-SA-4.0
 // SPDX-FileCopyrightText: 2025 Hyperpolymath
 
 = rescript-env
@@ -10,7 +10,7 @@
 
 image:https://img.shields.io/badge/ReScript-v11-e6484f?logo=rescript[ReScript]
 image:https://img.shields.io/badge/Deno-Runtime-000000?logo=deno[Deno]
-image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/License-MPL--2.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
 image:https://img.shields.io/badge/RSR-Tier%201-gold[RSR Tier 1]
 image:https://img.shields.io/badge/Part%20of-ReScript%20Full%20Stack-purple[Ecosystem]
 
@@ -400,7 +400,7 @@ See link:CONTRIBUTING.md[CONTRIBUTING.md] for guidelines.
 
 == Licence
 
-SPDX-License-Identifier: MPL-2.0
+SPDX-License-Identifier: CC-BY-SA-4.0
 
 Copyright (C) 2025 Hyperpolymath
 

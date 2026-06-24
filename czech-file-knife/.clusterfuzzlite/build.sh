@@ -1,5 +1,5 @@
 #!/bin/bash -eu
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # Build script for ClusterFuzzLite
 
 cd $SRC/czech-file-knife

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MPL-2.0
 // Navigation.res - Browser History API abstraction
 
 // External bindings to browser APIs

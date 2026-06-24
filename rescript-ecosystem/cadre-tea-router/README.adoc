@@ -1,6 +1,6 @@
 = cadre-tea-router
 
-image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/License-MPL--2.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
 image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-license"]
 image:https://img.shields.io/badge/Idris-Inside-5E5086?style=flat&logo=idris&logoColor=white[Idris Inside,link="https://github.com/hyperpolymath/proven"]
 

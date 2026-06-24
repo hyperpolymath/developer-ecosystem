@@ -1,4 +1,4 @@
--- SPDX-License-Identifier: MIT
+-- SPDX-License-Identifier: MPL-2.0
 -- | Type-safe XML attributes - no more quote injection
 module Xml744.Attribute
 

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // RouteBuilder_test.res - Tests for bidirectional route builder
 
 // Test harness

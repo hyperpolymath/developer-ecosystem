@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // V-Ecosystem Neurosymbolic CI/CD intelligence with security scanning and policy enforcement Connector
 // Author: Jonathan D.A. Jewell
 //

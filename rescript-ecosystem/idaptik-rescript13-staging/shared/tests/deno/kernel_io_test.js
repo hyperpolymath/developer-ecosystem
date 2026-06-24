@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Deno tests for shared/Kernel_IO module
 // Tests path decoding, sandbox enforcement, and I/O access control
 

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // KeyboardNav — shared keyboard event handler utilities for IDApTIK screens.
 // Eliminates duplicated %raw addEventListener/removeEventListener blocks.
 

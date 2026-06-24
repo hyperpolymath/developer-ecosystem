@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // main.zig -- C-compatible FFI exports for the IDApTIK UMS level editor.
 // Author: Jonathan D.A. Jewell
 //

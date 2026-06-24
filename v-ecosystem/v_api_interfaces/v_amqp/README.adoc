@@ -1,5 +1,5 @@
 = v_amqp
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 AMQP 0-9-1 message broker protocol types for the V-Ecosystem API interfaces layer.
 Implements connection management, channel multiplexing, exchange/queue declaration,

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Screen Reader Announcer
 //
 // Dispatches messages to ARIA live regions. All functions are no-ops

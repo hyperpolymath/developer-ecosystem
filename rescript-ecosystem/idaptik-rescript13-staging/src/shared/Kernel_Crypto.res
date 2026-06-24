@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Kernel_Crypto.res  Cryptography domain kernel handler.
 //
 // Wraps Coprocessor_Security.Crypto.Backend with two layers of enforcement before

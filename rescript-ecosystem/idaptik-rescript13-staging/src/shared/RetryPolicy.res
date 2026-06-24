@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // RetryPolicy.res  Configurable retry-with-backoff for coprocessor calls.
 //
 // Provides a reusable retry primitive consumed by the resilient CoprocessorManager

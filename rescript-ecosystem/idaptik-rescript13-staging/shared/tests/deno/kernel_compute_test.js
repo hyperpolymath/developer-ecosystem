@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Deno tests for shared/Kernel_Compute module
 // Tests data limits per domain, concurrent call limits, backend dispatch
 

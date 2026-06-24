@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // CoprocessorBridge.res  Terminal ↔ Coprocessor integration layer.
 //
 // Provides the `send`, `recv`, and `coproc` terminal commands for dispatching

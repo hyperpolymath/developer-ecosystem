@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Distraction System  social engineering via PBX phone calls
 //
 // Players hack a physical PBX device to unlock `pbx call <type>` commands.

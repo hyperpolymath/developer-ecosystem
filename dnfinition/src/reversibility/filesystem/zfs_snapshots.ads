@@ -1,5 +1,5 @@
 -- SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
--- SPDX-License-Identifier: AGPL-3.0-or-later
+-- SPDX-License-Identifier: MPL-2.0
 --
 -- ZFS_Snapshots - ZFS filesystem snapshot operations
 pragma Ada_2022;

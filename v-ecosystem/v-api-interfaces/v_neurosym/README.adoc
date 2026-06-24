@@ -1,5 +1,5 @@
 = v-neurosym
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 Neurosymbolic CI/CD intelligence with security scanning and policy enforcement
 

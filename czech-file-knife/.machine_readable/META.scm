@@ -1,4 +1,4 @@
-;; SPDX-License-Identifier: MPL-2.0-or-later
+;; SPDX-License-Identifier: MPL-2.0
 ;; META.scm - Meta-level information for czech-file-knife
 ;; Media-Type: application/meta+scheme
 

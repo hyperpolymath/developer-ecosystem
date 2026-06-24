@@ -1,5 +1,5 @@
 // SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
-// SPDX-License-Identifier: MPL-2.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 //
 // Reversible Programming Languages Ecosystem Report
 // Compiled for DNFinition project evaluation

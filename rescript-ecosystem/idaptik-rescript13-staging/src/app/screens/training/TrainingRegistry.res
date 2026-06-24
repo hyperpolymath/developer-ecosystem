@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // TrainingRegistry  Breaks circular dependency between WorldMapScreen and TrainingMenuScreen
 //
 // WorldMapScreen needs to navigate to TrainingMenuScreen, but TrainingMenuScreen

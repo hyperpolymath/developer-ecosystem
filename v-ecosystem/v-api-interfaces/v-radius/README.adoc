@@ -1,5 +1,5 @@
 = v-radius
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 RADIUS (RFC 2865/2866) AAA client for the V-Ecosystem API interfaces layer.
 Supports Access-Request/Accept/Reject/Challenge, Accounting Start/Stop, attribute-value pair encoding, and MD5-based User-Password encryption.

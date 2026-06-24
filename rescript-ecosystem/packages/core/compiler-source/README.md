@@ -11,7 +11,7 @@
 <p align="center">
   <a href="https://www.npmjs.org/package/rescript"><img src="https://img.shields.io/npm/v/rescript?color=brightgreen&label=npm%20package" alt="Current npm package version." /></a>
   <a href="https://github.com/rescript-lang/rescript/actions"><img src="https://github.com//rescript-lang/rescript/workflows/CI/badge.svg" alt="Current Github Actions workflow status." /></a>
-image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/License-MPL--2.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
 
 
 ## Contents

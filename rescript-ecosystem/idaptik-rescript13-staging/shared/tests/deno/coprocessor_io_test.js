@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Deno tests for shared/Coprocessor_IO module
 // Tests the virtual filesystem: write/read/delete/list/stat, path encoding,
 // tombstone mechanism, null-separator splitting

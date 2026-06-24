@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Parser.res - Elm-style URL parser combinators
 //
 // Provides a composable, type-safe URL parser built on the combinator pattern

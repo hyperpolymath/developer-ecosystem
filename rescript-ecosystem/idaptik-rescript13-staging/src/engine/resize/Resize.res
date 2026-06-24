@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Resize calculation logic for ReScript
 
 @val @scope("window") external innerWidth: int = "innerWidth"

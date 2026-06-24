@@ -1,5 +1,5 @@
 = v-jsonrpc
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 JSON-RPC 2.0 server for the V-Ecosystem API interfaces layer.
 Implements the full JSON-RPC 2.0 specification over HTTP: single and batch request parsing, method dispatch via a pluggable handler registry, and correctly structured response/error objects with standard error codes (-32700 through -32603).

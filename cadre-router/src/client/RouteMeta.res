@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MPL-2.0
 // RouteMeta.res - Route metadata for breadcrumbs, titles, and auth guards
 
 // Core metadata type - extensible with custom data

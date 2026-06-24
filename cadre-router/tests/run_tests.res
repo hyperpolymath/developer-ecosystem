@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MPL-2.0
 // run_tests.res - Test runner for all modules
 
 Js.Console.log("+========================================+")

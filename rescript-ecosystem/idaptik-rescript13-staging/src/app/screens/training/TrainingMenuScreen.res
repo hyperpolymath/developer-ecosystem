@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // TrainingMenuScreen  Hub listing all training scenarios
 //
 // Accessible from WorldMapScreen. Lists Guard, Dog, and Full Combat

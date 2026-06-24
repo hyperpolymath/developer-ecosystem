@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 //
 // verb_governance.v — HTTP Verb Governance, Stealth Mode & Timing Jitter
 //

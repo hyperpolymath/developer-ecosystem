@@ -1,4 +1,4 @@
-{#- SPDX-License-Identifier: MIT OR AGPL-3.0-or-later -#}
+{#- SPDX-License-Identifier: MPL-2.0 OR AGPL-3.0-or-later -#}
 {#- SPDX-FileCopyrightText: 2024-2025 hyperpolymath -#}
 {#- Zola template for security.txt - place in templates/.well-known/ -#}
 {%- set security = config.extra.security -%}

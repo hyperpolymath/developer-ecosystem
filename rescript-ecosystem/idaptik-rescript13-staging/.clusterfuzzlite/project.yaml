@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 homepage: "https://github.com/hyperpolymath/idaptik"
 language: rust
 primary_contact: "j.d.a.jewell@open.ac.uk"

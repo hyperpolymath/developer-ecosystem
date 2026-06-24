@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // PlayerSprite  AnimatedSprite-based player rendering
 //
 // Drop-in alternative to PlayerGraphics. When a sprite sheet is provided

@@ -1,4 +1,4 @@
-<!-- SPDX-License-Identifier: MPL-2.0 -->
+<!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 # Developer Ecosystem
 
 **The central hub for all hyperpolymath development-workflow tools** — git operations, repository management, scaffolding, code analysis, and developer experience.

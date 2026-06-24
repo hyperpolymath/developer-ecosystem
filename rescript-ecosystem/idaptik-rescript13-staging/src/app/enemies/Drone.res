@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Drone  aerial surveillance and pursuit drones
 //
 // Drones patrol at a higher Y position (above ground level). They have:

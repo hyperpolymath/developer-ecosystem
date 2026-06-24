@@ -1,5 +1,5 @@
 = v_auth
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 Authentication server protocol types for the V-Ecosystem API interfaces layer.
 Implements multi-method authentication (Password, Token, Certificate, OAuth2, SAML,

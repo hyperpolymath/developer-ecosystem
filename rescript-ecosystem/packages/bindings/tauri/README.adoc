@@ -17,7 +17,7 @@ Type-safe ReScript bindings for https://tauri.app[Tauri 2.0] - Build native desk
 
 image:https://img.shields.io/badge/ReScript-11.0+-blue[ReScript]
 image:https://img.shields.io/badge/Tauri-2.0-purple[Tauri]
-image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/License-MPL--2.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
 
 toc::[]
 

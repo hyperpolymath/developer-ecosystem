@@ -1,5 +1,5 @@
 = v-voip
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 VoIP protocol connector for the V-Ecosystem API interfaces layer.
 Implements SIP (Session Initiation Protocol, RFC 3261) for call signalling and RTP (Real-time Transport Protocol, RFC 3550) for media transport.

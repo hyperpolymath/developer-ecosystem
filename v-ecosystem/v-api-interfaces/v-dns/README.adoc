@@ -1,5 +1,5 @@
 = v-dns
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 DNS resolver client supporting A, AAAA, CNAME, MX, TXT, SRV lookups (RFC 1035)
 

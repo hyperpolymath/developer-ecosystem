@@ -1,4 +1,4 @@
--- SPDX-License-Identifier: MIT
+-- SPDX-License-Identifier: MPL-2.0
 -- | Type-safe XML elements - properly nested, properly escaped
 module Xml744.Element
 

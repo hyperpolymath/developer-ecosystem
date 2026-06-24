@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 @manifest { version: "1.0.0", repo: "hyperpolymath/asdf-augmenters", updated: "2026-02-08" }
 @canonical-locations { scm-files: ".machine_readable/", ci-cd: ".github/workflows/" }
 @critical-invariants { rule: "SCM files in .machine_readable/ ONLY" }

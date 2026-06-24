@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Victory Screen  shown when all objectives are completed
 //
 // Green-themed success screen with "OPERATION COMPLETE" header,

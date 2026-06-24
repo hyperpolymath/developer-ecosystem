@@ -1,5 +1,5 @@
 = v-xmpp
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 XMPP protocol connector for the V-Ecosystem API interfaces layer.
 Implements the Extensible Messaging and Presence Protocol (RFC 6120 core, RFC 6121 IM and presence) over TCP with XML stream framing.

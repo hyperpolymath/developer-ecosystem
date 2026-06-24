@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // V-Ecosystem WebAssembly runtime with module loading, WASI, and component model Connector
 // Author: Jonathan D.A. Jewell
 //

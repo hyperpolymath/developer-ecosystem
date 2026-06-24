@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 //! iOS-specific error types
 
 use cfk_core::CfkError as CoreError;

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // V-Ecosystem CLI tool management connector for command dispatch, argument parsing, and subcommand routing Connector
 // Author: Jonathan D.A. Jewell
 //

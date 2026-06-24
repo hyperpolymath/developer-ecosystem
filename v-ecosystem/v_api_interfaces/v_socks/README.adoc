@@ -1,5 +1,5 @@
 = v_socks
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 SOCKS5 proxy protocol types, authentication method negotiation, connect/bind/UDP
 associate commands, and request/response handling for the V-Ecosystem API interfaces

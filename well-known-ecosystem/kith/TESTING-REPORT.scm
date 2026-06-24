@@ -1,4 +1,4 @@
-;; SPDX-License-Identifier: MPL-2.0-or-later
+;; SPDX-License-Identifier: MPL-2.0
 ;; Kith Testing Report - Guile Scheme State File
 ;; Generated: 2025-12-29
 

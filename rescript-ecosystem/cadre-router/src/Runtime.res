@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 /* Runtime.res - Production WASM runtime using rescript-wasm-runtime */
 
 module Error = {

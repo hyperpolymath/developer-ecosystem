@@ -1,5 +1,5 @@
 = v-doh
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 DNS-over-HTTPS (RFC 8484) client for encrypted DNS resolution
 

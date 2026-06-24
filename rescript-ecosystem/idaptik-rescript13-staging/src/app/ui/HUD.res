@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // HUD  In-game heads-up display overlay
 //
 // Renders persistent UI on top of WorldScreen:

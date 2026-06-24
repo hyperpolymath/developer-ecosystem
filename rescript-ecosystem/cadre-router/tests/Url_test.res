@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Url_test.res - Tests for URL parsing and serialization
 
 // Simple test harness (no external dependencies)

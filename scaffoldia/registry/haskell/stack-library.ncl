@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # Haskell library template with Stack
 
 {
@@ -24,7 +24,7 @@
       # Package definition
       "package.yaml" = {
         content = ''
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 name: {{name}}
 version: 0.1.0.0
 github: "{{github_user}}/{{name}}"
@@ -89,7 +89,7 @@ tests:
       # Stack configuration
       "stack.yaml" = {
         content = ''
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 resolver: lts-22.39
 
 packages:
@@ -112,7 +112,7 @@ Maintainer  : jonathan.jewell@open.ac.uk
 Main library module providing core functionality.
 -}
 
--- SPDX-License-Identifier: PMPL-1.0-or-later
+-- SPDX-License-Identifier: MPL-2.0
 module Lib
     ( someFunc
     , greet
@@ -139,7 +139,7 @@ License     : PMPL-1.0-or-later
 Maintainer  : jonathan.jewell@open.ac.uk
 -}
 
--- SPDX-License-Identifier: PMPL-1.0-or-later
+-- SPDX-License-Identifier: MPL-2.0
 module Main (main) where
 
 import Lib
@@ -162,14 +162,14 @@ License     : PMPL-1.0-or-later
 Maintainer  : jonathan.jewell@open.ac.uk
 -}
 
--- SPDX-License-Identifier: PMPL-1.0-or-later
+-- SPDX-License-Identifier: MPL-2.0
 {-# OPTIONS_GHC -F -pgmF hspec-discover #-}
         '',
       },
 
       "test/LibSpec.hs" = {
         content = ''
--- SPDX-License-Identifier: PMPL-1.0-or-later
+-- SPDX-License-Identifier: MPL-2.0
 module LibSpec (spec) where
 
 import Test.Hspec
@@ -190,7 +190,7 @@ spec = do
       # Justfile
       "justfile" = {
         content = ''
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # justfile - Task runner for {{name}}
 
 default:
@@ -232,7 +232,7 @@ lint:
       # HLint configuration
       ".hlint.yaml" = {
         content = ''
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 - ignore: {name: "Redundant do"}
 - ignore: {name: "Use camelCase"}
         '',
@@ -241,7 +241,7 @@ lint:
       # STATE.scm
       ".machine_readable/STATE.scm" = {
         content = ''
-;; SPDX-License-Identifier: PMPL-1.0-or-later
+;; SPDX-License-Identifier: MPL-2.0
 ;; STATE.scm - Project state for {{name}}
 ;; Media-Type: application/vnd.state+scm
 
@@ -295,9 +295,9 @@ lint:
         content = ''
 = (:project-context.name)
 
-image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0]
+image:https://img.shields.io/badge/License-MPL--2.0-blue.svg[License: PMPL-1.0]
 
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // SPDX-FileCopyrightText: {{year}} {{author}}
 
 *(:project-context.tagline)*
@@ -348,7 +348,7 @@ PMPL-1.0-or-later - see link:LICENSE.txt[LICENSE.txt]
       # CI workflow
       ".github/workflows/ci.yml" = {
         content = ''
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 name: CI
 
 on:

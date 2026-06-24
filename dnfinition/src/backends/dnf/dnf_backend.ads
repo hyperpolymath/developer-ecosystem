@@ -1,5 +1,5 @@
 -- SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
--- SPDX-License-Identifier: AGPL-3.0-or-later
+-- SPDX-License-Identifier: MPL-2.0
 --
 -- DNF_Backend - DNF package manager backend (Fedora, RHEL, etc.)
 pragma Ada_2022;

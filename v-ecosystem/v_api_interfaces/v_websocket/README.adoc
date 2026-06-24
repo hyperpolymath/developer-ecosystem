@@ -1,5 +1,5 @@
 = v-websocket
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 WebSocket server runtime for the V-Ecosystem API interfaces layer.
 Provides a room-based message broker with client lifecycle management (connect, disconnect, join, broadcast) built on V's `net.websocket` module.

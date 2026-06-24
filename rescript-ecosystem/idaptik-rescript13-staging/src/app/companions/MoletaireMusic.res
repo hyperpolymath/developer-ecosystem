@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // MoletaireMusic  Synthesised chiptune loop for Moletaire training ground
 //
 // Web Audio API procedural music. Short 8-bar loop with square + triangle

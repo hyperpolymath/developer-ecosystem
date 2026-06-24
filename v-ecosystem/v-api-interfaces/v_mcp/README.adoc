@@ -1,5 +1,5 @@
 = v-mcp
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 Model Context Protocol server-to-server tool invocation and routing
 

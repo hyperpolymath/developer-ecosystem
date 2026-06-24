@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # ClusterFuzzLite — PR fuzzing (runs on pull requests)
 name: ClusterFuzzLite PR fuzzing
 on:

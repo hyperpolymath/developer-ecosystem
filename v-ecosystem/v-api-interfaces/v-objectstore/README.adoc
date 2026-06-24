@@ -1,5 +1,5 @@
 = v-objectstore
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 S3-compatible object storage protocol connector for the V-Ecosystem API interfaces layer.
 Supports AWS S3, MinIO, and Ceph RADOS Gateway through a unified client interface.

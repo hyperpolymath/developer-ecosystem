@@ -1,5 +1,5 @@
 = v-pqc
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 Post-quantum cryptography with hybrid key exchange and signature schemes
 

@@ -1,5 +1,5 @@
 = v-rtsp
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 RTSP (RFC 7826) client for media stream control and playback
 

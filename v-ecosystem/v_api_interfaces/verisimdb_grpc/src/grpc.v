@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // VeriSimDB gRPC-Web API Gateway
 //
 // Exposes VeriSimDB hexad storage via gRPC-style RPC on port 9091:

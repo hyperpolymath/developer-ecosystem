@@ -360,5 +360,5 @@ let () =
 
 All backend code is licensed under **PMPL-1.0-or-later**.
 
-SPDX-License-Identifier: PMPL-1.0-or-later
+SPDX-License-Identifier: CC-BY-SA-4.0
 SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell and contributors

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 // Template: QUICKSTART-USER.adoc — 5-minute path to working software
 // Replace v-graphql, V Graphql — See README.adoc for details., just run, V Graphql started successfully. with actuals
 = v-graphql — Quick Start for Users

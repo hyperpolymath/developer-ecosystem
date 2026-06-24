@@ -1,5 +1,5 @@
 = v-webdav
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 WebDAV protocol connector for the V-Ecosystem API interfaces layer.
 Implements Web Distributed Authoring and Versioning (RFC 4918) over HTTP/HTTPS.

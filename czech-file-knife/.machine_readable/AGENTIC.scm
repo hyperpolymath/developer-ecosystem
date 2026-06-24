@@ -1,4 +1,4 @@
-;; SPDX-License-Identifier: MPL-2.0-or-later
+;; SPDX-License-Identifier: MPL-2.0
 ;; AGENTIC.scm - AI agent interaction patterns for czech-file-knife
 
 (define agentic-config

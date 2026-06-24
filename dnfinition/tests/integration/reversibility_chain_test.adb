@@ -1,5 +1,5 @@
 -- SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
--- SPDX-License-Identifier: AGPL-3.0-or-later
+-- SPDX-License-Identifier: MPL-2.0
 --
 -- Reversibility_Chain_Test - Integration test for install -> tx -> snapshot -> undo
 pragma Ada_2022;

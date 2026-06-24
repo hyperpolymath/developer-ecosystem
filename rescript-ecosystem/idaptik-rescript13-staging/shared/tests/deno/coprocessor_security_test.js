@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Deno tests for shared/Coprocessor_Security module
 // Tests pure crypto functions (xorFold, intTo4Bytes, lcg, xorWithKey, sign/verify)
 // and neural functions (classify, predict, anomaly, fingerprint)

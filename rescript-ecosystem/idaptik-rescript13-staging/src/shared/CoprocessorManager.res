@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // CoprocessorManager.res  High-level coprocessor API for game code.
 //
 // This is the primary entry point for all coprocessor invocations from game

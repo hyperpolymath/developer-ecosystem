@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 Module {
 	name: 'modbus'
 	description: 'Modbus TCP/RTU client for industrial PLC register and coil access.'

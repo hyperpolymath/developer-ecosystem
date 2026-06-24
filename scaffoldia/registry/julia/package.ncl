@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # Julia package template
 
 {
@@ -44,7 +44,7 @@ test = ["Test"]
       # Main module
       "src/{{module_name}}.jl" = {
         content = ''
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 module {{module_name}}
 
 export greet
@@ -71,7 +71,7 @@ end # module {{module_name}}
       # Test runner
       "test/runtests.jl" = {
         content = ''
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 using {{module_name}}
 using Test
 
@@ -87,7 +87,7 @@ end
       # Justfile
       "justfile" = {
         content = ''
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # justfile - Task runner for {{name}}
 
 default:
@@ -117,7 +117,7 @@ clean:
       # Documentation
       "docs/make.jl" = {
         content = ''
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 using {{module_name}}
 using Documenter
 
@@ -166,7 +166,7 @@ Modules = [{{module_name}}]
       # STATE.scm
       ".machine_readable/STATE.scm" = {
         content = ''
-;; SPDX-License-Identifier: PMPL-1.0-or-later
+;; SPDX-License-Identifier: MPL-2.0
 ;; STATE.scm - Project state for {{name}}
 ;; Media-Type: application/vnd.state+scm
 
@@ -220,9 +220,9 @@ Modules = [{{module_name}}]
         content = ''
 = (:project-context.name)
 
-image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0]
+image:https://img.shields.io/badge/License-MPL--2.0-blue.svg[License: PMPL-1.0]
 
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // SPDX-FileCopyrightText: {{year}} {{author}}
 
 *(:project-context.tagline)*
@@ -276,7 +276,7 @@ PMPL-1.0-or-later - see link:LICENSE.txt[LICENSE.txt]
       # CI workflow
       ".github/workflows/ci.yml" = {
         content = ''
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 name: CI
 
 on:

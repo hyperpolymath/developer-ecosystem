@@ -1,5 +1,5 @@
 = v-ptp
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 PTP (IEEE 1588) client for Precision Time Protocol clock synchronisation
 

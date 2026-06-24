@@ -1,4 +1,4 @@
-% SPDX-License-Identifier: AGPL-3.0-or-later
+% SPDX-License-Identifier: MPL-2.0
 % Security Error Knowledge Base for GitHub Workflows
 % Designed for use with Virtuoso Open Source and Qwen3 SLM augmentation
 
@@ -52,7 +52,7 @@
 
     fix('ERR-SEC-001', 'uses: ACTION@VERSION', 'uses: ACTION@SHA # VERSION').
     fix('ERR-SEC-002', '(no permissions)', 'permissions: read-all').
-    fix('ERR-LIC-001', '(file start)', '# SPDX-License-Identifier: AGPL-3.0-or-later').
+    fix('ERR-LIC-001', '(file start)', '# SPDX-License-Identifier: MPL-2.0').
     fix('ERR-WF-008', '8c9b118d446fce7e6410b6c0a3ce2f83bd04e97a', '4b6cd6190d435e7e084fb35e36a096e98506f7b9').
     fix('ERR-WF-009', 'language: actions', 'language: javascript-typescript').
     fix('ERR-WF-010', '(API call)', 'gh api --method POST repos/OWNER/REPO/pages -f build_type=workflow').

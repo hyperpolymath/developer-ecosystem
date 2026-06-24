@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // CssTransition_test.res - Tests for CSS transition delegation
 //
 // Tests the CssTransition module which offloads animation to the browser's

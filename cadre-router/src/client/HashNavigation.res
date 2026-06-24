@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MPL-2.0
 // HashNavigation.res - Hash-based routing for static hosting
 
 @val external locationHash: string = "window.location.hash"

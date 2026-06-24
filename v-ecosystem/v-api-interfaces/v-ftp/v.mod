@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 Module {
 	name: 'ftp'
 	description: 'FTP/FTPS client (RFC 959, RFC 4217) with active/passive transfer modes.'

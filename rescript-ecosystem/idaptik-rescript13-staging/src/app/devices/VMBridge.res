@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // VMBridge  Connects the game terminal to the reversible VM engine
 //
 // This is the gameVM integration layer. It provides:

@@ -1,4 +1,4 @@
-;; SPDX-License-Identifier: MPL-2.0-or-later
+;; SPDX-License-Identifier: MPL-2.0
 ;; ECOSYSTEM.scm - Ecosystem position for czech-file-knife
 ;; Media-Type: application/vnd.ecosystem+scm
 

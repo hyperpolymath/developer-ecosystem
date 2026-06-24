@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // mod.js — Deno module entry point for cadre-router
 //
 // This file enables publishing to deno.land/x

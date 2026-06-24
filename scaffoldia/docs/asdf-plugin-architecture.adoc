@@ -1,7 +1,7 @@
 = asdf Plugin Architecture Guide
 :toc:
 :toclevels: 3
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 // SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell
 
 == Overview
@@ -244,7 +244,7 @@ asdf-ui-plugin/
 [source,bash]
 ----
 #!/bin/sh
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: CC-BY-SA-4.0
 bun run "$(dirname "$0")/../dist/main.js" list-all
 ----
 
@@ -252,7 +252,7 @@ bun run "$(dirname "$0")/../dist/main.js" list-all
 
 [source,rescript]
 ----
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 // src/ListAll.res
 
 @val external argv: array<string> = "process.argv"
@@ -275,7 +275,7 @@ main()
 [source,bash]
 ----
 #!/bin/sh
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: CC-BY-SA-4.0
 
 version="$1"
 install_path="$ASDF_INSTALL_PATH"

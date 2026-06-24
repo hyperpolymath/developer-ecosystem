@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // HighwayCrossingTraining  Frogger-style Moletaire road crossing minigame
 //
 // An optional interlude for missions where Moletaire is deployed:

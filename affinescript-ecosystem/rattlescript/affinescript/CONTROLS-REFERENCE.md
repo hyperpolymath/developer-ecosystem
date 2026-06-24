@@ -553,5 +553,5 @@
 **Version:** Alpha-1
 **Status:** Basic controls implemented, combat system planned
 
-SPDX-License-Identifier: AGPL-3.0-or-later
+SPDX-License-Identifier: CC-BY-SA-4.0
 SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell

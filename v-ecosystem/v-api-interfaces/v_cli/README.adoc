@@ -1,5 +1,5 @@
 = v-cli
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 CLI tool management connector for command dispatch, argument parsing, and subcommand routing
 
