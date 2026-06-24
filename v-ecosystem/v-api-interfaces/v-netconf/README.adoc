@@ -1,5 +1,5 @@
 = v-netconf
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 NETCONF (RFC 6241) client for network device configuration management
 

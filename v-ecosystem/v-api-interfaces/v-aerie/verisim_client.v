@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 //
 // verisimdb_client.v — VerisimDB Bitemporal Client for Forensic Audit Storage
 //

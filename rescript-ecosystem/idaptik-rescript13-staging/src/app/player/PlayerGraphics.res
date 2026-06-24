@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Player Graphics - Visual representation with state-based appearance
 // Dev art: Simple geometric shapes that change based on player state
 

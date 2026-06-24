@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Trajectory Preview - Visual arc showing predicted jump path
 // Draws animated dots along the parabolic trajectory
 

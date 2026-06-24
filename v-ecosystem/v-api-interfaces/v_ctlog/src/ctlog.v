@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // V-Ecosystem Certificate Transparency log connector for SCT verification and log monitoring
 // Author: Jonathan D.A. Jewell
 //

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 // Template: QUICKSTART-USER.adoc — 5-minute path to working software
 // Replace v-grpc, V Grpc — See README.adoc for details., just run, V Grpc started successfully. with actuals
 = v-grpc — Quick Start for Users

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MPL-2.0
 // Route.res - Example route definition for a typical SPA
 //
 // This example demonstrates patterns for nafa-app-ambient style routing:

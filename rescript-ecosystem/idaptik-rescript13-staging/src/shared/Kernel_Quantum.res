@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Kernel_Quantum.res  Quantum domain kernel handler.
 //
 // Wraps Coprocessor_Security.Quantum.Backend with three layers of enforcement

@@ -1,5 +1,5 @@
 = v-snmp
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 SNMPv2c/v3 (RFC 3416/3414) network monitoring client for the V-Ecosystem API interfaces layer.
 Supports GET, GETNEXT, GETBULK, SET, and WALK operations with BER-encoded ASN.1 PDUs.

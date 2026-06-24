@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // V-Ecosystem Security information and event management with correlation and incident response Connector
 // Author: Jonathan D.A. Jewell
 //

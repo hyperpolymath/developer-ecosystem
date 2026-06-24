@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // V-Ecosystem Hardened server baseline enforcement with CIS benchmark compliance Connector
 // Author: Jonathan D.A. Jewell
 //

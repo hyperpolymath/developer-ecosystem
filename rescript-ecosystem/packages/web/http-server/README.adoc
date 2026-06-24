@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: CC-BY-SA-4.0
 // SPDX-FileCopyrightText: 2025 Hyperpolymath
 = ReScript HTTP Server
 :toc: macro
@@ -12,7 +12,7 @@ Type-safe HTTP server bindings for ReScript using Deno.serve.
 
 image:https://img.shields.io/badge/ReScript-v11-e84f4f[ReScript]
 image:https://img.shields.io/badge/Runtime-Deno-000000[Deno]
-image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/License-MPL--2.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
 
 toc::[]
 
@@ -427,7 +427,7 @@ Following the https://github.com/hyperpolymath/rescript-full-stack[ReScript Full
 
 == License
 
-SPDX-License-Identifier: MPL-2.0
+SPDX-License-Identifier: CC-BY-SA-4.0
 
 Copyright (C) 2025 Hyperpolymath
 

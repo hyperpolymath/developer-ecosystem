@@ -1,4 +1,4 @@
-;; SPDX-License-Identifier: PMPL-1.0-or-later
+;; SPDX-License-Identifier: MPL-2.0
 ;; Scaffoldia - Dialect roles and audience stance definitions
 ;; Defines how project scaffolds adapt based on target audience and purpose
 

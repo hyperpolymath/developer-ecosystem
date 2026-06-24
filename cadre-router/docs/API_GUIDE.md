@@ -59,7 +59,7 @@ switch route {
 Define your application's routes as a ReScript variant:
 
 ```rescript
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 type route =
   | Home
@@ -113,7 +113,7 @@ Parsed URL representation.
 #### Types
 
 ```rescript
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 type t = {
   path: list<string>,
@@ -179,7 +179,7 @@ Parser combinators for building type-safe URL parsers.
 #### Core Combinators
 
 ```rescript
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 let top: parser<unit>
 ```
@@ -363,7 +363,7 @@ Browser History API integration.
 #### Module Functor
 
 ```rescript
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 module Make = (Route: {
   type t
@@ -406,7 +406,7 @@ Nav.forward()
 #### Example 1: Nested Routes
 
 ```rescript
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 type route =
   | Home
@@ -439,7 +439,7 @@ let userParser =
 #### Example 2: Optional Segments
 
 ```rescript
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 type route =
   | Search(option<string>)
@@ -459,7 +459,7 @@ let searchParser =
 #### Example 3: Query Parameters
 
 ```rescript
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 type route = Posts(option<int>)  // page number
 
@@ -480,7 +480,7 @@ let postsParser =
 ### Programmatic Navigation
 
 ```rescript
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 module Nav = CadreRouter.Navigation.Make({
   type t = route
@@ -504,7 +504,7 @@ Nav.pushUrl("/about")
 ### Link Components (React)
 
 ```rescript
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 @react.component
 let make = (~route: route, ~children) => {
@@ -535,7 +535,7 @@ Cadre Router includes optional TEA integration in `src/tea/`.
 #### Tea_Router Module
 
 ```rescript
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 module Router = {
   type t<'route> = {
@@ -569,7 +569,7 @@ module Command = {
 #### Complete TEA Example
 
 ```rescript
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 // Define routes
 type route =
@@ -626,7 +626,7 @@ let subscriptions = model => {
 ### Example 1: Blog Router
 
 ```rescript
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 type route =
   | Home
@@ -673,7 +673,7 @@ let routeToString = route => switch route {
 ### Example 2: Admin Panel
 
 ```rescript
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 type route =
   | Dashboard
@@ -827,7 +827,7 @@ switch currentRoute {
 ### Testing Parsers
 
 ```rescript
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 open Test
 
 test("parses user route", () => {

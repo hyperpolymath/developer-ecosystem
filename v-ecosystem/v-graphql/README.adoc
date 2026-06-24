@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 // SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 
 = v-graphql -- GraphQL Server for V
@@ -127,6 +127,6 @@ just container-build   # Build verified OCI image
 
 == License
 
-SPDX-License-Identifier: PMPL-1.0-or-later +
+SPDX-License-Identifier: CC-BY-SA-4.0 +
 Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk> +
 See link:LICENSE[LICENSE] for the full Palimpsest License text.

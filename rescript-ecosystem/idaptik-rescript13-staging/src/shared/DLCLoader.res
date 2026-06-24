@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // DLCLoader.res  Load and parse DLC puzzle packs from JSON files
 //
 // Parses the puzzle JSON format used in dlc/idaptik-reversible/data/puzzles/

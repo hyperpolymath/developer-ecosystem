@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MPL-2.0
 // CadreRouter.res - Main entry point for client-side routing
 
 // Core modules

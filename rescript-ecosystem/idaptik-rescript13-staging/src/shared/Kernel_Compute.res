@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Kernel_Compute.res  General-purpose compute domain scheduler.
 //
 // Handles all compute-bound coprocessor domains that do not have a

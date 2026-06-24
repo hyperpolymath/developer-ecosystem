@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # Gitbot-fleet bot template (ReScript + Deno)
 
 {
@@ -79,7 +79,7 @@
       # Bot configuration type
       "src/types/Config.res" = {
         content = ''
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Config.res - Bot configuration types
 
 type confidenceLevel =
@@ -112,7 +112,7 @@ let defaultConfig: botConfig = {
       # Operation types
       "src/types/Operation.res" = {
         content = ''
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Operation.res - Operation types for bot actions
 
 type repoPath = string
@@ -142,7 +142,7 @@ type executionContext = {
       # Bot interface
       "src/Bot.res" = {
         content = ''
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Bot.res - Core bot interface
 
 open Types.Config
@@ -197,7 +197,7 @@ let execute = (
       # Strategies module
       "src/strategies/Strategy.res" = {
         content = ''
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Strategy.res - Execution strategies for different confidence levels
 
 open Types.Config
@@ -261,7 +261,7 @@ let selectStrategy = (
         content = ''
 #!/usr/bin/env -S deno run --allow-read --allow-write --allow-env --allow-net --allow-run
 
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // main.mjs - Entry point for {{name}}
 
 import * as Bot from "./Bot.mjs";
@@ -298,7 +298,7 @@ Deno.exit(await main());
       # Justfile
       "justfile" = {
         content = ''
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # justfile - Task runner for {{name}}
 
 default:
@@ -335,7 +335,7 @@ clean:
       # STATE.scm
       ".machine_readable/STATE.scm" = {
         content = ''
-;; SPDX-License-Identifier: PMPL-1.0-or-later
+;; SPDX-License-Identifier: MPL-2.0
 ;; STATE.scm - Project state for {{name}}
 ;; Media-Type: application/vnd.state+scm
 
@@ -390,7 +390,7 @@ clean:
       # ECOSYSTEM.scm
       ".machine_readable/ECOSYSTEM.scm" = {
         content = ''
-;; SPDX-License-Identifier: PMPL-1.0-or-later
+;; SPDX-License-Identifier: MPL-2.0
 ;; ECOSYSTEM.scm - Ecosystem relationships for {{name}}
 ;; Media-Type: application/vnd.ecosystem+scm
 
@@ -436,10 +436,10 @@ clean:
         content = ''
 = (:project-context.name)
 
-image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0]
+image:https://img.shields.io/badge/License-MPL--2.0-blue.svg[License: PMPL-1.0]
 image:https://img.shields.io/badge/Fleet-gitbot--fleet-orange.svg[Fleet Member]
 
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // SPDX-FileCopyrightText: {{year}} {{author}}
 
 *(:project-context.tagline)*

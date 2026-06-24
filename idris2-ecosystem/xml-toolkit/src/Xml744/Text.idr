@@ -1,4 +1,4 @@
--- SPDX-License-Identifier: MIT
+-- SPDX-License-Identifier: MPL-2.0
 -- | Type-safe XML text content - impossible to create with raw & or <
 module Xml744.Text
 

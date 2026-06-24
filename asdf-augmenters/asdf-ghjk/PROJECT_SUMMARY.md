@@ -465,7 +465,7 @@ Dual licensed under:
 
 Users may choose either license.
 
-SPDX-License-Identifier: PMPL-1.0-or-later
+SPDX-License-Identifier: CC-BY-SA-4.0
 
 ---
 

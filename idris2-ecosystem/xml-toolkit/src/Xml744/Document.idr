@@ -1,4 +1,4 @@
--- SPDX-License-Identifier: MIT
+-- SPDX-License-Identifier: MPL-2.0
 -- | XML Document handling - declarations, namespaces, the works
 module Xml744.Document
 

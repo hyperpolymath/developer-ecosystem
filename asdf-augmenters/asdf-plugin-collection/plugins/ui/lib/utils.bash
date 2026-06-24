@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 set -euo pipefail
 
 TOOL_NAME="asdf-ui"
@@ -24,7 +24,7 @@ install_version() {
 
   cat > "$install_path/bin/asdf-ui" << 'SCRIPT'
 #!/usr/bin/env bash
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # asdf-ui - Terminal UI for asdf version manager
 set -euo pipefail
 

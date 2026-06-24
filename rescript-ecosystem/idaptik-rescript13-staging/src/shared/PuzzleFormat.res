@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // PuzzleFormat.res  Shared puzzle data format
 //
 // This is the canonical puzzle format used by:

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // SafeAngle.res - Proven-safe angle calculations
 //
 // Guards against non-finite values in angle calculations to prevent

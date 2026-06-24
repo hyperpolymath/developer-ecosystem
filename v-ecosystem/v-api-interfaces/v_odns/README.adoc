@@ -1,5 +1,5 @@
 = v-odns
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 Oblivious DNS over HTTPS for privacy-preserving name resolution
 

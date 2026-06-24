@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Global Network Data - Content-Addressable Storage
 // File CONTENT stored once globally (hash-based IDs for automatic deduplication)
 // File METADATA (paths, names, permissions) stored per-device in DeviceView

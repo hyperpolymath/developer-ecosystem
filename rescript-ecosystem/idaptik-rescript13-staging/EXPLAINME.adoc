@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 = idaptik-rescript13-staging — Show Me The Receipts
 :toc:
 :icons: font

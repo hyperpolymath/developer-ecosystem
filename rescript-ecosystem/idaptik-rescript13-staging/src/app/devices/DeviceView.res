@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Device View - Per-Device Filesystem Trees
 // Each device has a filesystem tree where files reference global content IDs
 // Paths, names, permissions are device-specific

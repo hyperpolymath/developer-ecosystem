@@ -1,5 +1,5 @@
 = v_proxy
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 Reverse proxy with configurable load balancing strategies, health checking, rule-based
 routing, and backend management for the V-Ecosystem API interfaces layer.

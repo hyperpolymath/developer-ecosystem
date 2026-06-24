@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Boot Guardian - Boot health monitoring, loop detection, safe-mode triggering
 // Addresses CC-002 (unsafe shutdowns) and CC-003 (PCIe link failures causing boot loops)
 //

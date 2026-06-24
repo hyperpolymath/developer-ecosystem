@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // CombatTraining  Full combat practice with all enemy types
 //
 // Spawns a mix of guards and dogs for free-form combat practice.

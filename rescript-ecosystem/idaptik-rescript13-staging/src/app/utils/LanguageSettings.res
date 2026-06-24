@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Language Settings  persisted language preference with cached ref
 //
 // Follows the same pattern as AccessibilitySettings.res: a cached ref

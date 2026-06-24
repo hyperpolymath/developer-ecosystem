@@ -1,5 +1,5 @@
 = v-tacacs
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 TACACS+ authentication, authorization, and accounting for network devices
 

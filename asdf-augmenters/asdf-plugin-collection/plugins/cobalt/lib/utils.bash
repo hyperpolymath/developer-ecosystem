@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 set -euo pipefail
 readonly REPO="cobalt-org/cobalt.rs"
 export TOOL_NAME="cobalt" TOOL_CMD="cobalt"

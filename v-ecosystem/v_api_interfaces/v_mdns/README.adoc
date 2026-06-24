@@ -1,5 +1,5 @@
 = v_mdns
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 Multicast DNS (mDNS) service discovery, registration, browsing, and name resolution
 for the V-Ecosystem API interfaces layer. Implements zero-configuration networking

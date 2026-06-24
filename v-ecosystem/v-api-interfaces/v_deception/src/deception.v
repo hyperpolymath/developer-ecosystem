@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // V-Ecosystem Cyber deception connector for honeypots, honeytokens, and decoy services Connector
 // Author: Jonathan D.A. Jewell
 //

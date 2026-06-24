@@ -1,5 +1,5 @@
 = asdf-plugin-collection
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 :author: Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>
 
 Monorepo of asdf version manager plugins.

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // RouteBuilder.resi - Bidirectional route definitions
 //
 // This module provides a way to define routes where parsing and serialization

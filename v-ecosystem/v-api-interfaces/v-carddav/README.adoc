@@ -1,5 +1,5 @@
 = v-carddav
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 CardDAV (RFC 6352) client for contact/address book access over WebDAV
 

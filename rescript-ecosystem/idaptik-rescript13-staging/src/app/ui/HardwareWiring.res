@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // HardwareWiring  Interactive hardware wiring mini-game UI (ADR-0008)
 //
 // Renders a patch panel with RJ45/fibre/serial ports, lets the player drag

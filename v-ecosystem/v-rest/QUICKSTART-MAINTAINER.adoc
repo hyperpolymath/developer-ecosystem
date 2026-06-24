@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 // Template: QUICKSTART-MAINTAINER.adoc — packaging, deploying, and maintaining
 // Replace v-rest, {{PACKAGE_NAME}}, {{DEPS}} with actuals
 = v-rest — Quick Start for Platform Maintainers

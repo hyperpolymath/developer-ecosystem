@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // KernelMonitor.res  Coprocessor resource HUD overlay.
 //
 // Renders a compact, real-time resource dashboard for the hacked device

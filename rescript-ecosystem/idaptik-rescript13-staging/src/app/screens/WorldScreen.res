@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // World Screen - Physical world view with hacker character
 // Sidescrolling platformer with mouse-aimed jumping
 

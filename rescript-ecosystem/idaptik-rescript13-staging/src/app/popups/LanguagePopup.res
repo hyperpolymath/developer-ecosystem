@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Language Popup  select game language from Settings
 //
 // Shows a cycle button for language selection with native display names.

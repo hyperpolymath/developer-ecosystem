@@ -1,5 +1,5 @@
 = v_radius
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 RADIUS authentication and accounting protocol types for the V-Ecosystem API
 interfaces layer. Maps to `proven-servers/protocols/proven-radius`.

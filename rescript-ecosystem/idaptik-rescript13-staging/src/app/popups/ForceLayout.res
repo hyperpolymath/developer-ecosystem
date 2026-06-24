@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Force-directed graph layout with zone constraints
 // Provides automatic device positioning while respecting zone boundaries
 

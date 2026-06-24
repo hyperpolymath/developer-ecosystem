@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // VMMessageBus.res  Bridge between VM I/O ports and game events
 //
 // The VM communicates through named ports (SEND/RECV instructions).

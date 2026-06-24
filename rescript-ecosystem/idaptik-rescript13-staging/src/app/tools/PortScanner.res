@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Port Scanner  scan device ports and show open services
 // Wired into Terminal.res as the `scan` command
 

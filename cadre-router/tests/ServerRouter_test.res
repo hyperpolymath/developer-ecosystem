@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MPL-2.0
 // ServerRouter_test.res - Tests for server-side routing
 
 // Test harness

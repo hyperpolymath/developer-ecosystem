@@ -1,5 +1,5 @@
 = v-tftp
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 TFTP (RFC 1350) client for trivial file transfer over UDP
 

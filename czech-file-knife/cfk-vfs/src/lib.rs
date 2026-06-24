@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 //! FUSE virtual filesystem for Czech File Knife
 //!
 //! This module provides FUSE mounting capabilities to access

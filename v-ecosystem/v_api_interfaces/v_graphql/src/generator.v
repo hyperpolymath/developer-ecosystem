@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // V-GraphQL Generator (v-gql-gen)
 //
 // Generates verified V-lang stubs from .graphql schema files.

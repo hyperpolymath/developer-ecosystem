@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // PortNames.res  Well-known VM I/O port names
 //
 // Conventions for port names used by SEND/RECV instructions.

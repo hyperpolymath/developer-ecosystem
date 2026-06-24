@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Hitbox  Axis-aligned bounding box collision primitives
 // Lightweight rectangle-based collision for stomp, charge, and contact damage checks.
 

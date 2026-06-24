@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Deno tests for shared/Kernel_Quantum module
 // Tests quantum cooldown enforcement, energy decoherence limits, backend dispatch
 

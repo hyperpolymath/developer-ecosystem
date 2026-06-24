@@ -1,5 +1,5 @@
 = v_dns
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 DNS protocol client and server types for the V-Ecosystem API interfaces layer.
 Implements DNS query construction, response parsing, record type handling, and a

@@ -1,5 +1,5 @@
 = v_loadbalancer
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 Load balancer with multiple selection algorithms (round-robin, least-connections,
 weighted, IP hash, consistent hash), health checking, connection tracking, and

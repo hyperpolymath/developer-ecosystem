@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // SafeFloat  NaN/Infinity-guarded floating point operations
 //
 // Pure ReScript equivalent of proven's ProvenSafeFloat module. In the

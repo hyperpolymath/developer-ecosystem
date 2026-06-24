@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // V-Ecosystem Semantic Web toolkit with RDF parsing, OWL reasoning, and SHACL validation Connector
 // Author: Jonathan D.A. Jewell
 //

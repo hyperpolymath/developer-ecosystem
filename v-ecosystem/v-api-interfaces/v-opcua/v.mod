@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 Module {
 	name: 'opcua'
 	description: 'OPC UA client (IEC 62541) for industrial automation node browsing, reading, writing, and subscriptions.'

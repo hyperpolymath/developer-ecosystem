@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Diagnostics.res  Comprehensive self-diagnostic reporting for the coprocessor subsystem.
 //
 // Aggregates per-device resource usage and per-backend health statistics into

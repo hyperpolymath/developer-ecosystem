@@ -1,5 +1,5 @@
 = v-nesy
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 Neurosymbolic reasoning with hybrid neural-symbolic inference pipelines
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env julia
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # propagate-mirror-workflow.jl - Propagate multi-forge mirror workflow to all repos
 
 using Dates
 
 const MIRROR_WORKFLOW = raw"""
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # Multi-forge mirror workflow - pushes to GitLab, Bitbucket, Codeberg, SourceHut, Radicle
 name: Mirror to All Forges
 

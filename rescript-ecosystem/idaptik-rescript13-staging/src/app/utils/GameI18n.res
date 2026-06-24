@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Global i18n Wrapper  single entry point for all game translations
 //
 // All game code calls GameI18n.t("key") to get translated text.

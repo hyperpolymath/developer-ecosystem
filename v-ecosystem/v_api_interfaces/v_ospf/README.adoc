@@ -1,5 +1,5 @@
 = v_ospf
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 Open Shortest Path First (OSPF) router with area management, link-state database,
 SPF (Dijkstra) calculation, and routing table generation for the V-Ecosystem API

@@ -1,5 +1,5 @@
 = v-capnproto
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 Cap'n Proto-style zero-copy message builder for the V-Ecosystem API interfaces layer.
 Implements flat serialisation into contiguous word-aligned byte segments where deserialisation is a bounds check rather than a copy, following the core principle of the Cap'n Proto wire format.

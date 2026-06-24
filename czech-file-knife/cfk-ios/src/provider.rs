@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 //! File Provider Manager
 //!
 //! Coordinates between iOS File Provider and CFK backends.

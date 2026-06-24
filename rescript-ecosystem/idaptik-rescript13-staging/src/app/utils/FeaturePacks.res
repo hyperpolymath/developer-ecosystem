@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Feature Packs  optional gameplay expansions toggled from Settings
 //
 // Each feature pack has a localStorage key and a cached ref.

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MPL-2.0
 // NestedRoute_test.res - Tests for nested route layouts
 
 // Test harness

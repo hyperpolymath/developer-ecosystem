@@ -1,5 +1,5 @@
 = v-coap
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 CoAP (RFC 7252) client for the V-Ecosystem API interfaces layer.
 Supports CON/NON/ACK/RST message types, GET/POST/PUT/DELETE methods, content-format negotiation, observe (RFC 7641), and block-wise transfer.

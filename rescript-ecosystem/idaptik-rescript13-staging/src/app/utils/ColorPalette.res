@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Color Palette  color blind mode support
 //
 // Provides 5 named palettes (Normal + 4 color blind variants).

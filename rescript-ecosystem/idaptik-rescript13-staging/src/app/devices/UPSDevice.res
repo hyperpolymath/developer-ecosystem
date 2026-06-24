@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // UPS (Uninterruptible Power Supply) Device
 // Battery backup powered by power station, provides power to connected devices
 

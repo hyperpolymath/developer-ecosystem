@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // types.zig -- C-compatible type definitions for the IDApTIK UMS FFI.
 // Author: Jonathan D.A. Jewell
 //

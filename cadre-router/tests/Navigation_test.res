@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MPL-2.0
 // Navigation_test.res - Tests for browser navigation module
 //
 // NOTE: These tests require a browser environment or JSDOM.

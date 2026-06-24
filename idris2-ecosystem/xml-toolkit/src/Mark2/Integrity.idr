@@ -1,4 +1,4 @@
--- SPDX-License-Identifier: MIT
+-- SPDX-License-Identifier: MPL-2.0
 -- | Mark2 Integrity Module - Cryptographic chain of custody for eTMA marking
 -- |
 -- | Provides independent, tamper-evident records that can cross-check

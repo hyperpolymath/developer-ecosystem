@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Location Base - Creates location screens using WorldBuilder
 // Simply delegates to WorldBuilder.buildLocationScreen
 

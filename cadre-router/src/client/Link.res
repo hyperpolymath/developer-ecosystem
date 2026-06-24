@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MPL-2.0
 // Link.res - Type-safe link component (React-based, optional)
 
 @react.component

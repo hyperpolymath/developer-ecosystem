@@ -1,5 +1,5 @@
 = v_bfd
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 Bidirectional Forwarding Detection (BFD) session management and fast failure
 detection for the V-Ecosystem API interfaces layer. Implements session state

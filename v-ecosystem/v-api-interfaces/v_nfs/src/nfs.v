@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // V-Ecosystem Network File System v4 with Kerberos auth and delegations Connector
 // Author: Jonathan D.A. Jewell
 //

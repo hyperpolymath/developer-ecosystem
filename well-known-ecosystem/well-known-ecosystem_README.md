@@ -1,6 +1,6 @@
 # Well-Known Ecosystem
 
-[![Palimpsest-MPL License v1.0 (PMPL-1.0)](https://img.shields.io/badge/License-PMPL-1.0-green.svg)](https://choosealicense.com/licenses/mit/)
+[![Palimpsest-MPL License v1.0 (PMPL-1.0)](https://img.shields.io/badge/License-MPL--2.0-green.svg)](https://choosealicense.com/licenses/mit/)
 [![GitHub Stars](https://img.shields.io/github/stars/hyperpolymath/well-known-ecosystem.svg)](https://github.com/hyperpolymath/well-known-ecosystem/stargazers)
 [![GitHub Issues](https://img.shields.io/github/issues/hyperpolymath/well-known-ecosystem.svg)](https://github.com/hyperpolymath/well-known-ecosystem/issues)
 [![GitHub Forks](https://img.shields.io/github/forks/hyperpolymath/well-known-ecosystem.svg)](https://github.com/hyperpolymath/well-known-ecosystem/network)

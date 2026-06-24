@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Embedded Translation Data  all translatable strings for IDApTIK
 //
 // ~130 keys across 5 languages (en, es, fr, de, ja).

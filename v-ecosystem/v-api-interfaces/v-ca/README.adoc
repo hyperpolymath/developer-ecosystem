@@ -1,5 +1,5 @@
 = v-ca
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 X.509 Certificate Authority client for the V-Ecosystem API interfaces layer.
 Supports ACME (RFC 8555), EST (RFC 7030), and SCEP enrollment protocols with CSR generation, certificate issuance, renewal, revocation, and chain validation.

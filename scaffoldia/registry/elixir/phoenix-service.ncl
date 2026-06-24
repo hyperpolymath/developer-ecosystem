@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # Elixir Phoenix service template for ecosystem backends
 
 {
@@ -30,7 +30,7 @@
       # Mix project file
       "mix.exs" = {
         content = ''
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 defmodule {{module_name}}.MixProject do
   use Mix.Project
 
@@ -89,7 +89,7 @@ end
       # Application entry point
       "lib/{{name}}/application.ex" = {
         content = ''
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 defmodule {{module_name}}.Application do
   @moduledoc false
 
@@ -120,7 +120,7 @@ end
       # GraphQL schema
       "lib/{{name}}_web/schema.ex" = {
         content = ''
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 defmodule {{module_name}}Web.Schema do
   use Absinthe.Schema
 
@@ -154,7 +154,7 @@ end
       # GraphQL types
       "lib/{{name}}_web/schema/types.ex" = {
         content = ''
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 defmodule {{module_name}}Web.Schema.Types do
   use Absinthe.Schema.Notation
 
@@ -166,7 +166,7 @@ end
       # Phoenix endpoint
       "lib/{{name}}_web/endpoint.ex" = {
         content = ''
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 defmodule {{module_name}}Web.Endpoint do
   use Phoenix.Endpoint, otp_app: :{{name}}
 
@@ -210,7 +210,7 @@ end
       # Router
       "lib/{{name}}_web/router.ex" = {
         content = ''
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 defmodule {{module_name}}Web.Router do
   use {{module_name}}Web, :router
 
@@ -237,7 +237,7 @@ end
       # Repo
       "lib/{{name}}/repo.ex" = {
         content = ''
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 defmodule {{module_name}}.Repo do
   use Ecto.Repo,
     otp_app: :{{name}},
@@ -249,7 +249,7 @@ end
       # Config
       "config/config.exs" = {
         content = ''
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 import Config
 
 config :{{name}},
@@ -278,7 +278,7 @@ import_config "#{config_env()}.exs"
       # Dev config
       "config/dev.exs" = {
         content = ''
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 import Config
 
 config :{{name}}, {{module_name}}.Repo,
@@ -307,7 +307,7 @@ config :phoenix, :plug_init_mode, :runtime
       # Test config
       "config/test.exs" = {
         content = ''
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 import Config
 
 config :{{name}}, {{module_name}}.Repo,
@@ -331,7 +331,7 @@ config :phoenix, :plug_init_mode, :runtime
       # Runtime config
       "config/runtime.exs" = {
         content = ''
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 import Config
 
 if config_env() == :prod do
@@ -371,7 +371,7 @@ end
       # Justfile
       "justfile" = {
         content = ''
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # justfile - Task runner for {{name}}
 
 default:
@@ -411,7 +411,7 @@ routes:
       # STATE.scm
       ".machine_readable/STATE.scm" = {
         content = ''
-;; SPDX-License-Identifier: PMPL-1.0-or-later
+;; SPDX-License-Identifier: MPL-2.0
 ;; STATE.scm - Project state for {{name}}
 ;; Media-Type: application/vnd.state+scm
 
@@ -465,9 +465,9 @@ routes:
         content = ''
 = (:project-context.name)
 
-image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0]
+image:https://img.shields.io/badge/License-MPL--2.0-blue.svg[License: PMPL-1.0]
 
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // SPDX-FileCopyrightText: {{year}} {{author}}
 
 *(:project-context.tagline)*

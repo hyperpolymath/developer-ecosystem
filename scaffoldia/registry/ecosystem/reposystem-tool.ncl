@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # Template for reposystem ecosystem tools (git-dispatcher, git-hud style)
 
 {
@@ -28,7 +28,7 @@
       # Ecosystem-specific STATE.scm
       ".machine_readable/STATE.scm" = {
         content = ''
-;; SPDX-License-Identifier: PMPL-1.0-or-later
+;; SPDX-License-Identifier: MPL-2.0
 ;; STATE.scm - Project state for {{name}}
 ;; Media-Type: application/vnd.state+scm
 
@@ -109,7 +109,7 @@
       # ECOSYSTEM.scm with relationships
       ".machine_readable/ECOSYSTEM.scm" = {
         content = ''
-;; SPDX-License-Identifier: PMPL-1.0-or-later
+;; SPDX-License-Identifier: MPL-2.0
 ;; ECOSYSTEM.scm - Ecosystem relationships for {{name}}
 ;; Media-Type: application/vnd.ecosystem+scm
 
@@ -147,9 +147,9 @@
         content = ''
 = (:project-context.name)
 
-image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0]
+image:https://img.shields.io/badge/License-MPL--2.0-blue.svg[License: PMPL-1.0]
 
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // SPDX-FileCopyrightText: {{year}} {{author}}
 
 *(:project-context.tagline)*
@@ -217,7 +217,7 @@ _Auto-updated: (:integration.gnosis-last-render)_
       # Integration operations types
       "src/types/Integration.res" = {
         content = ''
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Integration.res - Types for ecosystem integration
 
 // Integration with reposystem

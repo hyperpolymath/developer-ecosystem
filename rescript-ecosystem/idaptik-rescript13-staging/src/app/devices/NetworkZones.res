@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Network Zone Configuration System
 // Defines network zones and their properties for scalable network management
 

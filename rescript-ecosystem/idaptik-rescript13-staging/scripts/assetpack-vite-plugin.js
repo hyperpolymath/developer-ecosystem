@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Custom AssetPack Vite plugin — uses individual pipes instead of pixiPipes
 // to avoid importing @napi-rs/woff-build (native addon incompatible with Deno).
 // No font files exist in raw-assets/, so the webfont pipe is unnecessary.

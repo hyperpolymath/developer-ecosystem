@@ -1,5 +1,5 @@
 = v-ctlog
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 Certificate Transparency log connector for SCT verification and log monitoring
 

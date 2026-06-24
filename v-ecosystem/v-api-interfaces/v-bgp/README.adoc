@@ -1,5 +1,5 @@
 = v-bgp
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 BGP-4 (RFC 4271) client for Border Gateway Protocol route exchange
 

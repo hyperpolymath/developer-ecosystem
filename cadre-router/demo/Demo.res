@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MPL-2.0
 // Demo.res - Runnable demo of cadre-router
 
 // Define a typed ID module

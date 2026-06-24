@@ -144,7 +144,7 @@ All source files contain proper SPDX headers:
 
 [source,text]
 ----
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: CC-BY-SA-4.0
 // SPDX-FileCopyrightText: 2024 Synapse Contributors
 ----
 
@@ -226,7 +226,7 @@ Most workflow files lack SPDX license headers. Only `mirror.yml` has the require
 
 [source,yaml]
 ----
-# SPDX-License-Identifier: MPL-2.0
+# SPDX-License-Identifier: CC-BY-SA-4.0
 ----
 
 ==== Issue 2: Unpinned GitHub Actions

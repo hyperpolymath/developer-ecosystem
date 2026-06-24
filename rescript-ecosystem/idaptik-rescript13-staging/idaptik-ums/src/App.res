@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 //
 // App.res — Main application entry point for the IDApTIK Universal Modding Studio.
 //

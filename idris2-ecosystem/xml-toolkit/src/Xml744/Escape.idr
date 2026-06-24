@@ -1,4 +1,4 @@
--- SPDX-License-Identifier: MIT
+-- SPDX-License-Identifier: MPL-2.0
 -- | XML Escaping - the first line of defense against 7/44 errors
 module Xml744.Escape
 

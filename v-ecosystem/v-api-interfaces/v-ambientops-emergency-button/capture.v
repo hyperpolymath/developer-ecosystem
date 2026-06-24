@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Safe diagnostic capture modules
 // Best-effort, non-destructive data collection
 // HIGH-004 fix: PII redaction applied to all captured output

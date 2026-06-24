@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Font Scale Helper
 //
 // Multiplies pixel font sizes by the user's font scale preference.

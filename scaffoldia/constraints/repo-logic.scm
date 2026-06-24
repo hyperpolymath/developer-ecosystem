@@ -1,4 +1,4 @@
-;; SPDX-License-Identifier: PMPL-1.0-or-later
+;; SPDX-License-Identifier: MPL-2.0
 ;; Scaffoldia - Repository structure logic using MiniKanren
 ;; This module defines relational constraints for validating project structures
 

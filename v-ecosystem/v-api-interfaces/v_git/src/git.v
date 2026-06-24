@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // V-Ecosystem Git protocol connector for repository operations, ref management, and object transfer Connector
 // Author: Jonathan D.A. Jewell
 //

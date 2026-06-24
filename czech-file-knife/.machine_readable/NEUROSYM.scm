@@ -1,4 +1,4 @@
-;; SPDX-License-Identifier: MPL-2.0-or-later
+;; SPDX-License-Identifier: MPL-2.0
 ;; NEUROSYM.scm - Neurosymbolic integration config for czech-file-knife
 
 (define neurosym-config

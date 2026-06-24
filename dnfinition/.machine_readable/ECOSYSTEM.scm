@@ -1,5 +1,5 @@
 ;; SPDX-FileCopyrightText: 2025 Jonathan D.A. Jewell
-;; SPDX-License-Identifier: MPL-2.0-or-later
+;; SPDX-License-Identifier: MPL-2.0
 ;; ECOSYSTEM.scm - Project relationships (pruned 2025-12-30)
 
 (ecosystem

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 @@ocaml.doc("URL representation and utilities")
 
 @ocaml.doc("Represents a parsed URL")

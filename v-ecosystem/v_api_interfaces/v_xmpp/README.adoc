@@ -1,5 +1,5 @@
 = v_xmpp
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 XMPP protocol types and server for the V-Ecosystem API interfaces layer.
 Implements stanza handling (message, presence, IQ), JID parsing, presence

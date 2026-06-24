@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Firewall Device  ACL rules, packet filtering, bypass challenge mechanics
 
 open Pixi

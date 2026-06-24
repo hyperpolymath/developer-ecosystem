@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MPL-2.0
 // mod.ts — Deno module entry point for cadre-router
 //
 // This file enables publishing to deno.land/x

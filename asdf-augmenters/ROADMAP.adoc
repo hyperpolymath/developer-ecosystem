@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 = asdf-augmenters Roadmap
 
 Meta-tools that enhance the asdf version manager. Completion: 45%.

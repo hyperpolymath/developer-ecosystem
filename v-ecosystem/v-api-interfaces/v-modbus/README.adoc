@@ -1,5 +1,5 @@
 = v-modbus
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 Modbus protocol connector for the V-Ecosystem API interfaces layer.
 Implements Modbus TCP (MBAP framing over TCP/IP) with support for all four data object types: coils, discrete inputs, holding registers, and input registers.

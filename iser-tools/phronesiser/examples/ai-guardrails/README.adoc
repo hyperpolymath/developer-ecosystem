@@ -1,5 +1,5 @@
 = AI Guardrails Example
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 This example demonstrates a medical triage AI agent with provably safe ethical
 constraints. The `phronesiser.toml` manifest encodes deontic logic rules:

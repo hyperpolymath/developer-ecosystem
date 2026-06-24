@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // build.zig -- Build configuration for IDApTIK UMS Zig FFI shared library.
 // Author: Jonathan D.A. Jewell
 //

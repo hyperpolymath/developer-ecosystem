@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Data Files  collectible lore documents found on hacked devices
 //
 // World-building through gameplay: players discover emails, memos, chat

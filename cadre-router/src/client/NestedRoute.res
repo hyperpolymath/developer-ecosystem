@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MPL-2.0
 // NestedRoute.res - React Router-style nested layouts with outlets
 
 // A nested route tree structure

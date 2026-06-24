@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MPL-2.0
 // Link.resi - Type-safe link component (React-based, optional)
 //
 // NOTE: This module requires @rescript/react as a peer dependency.

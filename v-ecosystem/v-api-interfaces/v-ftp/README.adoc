@@ -1,5 +1,5 @@
 = v-ftp
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 FTP/FTPS protocol connector for the V-Ecosystem API interfaces layer.
 Implements the File Transfer Protocol (RFC 959) with TLS upgrade via AUTH TLS (RFC 4217).

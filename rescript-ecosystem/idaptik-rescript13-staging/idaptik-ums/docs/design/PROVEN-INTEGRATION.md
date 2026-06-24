@@ -1,6 +1,6 @@
 # Proven Repo Integration for UMS Level Validation
 
-SPDX-License-Identifier: PMPL-1.0-or-later
+SPDX-License-Identifier: CC-BY-SA-4.0
 
 ## Overview
 

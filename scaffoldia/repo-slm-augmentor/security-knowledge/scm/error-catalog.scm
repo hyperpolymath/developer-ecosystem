@@ -1,4 +1,4 @@
-; SPDX-License-Identifier: MPL-2.0-or-later
+; SPDX-License-Identifier: MPL-2.0
 ; Security Error Catalog for GitHub Workflows
 ; Designed for Datalog reasoning and Qwen3 SLM augmentation
 
@@ -196,5 +196,5 @@
 
     (ERR-LIC-001
      pattern: "(first line of file)"
-     replacement: "# SPDX-License-Identifier: AGPL-3.0-or-later"
+     replacement: "# SPDX-License-Identifier: MPL-2.0"
      position: "line 1")))

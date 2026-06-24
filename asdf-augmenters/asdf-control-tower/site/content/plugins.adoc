@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 = asdf Plugins
 :description: Overview of hyperpolymath asdf plugins
 :keywords: asdf plugins, version management, development tools

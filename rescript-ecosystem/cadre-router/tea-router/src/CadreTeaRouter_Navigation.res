@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 @@ocaml.doc("Navigation commands for TEA applications")
 
 open CadreTeaRouter_Url

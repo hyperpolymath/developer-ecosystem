@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // TrainingBase  Shared arena builder for training/tutorial screens
 //
 // Builds a minimal platformer arena (flat ground, walls) with:

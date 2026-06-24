@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Shared Laptop State - Process Manager Only
 // Filesystem moved to GlobalNetworkData for unified architecture
 // Uses unified Storage model (Gq) - inspired by Uplink

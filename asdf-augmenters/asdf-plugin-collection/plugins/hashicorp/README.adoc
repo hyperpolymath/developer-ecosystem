@@ -1,6 +1,6 @@
 = asdf-hashicorp
 
-image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/License-MPL--2.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
 :author: hyperpolymath
 :url-asdf: https://asdf-vm.com
 :url-repo: https://github.com/hyperpolymath/asdf-hashicorp-plugin
@@ -57,4 +57,4 @@ asdf global vault 1.15.0
 
 == License
 
-SPDX-License-Identifier: PMPL-1.0-or-later
+SPDX-License-Identifier: CC-BY-SA-4.0

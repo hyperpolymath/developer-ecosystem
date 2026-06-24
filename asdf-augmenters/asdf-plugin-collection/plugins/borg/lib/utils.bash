@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# SPDX-License-Identifier: AGPL-3.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # Philosophical overlay: https://github.com/hyperpolymath/palimpsest-licence
 set -euo pipefail
 readonly REPO="borgbackup/borg"

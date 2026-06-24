@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // DeviceType.res  Shared device type definitions
 //
 // Every network device in the game world has a type. This is shared between

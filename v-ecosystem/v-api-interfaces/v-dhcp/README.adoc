@@ -1,5 +1,5 @@
 = v-dhcp
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: CC-BY-SA-4.0
 
 DHCPv4 (RFC 2131) client for the V-Ecosystem API interfaces layer.
 Implements the full DORA handshake (Discover/Offer/Request/Acknowledge), lease renewal and release, INFORM for stateless configuration, and DHCP option parsing/encoding (RFC 2132).

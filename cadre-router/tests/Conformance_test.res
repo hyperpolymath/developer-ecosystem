@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MPL-2.0
 // Conformance_test.res - Route matching conformance tests and CRDT state claims
 
 // =============================================================================

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // PhoenixSocket.res  Phoenix Channel protocol client for browser WebSocket
 //
 // Implements the Phoenix V2 WebSocket wire protocol:

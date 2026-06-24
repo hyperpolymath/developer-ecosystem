@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
 // Kernel_IO.res  IO domain kernel handler with per-device sandbox enforcement.
 //
 // Wraps Coprocessor_IO.executeForDevice with a path-sandbox check before

@@ -78,7 +78,7 @@ just clean                   # Remove build artifacts
 
 - **SPDX Headers**: Every `.zig` file starts with:
   ```zig
-  // SPDX-License-Identifier: MPL-2.0
+  // SPDX-License-Identifier: CC-BY-SA-4.0
   // SPDX-FileCopyrightText: 2024 Synapse Contributors
   ```
 - **Formatting**: Run `zig fmt src/` before committing
