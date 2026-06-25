@@ -59,7 +59,7 @@ jobs:
       contents: read
     steps:
       - name: Download SARIF from scorecard job
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v5.0.0
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v5.0.0
         with:
           name: scorecard-results
       - name: Check minimum score
