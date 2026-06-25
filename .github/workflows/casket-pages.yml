@@ -23,7 +23,7 @@ jobs:
           repository: hyperpolymath/casket-ssg
           path: .casket-ssg
       - name: Setup GHCup
-        uses: haskell-actions/setup@ec49483bfc012387b227434aba94f59a6ecd0900 # v2
+        uses: haskell-actions/setup@cd0d9bdd65b20557f41bea4dbe43d0b5fbbfe553 # v2
         with:
           ghc-version: '9.8.2'
           cabal-version: '3.10'
