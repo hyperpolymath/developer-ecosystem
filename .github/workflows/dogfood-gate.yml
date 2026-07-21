@@ -75,7 +75,7 @@ jobs:
           fi
       - name: Validate K9 contracts
         if: steps.detect.outputs.k9_count > 0
-        uses: hyperpolymath/k9-validate-action@01ab911f7d37249ef77d35f9748969a2c29d673b # main
+        uses: hyperpolymath/k9-validate-action@08958c9bab64f9941a85938a78122a0d4a3058e8 # main
         with:
           path: '.'
           strict: 'false'
