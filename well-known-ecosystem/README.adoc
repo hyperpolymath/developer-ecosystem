@@ -194,7 +194,7 @@ This repository includes comprehensive policy enforcement:
 | `rsr-antipattern.yml`
 | Blocks TypeScript, Go, npm lockfiles; enforces RSR stack
 
-| `npm-bun-blocker.yml`
+| `runtime-policy.yml`
 | Blocks npm/bun artifacts
 
 | `guix-nix-policy.yml`

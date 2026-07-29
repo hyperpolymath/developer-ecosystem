@@ -215,7 +215,7 @@ The parser correctly:
 |security-policy.yml|Security policy check|Present
 |jekyll-gh-pages.yml|GitHub Pages|Present
 |instant-sync.yml|Instant sync|Present
-|npm-bun-blocker.yml|Block npm/bun usage|Present
+|runtime-policy.yml|Block npm/bun usage|Present
 |===
 
 === Issues Identified

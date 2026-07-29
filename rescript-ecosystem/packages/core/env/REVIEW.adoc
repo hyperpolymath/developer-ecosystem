@@ -15,8 +15,7 @@ This repository is the **RSR (Rhodium Standard Repository) Template** - a canoni
 
 The repository includes robust CI/CD workflows for enforcing coding standards:
 
-* **ts-blocker.yml** (`.github/workflows/ts-blocker.yml:1`) - Blocks TypeScript/JavaScript additions, enforcing ReScript adoption
-* **npm-bun-blocker.yml** (`.github/workflows/npm-bun-blocker.yml:1`) - Blocks npm/bun artifacts, requiring Deno
+* **runtime-policy.yml** (`.github/workflows/runtime-policy.yml:1`) - Blocks npm/bun artifacts, requiring Deno
 * **rsr-antipattern.yml** (`.github/workflows/rsr-antipattern.yml:1`) - Comprehensive anti-pattern checks (no Go, no Python except SaltStack)
 * **guix-nix-policy.yml** (`.github/workflows/guix-nix-policy.yml:1`) - Enforces Guix-primary package management
 
