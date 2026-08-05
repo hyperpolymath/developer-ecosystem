@@ -316,7 +316,7 @@ watch:
     rescript build -w
 
 run REPO *ARGS:
-    deno run --allow-read --allow-write --allow-env --allow-net --allow-run src/main.mjs {{REPO}} {{ARGS}}
+    deno run --allow-read --allow-write --allow-env --allow-net --allow-run src/main.mjs developer-ecosystem {{ARGS}}
 
 test:
     deno test --allow-read --allow-write --allow-env --allow-net tests/

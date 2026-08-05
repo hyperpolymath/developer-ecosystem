@@ -152,4 +152,4 @@ _structured data_ for tooling. Both should agree.
 
 == Copyright
 
-Copyright (c) {{CURRENT_YEAR}} hyperpolymath (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+Copyright (c) 2026 hyperpolymath (hyperpolymath) <j.d.a.jewell@open.ac.uk>

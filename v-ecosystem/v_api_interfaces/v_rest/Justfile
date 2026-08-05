@@ -15,7 +15,7 @@ set dotenv-load := true
 set positional-arguments := true
 
 # Project metadata — customize these
-project := "{{PROJECT_NAME}}"
+project := "Developer Ecosystem"
 version := "0.1.0"
 tier := "infrastructure"  # 1 | 2 | infrastructure
 maint_script := "scripts/maintenance/run-maintenance.sh"

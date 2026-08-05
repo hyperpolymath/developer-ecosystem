@@ -62,7 +62,7 @@ skip_test() {
 }
 
 echo "═══════════════════════════════════════════════════════════════"
-echo "  {{PROJECT}} — End-to-End Tests"
+echo "  DEVELOPER_ECOSYSTEM — End-to-End Tests"
 echo "═══════════════════════════════════════════════════════════════"
 echo ""
 
@@ -122,7 +122,7 @@ echo ""
 # else
 #     STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$VERISIM_URL/api/v1/hexads" \
 #         -H "Content-Type: application/json" \
-#         -d '{"tool":"{{PROJECT}}","modality":"document","content":"e2e test"}')
+#         -d '{"tool":"DEVELOPER_ECOSYSTEM","modality":"document","content":"e2e test"}')
 #     check_status "hexad POST" "201" "$STATUS"
 # fi
 

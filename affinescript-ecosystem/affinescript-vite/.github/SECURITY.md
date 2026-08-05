@@ -12,7 +12,7 @@ Replace all {{PLACEHOLDER}} values with your information:
   {{PGP_FINGERPRINT}}  - Your PGP key fingerprint (40 chars, no spaces)
   {{PGP_KEY_URL}}      - URL to your public PGP key
   https://github.com/hyperpolymath/affinescript-vite          - Your website/domain
-  {{CURRENT_YEAR}}     - Current year for copyright
+  2026     - Current year for copyright
 
 Optional: Remove sections that don't apply (e.g., PGP if you don't use it)
 ============================================================================
@@ -403,4 +403,4 @@ This security policy may be updated from time to time. Significant changes will 
 
 ---
 
-<sub>Last updated: {{CURRENT_YEAR}} · Policy version: 1.0.0</sub>
+<sub>Last updated: 2026 · Policy version: 1.0.0</sub>

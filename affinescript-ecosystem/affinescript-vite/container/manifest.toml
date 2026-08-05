@@ -17,11 +17,11 @@ tracking.
 """
 license = "{{LICENSE}}"
 homepage = "https://github.com/hyperpolymath/affinescript-vite"
-maintainer = "hyperpolymath <{{EMAIL}}>"
+maintainer = "hyperpolymath <j.d.a.jewell@open.ac.uk>"
 
 [provenance]
 upstream = "https://github.com/hyperpolymath/affinescript-vite"
-import_date = {{CURRENT_DATE}}T00:00:00Z
+import_date = 2026-08-05T00:00:00Z
 
 [dependencies]
 runtime = ["ca-certificates", "curl"]

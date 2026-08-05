@@ -1,6 +1,6 @@
 = Architecture Decision Record: 0001-adopt-rsr-standard
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
-<!-- Copyright (c) {{CURRENT_YEAR}} Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk> -->
+<!-- Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk> -->
 
 # 1. Adopt Rhodium Standard Repository (RSR) Template
 

@@ -1,19 +1,19 @@
 # SPDX-License-Identifier: MPL-2.0
-# SPDX-FileCopyrightText: 2026 {{AUTHOR}} ({{OWNER}}) <{{AUTHOR_EMAIL}}>
+# SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 # ANCHOR.a2ml — satellite anchor template. Copy into a K9 member repo at
 # .machine_readable/anchors/ANCHOR.a2ml and fill the {{...}} fields.
 
 [metadata]
 version = "1.0.0"
-last-updated = "{{CURRENT_DATE}}"
+last-updated = "2026-08-05"
 
 [anchor]
 schema = "hyperpolymath.anchor/1"
-repo = "{{OWNER}}/{{REPO}}"
+repo = "hyperpolymath/developer-ecosystem"
 authority = "satellite"
 
 [identity]
-project = "{{PROJECT_NAME}}"
+project = "Developer Ecosystem"
 kind = "{{PROJECT_KIND}}"            # implementation | tooling | ci | examples
 one-sentence = "{{PROJECT_PURPOSE}}"
 

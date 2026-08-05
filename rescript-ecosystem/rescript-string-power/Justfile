@@ -149,8 +149,8 @@ ci: test
 
 # Show project info
 info:
-    @echo "Project:     {{REPO}}"
-    @echo "Owner:       {{OWNER}}"
+    @echo "Project:     developer-ecosystem"
+    @echo "Owner:       hyperpolymath"
     @echo "CRG Grade:   $(just crg-grade)"
     @echo "Test targets: 6 (T1 structure, T2 unit, T3 e2e, T4 property, T5 bench, T6 lint)"
 

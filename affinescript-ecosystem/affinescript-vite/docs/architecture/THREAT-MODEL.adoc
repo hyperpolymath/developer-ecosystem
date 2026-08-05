@@ -1,6 +1,6 @@
 = Threat Model
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
-<!-- Copyright (c) {{CURRENT_YEAR}} hyperpolymath (hyperpolymath) <j.d.a.jewell@open.ac.uk> -->
+<!-- Copyright (c) 2026 hyperpolymath (hyperpolymath) <j.d.a.jewell@open.ac.uk> -->
 
 # Threat Model: AffineScript-Vite
 
@@ -10,7 +10,7 @@
 |---------------|--------------------------------|
 | Project       | AffineScript-Vite               |
 | Version       | 1.0                            |
-| Last Reviewed | {{DATE}}                       |
+| Last Reviewed | 2026-08-05                       |
 | Author        | hyperpolymath                     |
 | Methodology   | STRIDE                         |
 

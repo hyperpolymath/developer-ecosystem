@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MPL-2.0
-# Copyright (c) {{CURRENT_YEAR}} hyperpolymath (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+# Copyright (c) 2026 hyperpolymath (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 #
 # Containerfile for AffineScript-Vite
 # Build: podman build -t affinescript-vite:latest -f Containerfile .

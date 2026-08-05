@@ -1,4 +1,4 @@
-# Proof Status — {{PROJECT}}
+# Proof Status — DEVELOPER_ECOSYSTEM
 <!-- SPDX-License-Identifier: CC-BY-SA-4.0 -->
 <!-- Template: rsr-template-repo/PROOF-STATUS.md -->
 <!-- Tracks proof completion. Requirements defined in PROOF-NEEDS.md -->

@@ -9,7 +9,7 @@
 |---------------|--------------------------------|
 | Project       | v-grpc               |
 | Version       | 1.0                            |
-| Last Reviewed | {{DATE}}                       |
+| Last Reviewed | 2026-08-05                       |
 | Author        | Jonathan D.A. Jewell                     |
 | Methodology   | STRIDE                         |
 

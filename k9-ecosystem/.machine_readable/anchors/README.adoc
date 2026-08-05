@@ -23,7 +23,7 @@ mechanism that keeps them from drifting silently.
 | Spec prose | satellite cites `spec-version` | anchor-drift job: pinned version must exist upstream
 | Conformance fixtures | submodule / published artifact | conformance run: impl output != `expected.json` -> red
 | Derived grammars (tree-sitter, TextMate, JSON schema) | generated from the spec | regenerate-&-diff job: stale -> red
-| Vendored governance | stamped via `{{OWNER}}` templating + content hash | `a2ml-validate-action` re-stamp, fail on hash diff
+| Vendored governance | stamped via `hyperpolymath` templating + content hash | `a2ml-validate-action` re-stamp, fail on hash diff
 |===
 
 The enforcer is `hyperpolymath/k9-validate-action`: an *anchor-drift* job asserts

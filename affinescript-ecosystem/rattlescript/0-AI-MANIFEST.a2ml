@@ -5,7 +5,7 @@ This is the root AI manifest for the template repository.
 ## Template Status
 
 This repository intentionally contains template placeholders before bootstrap.
-Examples: `hyperpolymath`, `rattlescript`, `{{PROJECT_NAME}}`, `[YOUR-REPO-NAME]`.
+Examples: `hyperpolymath`, `rattlescript`, `Developer Ecosystem`, `[YOUR-REPO-NAME]`.
 
 Do not invent project-specific values unless the operator runs template
 initialization (for example `just init`) or explicitly provides values.
