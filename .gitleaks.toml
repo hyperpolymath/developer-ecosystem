@@ -1,0 +1,68 @@
+# SPDX-License-Identifier: MPL-2.0
+#
+# Gitleaks configuration — hyperpolymath/developer-ecosystem
+#
+# EXTENDS THE ESTATE BASELINE, it does not replace it.
+# `.gitleaks-estate.toml` is staged into the workspace root by
+# hyperpolymath/standards `.github/workflows/secret-scanner-reusable.yml`
+# before the scan runs. gitleaks resolves `[extend] path` against the process
+# CWD (verified — NOT relative to this file), which is the repository root.
+#
+# WHY THIS FILE IS LOCAL RATHER THAN IN THE ESTATE BASELINE.
+# Every entry below is a blind spot. Held here, it blinds this repository only,
+# and the justification sits beside the code it describes. Promoted to the
+# estate baseline it would blind all 400+ repositories — so the baseline keeps
+# only entries that are true everywhere (lockfiles, vendored bundles, published
+# protocol constants).
+#
+# Each entry names WHAT THE VALUE IS. "This file is noisy" is not a reason; if
+# an entry cannot say what the matched value actually is, the secret should be
+# removed from the tree instead.
+#
+# Every finding suppressed here was triaged on 2026-08-06 by reading the
+# matched line with the value redacted. Before adding an entry, plant a
+# realistic secret in the same path and confirm it is STILL detected.
+
+[extend]
+path = ".gitleaks-estate.toml"
+
+[allowlist]
+description = "hyperpolymath/developer-ecosystem: locally justified exemptions, extending the estate baseline"
+
+
+paths = [
+  # Vendored upstream ReScript compiler, including its own
+  # tests/syntax_tests idempotency corpus and cli/common/minisocket.js.
+  # Third-party source held for reference; not estate code and not editable
+  # here.
+  '''(^|/)rescript-ecosystem/(rescript|packages/core/compiler-source)/''',
+
+  # Test tree of the shellstate component, including a fixture literally
+  # named secret_value.toml — inputs to a manifest/invariant test.
+  '''(^|/)shellstate/test/''',
+
+  # Documentation. The match is an illustrative connection string in a
+  # distributed-filesystem explainer.
+  '''(^|/)czech-file-knife/docs/''',
+
+  # A DETECTOR definition: the flagged line is the literal '-----BEGIN
+  # PRIVATE KEY-----' inside a list of patterns this contract searches FOR.
+  # The scanner matched the rule, not a key.
+  '''(^|/)well-known-ecosystem/contracts/VALIDATION-RULES\.scm$''',
+
+  # Test file for the emergency-capture path; the values are synthetic
+  # capture identifiers.
+  '''(^|/)v-ecosystem/v-api-interfaces/v-ambientops-emergency-room/capture_test\.v$''',
+
+  # Staging UI source. Both matches are explicitly placeholder-shaped
+  # illustrative values in device/network mock data, verified by reading the
+  # lines.
+  '''(^|/)rescript-ecosystem/idaptik-rescript13-staging/src/app/devices/(DeviceView|GlobalNetworkData)\.res$''',
+
+  # WebSocket implementation. The match is the base64 string
+  # dGhlIHNhbXBsZSBub25jZQ==, which decodes to the ASCII text 'the sample
+  # nonce' — the example handshake value printed in RFC 6455 s1.3. A
+  # published protocol constant.
+  '''(^|/)v-ecosystem/v-api-interfaces/v_ws/src/ws\.v$''',
+
+]
