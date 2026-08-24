@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: MPL-2.0
+// Ported via Harvard Engine mechanical processor
+
+module ModuleResolution2.gen;
+
+// TODO: Complete semantic implementation
+
+/* === ORIGINAL TYPESCRIPT CONTEXT ===
+/* TypeScript file generated from ModuleResolution2.res by genType. */
+
+/* eslint-disable */
+/* tslint:disable */
+
+import type {t1 as ModuleResolution1_t1} from './ModuleResolution1.gen';
+
+export type t2 = { readonly dependency: ModuleResolution1_t1 };
+
+==================================== */

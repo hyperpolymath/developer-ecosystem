@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: MPL-2.0
+// Ported via Harvard Engine mechanical processor
+
+module LetPrivate.gen;
+
+// TODO: Complete semantic implementation
+
+/* === ORIGINAL TYPESCRIPT CONTEXT ===
+/* TypeScript file generated from LetPrivate.res by genType. */
+
+/* eslint-disable */
+/* tslint:disable */
+
+import * as LetPrivateJS from './LetPrivate.res.js';
+
+export const y: number = LetPrivateJS.y as any;
+
+==================================== */

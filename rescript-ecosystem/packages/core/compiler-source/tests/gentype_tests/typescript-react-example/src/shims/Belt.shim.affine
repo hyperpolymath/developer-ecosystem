@@ -1,0 +1,13 @@
+// SPDX-License-Identifier: MPL-2.0
+// Ported via Harvard Engine mechanical processor
+
+module Belt.shim;
+
+// TODO: Complete semantic implementation
+
+/* === ORIGINAL TYPESCRIPT CONTEXT ===
+import type { list } from "./RescriptPervasives.shim";
+
+export type List_t<t> = list<t>;
+
+==================================== */

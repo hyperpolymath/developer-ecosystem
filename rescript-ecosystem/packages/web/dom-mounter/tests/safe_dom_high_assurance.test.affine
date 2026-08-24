@@ -1,0 +1,53 @@
+// SPDX-License-Identifier: MPL-2.0
+// Ported via Harvard Engine mechanical processor
+
+module safe_dom_high_assurance.test;
+
+// TODO: Complete semantic implementation
+
+/* === ORIGINAL TYPESCRIPT CONTEXT ===
+import { assertEquals, assert } from "https://deno.land/std@0.211.0/testing/asserts.ts";
+import * as SafeDOM from "../src/SafeDOM.res.js";
+
+const { ProvenSelector, ProvenHTML, MountTracer } = SafeDOM as typeof SafeDOM & {
+  MountTracer: {
+    entries: () => Array<{ event: string; detail: string; timestampMs: number }>;
+    clear: () => void;
+    latest: () => { TAG: "Some"; _0: { event: string } } | { TAG: "None" };
+  };
+  ProvenSelector: {
+    validate: (selector: string) => { TAG: string; _0: unknown };
+  };
+  ProvenHTML: {
+    validate: (text: string) => { TAG: string; _0: unknown };
+  };
+};
+
+Deno.test("selector validation rejects empty selectors and traces outcome", () => {
+  MountTracer.clear();
+  const result = ProvenSelector.validate("" as string);
+  assertEquals(result.TAG, "Error");
+  const entries = MountTracer.entries();
+  assert(entries.length >= 1);
+  assert(entries.some((entry) => entry.event === "selector-validation"));
+});
+
+Deno.test("proven HTML validation rejects unbalanced markup and logs detail", () => {
+  MountTracer.clear();
+  const html = "<div><span></div>";
+  const result = ProvenHTML.validate(html);
+  assertEquals(result.TAG, "Error");
+  const latest = MountTracer.latest();
+  assert(latest.TAG === "Some");
+  assert(latest._0.event === "html-validation");
+});
+
+Deno.test("mount tracer records success for valid selectors", () => {
+  MountTracer.clear();
+  const result = ProvenSelector.validate("#app");
+  assertEquals(result.TAG, "Ok");
+  const entries = MountTracer.entries();
+  assert(entries[entries.length - 1].detail.includes("selector valid"));
+});
+
+==================================== */

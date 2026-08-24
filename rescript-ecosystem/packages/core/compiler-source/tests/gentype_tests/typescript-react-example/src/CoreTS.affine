@@ -1,0 +1,19 @@
+// SPDX-License-Identifier: MPL-2.0
+// Ported via Harvard Engine mechanical processor
+
+module CoreTS;
+
+// TODO: Complete semantic implementation
+
+/* === ORIGINAL TYPESCRIPT CONTEXT ===
+export declare function someFunWithNullThenOptionalArgs(
+  nullable: null | string,
+  app?: string,
+): string;
+
+export declare function someFunWithNullUndefinedArg(
+  nullUndefined: null | undefined | string,
+  other: number,
+): string;
+
+==================================== */

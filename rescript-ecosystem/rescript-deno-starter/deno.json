@@ -1,8 +1,0 @@
-{
-  "name": "@hyperpolymath/rescript-deno",
-  "version": "1.0.0",
-  "exports": "./src/cli.js",
-  "tasks": {
-    "start": "deno run --allow-run --allow-read --allow-write --allow-env --allow-net src/cli.js"
-  }
-}

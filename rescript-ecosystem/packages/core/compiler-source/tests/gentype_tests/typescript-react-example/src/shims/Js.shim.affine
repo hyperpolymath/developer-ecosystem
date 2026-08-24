@@ -1,0 +1,15 @@
+// SPDX-License-Identifier: MPL-2.0
+// Ported via Harvard Engine mechanical processor
+
+module Js.shim;
+
+// TODO: Complete semantic implementation
+
+/* === ORIGINAL TYPESCRIPT CONTEXT ===
+export type Json_t = unknown;
+
+export type t = unknown;
+
+export type TypedArray2_Uint8Array_t = Uint8Array;
+
+==================================== */
