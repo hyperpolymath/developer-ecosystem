@@ -1,47 +1,151 @@
-// SPDX-License-Identifier: CC-BY-SA-4.0
-= Maintainers
-:toc: preamble
+== Maintainers
 
-This document lists the maintainers of this project and their responsibilities.
+This document lists the maintainers of the asdf-acceleration-middleware
+project.
 
-== Current Maintainers
+=== Current Maintainers
 
-[cols="2,3,2",options="header"]
-|===
-| Name | Role | Contact
+==== Core Team
 
-| Jonathan D.A. Jewell
-| Lead Maintainer
-| https://github.com/hyperpolymath[@hyperpolymath]
-|===
+*Lead Maintainer* - Role: Project leadership, architecture decisions,
+release management - Responsibilities: Strategic direction, final
+approval on major changes - Contact: See `+.well-known/security.txt+`
 
-== Responsibilities
+==== Responsibilities
 
-Maintainers are responsible for:
+===== All Maintainers
 
-* Reviewing and merging pull requests
-* Triaging issues and feature requests
-* Ensuring code quality and security standards
-* Managing releases and versioning
-* Upholding the project's code of conduct
+* Review and merge pull requests
+* Triage issues
+* Maintain code quality standards
+* Ensure RSR compliance
+* Respond to security reports
+* Foster community growth
+* Uphold Code of Conduct
 
-== Becoming a Maintainer
+===== Release Process
 
-Contributors who demonstrate:
+Maintainers coordinate releases following semantic versioning:
 
-* Consistent, high-quality contributions
-* Understanding of the project's goals and standards
-* Constructive participation in discussions
-* Commitment to the project's long-term health
+[arabic]
+. Version bump in `+Cargo.toml+`
+. Update `+CHANGELOG.md+`
+. Tag release: `+git tag -a v0.1.0 -m "Release v0.1.0"+`
+. Push tag: `+git push origin v0.1.0+`
+. Publish to crates.io: `+cargo publish+`
+. Create GitHub release with notes
 
-May be invited to become maintainers at the discretion of existing maintainers.
+=== Becoming a Maintainer
 
-== Decision Making
+==== Path to Maintainership
 
-* Routine decisions (bug fixes, minor improvements) can be made by any maintainer
-* Significant changes require discussion and consensus among maintainers
-* Breaking changes or major features should be discussed in issues before implementation
+The project follows the TPCF (Tri-Perimeter Contribution Framework):
 
-== Contact
+*Perimeter 3 → Perimeter 2 → Perimeter 1*
 
-For questions about project governance, open an issue or contact the maintainers listed above.
+===== Perimeter 3: Community Sandbox (Current for new contributors)
+
+* Public contributions
+* Code review required
+* Fork/PR workflow
+
+===== Perimeter 2: Trusted Contributors
+
+* Consistent high-quality contributions
+* Deep understanding of codebase
+* Demonstrated adherence to Code of Conduct
+* Nominated by existing maintainers
+* Rights: Direct commit access to feature branches
+
+===== Perimeter 1: Core Maintainers
+
+* Extensive contribution history
+* Architecture expertise
+* Community leadership
+* Nominated by Perimeter 1 maintainers
+* Rights: Release authority, main branch access
+
+==== Criteria for Promotion
+
+*To Perimeter 2 (Trusted Contributor)*: - ✅ 10+ merged PRs - ✅ 6+
+months of consistent contributions - ✅ Code review participation - ✅
+Zero Code of Conduct violations - ✅ Demonstrated technical expertise
+
+*To Perimeter 1 (Core Maintainer)*: - ✅ 50+ merged PRs - ✅ 1+ year in
+Perimeter 2 - ✅ Architecture contributions - ✅ Mentoring other
+contributors - ✅ Community building
+
+==== Nomination Process
+
+[arabic]
+. Self-nomination or nomination by existing maintainer
+. Discussion among current Perimeter 1 maintainers
+. Vote (requires 2/3 majority)
+. Onboarding and access provisioning
+
+=== Emeritus Maintainers
+
+Maintainers who have stepped down are recognized here for their
+contributions:
+
+(None yet)
+
+=== Contact
+
+* *GitHub*: https://github.com/Hyperpolymath[@Hyperpolymath]
+* *Email*: See `+.well-known/security.txt+`
+* *Discussions*:
+https://github.com/Hyperpolymath/asdf-acceleration-middleware/discussions[GitHub
+Discussions]
+
+=== Decision Making
+
+==== Consensus Model
+
+* *Small changes*: Any maintainer can approve
+* *Moderate changes*: 2 maintainer approvals
+* *Major changes*: Discussion + consensus of Perimeter 1
+* *Breaking changes*: RFC process + community input
+
+==== RFC Process
+
+For major architectural changes:
+
+[arabic]
+. Create RFC document in `+docs/rfcs/+`
+. Open discussion issue
+. Gather feedback (minimum 2 weeks)
+. Revise based on feedback
+. Final decision by Perimeter 1 maintainers
+. Implementation
+
+=== Conflict Resolution
+
+If conflicts arise:
+
+[arabic]
+. *First*: Direct discussion between parties
+. *Second*: Involve neutral maintainer as mediator
+. *Third*: Escalate to full Perimeter 1 team
+. *Last resort*: Code of Conduct enforcement
+
+=== Time Commitment
+
+Maintainers are expected to: - Review PRs within 3 days - Respond to
+security issues within 48 hours - Participate in monthly maintainer
+meetings - Be active in the community
+
+==== Stepping Down
+
+Maintainers may step down at any time: - Notify other maintainers -
+Complete transition of responsibilities - Move to Emeritus status with
+recognition
+
+=== Acknowledgments
+
+Thank you to all maintainers, past and present, for your dedication to
+this project!
+
+'''''
+
+*Last Updated*: 2024-11-22

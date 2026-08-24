@@ -1,201 +1,109 @@
-// SPDX-License-Identifier: CC-BY-SA-4.0
-// SPDX-FileCopyrightText: 2024 Jonathan D.A. Jewell
-= Contributing to rescript-tea
-:toc:
-:toclevels: 2
+== Clone the repository
 
-Thank you for your interest in contributing to rescript-tea!
+git clone https://github.com/hyperpolymath/rescript-tea.git cd
+rescript-tea
 
-== Getting Started
+== Using Nix (recommended for reproducibility)
 
-=== Prerequisites
-
-* Node.js 18+
-* npm or pnpm
-* ReScript compiler (installed via npm)
-* Nix (optional, for reproducible development environment)
-
-=== Development Setup
-
-[source,bash]
-----
-# Clone the repository
-git clone https://github.com/Hyperpolymath/rescript-tea.git
-cd rescript-tea
-
-# Install dependencies
-npm install
-
-# Build the project
-npm run build
-
-# Run in watch mode
-npm run dev
-----
-
-=== Using Nix
-
-[source,bash]
-----
-# Enter development shell
 nix develop
 
-# Or use direnv
-direnv allow
-----
+== Or using toolbox/distrobox
 
-== Tri-Perimeter Contribution Framework (TPCF)
+toolbox create rescript-tea-dev toolbox enter rescript-tea-dev # Install
+dependencies manually
 
-This project follows the RSR Tri-Perimeter Contribution Framework:
+== Verify setup
 
-=== Perimeter 1 (Core)
+just check # or: cargo check / mix compile / etc. just test # Run test
+suite
 
-Maintainers only. Changes to:
+....
 
-* Build system configuration
-* Core runtime (`Tea_App.res`)
-* Release management
-* Security-critical code
+### Repository Structure
+....
 
-=== Perimeter 2 (Expert)
+rescript-tea/ ├── src/ # Source code (Perimeter 1-2) ├── lib/ # Library
+code (Perimeter 1-2) ├── extensions/ # Extensions (Perimeter 2) ├──
+plugins/ # Plugins (Perimeter 2) ├── tools/ # Tooling (Perimeter 2) ├──
+docs/ # Documentation (Perimeter 3) │ ├── architecture/ # ADRs, specs
+(Perimeter 2) │ └── proposals/ # RFCs (Perimeter 3) ├── examples/ #
+Examples (Perimeter 3) ├── spec/ # Spec tests (Perimeter 3) ├── tests/ #
+Test suite (Perimeter 2-3) ├── .well-known/ # Protocol files (Perimeter
+1-3) ├── .github/ # GitHub config (Perimeter 1) │ ├── ISSUE_TEMPLATE/ │
+└── workflows/ ├── CHANGELOG.md ├── CODE_OF_CONDUCT.md ├──
+CONTRIBUTING.md # This file ├── GOVERNANCE.md ├── LICENSE ├──
+MAINTAINERS.md ├── README.adoc ├── SECURITY.md ├── flake.nix # Nix flake
+(Perimeter 1) └── Justfile # Task runner (Perimeter 1)
 
-Trusted contributors. Changes to:
+....
 
-* Protocol extensions
-* New subscription types
-* Performance optimizations
-* API design changes
+---
 
-=== Perimeter 3 (Community)
+## How to Contribute
 
-Open participation:
+### Reporting Bugs
 
-* Documentation improvements
-* Bug fixes with tests
-* New examples
-* Test coverage
-* Issue triage
+**Before reporting**:
+1. Search existing issues
+2. Check if it's already fixed in `main`
+3. Determine which perimeter the bug affects
 
-== How to Contribute
+**When reporting**:
 
-=== Reporting Bugs
+Use the [bug report template](.github/ISSUE_TEMPLATE/bug_report.md) and include:
 
-1. Check existing issues to avoid duplicates
-2. Create a new issue with:
-   * Clear, descriptive title
-   * Steps to reproduce
-   * Expected vs actual behavior
-   * ReScript/Node.js versions
-   * Minimal reproduction code
+- Clear, descriptive title
+- Environment details (OS, versions, toolchain)
+- Steps to reproduce
+- Expected vs actual behaviour
+- Logs, screenshots, or minimal reproduction
 
-=== Suggesting Features
+### Suggesting Features
 
-1. Open a discussion or issue
-2. Describe the use case
-3. Explain why existing features don't suffice
-4. Propose an API design (if applicable)
+**Before suggesting**:
+1. Check the [roadmap](ROADMAP.md) if available
+2. Search existing issues and discussions
+3. Consider which perimeter the feature belongs to
 
-=== Submitting Pull Requests
+**When suggesting**:
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/my-feature`
-3. Make your changes
-4. Add/update tests
-5. Ensure all tests pass: `npm test`
-6. Add SPDX headers to new files
-7. Update documentation if needed
-8. Submit a pull request
+Use the [feature request template](.github/ISSUE_TEMPLATE/feature_request.md) and include:
 
-=== Code Style
+- Problem statement (what pain point does this solve?)
+- Proposed solution
+- Alternatives considered
+- Which perimeter this affects
 
-* Follow existing code patterns
-* Use meaningful variable names
-* Keep functions small and focused
-* Add type annotations for public APIs
-* Document complex logic with comments
+### Your First Contribution
 
-=== SPDX Headers
+Look for issues labelled:
 
-All source files must include SPDX headers:
+- [`good first issue`](https://github.com/hyperpolymath/rescript-tea/labels/good%20first%20issue) — Simple Perimeter 3 tasks
+- [`help wanted`](https://github.com/hyperpolymath/rescript-tea/labels/help%20wanted) — Community help needed
+- [`documentation`](https://github.com/hyperpolymath/rescript-tea/labels/documentation) — Docs improvements
+- [`perimeter-3`](https://github.com/hyperpolymath/rescript-tea/labels/perimeter-3) — Community sandbox scope
 
-[source,rescript]
-----
-// SPDX-License-Identifier: CC-BY-SA-4.0
-// SPDX-FileCopyrightText: 2024 Your Name
-----
+---
 
-=== Commit Messages
+## Development Workflow
 
-Follow conventional commits:
+### Branch Naming
+....
 
-----
-type(scope): description
+docs/short-description # Documentation (P3) test/what-added # Test
+additions (P3) feat/short-description # New features (P2)
+fix/issue-number-description # Bug fixes (P2) refactor/what-changed #
+Code improvements (P2) security/what-fixed # Security fixes (P1-2)
 
-[optional body]
+....
 
-[optional footer]
-----
+### Commit Messages
 
-Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
+We follow [Conventional Commits](https://www.conventionalcommits.org/):
+....
 
-Examples:
+():
 
-----
-feat(cmd): add Cmd.debounce for rate-limited commands
-fix(sub): prevent memory leak in subscription cleanup
-docs: update README with new API examples
-----
+{empty}[optional body]
 
-== Testing
-
-[source,bash]
-----
-# Run all tests
-npm test
-
-# Run tests in watch mode
-npm run test:watch
-----
-
-=== Writing Tests
-
-Use `Tea_Test` utilities:
-
-[source,rescript]
-----
-// Test update function
-let model = Tea_Test.simulate(
-  ~init,
-  ~update,
-  ~msgs=[Increment, Increment, Decrement],
-)
-assert(model.count == 1)
-
-// Test commands
-let cmds = Tea_Test.collectCmds(~init, ~update, ~msgs=[FetchData])
-assert(Belt.Array.length(cmds) > 0)
-----
-
-== Documentation
-
-* Update README.adoc for user-facing changes
-* Add JSDoc comments to public functions
-* Include examples for new features
-* Update CHANGELOG.md
-
-== Code of Conduct
-
-Please read and follow our link:CODE_OF_CONDUCT.adoc[Code of Conduct].
-
-== License
-
-By contributing, you agree that your contributions will be licensed under the
-project's dual MIT and Palimpsest v0.8 license.
-
-== Questions?
-
-* Open a GitHub Discussion
-* Check existing documentation
-* Review closed issues/PRs
-
-Thank you for contributing!
+{empty}[optional footer]

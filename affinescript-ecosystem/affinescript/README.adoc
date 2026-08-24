@@ -1,0 +1,137 @@
+== AffineScript
+
+https://github.com/hyperpolymath/affinescript/actions/workflows/ci.yml[image:https://github.com/hyperpolymath/affinescript/actions/workflows/ci.yml/badge.svg[CI]]
+https://opensource.org/licenses/MIT[image:https://img.shields.io/badge/License-MIT-yellow.svg[License:
+MIT]]
+
+*AffineScript* is a programming language that combines:
+
+* *Affine Types* — Rust-style ownership without a garbage collector
+* *Dependent Types* — Types that depend on values for compile-time
+guarantees
+* *Row Polymorphism* — Extensible records with type-safe field access
+* *Extensible Effects* — User-defined, trackable side effects
+
+It compiles to *WebAssembly* for efficient, portable execution.
+
+=== Features
+
+==== Ownership Without GC
+
+[source,affinescript]
+----
+fn processFile(path: ref String) -> Result[String, IOError] / IO {
+  let file = open(path)?;          // file is owned
+  let content = read(ref file)?;   // borrow file
+  close(file)?;                    // consume file
+  Ok(content)
+}
+----
+
+==== Compile-Time Size Verification
+
+[source,affinescript]
+----
+total fn head[n: Nat, T](v: Vec[n + 1, T]) -> T / Pure {
+  match v {
+    Cons(h, _) => h  // Can't call on empty vec - type prevents it
+  }
+}
+----
+
+==== Extensible Records
+
+[source,affinescript]
+----
+fn greet[..r](person: {name: String, ..r}) -> String / Pure {
+  "Hello, " ++ person.name  // Works on any record with 'name'
+}
+
+greet({name: "Alice", age: 30})  // OK
+greet({name: "Bob", role: "Admin"})  // Also OK
+----
+
+==== Trackable Effects
+
+[source,affinescript]
+----
+effect State[S] {
+  fn get() -> S;
+  fn put(s: S);
+}
+
+fn counter() -> Int / State[Int] {
+  let n = get();
+  put(n + 1);
+  n
+}
+----
+
+=== Installation
+
+==== From Source
+
+Requires OCaml 5.1+ and opam:
+
+[source,bash]
+----
+git clone https://github.com/hyperpolymath/affinescript.git
+cd affinescript
+opam install . --deps-only
+dune build
+----
+
+==== Usage
+
+[source,bash]
+----
+# Lex a file
+affinescript lex example.as
+
+# Parse a file
+affinescript parse example.as
+
+# Type check
+affinescript check example.as
+
+# Compile to WebAssembly
+affinescript compile example.as -o output.wasm
+----
+
+=== Documentation
+
+* link:docs/spec.md[Language Specification]
+* link:docs/tutorial.md[Tutorial]
+* link:docs/stdlib.md[Standard Library]
+
+=== Project Status
+
+AffineScript is under active development. Current status:
+
+[cols=",",options="header",]
+|===
+|Component |Status
+|Lexer |In Progress
+|Parser |Planned
+|Type Checker |Planned
+|Borrow Checker |Planned
+|Effect System |Planned
+|WASM Backend |Planned
+|===
+
+=== Contributing
+
+Contributions are welcome! Please read CONTRIBUTING.md before submitting
+PRs.
+
+=== License
+
+MIT License. See LICENSE for details.
+
+=== Related Projects
+
+* https://www.rust-lang.org/[Rust] — Inspiration for affine types
+* https://www.idris-lang.org/[Idris] — Inspiration for dependent types
+* https://koka-lang.github.io/[Koka] — Inspiration for effect system
+* https://www.purescript.org/[PureScript] — Inspiration for row
+polymorphism

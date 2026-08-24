@@ -1,195 +1,258 @@
-// SPDX-License-Identifier: CC-BY-SA-4.0
-// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+== rescript-tea
 
-= rescript-tea
-:toc: preamble
-:icons: font
-:source-highlighter: rouge
+The Elm Architecture (TEA) for ReScript, providing a principled way to
+build web applications with guaranteed state consistency, exhaustive
+event handling, and time-travel debugging.
 
-**The Elm Architecture for ReScript** -- a comprehensive, standalone implementation.
+=== Features
 
-== Why This Exists
+* *Single source of truth* - One model, one update pathway
+* *Pure updates* - Easy to test, easy to reason about
+* *Type-safe* - Compiler catches missing message handlers
+* *React integration* - Uses React for rendering, compatible with
+existing components
+* *Commands & Subscriptions* - Declarative side effects
 
-The original https://github.com/nickytonline/rescript-tea[rescript-tea@0.16.0] is unmaintained and depends on the legacy `bs-dependencies` system. Modern ReScript (v12+) uses `dependencies` in `rescript.json` and produces ES modules. This project is a ground-up reimplementation that:
-
-* Works with ReScript 12+ and `@rescript/core`
-* Uses ES module output (`esmodule` in `package-specs`)
-* Provides keyed virtual DOM diffing for efficient list rendering
-* Includes server-side rendering (SSR) for testing, snapshots, and static generation
-* Ships with Elm-style JSON decoders (no Js.Json, no bs-json)
-* Includes a time-travel debugger, HTTP module, and a test harness
-* Has zero runtime dependencies beyond `@rescript/core`
-
-== Installation
-
-Add `rescript-tea` to your project. The source lives in `src/tea/` and compiles to `.res.js` files in-source.
-
-[source,json]
-----
-// rescript.json
-{
-  "sources": [{"dir": "src/tea", "subdirs": true}],
-  "package-specs": [{"module": "esmodule", "in-source": true}],
-  "suffix": ".res.js",
-  "dependencies": ["@rescript/core"]
-}
-----
-
-[source,json]
-----
-// deno.json
-{
-  "tasks": {
-    "res:build": "deno run -A npm:rescript build",
-    "res:watch": "deno run -A npm:rescript build -w",
-    "test": "deno test tests/"
-  },
-  "imports": {
-    "rescript": "npm:rescript@^12.0.0",
-    "@rescript/core": "npm:@rescript/core@^1.0.0"
-  }
-}
-----
-
-== Quick Start
-
-[source,rescript]
-----
-// Counter.res — A minimal TEA counter application.
-
-type model = int
-type msg = Increment | Decrement
-
-let init = () => (0, Tea_Cmd.none)
-
-let update = (model, msg) => {
-  switch msg {
-  | Increment => (model + 1, Tea_Cmd.none)
-  | Decrement => (model - 1, Tea_Cmd.none)
-  }
-}
-
-let view = model =>
-  Tea_Vdom.nodeA("div", [], [
-    Tea_Vdom.nodeA("button", [Tea_Vdom.onClick(Decrement)], [Tea_Vdom.text("-")]),
-    Tea_Vdom.nodeA("span", [], [Tea_Vdom.text(Int.toString(model))]),
-    Tea_Vdom.nodeA("button", [Tea_Vdom.onClick(Increment)], [Tea_Vdom.text("+")]),
-  ])
-
-let app = Tea_App.standard(
-  ~init,
-  ~update,
-  ~view,
-  ~subscriptions=_ => Tea_Sub.none,
-  "app",
-)
-----
-
-== Module Reference
-
-[cols="1,3"]
-|===
-|Module |Description
-
-|`Tea`
-|Re-exports and top-level convenience bindings.
-
-|`Tea_App`
-|Application bootstrap: `standard`, `beginner`, and `debug` program types. Mounts to a DOM node and runs the TEA event loop.
-
-|`Tea_Vdom`
-|Core virtual DOM types and constructors: `Text`, `Element`, `KeyedElement`, `Fragment`. Comprehensive attribute and event helpers (click, input, keyboard, pointer, drag, clipboard, ARIA). `map` and `mapAttr` for composing nested components.
-
-|`Tea_Cmd`
-|Side-effect commands: `none`, `msg`, `batch`, `call`, `map`, `execute`. Integrates async operations (Promises, timers) into the TEA cycle.
-
-|`Tea_Sub`
-|Subscriptions to external event sources: `none`, `registration`, `batch`, `map`, `getKeys`, `enable`. Used for timers, WebSockets, browser events.
-
-|`Tea_Html`
-|Convenience HTML element constructors built on `Tea_Vdom`. Provides `div`, `span`, `button`, `input`, `form`, `table`, etc.
-
-|`Tea_Svg`
-|SVG element and attribute constructors for inline SVG rendering.
-
-|`Tea_Json`
-|Elm-style JSON decoders: `string`, `int`, `float`, `bool`, `null`, `field`, `optionalField`, `at`, `array`, `index`, `dict`. Combinators: `map`, `map2`...`map5`, `andThen`, `oneOf`, `optional`, `nullable`, `succeed`, `fail`, `value`. Includes `decodeString`, `errorToString`, and `toHttpDecoder`.
-
-|`Tea_Http`
-|HTTP request module: `get`, `post`, `request`, `expectJson`, `expectString`. Integrates with `Tea_Json` decoders for type-safe API calls.
-
-|`Tea_Ssr`
-|Server-side rendering: `toString`, `toStringPretty`, `toDocument`. Renders virtual DOM to HTML strings without a browser DOM. Handles void elements, HTML escaping, boolean attributes, and style collection.
-
-|`Tea_Render`
-|Browser DOM renderer: patches the real DOM by diffing old and new virtual DOM trees. Handles keyed children with O(n) reordering.
-
-|`Tea_Debug`
-|Time-travel debugger: wraps any TEA application with a debug panel showing message history, model state, and the ability to replay/rewind.
-
-|`Tea_Time`
-|Time subscriptions: `every` (periodic timer), `delay` (one-shot). Produces messages at specified intervals.
-
-|`Tea_Keyboard`
-|Keyboard event subscriptions: `downs`, `ups`, `presses`. Captures key events globally.
-
-|`Tea_Mouse`
-|Mouse event subscriptions: `clicks`, `moves`, `downs`, `ups`. Captures mouse events globally.
-
-|`Tea_Window`
-|Window event subscriptions: `onResize`, `onScroll`. Captures browser window events.
-
-|`Tea_Animationframe`
-|Animation frame subscriptions for smooth 60fps updates. Produces messages on each `requestAnimationFrame` tick.
-
-|`Tea_Test`
-|Test harness for TEA applications: `simulate`, `send`, `sendAll`, `model`, `messageHistory`, `messageCount`, `assertModel`, `runScenario`, `viewSnapshot`. Test the model-update-view cycle without a DOM.
-|===
-
-== Feature Highlights
-
-**Keyed Diffing**::
-`Tea_Vdom.keyedA` enables O(n) list reordering. When items are added, removed, or reordered, the renderer moves DOM nodes instead of recreating them. Essential for performant lists.
-
-**Server-Side Rendering**::
-`Tea_Ssr.toString` and `Tea_Ssr.toStringPretty` render virtual DOM to HTML strings. Use for snapshot testing, static site generation, or server-rendered pages.
-
-**Elm-Style JSON Decoders**::
-`Tea_Json` provides composable, type-safe decoders that produce clear error messages with path context. No more `Js.Json.classify` chains.
-
-**Time-Travel Debugger**::
-`Tea_Debug` wraps any application with a debug panel showing the full message history and model state at each step. Replay and rewind to any point.
-
-**Fragment Support**::
-`Tea_Vdom.fragmentA` renders children without a wrapper `<div>`. Avoids unnecessary DOM nesting.
-
-**Comprehensive Event System**::
-Mouse, pointer, touch, keyboard, drag-and-drop, clipboard, animation, scroll, and form events with proper `preventDefault` and `stopPropagation` support.
-
-**ARIA Accessibility**::
-Built-in attribute helpers for `aria-label`, `aria-live`, `aria-expanded`, `role`, and many more ARIA attributes.
-
-== Building and Testing
+=== Installation
 
 [source,bash]
 ----
-# Build ReScript sources
-deno task res:build
-
-# Run tests
-deno test --no-check --allow-all tests/
-
-# Run benchmarks
-deno bench --no-check --allow-all tests/bench_test.js
-
-# Watch mode (rebuild on change)
-deno task res:watch
+npm install rescript-tea
 ----
 
-== License
+Add to your `+rescript.json+`:
 
-SPDX-License-Identifier: CC-BY-SA-4.0
+[source,json]
+----
+{
+  "bs-dependencies": ["rescript-tea", "@rescript/react"]
+}
+----
 
-Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+=== Quick Start
 
-See link:LICENSE[LICENSE] for the full Palimpsest License text.
+[source,rescript]
+----
+open Tea
+
+// 1. Define your model
+type model = {count: int}
+
+// 2. Define your messages
+type msg =
+  | Increment
+  | Decrement
+
+// 3. Initialize your app
+let init = () => ({count: 0}, Cmd.none)
+
+// 4. Handle updates
+let update = (msg, model) => {
+  switch msg {
+  | Increment => ({count: model.count + 1}, Cmd.none)
+  | Decrement => ({count: model.count - 1}, Cmd.none)
+  }
+}
+
+// 5. Render your view
+let view = model => {
+  <div>
+    <button onClick={_ => Decrement}> {React.string("-")} </button>
+    <span> {model.count->Int.toString->React.string} </span>
+    <button onClick={_ => Increment}> {React.string("+")} </button>
+  </div>
+}
+
+// 6. Declare subscriptions (none for this simple example)
+let subscriptions = _model => Sub.none
+
+// 7. Create the app component
+module App = MakeSimple({
+  type model = model
+  type msg = msg
+  let app = {init, update, view, subscriptions}
+})
+
+// 8. Mount it
+switch ReactDOM.querySelector("#root") {
+| Some(root) => ReactDOM.render(<App />, root)
+| None => ()
+}
+----
+
+=== Core Concepts
+
+==== Model
+
+Your application state is a single value (typically a record):
+
+[source,rescript]
+----
+type model = {
+  user: option<user>,
+  posts: array<post>,
+  loading: bool,
+}
+----
+
+==== Messages
+
+All possible events are variants of a single type:
+
+[source,rescript]
+----
+type msg =
+  | FetchPosts
+  | GotPosts(result<array<post>, error>)
+  | SelectPost(int)
+  | Logout
+----
+
+==== Update
+
+A pure function that handles messages:
+
+[source,rescript]
+----
+let update = (msg, model) => {
+  switch msg {
+  | FetchPosts => (model, fetchPostsCmd)
+  | GotPosts(Ok(posts)) => ({...model, posts, loading: false}, Cmd.none)
+  | GotPosts(Error(_)) => ({...model, loading: false}, Cmd.none)
+  | SelectPost(id) => ({...model, selectedId: Some(id)}, Cmd.none)
+  | Logout => ({...model, user: None}, Cmd.none)
+  }
+}
+----
+
+==== Commands
+
+Descriptions of side effects to perform:
+
+[source,rescript]
+----
+// Do nothing
+Cmd.none
+
+// Batch multiple commands
+Cmd.batch([cmd1, cmd2, cmd3])
+
+// Perform an async operation
+Cmd.perform(() => fetchUser("alice"), user => GotUser(user))
+
+// Handle potential failures
+Cmd.attempt(() => fetchUser("alice"), result => GotUser(result))
+----
+
+==== Subscriptions
+
+Declarations of external event sources:
+
+[source,rescript]
+----
+let subscriptions = model => {
+  if model.timerRunning {
+    Sub.Time.every(1000, time => Tick(time))
+  } else {
+    Sub.none
+  }
+}
+----
+
+Built-in subscriptions: - `+Sub.Time.every(ms, toMsg)+` - Timer -
+`+Sub.Keyboard.downs(toMsg)+` - Key down events -
+`+Sub.Keyboard.ups(toMsg)+` - Key up events -
+`+Sub.Mouse.clicks(toMsg)+` - Mouse clicks - `+Sub.Mouse.moves(toMsg)+`
+- Mouse movement - `+Sub.Window.resizes(toMsg)+` - Window resize
+
+=== Modules
+
+==== Tea.Cmd
+
+Commands for side effects.
+
+==== Tea.Sub
+
+Subscriptions for external events.
+
+==== Tea.Json
+
+Type-safe JSON decoding:
+
+[source,rescript]
+----
+open Tea.Json
+
+let userDecoder = map3(
+  (id, name, email) => {id, name, email},
+  field("id", int),
+  field("name", string),
+  field("email", string),
+)
+
+// Use it
+switch decodeString(userDecoder, jsonString) {
+| Ok(user) => // use user
+| Error(err) => Console.log(errorToString(err))
+}
+----
+
+==== Tea.Html
+
+Optional HTML helpers (you can also use JSX directly):
+
+[source,rescript]
+----
+open Tea.Html
+
+let view = model => {
+  div([className("container")], [
+    h1([], [text("Hello")]),
+    button([onClick(Increment)], [text("+")]),
+  ])
+}
+----
+
+==== Tea.Test
+
+Testing utilities:
+
+[source,rescript]
+----
+// Simulate a sequence of messages
+let finalModel = Tea.Test.simulate(
+  ~init,
+  ~update,
+  ~msgs=[Increment, Increment, Decrement],
+)
+
+// Collect commands for inspection
+let cmds = Tea.Test.collectCmds(
+  ~init,
+  ~update,
+  ~msgs=[FetchUser("alice")],
+)
+----
+
+=== Examples
+
+See the `+examples/+` directory:
+
+* `+01_counter/+` - Basic counter
+* More coming soon…
+
+=== Why TEA?
+
+[cols=",",options="header",]
+|===
+|Bug Type |How TEA Prevents It
+|Stale UI |View is pure function of Model
+|Forgotten state updates |View recomputes entirely
+|Unhandled events |Variant types = compiler warnings
+|Race conditions |Single update pathway
+|Untestable code |Pure functions = easy testing
+|===
+
+=== License
+
+MIT

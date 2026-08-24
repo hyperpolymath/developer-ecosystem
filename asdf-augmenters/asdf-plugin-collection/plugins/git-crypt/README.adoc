@@ -1,0 +1,83 @@
+== asdf-git-crypt
+
+https://github.com/hyperpolymath/asdf-git-crypt-plugin/actions/workflows/build.yml[image:https://github.com/hyperpolymath/asdf-git-crypt-plugin/actions/workflows/build.yml/badge.svg[Build]]
+https://github.com/hyperpolymath/asdf-git-crypt-plugin/actions/workflows/lint.yml[image:https://github.com/hyperpolymath/asdf-git-crypt-plugin/actions/workflows/lint.yml/badge.svg[Lint]]
+image:https://img.shields.io/badge/License-MPL–2.0-blue.svg[License:
+PMPL-1.0,link="`https://github.com/hyperpolymath/palimpsest-license`"]
+
+https://asdf-vm.com[asdf] plugin for
+https://www.agwa.name/projects/git-crypt[git-crypt].
+
+Transparent git encryption.
+
+=== Contents
+
+* link:#dependencies[Dependencies]
+* link:#install[Install]
+* link:#usage[Usage]
+* link:#contributing[Contributing]
+* link:#license[License]
+
+=== Dependencies
+
+* `+bash+`, `+curl+`, `+tar+`, and
+https://pubs.opengroup.org/onlinepubs/9699919799/idx/utilities.html[POSIX
+utilities]
+
+=== Install
+
+Plugin:
+
+[source,bash]
+----
+asdf plugin add git-crypt https://github.com/hyperpolymath/asdf-git-crypt-plugin.git
+----
+
+git-crypt:
+
+[source,bash]
+----
+# Show all installable versions
+asdf list-all git-crypt
+
+# Install specific version
+asdf install git-crypt latest
+
+# Set a version globally (in your ~/.tool-versions file)
+asdf global git-crypt latest
+
+# Now git-crypt commands are available
+git-crypt --version
+----
+
+Check https://asdf-vm.com/guide/getting-started.html[asdf] readme for
+more instructions.
+
+=== Usage
+
+[source,bash]
+----
+# List installed versions
+asdf list git-crypt
+
+# Set local version for current directory
+asdf local git-crypt <version>
+
+# Uninstall a version
+asdf uninstall git-crypt <version>
+----
+
+=== Contributing
+
+Contributions welcome! Read the link:CONTRIBUTING.adoc[contributing
+guidelines] first.
+
+=== License
+
+Licensed under the link:LICENSE[Palimpsest-MPL License (PMPL-1.0)].
+
+'''''
+
+____
+Maintained by https://github.com/hyperpolymath[hyperpolymath]
+____

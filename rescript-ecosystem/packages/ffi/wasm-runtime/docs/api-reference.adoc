@@ -1,0 +1,871 @@
+== API Reference
+
+Complete API reference for ReScript WASM Runtime.
+
+=== Table of Contents
+
+* link:#deno-module[Deno Module]
+* link:#server-module[Server Module]
+* link:#router-module[Router Module]
+* link:#middleware-module[Middleware Module]
+* link:#types[Types]
+
+'''''
+
+=== Deno Module
+
+Runtime bindings for Deno APIs.
+
+==== Types
+
+===== `+request+`
+
+Opaque type representing an HTTP request.
+
+===== `+response+`
+
+Opaque type representing an HTTP response.
+
+===== `+addr+`
+
+[source,rescript]
+----
+type addr = {
+  hostname: string,
+  port: int
+}
+----
+
+==== Request
+
+===== `+Request.method+`
+
+[source,rescript]
+----
+let method: request => string
+----
+
+Get the HTTP method of the request.
+
+*Example*:
+
+[source,rescript]
+----
+let method = Deno.Request.method(req)
+// "GET", "POST", "PUT", etc.
+----
+
+===== `+Request.url+`
+
+[source,rescript]
+----
+let url: request => string
+----
+
+Get the full URL of the request.
+
+*Example*:
+
+[source,rescript]
+----
+let url = Deno.Request.url(req)
+// "http://localhost:8000/api/users"
+----
+
+===== `+Request.headers+`
+
+[source,rescript]
+----
+let headers: request => Js.Dict.t<string>
+----
+
+Get request headers as a dictionary.
+
+*Example*:
+
+[source,rescript]
+----
+let headers = Deno.Request.headers(req)
+switch Js.Dict.get(headers, "authorization") {
+| Some(token) => // Use token
+| None => // No auth header
+}
+----
+
+===== `+Request.text+`
+
+[source,rescript]
+----
+let text: request => promise<string>
+----
+
+Read request body as text.
+
+*Example*:
+
+[source,rescript]
+----
+let body = await Deno.Request.text(req)
+----
+
+===== `+Request.json+`
+
+[source,rescript]
+----
+let json: request => promise<Js.Json.t>
+----
+
+Parse request body as JSON.
+
+*Example*:
+
+[source,rescript]
+----
+try {
+  let json = await Deno.Request.json(req)
+  // Process JSON
+} catch {
+| _ => // Invalid JSON
+}
+----
+
+==== Response
+
+===== `+Response.text+`
+
+[source,rescript]
+----
+let text: (
+  string,
+  ~status: int=?,
+  ~headers: Js.Dict.t<string>=?,
+  unit
+) => response
+----
+
+Create a text response.
+
+*Parameters*: - `+data+`: Response body - `+status+`: HTTP status code
+(default: 200) - `+headers+`: Additional headers
+
+*Example*:
+
+[source,rescript]
+----
+Deno.Response.text("Hello, World!", ())
+Deno.Response.text("Not Found", ~status=404, ())
+
+let customHeaders = Js.Dict.empty()
+Js.Dict.set(customHeaders, "X-Custom", "value")
+Deno.Response.text("Data", ~headers=customHeaders, ())
+----
+
+===== `+Response.json+`
+
+[source,rescript]
+----
+let json: (
+  Js.Json.t,
+  ~status: int=?,
+  ~headers: Js.Dict.t<string>=?,
+  unit
+) => response
+----
+
+Create a JSON response.
+
+*Example*:
+
+[source,rescript]
+----
+let data = Js.Json.object_(Js.Dict.fromArray([
+  ("message", Js.Json.string("Success")),
+  ("count", Js.Json.number(42.0))
+]))
+
+Deno.Response.json(data, ())
+Deno.Response.json(data, ~status=201, ())
+----
+
+===== `+Response.html+`
+
+[source,rescript]
+----
+let html: (
+  string,
+  ~status: int=?,
+  ~headers: Js.Dict.t<string>=?,
+  unit
+) => response
+----
+
+Create an HTML response.
+
+*Example*:
+
+[source,rescript]
+----
+Deno.Response.html("<h1>Hello</h1>", ())
+----
+
+==== Console
+
+===== `+log+`, `+error+`, `+warn+`, `+info+`
+
+[source,rescript]
+----
+let log: 'a => unit
+let error: 'a => unit
+let warn: 'a => unit
+let info: 'a => unit
+----
+
+*Example*:
+
+[source,rescript]
+----
+Deno.log("Server started")
+Deno.error("Failed to connect")
+Deno.warn("Deprecated API used")
+Deno.info("Processing request")
+----
+
+==== Environment
+
+===== `+Env.get+`
+
+[source,rescript]
+----
+let get: string => option<string>
+----
+
+Get environment variable.
+
+*Example*:
+
+[source,rescript]
+----
+switch Deno.Env.get("PORT") {
+| Some(port) => // Use port
+| None => // Use default
+}
+----
+
+===== `+Env.set+`
+
+[source,rescript]
+----
+let set: (string, string) => unit
+----
+
+Set environment variable.
+
+==== File System
+
+===== `+Fs.readTextFile+`
+
+[source,rescript]
+----
+let readTextFile: string => promise<string>
+----
+
+Read file as text.
+
+===== `+Fs.writeTextFile+`
+
+[source,rescript]
+----
+let writeTextFile: (string, string) => promise<unit>
+----
+
+Write text to file.
+
+===== `+Fs.readFile+`
+
+[source,rescript]
+----
+let readFile: string => promise<Js.Typed_array.Uint8Array.t>
+----
+
+Read file as bytes.
+
+===== `+Fs.writeFile+`
+
+[source,rescript]
+----
+let writeFile: (string, Js.Typed_array.Uint8Array.t) => promise<unit>
+----
+
+Write bytes to file.
+
+==== URL
+
+===== `+Url.make+`
+
+[source,rescript]
+----
+let make: string => 'url
+----
+
+Create URL object.
+
+===== `+Url.pathname+`
+
+[source,rescript]
+----
+let pathname: 'url => string
+----
+
+Get URL pathname.
+
+*Example*:
+
+[source,rescript]
+----
+let url = Deno.Url.make("http://localhost:8000/api/users?page=1")
+let pathname = Deno.Url.pathname(url)  // "/api/users"
+----
+
+'''''
+
+=== Server Module
+
+HTTP server creation and management.
+
+==== Types
+
+===== `+config+`
+
+[source,rescript]
+----
+type config = {
+  port: int,
+  hostname: string,
+  onListen: option<Deno.addr => unit>
+}
+----
+
+==== Functions
+
+===== `+Server.make+`
+
+[source,rescript]
+----
+let make: (
+  ~port: int=?,
+  ~hostname: string=?,
+  ~onListen: (Deno.addr => unit)=?,
+  Deno.request => promise<Deno.response>
+) => unit
+----
+
+Create an HTTP server with a request handler.
+
+*Parameters*: - `+port+`: Port number (default: 8000) - `+hostname+`:
+Host address (default: "`127.0.0.1`") - `+onListen+`: Callback when
+server starts - Handler function: `+request => promise<response>+`
+
+*Example*:
+
+[source,rescript]
+----
+Server.make(
+  ~port=3000,
+  ~onListen=addr => Deno.log(`Server on port ${Int.toString(addr.port)}`),
+  async req => Deno.Response.text("Hello", ())
+)
+----
+
+===== `+Server.simple+`
+
+[source,rescript]
+----
+let simple: (
+  ~port: int=?,
+  ~hostname: string=?,
+  Deno.request => promise<Deno.response>
+) => unit
+----
+
+Create a simple server (convenience function).
+
+*Example*:
+
+[source,rescript]
+----
+Server.simple(
+  ~port=8000,
+  async _req => Deno.Response.text("Hello", ())
+)
+----
+
+===== `+Server.withRouter+`
+
+[source,rescript]
+----
+let withRouter: (
+  ~port: int=?,
+  ~hostname: string=?,
+  ~onListen: (Deno.addr => unit)=?,
+  Router.t
+) => unit
+----
+
+Create a server with a router.
+
+*Example*:
+
+[source,rescript]
+----
+let router = Router.make()
+  ->Router.get("/", handler)
+
+Server.withRouter(~port=8000, router)
+----
+
+'''''
+
+=== Router Module
+
+Type-safe routing and middleware composition.
+
+==== Types
+
+===== `+method+`
+
+[source,rescript]
+----
+type method = GET | POST | PUT | DELETE | PATCH | OPTIONS | HEAD
+----
+
+===== `+route+`
+
+[source,rescript]
+----
+type route = {
+  method: method,
+  path: string,
+  handler: Deno.request => promise<Deno.response>
+}
+----
+
+===== `+middleware+`
+
+[source,rescript]
+----
+type middleware = (
+  Deno.request,
+  unit => promise<Deno.response>
+) => promise<Deno.response>
+----
+
+===== `+t+`
+
+[source,rescript]
+----
+type t = {
+  routes: array<route>,
+  middlewares: array<middleware>,
+  notFoundHandler: option<Deno.request => promise<Deno.response>>
+}
+----
+
+==== Functions
+
+===== `+Router.make+`
+
+[source,rescript]
+----
+let make: unit => t
+----
+
+Create an empty router.
+
+*Example*:
+
+[source,rescript]
+----
+let router = Router.make()
+----
+
+===== `+Router.get+`
+
+[source,rescript]
+----
+let get: (
+  t,
+  string,
+  Deno.request => promise<Deno.response>
+) => t
+----
+
+Add GET route.
+
+*Example*:
+
+[source,rescript]
+----
+let router = Router.make()
+  ->Router.get("/users", listUsers)
+  ->Router.get("/users/:id", getUser)
+----
+
+===== `+Router.post+`
+
+[source,rescript]
+----
+let post: (
+  t,
+  string,
+  Deno.request => promise<Deno.response>
+) => t
+----
+
+Add POST route.
+
+===== `+Router.put+`
+
+[source,rescript]
+----
+let put: (
+  t,
+  string,
+  Deno.request => promise<Deno.response>
+) => t
+----
+
+Add PUT route.
+
+===== `+Router.del+`
+
+[source,rescript]
+----
+let del: (
+  t,
+  string,
+  Deno.request => promise<Deno.response>
+) => t
+----
+
+Add DELETE route.
+
+*Note*: Named `+del+` instead of `+delete+` (ReScript keyword).
+
+===== `+Router.patch+`
+
+[source,rescript]
+----
+let patch: (
+  t,
+  string,
+  Deno.request => promise<Deno.response>
+) => t
+----
+
+Add PATCH route.
+
+===== `+Router.options+`
+
+[source,rescript]
+----
+let options: (
+  t,
+  string,
+  Deno.request => promise<Deno.response>
+) => t
+----
+
+Add OPTIONS route.
+
+===== `+Router.use+`
+
+[source,rescript]
+----
+let use: (t, middleware) => t
+----
+
+Add middleware to router.
+
+*Example*:
+
+[source,rescript]
+----
+let router = Router.make()
+  ->Router.use(Middleware.logger())
+  ->Router.use(Middleware.cors())
+  ->Router.get("/", handler)
+----
+
+===== `+Router.notFound+`
+
+[source,rescript]
+----
+let notFound: (
+  t,
+  Deno.request => promise<Deno.response>
+) => t
+----
+
+Set custom 404 handler.
+
+*Example*:
+
+[source,rescript]
+----
+let custom404 = async _req => {
+  Deno.Response.json(
+    Js.Json.object_(Js.Dict.fromArray([
+      ("error", Js.Json.string("Route not found"))
+    ])),
+    ~status=404,
+    ()
+  )
+}
+
+let router = Router.make()
+  ->Router.notFound(custom404)
+----
+
+===== `+Router.handle+`
+
+[source,rescript]
+----
+let handle: (t, Deno.request) => promise<Deno.response>
+----
+
+Handle an HTTP request (used internally).
+
+'''''
+
+=== Middleware Module
+
+Common middleware implementations.
+
+==== CORS
+
+===== `+Middleware.cors+`
+
+[source,rescript]
+----
+let cors: (
+  ~origin: string=?,
+  ~methods: array<string>=?,
+  ~headers: array<string>=?,
+  ~credentials: bool=?,
+  unit
+) => Router.middleware
+----
+
+CORS middleware.
+
+*Parameters*: - `+origin+`: Allowed origin (default: “*“) - `+methods+`:
+Allowed methods (default: ["`GET`", "`POST`", "`PUT`", "`DELETE`",
+"`PATCH`"]) - `+headers+`: Allowed headers (default: ["`Content-Type`",
+"`Authorization`"]) - `+credentials+`: Allow credentials (default:
+false)
+
+*Example*:
+
+[source,rescript]
+----
+let router = Router.make()
+  ->Router.use(Middleware.cors(
+    ~origin="https://example.com",
+    ~methods=["GET", "POST"],
+    ~credentials=true,
+    ()
+  ))
+----
+
+==== Logger
+
+===== `+Middleware.logger+`
+
+[source,rescript]
+----
+let logger: unit => Router.middleware
+----
+
+Request logging middleware.
+
+*Example*:
+
+[source,rescript]
+----
+let router = Router.make()
+  ->Router.use(Middleware.logger())
+----
+
+*Output*:
+
+....
+GET /api/users - 45.23ms
+POST /api/users - 123.45ms
+....
+
+==== Rate Limiting
+
+===== `+Middleware.rateLimit+`
+
+[source,rescript]
+----
+let rateLimit: (
+  ~maxRequests: int=?,
+  ~windowMs: float=?,
+  unit
+) => Router.middleware
+----
+
+Rate limiting middleware.
+
+*Parameters*: - `+maxRequests+`: Max requests per window (default: 100)
+- `+windowMs+`: Time window in milliseconds (default: 60000)
+
+*Example*:
+
+[source,rescript]
+----
+let router = Router.make()
+  ->Router.use(Middleware.rateLimit(
+    ~maxRequests=50,
+    ~windowMs=30000.0,  // 30 seconds
+    ()
+  ))
+----
+
+==== Authentication
+
+===== `+Middleware.auth+`
+
+[source,rescript]
+----
+let auth: (~secret: string) => Router.middleware
+----
+
+JWT authentication middleware helper.
+
+*Example*:
+
+[source,rescript]
+----
+let router = Router.make()
+  ->Router.use(Middleware.auth(~secret="your-secret-key"))
+  ->Router.get("/protected", protectedHandler)
+----
+
+==== Error Handling
+
+===== `+Middleware.errorHandler+`
+
+[source,rescript]
+----
+let errorHandler: unit => Router.middleware
+----
+
+Global error handler middleware.
+
+*Example*:
+
+[source,rescript]
+----
+let router = Router.make()
+  ->Router.use(Middleware.errorHandler())
+----
+
+==== Compression
+
+===== `+Middleware.compress+`
+
+[source,rescript]
+----
+let compress: unit => Router.middleware
+----
+
+Response compression middleware (placeholder).
+
+'''''
+
+=== Types
+
+==== Common Type Definitions
+
+===== JSON Types
+
+[source,rescript]
+----
+// From Js.Json module
+type t = Js.Json.t
+
+// Creating JSON
+let obj = Js.Json.object_(Js.Dict.fromArray([...]))
+let arr = Js.Json.array([...])
+let str = Js.Json.string("value")
+let num = Js.Json.number(42.0)
+let bool = Js.Json.boolean(true)
+
+// Decoding JSON
+let obj = Js.Json.decodeObject(json)
+let arr = Js.Json.decodeArray(json)
+let str = Js.Json.decodeString(json)
+let num = Js.Json.decodeNumber(json)
+let bool = Js.Json.decodeBoolean(json)
+----
+
+===== Promise Types
+
+[source,rescript]
+----
+// From Promise module
+type t<'a> = promise<'a>
+
+// Creating promises
+Promise.resolve(value)
+Promise.reject(error)
+
+// Chaining
+promise
+  ->Promise.then(result => ...)
+  ->Promise.catch(error => ...)
+
+// Async/await
+let result = await promise
+----
+
+'''''
+
+=== Examples
+
+==== Complete API Server
+
+[source,rescript]
+----
+// Define handlers
+let listUsers = async (_req: Deno.request): promise<Deno.response> => {
+  let users = [/* ... */]
+  Deno.Response.json(Js.Json.array(users), ())
+}
+
+let createUser = async (req: Deno.request): promise<Deno.response> => {
+  let body = await Deno.Request.json(req)
+  // Process body
+  Deno.Response.json(body, ~status=201, ())
+}
+
+// Create router
+let router = Router.make()
+  ->Router.use(Middleware.logger())
+  ->Router.use(Middleware.cors())
+  ->Router.use(Middleware.rateLimit())
+  ->Router.get("/api/users", listUsers)
+  ->Router.post("/api/users", createUser)
+  ->Router.get("/api/users/:id", getUser)
+  ->Router.put("/api/users/:id", updateUser)
+  ->Router.del("/api/users/:id", deleteUser)
+
+// Start server
+Server.withRouter(~port=8000, router)
+----
+
+'''''
+
+*Version*: 0.1.0 *Last Updated*: 2025-01-XX

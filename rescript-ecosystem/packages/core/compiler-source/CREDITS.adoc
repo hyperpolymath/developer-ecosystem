@@ -1,0 +1,65 @@
+== History
+
+This project was originally created by
+https://github.com/bobzhang[Hongbo Zhang] in 2015. It was named
+BuckleScript and rebranded into https://rescript-lang.org/[ReScript] in
+2020.
+
+The major contributions from contributors include
+
+* `+super_errors+` from https://github.com/chenglou[Cheng] and
+https://github.com/cristianoc[Cristiano]
+* `+react_jsx_ppx+` from https://github.com/rickyvetter[Ricky]
+* `+rewatch+` (the new ReScript build system) from
+https://github.com/rolandpeelen[Roland] and
+https://github.com/jfrolich[Jaap]
+
+Cristiano also contributed to several important patches in the upstream
+native compiler, in particular, the pattern match compilation.
+
+More details are available
+https://github.com/rescript-lang/rescript-compiler/graphs/contributors[here].
+
+== Acknowledgments
+
+=== OCaml
+
+Thanks to the https://ocaml.org[OCaml] team, obviously, without such a
+beautiful yet practical language, this project would not exist.
+
+ReScript builds on these parts of OCaml:
+
+* link:compiler/core/lam_pass_exits.ml[`+compiler/core/lam_pass_exits.ml+`]
+* link:compiler/core/lam_pass_lets_dce.ml[`+compiler/core/lam_pass_lets_dce.ml+`]
+
+These modules were adapted from
+link:ocaml/bytecomp/simplif.ml[`+ocaml/bytecomp/simplif.ml+`] for
+JavaScript specific optimization purposes.
+
+* link:compiler/main/rescript_compiler_main.ml[`+compiler/main/rescript_compiler_main.ml+`]
+
+`+compiler/main/rescript_compiler_main.ml+` is adapted from
+link:ocaml/driver/main.ml[`+ocaml/driver/main.ml+`]. It is the main
+entry point of the underlying compiler.
+
+ReScript imported one file from
+https://github.com/ocsigen/js_of_ocaml[jsoo]
+
+* link:compiler/core/js_dump.ml[`+compiler/core/js_dump.ml+`] (pretty
+printer)
+
+This file was imported but changed significantly in iterations later.
+
+* link:tests/tests[`+tests/tests+`]
+
+`+tests/tests+` is based on link:ocaml/testsuite[`+ocaml/testsuite+`].
+
+ReScript compiler unit test builds on
+http://ounit.forge.ocamlcore.org/[OUnit]
+
+=== Bloomberg and Facebook
+
+Thanks to https://www.techatbloomberg.com[Bloomberg] and
+https://github.com/facebook/[Facebook]. This project began at Bloomberg
+and was published in 2016; without the support of Bloomberg, it would
+not have happened. This project’s funded by Facebook since July 2017.

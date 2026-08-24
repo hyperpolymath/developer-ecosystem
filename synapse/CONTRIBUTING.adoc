@@ -1,186 +1,108 @@
-= Contributing to Synapse
-:toc:
-:toclevels: 3
+== Clone the repository
 
-== Welcome
+git clone https://github.com/hyperpolymath/synapse.git cd synapse
 
-Thank you for considering contributing to Synapse! This document explains our contribution process and the Tri-Perimeter Contribution Framework (TPCF).
+== Using Nix (recommended for reproducibility)
 
-== Tri-Perimeter Contribution Framework (TPCF)
+nix develop
 
-Synapse uses a three-tier contribution model to balance openness with security and quality.
+== Or using toolbox/distrobox
 
-=== Perimeter 1: Core (Maintainers Only)
+toolbox create synapse-dev toolbox enter synapse-dev # Install
+dependencies manually
 
-*Access Level*: Full repository access
+== Verify setup
 
-*Who*: Listed in MAINTAINERS.md
+just check # or: cargo check / mix compile / etc. just test # Run test
+suite
 
-*Responsibilities*:
+....
 
-* Final approval on all merges to `main`
-* Security vulnerability handling
-* Release management
-* Architecture decisions
-* Code of Conduct enforcement
+### Repository Structure
+....
 
-*How to become Core*: Sustained high-quality contributions over 12+ months, nomination by existing Core maintainer, unanimous approval.
+synapse/ ├── src/ # Source code (Perimeter 1-2) ├── lib/ # Library code
+(Perimeter 1-2) ├── extensions/ # Extensions (Perimeter 2) ├── plugins/
+# Plugins (Perimeter 2) ├── tools/ # Tooling (Perimeter 2) ├── docs/ #
+Documentation (Perimeter 3) │ ├── architecture/ # ADRs, specs (Perimeter
+2) │ └── proposals/ # RFCs (Perimeter 3) ├── examples/ # Examples
+(Perimeter 3) ├── spec/ # Spec tests (Perimeter 3) ├── tests/ # Test
+suite (Perimeter 2-3) ├── .well-known/ # Protocol files (Perimeter 1-3)
+├── .github/ # GitHub config (Perimeter 1) │ ├── ISSUE_TEMPLATE/ │ └──
+workflows/ ├── CHANGELOG.md ├── CODE_OF_CONDUCT.md ├── CONTRIBUTING.md #
+This file ├── GOVERNANCE.md ├── LICENSE ├── MAINTAINERS.md ├──
+README.adoc ├── SECURITY.md ├── flake.nix # Nix flake (Perimeter 1) └──
+Justfile # Task runner (Perimeter 1)
 
-=== Perimeter 2: Expert (Trusted Contributors)
+....
 
-*Access Level*: Direct push to feature branches, merge request approval
+---
 
-*Who*: Contributors with proven track record
+## How to Contribute
 
-*Responsibilities*:
+### Reporting Bugs
 
-* Code review for Perimeter 3 contributions
-* Feature development
-* Documentation improvements
-* Bug triage
+**Before reporting**:
+1. Search existing issues
+2. Check if it's already fixed in `main`
+3. Determine which perimeter the bug affects
 
-*How to become Expert*:
+**When reporting**:
 
-1. 10+ accepted merge requests
-2. Demonstrated expertise in Zig, Rust, or Swift
-3. Nomination by Core maintainer
-4. Majority Core approval
+Use the [bug report template](.github/ISSUE_TEMPLATE/bug_report.md) and include:
 
-=== Perimeter 3: Community (Open Sandbox)
+- Clear, descriptive title
+- Environment details (OS, versions, toolchain)
+- Steps to reproduce
+- Expected vs actual behaviour
+- Logs, screenshots, or minimal reproduction
 
-*Access Level*: Fork and merge request
+### Suggesting Features
 
-*Who*: Anyone
+**Before suggesting**:
+1. Check the [roadmap](ROADMAP.md) if available
+2. Search existing issues and discussions
+3. Consider which perimeter the feature belongs to
 
-*Responsibilities*:
+**When suggesting**:
 
-* Bug reports
-* Feature requests
-* Documentation fixes
-* Small improvements
+Use the [feature request template](.github/ISSUE_TEMPLATE/feature_request.md) and include:
 
-*Process*:
+- Problem statement (what pain point does this solve?)
+- Proposed solution
+- Alternatives considered
+- Which perimeter this affects
 
-1. Fork the repository
-2. Create a feature branch
-3. Make changes
-4. Submit merge request
-5. Address review feedback
-6. Await Expert/Core approval
+### Your First Contribution
 
-== Contribution Types
+Look for issues labelled:
 
-=== Bug Reports
+- [`good first issue`](https://github.com/hyperpolymath/synapse/labels/good%20first%20issue) — Simple Perimeter 3 tasks
+- [`help wanted`](https://github.com/hyperpolymath/synapse/labels/help%20wanted) — Community help needed
+- [`documentation`](https://github.com/hyperpolymath/synapse/labels/documentation) — Docs improvements
+- [`perimeter-3`](https://github.com/hyperpolymath/synapse/labels/perimeter-3) — Community sandbox scope
 
-1. Check existing issues first
-2. Use the bug report template
-3. Include:
-   * Zig version (`zig version`)
-   * Operating system
-   * Steps to reproduce
-   * Expected vs actual behavior
-   * Relevant logs/output
+---
 
-=== Feature Requests
+## Development Workflow
 
-1. Check ROADMAP.md for planned features
-2. Open a discussion issue first
-3. Describe the use case, not just the solution
-4. Be open to alternative approaches
+### Branch Naming
+....
 
-=== Code Contributions
+docs/short-description # Documentation (P3) test/what-added # Test
+additions (P3) feat/short-description # New features (P2)
+fix/issue-number-description # Bug fixes (P2) refactor/what-changed #
+Code improvements (P2) security/what-fixed # Security fixes (P1-2)
 
-==== Before You Start
+....
 
-1. Check for existing issues/MRs
-2. For large changes, open a discussion issue first
-3. Read the architecture documentation
+### Commit Messages
 
-==== Development Setup
+We follow [Conventional Commits](https://www.conventionalcommits.org/):
+....
 
-[source,bash]
-----
-# Clone your fork
-git clone https://gitlab.com/YOUR_USERNAME/synapse.git
-cd synapse
+():
 
-# Build
-zig build
+{empty}[optional body]
 
-# Run tests
-zig build test
-
-# Run the generator
-just gen-ui
-----
-
-==== Code Standards
-
-* *SPDX Headers*: Every source file must have an SPDX license header
-* *Formatting*: Run `zig fmt src/` before committing
-* *Tests*: Add tests for new functionality
-* *Documentation*: Update relevant docs
-
-==== Commit Messages
-
-Follow conventional commits:
-
-[source]
-----
-type(scope): description
-
-[optional body]
-
-[optional footer]
-----
-
-Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
-
-Examples:
-
-* `feat(parser): add support for generic types`
-* `fix(templates): correct iOS 17 Observable syntax`
-* `docs(readme): add installation instructions`
-
-==== Merge Request Process
-
-1. Create MR against `main`
-2. Fill out the MR template completely
-3. Ensure CI passes
-4. Request review from appropriate perimeter
-5. Address all feedback
-6. Squash commits if requested
-7. Await merge
-
-== Developer Certificate of Origin (DCO)
-
-By contributing, you certify that:
-
-1. The contribution was created by you
-2. You have the right to submit it under the project license
-3. You understand the contribution is public and recorded
-
-Sign-off your commits:
-
-[source,bash]
-----
-git commit -s -m "feat: add feature"
-----
-
-This adds `Signed-off-by: Your Name <email@example.com>` to the commit.
-
-== Getting Help
-
-* *Questions*: Open a discussion issue
-* *Real-time*: See MAINTAINERS.md for contact info
-* *Security*: See SECURITY.md
-
-== Recognition
-
-Contributors are recognized in:
-
-* MAINTAINERS.md (for sustained contributions)
-* Release notes (for specific features/fixes)
-* The git history (forever)
-
-Thank you for contributing to Synapse!
+{empty}[optional footer]

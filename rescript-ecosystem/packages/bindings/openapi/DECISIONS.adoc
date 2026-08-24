@@ -1,0 +1,50 @@
+== Architectural Decisions - rescript-openapi
+
+=== Dual-Track Generation: OOTB vs. Streamlined
+
+*Date:* 2026-02-24 *Status:* Accepted
+
+==== Context
+
+OpenAPI code generation often suffers from "`AI Slop`" - generating
+excessive boilerplate or forcing specific library dependencies (e.g.,
+`+Fetch+`) on users who may prefer other alternatives (`+Axios+`,
+`+Ky+`, etc.).
+
+==== Decision
+
+We implement a "`Dual-Track`" architectural pattern: 1. *Out-of-the-Box
+(OOTB):* Default behavior provides a fully working HTTP client using
+`+@glennsl/rescript-fetch+`. 2. *Streamlined:* Power users can opt for a
+zero-dependency, functor-based core that generates only the "`engine`"
+(functor) and types, allowing them to plug in any HTTP implementation.
+
+==== Implementation
+
+* *Functor Pattern:* The core API client is wrapped in a ReScript
+functor: `+module Make = (Http: HttpClient) => { ... }+`.
+* *Client Modes:*
+** `+full+` (Default): Generates types + functor + Fetch adapter +
+default `+Client+` module.
+** `+functor-only+`: Generates types + functor only. No external HTTP
+dependencies required.
+** `+none+`: No HTTP code generated.
+* *Unified Module:* Support for a single `+.res+` file containing both
+types and schemas for maximum cohesion and Sury PPX compatibility.
+
+==== Configuration
+
+Project-level persistence via `+rescript-openapi.toml+`:
+
+[source,toml]
+----
+client_mode = "full" # or "functor-only"
+unified = true
+with_schema = true
+----
+
+==== Rationale
+
+This ensures the library is accessible to beginners (OOTB) while
+remaining the "`most streamlined version ever`" for high-rigor,
+professional engineering environments.

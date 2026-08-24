@@ -1,0 +1,71 @@
+== Contributing to AffineScript
+
+Thank you for your interest in contributing to AffineScript!
+
+=== Getting Started
+
+[arabic]
+. Fork the repository
+. Clone your fork
+. Set up the development environment:
+
+[source,bash]
+----
+opam switch create . 5.1.0
+opam install . --deps-only --with-test --with-doc
+----
+
+[arabic, start=4]
+. Build and test:
+
+[source,bash]
+----
+dune build
+dune runtest
+----
+
+=== Development Workflow
+
+[arabic]
+. Create a feature branch: `+git checkout -b feature/your-feature+`
+. Make your changes
+. Format code: `+dune fmt+`
+. Run tests: `+dune runtest+`
+. Commit with clear messages
+. Push and open a PR
+
+=== Code Style
+
+* Use `+ocamlformat+` (config in `+.ocamlformat+`)
+* Write descriptive variable names
+* Add type annotations for public functions
+* Include tests for new functionality
+
+=== Commit Messages
+
+Follow conventional commits:
+
+....
+feat: add row polymorphism to type checker
+fix: handle empty vectors in pattern matching
+docs: update README with installation instructions
+test: add lexer tests for string literals
+....
+
+=== Pull Requests
+
+* Keep PRs focused on a single change
+* Update documentation if needed
+* Add tests for new features
+* Ensure CI passes
+
+=== Areas to Contribute
+
+* *Compiler*: Parser, type checker, borrow checker, codegen
+* *Tests*: More test cases, property-based testing
+* *Documentation*: Tutorials, examples, API docs
+* *Tooling*: Editor support, REPL, formatter
+
+=== Questions?
+
+Open an issue with the "`question`" label.

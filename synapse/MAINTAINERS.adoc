@@ -1,47 +1,82 @@
-// SPDX-License-Identifier: CC-BY-SA-4.0
-= Maintainers
-:toc: preamble
+== Maintainers
 
-This document lists the maintainers of this project and their responsibilities.
+This file lists the maintainers of Synapse and their roles.
 
-== Current Maintainers
+=== Core Maintainers (Perimeter 1)
 
-[cols="2,3,2",options="header"]
+Core maintainers have full repository access and final decision
+authority.
+
+[cols=",,,",options="header",]
 |===
-| Name | Role | Contact
-
-| Jonathan D.A. Jewell
-| Lead Maintainer
-| https://github.com/hyperpolymath[@hyperpolymath]
+|Name |Role |Contact |Since
+|Project Founder |Lead Maintainer |via GitLab issues |2024-01
 |===
 
-== Responsibilities
+=== Expert Contributors (Perimeter 2)
 
-Maintainers are responsible for:
+Expert contributors have elevated privileges and review authority.
 
-* Reviewing and merging pull requests
-* Triaging issues and feature requests
-* Ensuring code quality and security standards
-* Managing releases and versioning
-* Upholding the project's code of conduct
+[cols=",,,",options="header",]
+|===
+|Name |Expertise |Contact |Since
+|_None yet_ |- |- |-
+|===
 
-== Becoming a Maintainer
+=== Emeritus Maintainers
 
-Contributors who demonstrate:
+Former maintainers who have stepped back but retain honorary status.
 
-* Consistent, high-quality contributions
-* Understanding of the project's goals and standards
-* Constructive participation in discussions
-* Commitment to the project's long-term health
+[cols=",,",options="header",]
+|===
+|Name |Contribution Period |Notable Work
+|_None yet_ |- |-
+|===
 
-May be invited to become maintainers at the discretion of existing maintainers.
+=== Becoming a Maintainer
 
-== Decision Making
+==== Expert Contributor Path
 
-* Routine decisions (bug fixes, minor improvements) can be made by any maintainer
-* Significant changes require discussion and consensus among maintainers
-* Breaking changes or major features should be discussed in issues before implementation
+[arabic]
+. Make 10+ accepted contributions
+. Demonstrate expertise in Zig, Rust, or Swift
+. Receive nomination from Core maintainer
+. Receive majority Core approval
 
-== Contact
+==== Core Maintainer Path
 
-For questions about project governance, open an issue or contact the maintainers listed above.
+[arabic]
+. Serve as Expert contributor for 12+ months
+. Make sustained, high-quality contributions
+. Receive nomination from Core maintainer
+. Receive unanimous Core approval
+
+=== Responsibilities
+
+==== All Maintainers
+
+* Follow the Code of Conduct
+* Respond to issues and MRs in reasonable time
+* Document decisions
+* Mentor new contributors
+
+==== Core Maintainers Additionally
+
+* Final merge authority on `+main+`
+* Security vulnerability response
+* Release management
+* Governance decisions
+
+=== Contact
+
+* *Public questions*: Open a GitLab issue
+* *Security issues*: See SECURITY.md
+* *Code of Conduct violations*: See CODE_OF_CONDUCT.md
+
+=== Attribution
+
+Contributors to Synapse are also recognized in:
+
+* Git commit history
+* Release notes
+* CHANGELOG.md

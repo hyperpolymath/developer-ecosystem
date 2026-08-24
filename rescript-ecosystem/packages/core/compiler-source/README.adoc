@@ -1,0 +1,89 @@
+ReScript
+
+Fast, Simple, Fully Typed JavaScript from the Future.
+
+image:https://img.shields.io/badge/License-MPL–2.0-blue.svg[License:
+PMPL-1.0,link="`https://github.com/hyperpolymath/palimpsest-license`"]
+
+== Contents
+
+* link:#-getting-started[Getting Started]
+* link:#-documentation[Documentation]
+* link:#-upgrading[Upgrading]
+* link:#-how-to-contribute[How to Contribute]
+* link:#-license[License]
+* link:#-Acknowledgments[Acknowledgments]
+
+== 🎉 Getting Started
+
+Follow the
+https://rescript-lang.org/docs/manual/latest/installation[Installation
+Guide] to set up a new ReScript project or integrate ReScript into your
+existing JavaScript project.
+
+For more information on building React apps with ReScript, see the
+https://rescript-lang.org/docs/react/latest/installation[rescript-react
+documentation].
+
+For React Native apps, see the
+https://rescript-react-native.github.io/[rescript-react-native website].
+
+== 📖 Documentation
+
+The full documentation for the ReScript language can be found on our
+https://rescript-lang.org/[website].
+
+The source for the ReScript documentation and website is hosted in a
+https://github.com/rescript-association/rescript-lang.org[separate
+repo].
+
+== 🚀 Upgrading
+
+See the
+https://rescript-lang.org/docs/manual/latest/installation[Upgrading
+Guide] for instructions on upgrading to newer ReScript versions.
+
+== 👏 How to Contribute
+
+=== link:CONTRIBUTING.md[Contributing Guide]
+
+Read our link:CONTRIBUTING.md[Contributing Guide] to learn about our
+development process, how to propose bugfixes and improvements, and how
+to build and test your changes to ReScript.
+
+[[code-of-conductcode]]
+=== https://rescript-lang.org/community/code-of-conduct[Code of Conduct]
+
+The ReScript community has adopted a Code of Conduct that we expect
+project participants to adhere to. Please read the
+https://rescript-lang.org/community/code-of-conduct[full text] so that
+you can understand what actions will and will not be tolerated.
+
+[[roadmaproadmap]]
+=== https://rescript-lang.org/community/roadmap[Roadmap]
+
+You can learn more about our vision for ReScript in the
+https://rescript-lang.org/community/roadmap[Roadmap].
+
+[[discussionsdiscussions]]
+=== https://rescript-lang.org/community/roadmap[Discussions]
+
+For discussions on ongoing development, see the
+https://forum.rescript-lang.org/c/development/8[Development] section of
+the ReScript forum.
+
+== 📄 License
+
+ReScript is licensed under LGPL version 3, with relaxed rules about
+creating and distributing combined work. See the LICENSE file for
+details.
+
+The ReScript parser (subdirectory `+compiler/syntax+`) is licensed under
+the link:compiler/syntax/LICENSE[MIT License].
+
+== 🏅 Acknowledgments
+
+ReScript was originally created by https://github.com/bobzhang[Hongbo
+Zhang] in 2015.
+
+See CREDITS.md for further acknowledgements and project history.

@@ -1,193 +1,109 @@
-// SPDX-License-Identifier: CC-BY-SA-4.0
-// SPDX-FileCopyrightText: 2025 Hyperpolymath
+== Clone the repository
 
-= Contributing to rescript-redis
-:toc:
-:icons: font
+git clone https://github.com/hyperpolymath/rescript-redis.git cd
+rescript-redis
 
-Thank you for your interest in contributing to rescript-redis!
+== Using Nix (recommended for reproducibility)
 
-== Getting Started
+nix develop
 
-=== Prerequisites
+== Or using toolbox/distrobox
 
-* https://deno.land/[Deno 2.x]
-* https://rescript-lang.org/[ReScript 11.x]
-* https://redis.io/[Redis 7.x] (for testing)
-* Git
+toolbox create rescript-redis-dev toolbox enter rescript-redis-dev #
+Install dependencies manually
 
-=== Setup
+== Verify setup
 
-[source,bash]
-----
-# Fork and clone the repository
-git clone https://github.com/YOUR_USERNAME/rescript-redis
-cd rescript-redis
+just check # or: cargo check / mix compile / etc. just test # Run test
+suite
 
-# Build the project
-deno task build
+....
 
-# Start Redis for testing (via Docker)
-docker run -d -p 6379:6379 redis:7-alpine
+### Repository Structure
+....
 
-# Run tests
-deno task test
-----
+rescript-redis/ ├── src/ # Source code (Perimeter 1-2) ├── lib/ #
+Library code (Perimeter 1-2) ├── extensions/ # Extensions (Perimeter 2)
+├── plugins/ # Plugins (Perimeter 2) ├── tools/ # Tooling (Perimeter 2)
+├── docs/ # Documentation (Perimeter 3) │ ├── architecture/ # ADRs,
+specs (Perimeter 2) │ └── proposals/ # RFCs (Perimeter 3) ├── examples/
+# Examples (Perimeter 3) ├── spec/ # Spec tests (Perimeter 3) ├── tests/
+# Test suite (Perimeter 2-3) ├── .well-known/ # Protocol files
+(Perimeter 1-3) ├── .github/ # GitHub config (Perimeter 1) │ ├──
+ISSUE_TEMPLATE/ │ └── workflows/ ├── CHANGELOG.md ├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md # This file ├── GOVERNANCE.md ├── LICENSE ├──
+MAINTAINERS.md ├── README.adoc ├── SECURITY.md ├── flake.nix # Nix flake
+(Perimeter 1) └── Justfile # Task runner (Perimeter 1)
 
-== Development Workflow
+....
 
-=== 1. Create a Branch
+---
 
-[source,bash]
-----
-git checkout -b feature/your-feature-name
-# or
-git checkout -b fix/issue-description
-----
+## How to Contribute
 
-=== 2. Make Changes
+### Reporting Bugs
 
-* Write code in `src/Redis.res`
-* Update interface in `src/Redis.resi` if adding public API
-* Add tests in `tests/`
-* Update documentation if needed
+**Before reporting**:
+1. Search existing issues
+2. Check if it's already fixed in `main`
+3. Determine which perimeter the bug affects
 
-=== 3. Test Your Changes
+**When reporting**:
 
-[source,bash]
-----
-# Build
-deno task build
+Use the [bug report template](.github/ISSUE_TEMPLATE/bug_report.md) and include:
 
-# Run tests
-deno task test
+- Clear, descriptive title
+- Environment details (OS, versions, toolchain)
+- Steps to reproduce
+- Expected vs actual behaviour
+- Logs, screenshots, or minimal reproduction
 
-# Check formatting
-deno fmt --check
-----
+### Suggesting Features
 
-=== 4. Commit Your Changes
+**Before suggesting**:
+1. Check the [roadmap](ROADMAP.md) if available
+2. Search existing issues and discussions
+3. Consider which perimeter the feature belongs to
 
-We use conventional commits:
+**When suggesting**:
 
-[source]
-----
-type(scope): description
+Use the [feature request template](.github/ISSUE_TEMPLATE/feature_request.md) and include:
 
-[optional body]
+- Problem statement (what pain point does this solve?)
+- Proposed solution
+- Alternatives considered
+- Which perimeter this affects
 
-[optional footer]
-Signed-off-by: Your Name <your.email@example.com>
-----
+### Your First Contribution
 
-Types:
+Look for issues labelled:
 
-* `feat` - New feature
-* `fix` - Bug fix
-* `docs` - Documentation only
-* `refactor` - Code change that neither fixes a bug nor adds a feature
-* `test` - Adding or updating tests
-* `chore` - Maintenance tasks
+- [`good first issue`](https://github.com/hyperpolymath/rescript-redis/labels/good%20first%20issue) — Simple Perimeter 3 tasks
+- [`help wanted`](https://github.com/hyperpolymath/rescript-redis/labels/help%20wanted) — Community help needed
+- [`documentation`](https://github.com/hyperpolymath/rescript-redis/labels/documentation) — Docs improvements
+- [`perimeter-3`](https://github.com/hyperpolymath/rescript-redis/labels/perimeter-3) — Community sandbox scope
 
-Examples:
+---
 
-[source]
-----
-feat(streams): add XAUTOCLAIM support
+## Development Workflow
 
-Implements the XAUTOCLAIM command for claiming pending messages
-that have been idle for a specified time.
+### Branch Naming
+....
 
-Signed-off-by: Alice Developer <alice@example.com>
-----
+docs/short-description # Documentation (P3) test/what-added # Test
+additions (P3) feat/short-description # New features (P2)
+fix/issue-number-description # Bug fixes (P2) refactor/what-changed #
+Code improvements (P2) security/what-fixed # Security fixes (P1-2)
 
-[source]
-----
-fix(connection): handle reconnection on network timeout
+....
 
-Fixes #123
+### Commit Messages
 
-Signed-off-by: Bob Developer <bob@example.com>
-----
+We follow [Conventional Commits](https://www.conventionalcommits.org/):
+....
 
-=== 5. Submit a Pull Request
+():
 
-* Push your branch to your fork
-* Open a PR against `main`
-* Fill in the PR template
-* Wait for review
+{empty}[optional body]
 
-== Code Guidelines
-
-=== ReScript Style
-
-* Use pipe-first (`->`) style
-* Prefer `option` over nullable
-* Use descriptive names
-* Add doc comments for public APIs
-
-[source,rescript]
-----
-/** Description of what this function does */
-let myFunction = async (redis: t, key: string): promise<option<string>> => {
-  // Implementation
-}
-----
-
-=== API Design
-
-* First parameter should be the Redis connection
-* Use `option<T>` for nullable responses
-* Return `promise<T>` for async operations
-* Match Redis command names where practical
-
-=== Testing
-
-* Write tests for new functionality
-* Tests go in `tests/` directory
-* Use descriptive test names
-* Clean up test data after each test
-
-== What to Contribute
-
-=== Good First Issues
-
-Look for issues labeled `good-first-issue` on GitHub.
-
-=== Feature Requests
-
-Check the link:ROADMAP.adoc[ROADMAP] for planned features. If you want to work on something:
-
-1. Comment on the issue to claim it
-2. Discuss the approach if it's complex
-3. Submit a PR
-
-=== Bug Reports
-
-When filing a bug:
-
-* Include Redis version
-* Include Deno version
-* Provide minimal reproduction code
-* Describe expected vs actual behavior
-
-== Community
-
-* Be respectful and constructive
-* Follow the link:CODE_OF_CONDUCT.md[Code of Conduct]
-* Help others when you can
-
-== License
-
-By contributing, you agree that your contributions will be licensed under the PMPL-1.0-or-later license.
-
-All contributions must include:
-
-* SPDX license header
-* Signed-off-by line (DCO)
-
-== Questions?
-
-* Open a GitHub issue for questions
-* Check existing issues first
-* Be patient - maintainers are volunteers
+{empty}[optional footer]

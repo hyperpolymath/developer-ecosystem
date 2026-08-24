@@ -1,367 +1,109 @@
-= Contributing to ada-loom-registry
-:toc: macro
+== Clone the repository
 
-[abstract]
---
-Contribution guidelines for ada-loom-registry. Rhodium Standard 0.5, Pillar 4, Section 4.1.
---
+git clone https://github.com/hyperpolymath/developer-ecosystem.git cd
+developer-ecosystem
 
-toc::[]
+== Using Nix (recommended for reproducibility)
 
-== Welcome
+nix develop
 
-Thank you for considering contributing to ada-loom-registry! This package registry welcomes contributions to code, registry entries, and documentation.
+== Or using toolbox/distrobox
 
-== Code of Conduct
+toolbox create developer-ecosystem-dev toolbox enter
+developer-ecosystem-dev # Install dependencies manually
 
-* Be respectful and professional
-* Welcome newcomers
-* Focus on constructive feedback
-* Assume good intentions
-* **Respect registry integrity**
+== Verify setup
 
-**Enforcement:** conduct@example.com
+just check # or: cargo check / mix compile / etc. just test # Run test
+suite
 
-== Quick Start
+....
 
-=== Contributing Code
+### Repository Structure
+....
 
-[source,bash]
-----
-# 1. Fork and clone
-git clone https://github.com/YOUR_USERNAME/ada-loom-registry.git
-cd ada-loom-registry
+developer-ecosystem/ ├── src/ # Source code (Perimeter 1-2) ├── lib/ #
+Library code (Perimeter 1-2) ├── extensions/ # Extensions (Perimeter 2)
+├── plugins/ # Plugins (Perimeter 2) ├── tools/ # Tooling (Perimeter 2)
+├── docs/ # Documentation (Perimeter 3) │ ├── architecture/ # ADRs,
+specs (Perimeter 2) │ └── proposals/ # RFCs (Perimeter 3) ├── examples/
+# Examples (Perimeter 3) ├── spec/ # Spec tests (Perimeter 3) ├── tests/
+# Test suite (Perimeter 2-3) ├── .well-known/ # Protocol files
+(Perimeter 1-3) ├── .github/ # GitHub config (Perimeter 1) │ ├──
+ISSUE_TEMPLATE/ │ └── workflows/ ├── CHANGELOG.md ├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md # This file ├── GOVERNANCE.md ├── LICENSE ├──
+MAINTAINERS.md ├── README.adoc ├── SECURITY.md ├── flake.nix # Nix flake
+(Perimeter 1) └── Justfile # Task runner (Perimeter 1)
 
-# 2. Install dependencies
-cabal update
-cabal build --only-dependencies
-
-# 3. Build
-cabal build
-
-# 4. Run tests
-cabal test
-
-# 5. Create PR
-git checkout -b feature/your-feature
-git commit -m "feat: description"
-git push origin feature/your-feature
-----
-
-=== Contributing Packages
-
-[source,bash]
-----
-# 1. Prepare package
-just package-prepare my-package-1.0.0
-
-# 2. Validate entry
-just registry-validate-entry my-package-1.0.0
-
-# 3. Submit to staging
-just registry-publish-staging my-package-1.0.0
-
-# 4. Test from staging
-just registry-query my-package
-
-# 5. Submit PR for mainnet
-# Include: package validation output, testing evidence
-----
-
-== Development Setup
-
-See link:ONBOARDING.adoc[ONBOARDING.adoc] for detailed setup.
-
-**Required:**
-* GHC 9.6.3+
-* Cabal 3.10+
-* Nickel 1.x
-* Git
-
-== Code Style
-
-**Haskell formatting:**
-[source,bash]
-----
-ormolu --mode inplace src/**/*.hs
-----
-
-**Key conventions:**
-* Type signatures required
-* Newtypes for domain types
-* Pure functions preferred
-* Clear naming
-
-**Example:**
-[source,haskell]
-----
-{-# LANGUAGE OverloadedStrings #-}
-
-module Registry.Package where
-
-import Crypto.Hash (SHA256, Digest)
-import qualified Data.Text as T
-
-newtype PackageName = PackageName T.Text
-newtype PackageVersion = PackageVersion T.Text
-newtype PackageHash = PackageHash (Digest SHA256)
-
-data PackageEntry = PackageEntry
-  { packageName :: PackageName
-  , packageVersion :: PackageVersion
-  , packageHash :: PackageHash
-  , packageMetadata :: Metadata
-  }
-
--- | Validate package entry
-validateEntry :: PackageEntry -> Either ValidationError ()
-validateEntry entry = do
-  validateName (packageName entry)
-  validateVersion (packageVersion entry)
-  validateHash (packageHash entry)
-----
-
-== Package Submission Guidelines
-
-**Before submitting:**
-* [ ] Package builds successfully
-* [ ] Tests pass
-* [ ] Documentation complete
-* [ ] License declared (SPDX identifier)
-* [ ] No known security vulnerabilities
-* [ ] Version follows semver
-* [ ] Package name available (not reserved)
-
-**Reserved names:**
-* `ada`, `core`, `std`, `system`, `internal`
-
-**Package naming:**
-* Lowercase
-* Hyphens allowed
-* 3-64 characters
-* Alphanumeric + hyphens only
-
-== Security
-
-**Critical: Registry is a trusted source.**
-
-**Report security issues:**
-See link:SECURITY.adoc[SECURITY.adoc] for reporting process.
-
-**⚠️ NEVER submit malicious packages.**
-
-**Registry security:**
-* All packages cryptographically signed
-* Hash verification automatic
-* Namespace protection enforced
-* Rate limiting on submissions
-* Content scanning for malicious patterns
-
-== Testing Requirements
-
-**Coverage:** 80%+
-
-**Test structure:**
-[source,haskell]
-----
--- test/Registry/PackageSpec.hs
-module Registry.PackageSpec where
-
-import Test.Hspec
-import Registry.Package
-
-spec :: Spec
-spec = do
-  describe "validateEntry" $ do
-    it "accepts valid package entry" $ do
-      let entry = PackageEntry {...}
-      validateEntry entry `shouldBe` Right ()
-
-    it "rejects reserved package name" $ do
-      let entry = PackageEntry { packageName = PackageName "core", ... }
-      validateEntry entry `shouldSatisfy` isLeft
-----
-
-**Registry integrity tests:**
-[source,bash]
-----
-# Validate entire registry
-just registry-validate
-
-# Check for malicious patterns
-just scan-registry
-
-# Verify all signatures
-just verify-signatures
-----
-
-== Nickel Schema Guidelines
-
-**Registry entry schema:**
-[source,nickel]
-----
-{
-  # Required fields
-  name | String
-    | doc "Package name (lowercase, hyphens)",
-
-  version | String
-    | doc "Semver version (e.g., 1.0.0)",
-
-  description | String
-    | doc "Brief package description",
-
-  license | String
-    | doc "SPDX license identifier",
-
-  # Optional fields
-  homepage | String | optional
-    | doc "Project homepage URL",
-
-  repository | String | optional
-    | doc "Source repository URL",
-
-  dependencies | Array String | default = []
-    | doc "Package dependencies",
-}
-----
-
-**Schema validation:**
-[source,bash]
-----
-nickel typecheck schemas/registry.ncl
-----
-
-== Commit Messages
-
-**Conventional Commits:**
-```
-<type>: <subject>
-
-<body>
-
-<footer>
-```
-
-**Types:**
-* `feat`: New feature
-* `fix`: Bug fix
-* `registry`: Registry changes
-* `schema`: Schema changes
-* `docs`: Documentation
-
-**Example:**
-```
-feat: add package signature verification
-
-Implement Ed25519 signature verification for all package entries.
-Prevents registry poisoning attacks.
-
-Closes #42
-```
-
-== Pull Request Process
-
-**PR template:**
-```markdown
-## Summary
-Brief description.
-
-## Changes
-- Added X
-- Modified Y
-
-## Registry Impact
-- [ ] New package submission
-- [ ] Registry code changes
-- [ ] Schema changes
-- [ ] No registry impact
-
-## Testing
-- [ ] Unit tests added
-- [ ] Registry validation passed
-- [ ] Signature verification tested
-
-## Security
-- [ ] No malicious code
-- [ ] Package validated
-- [ ] Dependencies audited
-
-## Checklist
-- [ ] Tests pass (`cabal test`)
-- [ ] Formatted (`ormolu`)
-- [ ] Documentation updated
-
-Closes #XXX
-```
-
-**Merge criteria:**
-* ✅ All tests pass
-* ✅ 1+ approval (2+ for registry changes)
-* ✅ Registry integrity verified
-* ✅ No security issues
-
-== Package Submission Process
-
-**Staging:**
-1. Submit to staging registry
-2. Test package installation
-3. Community review (7 days)
-4. Approval by maintainer
-
-**Production:**
-1. Package in staging ≥7 days
-2. No issues reported
-3. Maintainer approval
-4. Automated promotion to production
-
-**Rejection criteria:**
-* Malicious code
-* Security vulnerabilities
-* License violations
-* Name conflicts
-* Incomplete metadata
-
-== Documentation
-
-**Required:**
-* Package README.md
-* Module Haddock comments
-* Registry entry documentation
-* CHANGELOG.md
-
-**Haddock example:**
-[source,haskell]
-----
--- | Validate a package entry against registry rules.
---
--- Checks:
--- * Package name format
--- * Version format (semver)
--- * Hash validity
--- * Namespace conflicts
---
--- Example:
---
--- >>> validateEntry myPackage
--- Right ()
-validateEntry :: PackageEntry -> Either ValidationError ()
-----
-
-== Getting Help
-
-**Questions?**
-* GitHub Discussions: https://github.com/yourorg/ada-loom-registry/discussions
-* Email: dev@example.com
-* Registry support: registry@example.com
-
-**Resources:**
-* link:ONBOARDING.adoc[ONBOARDING.adoc]
-* link:SECURITY.adoc[SECURITY.adoc]
-* Nickel Language: https://nickel-lang.org/
+....
 
 ---
 
-**Thank you for contributing to ada-loom-registry!** 🎉
+## How to Contribute
 
-_Last Updated: 2025-01-21 | Rhodium Standard 0.5_
+### Reporting Bugs
+
+**Before reporting**:
+1. Search existing issues
+2. Check if it's already fixed in `main`
+3. Determine which perimeter the bug affects
+
+**When reporting**:
+
+Use the [bug report template](.github/ISSUE_TEMPLATE/bug_report.md) and include:
+
+- Clear, descriptive title
+- Environment details (OS, versions, toolchain)
+- Steps to reproduce
+- Expected vs actual behaviour
+- Logs, screenshots, or minimal reproduction
+
+### Suggesting Features
+
+**Before suggesting**:
+1. Check the [roadmap](ROADMAP.md) if available
+2. Search existing issues and discussions
+3. Consider which perimeter the feature belongs to
+
+**When suggesting**:
+
+Use the [feature request template](.github/ISSUE_TEMPLATE/feature_request.md) and include:
+
+- Problem statement (what pain point does this solve?)
+- Proposed solution
+- Alternatives considered
+- Which perimeter this affects
+
+### Your First Contribution
+
+Look for issues labelled:
+
+- [`good first issue`](https://github.com/hyperpolymath/developer-ecosystem/labels/good%20first%20issue) — Simple Perimeter 3 tasks
+- [`help wanted`](https://github.com/hyperpolymath/developer-ecosystem/labels/help%20wanted) — Community help needed
+- [`documentation`](https://github.com/hyperpolymath/developer-ecosystem/labels/documentation) — Docs improvements
+- [`perimeter-3`](https://github.com/hyperpolymath/developer-ecosystem/labels/perimeter-3) — Community sandbox scope
+
+---
+
+## Development Workflow
+
+### Branch Naming
+....
+
+docs/short-description # Documentation (P3) test/what-added # Test
+additions (P3) feat/short-description # New features (P2)
+fix/issue-number-description # Bug fixes (P2) refactor/what-changed #
+Code improvements (P2) security/what-fixed # Security fixes (P1-2)
+
+....
+
+### Commit Messages
+
+We follow [Conventional Commits](https://www.conventionalcommits.org/):
+....
+
+():
+
+{empty}[optional body]
+
+{empty}[optional footer]

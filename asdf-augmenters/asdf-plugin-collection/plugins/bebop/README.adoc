@@ -1,101 +1,82 @@
-= RSR template repo - see RSR_OUTLINE.adoc in root for general background and specification
+== asdf-bebop
 
-== This is your repo - don't forget to rename me!
+https://github.com/hyperpolymath/asdf-bebop-plugin/actions/workflows/build.yml[image:https://github.com/hyperpolymath/asdf-bebop-plugin/actions/workflows/build.yml/badge.svg[Build]]
+https://github.com/hyperpolymath/asdf-bebop-plugin/actions/workflows/lint.yml[image:https://github.com/hyperpolymath/asdf-bebop-plugin/actions/workflows/lint.yml/badge.svg[Lint]]
+image:https://img.shields.io/badge/License-MPL–2.0-blue.svg[License:
+PMPL-1.0,link="`https://github.com/hyperpolymath/palimpsest-license`"]
 
-== ABI/FFI Standards (Hyperpolymath Universal Standard)
+https://asdf-vm.com[asdf] plugin for https://bebop.sh[Bebop].
 
-**All repos with foreign function interfaces MUST follow this standard:**
+Fast typed binary serialization.
 
-* **ABI (Application Binary Interface)** → **Idris2** (`src/abi/*.idr`)
-** Type definitions with dependent type proofs
-** Memory layout verification
-** Platform-specific ABIs with compile-time selection
-** Formal verification of interface correctness
+=== Contents
 
-* **FFI (Foreign Function Interface)** → **Zig** (`ffi/zig/src/*.zig`)
-** C-compatible function implementations
-** Zero-cost abstractions
-** Memory-safe by default
-** Cross-compilation support
+* link:#dependencies[Dependencies]
+* link:#install[Install]
+* link:#usage[Usage]
+* link:#contributing[Contributing]
+* link:#license[License]
 
-* **Generated C Headers** → Auto-generated from Idris2 ABI (`generated/abi/*.h`)
-** Bridge between Idris2 and Zig
-** Consumed by any language via C ABI
+=== Dependencies
 
-**Directory Structure:**
+* `+bash+`, `+curl+`, `+tar+`, and
+https://pubs.opengroup.org/onlinepubs/9699919799/idx/utilities.html[POSIX
+utilities]
+
+=== Install
+
+Plugin:
+
+[source,bash]
 ----
-project/
-├── src/abi/          # Idris2 ABI definitions (REQUIRED)
-├── ffi/zig/          # Zig FFI implementation (REQUIRED)
-├── generated/abi/    # Auto-generated C headers
-└── bindings/         # Language-specific wrappers (optional)
-----
-
-**See:** `ABI-FFI-README.md` for complete documentation
-
-== AI CLI standards
-
-- Include `ai-cli-crash-capture/` and `contractiles/` from this template in new repos.
-- Mirror 6SCM files into `.machine_readable/` (NOT `.machine_readable/6scm/`).
-- Before any code generation, check `/var/mnt/eclipse/repos/proven` for the current Idris "unbreakable" library status.
-- If a project uses that Idris library, add an *Idris Inside* badge to the repo.
-- If new bindings are required, add them in `/var/mnt/eclipse/repos/proven` as `idris2-zig-<language>` during the work.
-- If new code suggests additional "unbreakable" Idris modules, add them under `/var/mnt/eclipse/repos/proven` and update binders across all supported languages.
-
-== Standard Dependencies
-
-=== Web Projects
-
-ReScript web projects in the hyperpolymath ecosystem **MUST** use these formally verified components:
-
-[cols="1,2,1"]
-|===
-|Library |Purpose |Status
-
-|link:https://github.com/hyperpolymath/rescript-dom-mounter[rescript-dom-mounter]
-|Formally verified DOM mounting
-|**REQUIRED**
-
-|link:https://github.com/hyperpolymath/rescript-tea[rescript-tea]
-|TEA architecture framework
-|Recommended
-
-|link:https://github.com/hyperpolymath/cadre-tea-router[cadre-tea-router]
-|Proven-safe URL routing
-|Recommended
-
-|link:https://github.com/hyperpolymath/proven[proven]
-|Idris2 formally verified library
-|Core Dependency
-|===
-
-==== Why SafeDOM is Required
-
-Traditional DOM mounting can fail:
-
-[source,javascript]
-----
-// ❌ UNSAFE: Can crash with null pointer
-const el = document.getElementById('app')
-el.innerHTML = html  // 💥
+asdf plugin add bebop https://github.com/hyperpolymath/asdf-bebop-plugin.git
 ----
 
-SafeDOM provides **compile-time proofs** that DOM operations cannot fail:
+bebop:
 
-[source,rescript]
+[source,bash]
 ----
-// ✅ PROVEN SAFE: Mathematically guaranteed
-SafeDOM.mountSafe("#app", html,
-  ~onSuccess=el => Console.log("Success"),
-  ~onError=err => Console.error(err))
+# Show all installable versions
+asdf list-all bebop
+
+# Install specific version
+asdf install bebop latest
+
+# Set a version globally (in your ~/.tool-versions file)
+asdf global bebop latest
+
+# Now bebop commands are available
+bebop --version
 ----
 
-**Mathematical Guarantees:**
+Check https://asdf-vm.com/guide/getting-started.html[asdf] readme for
+more instructions.
 
-✓ No null pointer dereferences (Idris2 proof)
-✓ No invalid CSS selectors (dependent types)
-✓ No malformed HTML (balanced tag checking)
-✓ Type-safe operations (ReScript + Idris2)
-✓ Zero runtime overhead (proofs erased)
+=== Usage
 
-See link:https://github.com/hyperpolymath/rescript-dom-mounter[rescript-dom-mounter documentation] for full details.
+[source,bash]
+----
+# List installed versions
+asdf list bebop
+
+# Set local version for current directory
+asdf local bebop <version>
+
+# Uninstall a version
+asdf uninstall bebop <version>
+----
+
+=== Contributing
+
+Contributions welcome! Read the link:CONTRIBUTING.adoc[contributing
+guidelines] first.
+
+=== License
+
+Licensed under the link:LICENSE[Palimpsest-MPL License (PMPL-1.0)].
+
+'''''
+
+____
+Maintained by https://github.com/hyperpolymath[hyperpolymath]
+____

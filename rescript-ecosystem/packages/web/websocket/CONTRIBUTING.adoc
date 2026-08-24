@@ -1,208 +1,109 @@
-// SPDX-License-Identifier: CC-BY-SA-4.0
-// SPDX-FileCopyrightText: 2025 Hyperpolymath
+== Clone the repository
 
-= Contributing to rescript-websocket
-:toc:
+git clone https://github.com/hyperpolymath/rescript-websocket.git cd
+rescript-websocket
 
-Thank you for your interest in contributing to rescript-websocket!
+== Using Nix (recommended for reproducibility)
 
-== Getting Started
+nix develop
 
-=== Prerequisites
+== Or using toolbox/distrobox
 
-* Deno 2.x
-* ReScript 11.x (installed via Deno)
-* Git with GPG signing configured
+toolbox create rescript-websocket-dev toolbox enter
+rescript-websocket-dev # Install dependencies manually
 
-=== Setup
+== Verify setup
 
-[source,bash]
-----
-# Clone the repository
-git clone https://github.com/hyperpolymath/rescript-websocket.git
-cd rescript-websocket
+just check # or: cargo check / mix compile / etc. just test # Run test
+suite
 
-# Install dependencies
-deno install
+....
 
-# Build
-just build
+### Repository Structure
+....
 
-# Run tests
-just test
-----
+rescript-websocket/ ├── src/ # Source code (Perimeter 1-2) ├── lib/ #
+Library code (Perimeter 1-2) ├── extensions/ # Extensions (Perimeter 2)
+├── plugins/ # Plugins (Perimeter 2) ├── tools/ # Tooling (Perimeter 2)
+├── docs/ # Documentation (Perimeter 3) │ ├── architecture/ # ADRs,
+specs (Perimeter 2) │ └── proposals/ # RFCs (Perimeter 3) ├── examples/
+# Examples (Perimeter 3) ├── spec/ # Spec tests (Perimeter 3) ├── tests/
+# Test suite (Perimeter 2-3) ├── .well-known/ # Protocol files
+(Perimeter 1-3) ├── .github/ # GitHub config (Perimeter 1) │ ├──
+ISSUE_TEMPLATE/ │ └── workflows/ ├── CHANGELOG.md ├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md # This file ├── GOVERNANCE.md ├── LICENSE ├──
+MAINTAINERS.md ├── README.adoc ├── SECURITY.md ├── flake.nix # Nix flake
+(Perimeter 1) └── Justfile # Task runner (Perimeter 1)
 
-== Development Workflow
+....
 
-=== Branch Naming
+---
 
-* `feature/` - New features
-* `fix/` - Bug fixes
-* `docs/` - Documentation only
-* `refactor/` - Code refactoring
-* `test/` - Test additions/improvements
+## How to Contribute
 
-=== Making Changes
+### Reporting Bugs
 
-1. Fork the repository
-2. Create a feature branch from `main`
-3. Make your changes
-4. Run `just quality` to verify
-5. Sign off commits (`git commit -s`)
-6. Submit a pull request
+**Before reporting**:
+1. Search existing issues
+2. Check if it's already fixed in `main`
+3. Determine which perimeter the bug affects
 
-== Code Guidelines
+**When reporting**:
 
-=== Language Policy
+Use the [bug report template](.github/ISSUE_TEMPLATE/bug_report.md) and include:
 
-**ReScript only** - This project follows the https://github.com/hyperpolymath[Hyperpolymath] language policy:
+- Clear, descriptive title
+- Environment details (OS, versions, toolchain)
+- Steps to reproduce
+- Expected vs actual behaviour
+- Logs, screenshots, or minimal reproduction
 
-* ✅ ReScript for all application code
-* ✅ Deno for runtime and package management
-* ❌ No TypeScript
-* ❌ No Node.js/npm/bun
+### Suggesting Features
 
-=== Code Style
+**Before suggesting**:
+1. Check the [roadmap](ROADMAP.md) if available
+2. Search existing issues and discussions
+3. Consider which perimeter the feature belongs to
 
-* Use `@@uncurried` for all ReScript files
-* Prefer pipe-first syntax (`->`)
-* Keep functions pure where possible
-* Use descriptive names, avoid abbreviations
-* Add doc comments for public API functions
+**When suggesting**:
 
-=== Example
+Use the [feature request template](.github/ISSUE_TEMPLATE/feature_request.md) and include:
 
-[source,rescript]
-----
-@@uncurried
+- Problem statement (what pain point does this solve?)
+- Proposed solution
+- Alternatives considered
+- Which perimeter this affects
 
-/** Send a message if the connection is open */
-let safeSend = (ws: Client.t, message: string): result<unit, string> => {
-  if Client.isOpen(ws) {
-    ws->Client.send(message)
-    Ok()
-  } else {
-    Error("Connection not open")
-  }
-}
-----
+### Your First Contribution
 
-== Commit Guidelines
+Look for issues labelled:
 
-=== Format
+- [`good first issue`](https://github.com/hyperpolymath/rescript-websocket/labels/good%20first%20issue) — Simple Perimeter 3 tasks
+- [`help wanted`](https://github.com/hyperpolymath/rescript-websocket/labels/help%20wanted) — Community help needed
+- [`documentation`](https://github.com/hyperpolymath/rescript-websocket/labels/documentation) — Docs improvements
+- [`perimeter-3`](https://github.com/hyperpolymath/rescript-websocket/labels/perimeter-3) — Community sandbox scope
 
-We use https://www.conventionalcommits.org/[Conventional Commits]:
+---
 
-----
-type(scope): description
+## Development Workflow
 
-[optional body]
+### Branch Naming
+....
 
-[optional footer]
-Signed-off-by: Your Name <your.email@example.com>
-----
+docs/short-description # Documentation (P3) test/what-added # Test
+additions (P3) feat/short-description # New features (P2)
+fix/issue-number-description # Bug fixes (P2) refactor/what-changed #
+Code improvements (P2) security/what-fixed # Security fixes (P1-2)
 
-=== Types
+....
 
-* `feat` - New feature
-* `fix` - Bug fix
-* `docs` - Documentation
-* `style` - Formatting, no code change
-* `refactor` - Code restructuring
-* `test` - Adding tests
-* `chore` - Maintenance tasks
+### Commit Messages
 
-=== Examples
+We follow [Conventional Commits](https://www.conventionalcommits.org/):
+....
 
-----
-feat(client): add sendJson helper for JSON serialization
+():
 
-fix(server): handle connection upgrade failure gracefully
+{empty}[optional body]
 
-docs(readme): add reconnection pattern example
-----
-
-=== DCO Sign-off
-
-All commits must be signed off (Developer Certificate of Origin):
-
-[source,bash]
-----
-git commit -s -m "feat(client): add new feature"
-----
-
-== Testing
-
-=== Running Tests
-
-[source,bash]
-----
-# Run all tests
-just test
-
-# Run specific test file
-deno test tests/client_test.res.js
-
-# Watch mode
-just test-watch
-----
-
-=== Writing Tests
-
-Tests should be in the `tests/` directory with `_test.res` suffix:
-
-[source,rescript]
-----
-// tests/client_test.res
-open WebSocket
-
-let testClientCreation = () => {
-  let ws = Client.make("wss://example.com")
-  assert(Client.isConnecting(ws))
-}
-----
-
-== Pull Request Process
-
-1. Ensure all tests pass: `just quality`
-2. Update documentation if needed
-3. Add entry to CHANGELOG if significant
-4. Request review from maintainers
-5. Address review feedback
-6. Squash commits if requested
-
-== Issue Reporting
-
-=== Bug Reports
-
-Please include:
-
-* ReScript version
-* Deno version
-* Minimal reproduction code
-* Expected vs actual behavior
-* Error messages/stack traces
-
-=== Feature Requests
-
-Please include:
-
-* Use case description
-* Proposed API (if any)
-* Alternative solutions considered
-
-== Licence
-
-By contributing, you agree that your contributions will be licensed under PMPL-1.0-or-later.
-
-== Questions?
-
-* Open a GitHub Issue for questions
-* Check existing issues before creating new ones
-* Be respectful and constructive
-
-== Acknowledgements
-
-Contributors will be acknowledged in the project README.
-
-Thank you for helping make rescript-websocket better!
+{empty}[optional footer]
