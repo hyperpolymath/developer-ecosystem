@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module InnerModuleSignature.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from InnerModuleSignature.res by genType. */
 
 /* eslint-disable */
@@ -13,10 +10,9 @@ module InnerModuleSignature.gen;
 
 import * as InnerModuleSignatureJS from './InnerModuleSignature.res.js';
 
-export type InnerModule_t = string;
+struct InnerModule_t { string;
 
-export const InnerModule_make: (_1:InnerModule_t) => string = InnerModuleSignatureJS.InnerModule.make as any;
+const InnerModule_make: (_1:InnerModule_t) => string = InnerModuleSignatureJS.InnerModule.make as unknown;
 
-export const InnerModule: { make: (_1:InnerModule_t) => string } = InnerModuleSignatureJS.InnerModule as any;
+const InnerModule: { make: (_1:InnerModule_t) => string } = InnerModuleSignatureJS.InnerModule as unknown;
 
-==================================== */

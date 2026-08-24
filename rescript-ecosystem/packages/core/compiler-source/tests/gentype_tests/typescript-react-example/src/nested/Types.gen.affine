@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module Types.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from Types.res by genType. */
 
 /* eslint-disable */
@@ -25,61 +22,61 @@ import type {t_ as TypeNameSanitize_t_} from '../../src/TypeNameSanitize.gen';
 
 import type {t as Location_t} from '../../src/location/location.gen';
 
-export type t = number;
+struct t { number;
 
-export type typeWithVars<x,y,z> = 
+type typeWithVars<x,y,z> = 
     { TAG: "A"; _0: x; _1: y }
   | { TAG: "B"; _0: z };
 
-export type tree = {
+struct tree { {
   readonly label: string; 
   readonly left?: tree; 
   readonly right?: tree
 };
 
-export type selfRecursive = { readonly self: selfRecursive };
+struct selfRecursive { { readonly self: selfRecursive };
 
-export type mutuallyRecursiveA = { readonly b: mutuallyRecursiveB };
+struct mutuallyRecursiveA { { readonly b: mutuallyRecursiveB };
 
-export type mutuallyRecursiveB = { readonly a: mutuallyRecursiveA };
+struct mutuallyRecursiveB { { readonly a: mutuallyRecursiveA };
 
-export abstract class opaqueVariant { protected opaque!: any }; /* simulate opaque types */
+abstract struct opaqueVariant { protected opaque!: unknown }; /* simulate opaque types */
 
-export type twice<a> = [a, a];
+type twice<a> = [a, a];
 
-export type genTypeMispelled = number;
+struct genTypeMispelled { number;
 
-export type dictString = {[id: string]: string};
+struct dictString { {[id: string]: string};
 
-export type nullOrString = (null | string);
+struct nullOrString { (null | string);
 
-export type nullOrString2 = (null | string);
+struct nullOrString2 { (null | string);
 
-export type nullOrString3 = (null | string);
+struct nullOrString3 { (null | string);
 
-export type nullOrString4 = (null | string);
+struct nullOrString4 { (null | string);
 
-export type nullableOrString = (null | undefined | string);
+struct nullableOrString { (null | undefined | string);
 
-export type nullableOrString2 = (null | undefined | string);
+struct nullableOrString2 { (null | undefined | string);
 
-export type nullableOrString3 = (null | undefined | string);
+struct nullableOrString3 { (null | undefined | string);
 
-export type nullableOrString4 = (null | undefined | string);
+struct nullableOrString4 { (null | undefined | string);
 
-export type undefinedOrString = (undefined | string);
+struct undefinedOrString { (undefined | string);
 
-export type undefinedOrString2 = (undefined | string);
+struct undefinedOrString2 { (undefined | string);
 
-export type undefinedOrString3 = (undefined | string);
+struct undefinedOrString3 { (undefined | string);
 
-export type undefinedOrString4 = (undefined | string);
+struct undefinedOrString4 { (undefined | string);
 
-export type record = { readonly i: number; readonly s: string };
+struct record { { readonly i: number; readonly s: string };
 
-export type decorator<a,b> = (_1:a) => b;
+type decorator<a,b> = (_1:a) => b;
 
-export type marshalFields = {
+struct marshalFields { {
   readonly _rec: string; 
   readonly _switch: string; 
   readonly switch: string; 
@@ -91,55 +88,54 @@ export type marshalFields = {
   readonly _Uppercase__: string
 };
 
-export type marshalMutableField = { _match: number };
+struct marshalMutableField { { _match: number };
 
-export type ocaml_array<a> = a[];
+type ocaml_array<a> = a[];
 
-export type someRecord = { readonly id: number };
+struct someRecord { { readonly id: number };
 
-export type instantiateTypeParameter = ocaml_array<someRecord>;
+struct instantiateTypeParameter { ocaml_array<someRecord>;
 
-export type vector<a> = [a, a];
-export type Vector<a> = vector<a>;
+type vector<a> = [a, a];
+type Vector<a> = vector<a>;
 
-export type date = Date;
+struct date { Date;
 
-export type ObjectId_t = number;
+struct ObjectId_t { number;
 
-export type tPrimed = [TypeNameSanitize_t_, TypeNameSanitize_M_t__];
+struct tPrimed { [TypeNameSanitize_t_, TypeNameSanitize_M_t__];
 
-export const someIntList: list<number> = TypesJS.someIntList as any;
+const someIntList: list<number> = TypesJS.someIntList as unknown;
 
-export const map: <T1,T2>(_1:Belt_List_t<T1>, _2:((_1:T1) => T2)) => Belt_List_t<T2> = TypesJS.map as any;
+const map: <T1,T2>(_1:Belt_List_t<T1>, _2:((_1:T1) => T2)) => Belt_List_t<T2> = TypesJS.map as unknown;
 
-export const swap: (tree:tree) => tree = TypesJS.swap as any;
+const swap: (tree:tree) => tree = TypesJS.swap as unknown;
 
-export const selfRecursiveConverter: (param:selfRecursive) => selfRecursive = TypesJS.selfRecursiveConverter as any;
+const selfRecursiveConverter: (param:selfRecursive) => selfRecursive = TypesJS.selfRecursiveConverter as unknown;
 
-export const mutuallyRecursiveConverter: (param:mutuallyRecursiveA) => mutuallyRecursiveB = TypesJS.mutuallyRecursiveConverter as any;
+const mutuallyRecursiveConverter: (param:mutuallyRecursiveA) => mutuallyRecursiveB = TypesJS.mutuallyRecursiveConverter as unknown;
 
-export const testFunctionOnOptionsAsArgument: <T1,a>(a:(undefined | a), foo:((_1:(undefined | a)) => T1)) => T1 = TypesJS.testFunctionOnOptionsAsArgument as any;
+const testFunctionOnOptionsAsArgument: <T1,a>(a:(undefined | a), foo:((_1:(undefined | a)) => T1)) => T1 = TypesJS.testFunctionOnOptionsAsArgument as unknown;
 
-export const stringT: string = TypesJS.stringT as any;
+const stringT: string = TypesJS.stringT as unknown;
 
-export const jsStringT: string = TypesJS.jsStringT as any;
+const jsStringT: string = TypesJS.jsStringT as unknown;
 
-export const jsString2T: string = TypesJS.jsString2T as any;
+const jsString2T: string = TypesJS.jsString2T as unknown;
 
-export const jsonStringify: (_1:Js_Json_t) => string = TypesJS.jsonStringify as any;
+const jsonStringify: (_1:Js_Json_t) => string = TypesJS.jsonStringify as unknown;
 
-export const testConvertNull: (x:(null | record)) => (null | record) = TypesJS.testConvertNull as any;
+const testConvertNull: (x:(null | record)) => (null | record) = TypesJS.testConvertNull as unknown;
 
-export const testConvertLocation: (x:Location_t) => Location_t = TypesJS.testConvertLocation as any;
+const testConvertLocation: (x:Location_t) => Location_t = TypesJS.testConvertLocation as unknown;
 
-export const testMarshalFields: marshalFields = TypesJS.testMarshalFields as any;
+const testMarshalFields: marshalFields = TypesJS.testMarshalFields as unknown;
 
-export const setMatch: (x:marshalMutableField) => void = TypesJS.setMatch as any;
+const setMatch: (x:marshalMutableField) => void = TypesJS.setMatch as unknown;
 
-export const testInstantiateTypeParameter: (x:instantiateTypeParameter) => instantiateTypeParameter = TypesJS.testInstantiateTypeParameter as any;
+const testInstantiateTypeParameter: (x:instantiateTypeParameter) => instantiateTypeParameter = TypesJS.testInstantiateTypeParameter as unknown;
 
-export const currentTime: Date = TypesJS.currentTime as any;
+const currentTime: Date = TypesJS.currentTime as unknown;
 
-export const optFunction: (undefined | (() => number)) = TypesJS.optFunction as any;
+const optFunction: (undefined | (() => number)) = TypesJS.optFunction as unknown;
 
-==================================== */

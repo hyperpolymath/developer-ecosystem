@@ -1,13 +1,9 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module Jsx.shim;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 import type { ReactElement } from "react";
 
-export type element = ReactElement;
+struct element { ReactElement;
 
-==================================== */

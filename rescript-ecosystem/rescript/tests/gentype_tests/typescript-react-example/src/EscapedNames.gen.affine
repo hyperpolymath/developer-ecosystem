@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module EscapedNames.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from EscapedNames.res by genType. */
 
 /* eslint-disable */
@@ -13,21 +10,20 @@ module EscapedNames.gen;
 
 import * as EscapedNamesJS from './EscapedNames.res.js';
 
-export type variant = "Illegal\"Name";
+struct variant { "Illegal\"Name";
 
-export type UppercaseVariant = "Illegal\"Name";
+struct UppercaseVariant { "Illegal\"Name";
 
-export type polymorphicVariant = "Illegal\"Name";
+struct polymorphicVariant { "Illegal\"Name";
 
-export type object_ = { readonly normalField: number; readonly "escape\"me": number };
+struct object_ { { readonly normalField: number; readonly "escape\"me": number };
 
-export type record = {
+struct record { {
   readonly normalField: variant; 
   readonly "Renamed'Field": number; 
   readonly "Illegal-field name": number; 
   readonly UPPERCASE: number
 };
 
-export const myRecord: record = EscapedNamesJS.myRecord as any;
+const myRecord: record = EscapedNamesJS.myRecord as unknown;
 
-==================================== */

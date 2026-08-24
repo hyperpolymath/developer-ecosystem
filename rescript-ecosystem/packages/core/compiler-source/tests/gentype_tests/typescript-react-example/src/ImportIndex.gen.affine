@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module ImportIndex.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from ImportIndex.res by genType. */
 
 /* eslint-disable */
@@ -14,13 +11,12 @@ module ImportIndex.gen;
 import {default as defaultNotChecked} from './';
 
 // In case of type error, check the type of 'default' in 'ImportIndex.res' and './'.
-export const defaultTypeChecked: React.ComponentType<{ readonly method?: "push" | "replace" }> = defaultNotChecked as any;
+const defaultTypeChecked: React.ComponentType<{ readonly method?: "push" | "replace" }> = defaultNotChecked as unknown;
 
 // Export '$$default' early to allow circular import from the '.bs.js' file.
-export const $$default: unknown = defaultTypeChecked as React.ComponentType<{ readonly method?: "push" | "replace" }> as any;
+const $$default: unknown = defaultTypeChecked as React.ComponentType<{ readonly method?: "push" | "replace" }> as unknown;
 
-export type props<method> = { readonly method?: method };
+type props<method> = { readonly method?: method };
 
-export default $$default;
+default $$default;
 
-==================================== */

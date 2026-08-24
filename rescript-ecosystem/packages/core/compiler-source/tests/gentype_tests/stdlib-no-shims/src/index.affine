@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module index;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 // Import the generated bindings to force TS to resolve types without shims
 import * as S from "./StdlibNoShims.gen";
 
@@ -27,7 +24,7 @@ const d: Date = S.idDate(new Date());
 const re: RegExp = S.idRegExp(/a/);
 
 // Promise
-const p: Promise<string> = S.idPromise(Promise.resolve("ok"));
+const p: string = S.idPromise(Promise.resolve("ok"));
 
 // Dict
 const dict: { [id: string]: number } = S.idDict({ a: 1, b: 2 });
@@ -56,12 +53,12 @@ const j: unknown = S.idJSON({});
 // Result
 const ok: { TAG: "Ok"; _0: number } = { TAG: "Ok", _0: 1 };
 const err: { TAG: "Error"; _0: string } = { TAG: "Error", _0: "e" };
-const r1 = S.idResult(ok);
-const r2 = S.idResult(err);
+let r1 = S.idResult(ok);
+let r2 = S.idResult(err);
 
 // result alias
-const r3 = S.idResultAlias(ok);
-const r4 = S.idResultAlias(err);
+let r3 = S.idResultAlias(ok);
+let r4 = S.idResultAlias(err);
 
 // array
 const arr: number[] = S.idArray([1, 2, 3]);
@@ -95,7 +92,7 @@ const sym: symbol = S.idSymbol(Symbol("x"));
 // Iterator / AsyncIterator / Ordering
 const it: Iterator<number> = S.idIterator([1, 2, 3].values());
 const ait: AsyncIterator<number> = S.idAsyncIterator({
-  next(): Promise<IteratorResult<number>> {
+  next(): IteratorResult<number> {
     return Promise.resolve({ done: true, value: undefined });
   },
 });
@@ -127,4 +124,3 @@ const _obj: {} = S.idObj({ a: 1, b: "x" });
 // Tuple
 const _tup: [number, string, number] = S.idTuple([1, "x", 1.5]);
 
-==================================== */

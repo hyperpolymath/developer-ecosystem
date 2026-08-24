@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module Machine.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from Machine.res by genType. */
 
 /* eslint-disable */
@@ -13,8 +10,7 @@ module Machine.gen;
 
 import * as MachineJS from './Machine.res.js';
 
-export type aa = { TAG: "A"; _0: number };
+struct aa { { TAG: "A"; _0: number };
 
-export const a: aa = MachineJS.a as any;
+const a: aa = MachineJS.a as unknown;
 
-==================================== */

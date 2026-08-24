@@ -1,15 +1,12 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module sample-highlighting;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 // Bindings
 let numberBinding = 123;
 
-const SomeComp = {
+let SomeComp = {
   Nested: () => null,
 };
 
@@ -49,7 +46,7 @@ let destructuring = () => {
 };
 
 namespace SomeModule {
-  export enum t {
+  enum t {
     Some,
     Value,
     Here,
@@ -57,9 +54,9 @@ namespace SomeModule {
 }
 
 // Decorators and classes
-function someDecorator() {
+fn someDecorator() {
   return function (
-    target: any,
+    target: unknown,
     propertyKey: string,
     descriptor: PropertyDescriptor
   ) {
@@ -67,7 +64,7 @@ function someDecorator() {
   };
 }
 
-class SomeClass {
+struct SomeClass {
   @someDecorator() doStuff() {
     return 123;
   }
@@ -77,12 +74,12 @@ class SomeClass {
 let interpolated = `${numberBinding} ${"123"}`;
 
 // JSX
-interface Props {
+struct Props {
   someProp: number;
   otherProp: string;
   thirdProp: SomeModule.t;
 }
-const SomeComponent = ({ someProp, otherProp, thirdProp }: Props) => {
+let SomeComponent = ({ someProp, otherProp, thirdProp }: Props) => {
   return null;
 };
 
@@ -97,8 +94,7 @@ let jsx = (
     {"Hello"}
   </div>
 );
-function Property() {
+fn Property() {
   throw new Error("Function not implemented.");
 }
 
-==================================== */

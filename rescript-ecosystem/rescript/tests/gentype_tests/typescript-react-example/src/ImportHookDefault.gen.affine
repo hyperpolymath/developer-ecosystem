@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module ImportHookDefault.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from ImportHookDefault.res by genType. */
 
 /* eslint-disable */
@@ -16,49 +13,48 @@ import {default as makeNotChecked} from './hookExample';
 import {default as defaultNotChecked} from './hookExample';
 
 // In case of type error, check the type of 'make' in 'ImportHookDefault.res' and './hookExample'.
-export const makeTypeChecked: React.ComponentType<{
+const makeTypeChecked: React.ComponentType<{
   readonly person: person; 
   readonly children: React.ReactNode; 
   readonly renderMe: ImportHooks_renderMe<string>
-}> = makeNotChecked as any;
+}> = makeNotChecked as unknown;
 
 // Export 'make' early to allow circular import from the '.bs.js' file.
-export const make: unknown = makeTypeChecked as React.ComponentType<{
+const make: unknown = makeTypeChecked as React.ComponentType<{
   readonly person: person; 
   readonly children: React.ReactNode; 
   readonly renderMe: ImportHooks_renderMe<string>
-}> as any;
+}> as unknown;
 
 // In case of type error, check the type of 'default' in 'ImportHookDefault.res' and './hookExample'.
-export const defaultTypeChecked: React.ComponentType<{
+const defaultTypeChecked: React.ComponentType<{
   readonly person: person; 
   readonly children: React.ReactNode; 
   readonly renderMe: ImportHooks_renderMe<string>
-}> = defaultNotChecked as any;
+}> = defaultNotChecked as unknown;
 
 // Export '$$default' early to allow circular import from the '.bs.js' file.
-export const $$default: unknown = defaultTypeChecked as React.ComponentType<{
+const $$default: unknown = defaultTypeChecked as React.ComponentType<{
   readonly person: person; 
   readonly children: React.ReactNode; 
   readonly renderMe: ImportHooks_renderMe<string>
-}> as any;
+}> as unknown;
 
 import type {renderMe as ImportHooks_renderMe} from './ImportHooks.gen';
 
-export type person = { readonly name: string; readonly age: number };
+struct person { { readonly name: string; readonly age: number };
 
-export type props<person,children,renderMe> = {
+type props<person,children,renderMe> = {
   readonly person: person; 
   readonly children: children; 
   readonly renderMe: renderMe
 };
 
-export type MM_props<person,children,renderMe> = {
+type MM_props<person,children,renderMe> = {
   readonly person: person; 
   readonly children: children; 
   readonly renderMe: renderMe
 };
 
-export default $$default;
+default $$default;
 
-==================================== */

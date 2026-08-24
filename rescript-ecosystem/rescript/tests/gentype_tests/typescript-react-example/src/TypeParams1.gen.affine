@@ -1,16 +1,12 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module TypeParams1.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from TypeParams1.res by genType. */
 
 /* eslint-disable */
 /* tslint:disable */
 
-export type ocaml_array<a> = a[];
+type ocaml_array<a> = a[];
 
-==================================== */

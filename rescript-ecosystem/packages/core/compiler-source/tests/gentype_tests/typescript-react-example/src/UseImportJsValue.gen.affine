@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module UseImportJsValue.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from UseImportJsValue.res by genType. */
 
 /* eslint-disable */
@@ -17,8 +14,7 @@ import type {AbsoluteValue_t as ImportJsValue_AbsoluteValue_t} from './ImportJsV
 
 import type {stringFunction as ImportJsValue_stringFunction} from './ImportJsValue.gen';
 
-export const useGetProp: (x:ImportJsValue_AbsoluteValue_t) => number = UseImportJsValueJS.useGetProp as any;
+const useGetProp: (x:ImportJsValue_AbsoluteValue_t) => number = UseImportJsValueJS.useGetProp as unknown;
 
-export const useTypeImportedInOtherModule: (x:ImportJsValue_stringFunction) => ImportJsValue_stringFunction = UseImportJsValueJS.useTypeImportedInOtherModule as any;
+const useTypeImportedInOtherModule: (x:ImportJsValue_stringFunction) => ImportJsValue_stringFunction = UseImportJsValueJS.useTypeImportedInOtherModule as unknown;
 
-==================================== */

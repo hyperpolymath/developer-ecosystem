@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module Docstrings.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from Docstrings.res by genType. */
 
 /* eslint-disable */
@@ -13,50 +10,49 @@ module Docstrings.gen;
 
 import * as DocstringsJS from './Docstrings.res.js';
 
-export type t = "A" | "B";
+struct t { "A" | "B";
 
 /** hello */
-export const flat: number = DocstringsJS.flat as any;
+const flat: number = DocstringsJS.flat as unknown;
 
 /** * Sign a message with a key.
   *
   * @param message - A message to be signed
   * @param key - The key with which to sign the message
   * @returns A signed message */
-export const signMessage: (message:string, key:number) => string = DocstringsJS.signMessage as any;
+const signMessage: (message:string, key:number) => string = DocstringsJS.signMessage as unknown;
 
-export const one: (a:number) => number = DocstringsJS.one as any;
+const one: (a:number) => number = DocstringsJS.one as unknown;
 
-export const two: (a:number, b:number) => number = DocstringsJS.two as any;
+const two: (a:number, b:number) => number = DocstringsJS.two as unknown;
 
-export const tree: (a:number, b:number, c:number) => number = DocstringsJS.tree as any;
+const tree: (a:number, b:number, c:number) => number = DocstringsJS.tree as unknown;
 
-export const oneU: (a:number) => number = DocstringsJS.oneU as any;
+const oneU: (a:number) => number = DocstringsJS.oneU as unknown;
 
-export const twoU: (a:number, b:number) => number = DocstringsJS.twoU as any;
+const twoU: (a:number, b:number) => number = DocstringsJS.twoU as unknown;
 
-export const treeU: (a:number, b:number, c:number) => number = DocstringsJS.treeU as any;
+const treeU: (a:number, b:number, c:number) => number = DocstringsJS.treeU as unknown;
 
-export const useParam: (param:number) => number = DocstringsJS.useParam as any;
+const useParam: (param:number) => number = DocstringsJS.useParam as unknown;
 
-export const useParamU: (param:number) => number = DocstringsJS.useParamU as any;
+const useParamU: (param:number) => number = DocstringsJS.useParamU as unknown;
 
-export const unnamed1: (param:number) => number = DocstringsJS.unnamed1 as any;
+const unnamed1: (param:number) => number = DocstringsJS.unnamed1 as unknown;
 
-export const unnamed1U: (param:number) => number = DocstringsJS.unnamed1U as any;
+const unnamed1U: (param:number) => number = DocstringsJS.unnamed1U as unknown;
 
-export const unnamed2: (param_0:number, param_1:number) => number = DocstringsJS.unnamed2 as any;
+const unnamed2: (param_0:number, param_1:number) => number = DocstringsJS.unnamed2 as unknown;
 
-export const unnamed2U: (param_0:number, param_1:number) => number = DocstringsJS.unnamed2U as any;
+const unnamed2U: (param_0:number, param_1:number) => number = DocstringsJS.unnamed2U as unknown;
 
-export const grouped: (x:number, y:number, a:number, b:number, c:number, z:number) => number = DocstringsJS.grouped as any;
+const grouped: (x:number, y:number, a:number, b:number, c:number, z:number) => number = DocstringsJS.grouped as unknown;
 
-export const unitArgWithoutConversion: () => string = DocstringsJS.unitArgWithoutConversion as any;
+const unitArgWithoutConversion: () => string = DocstringsJS.unitArgWithoutConversion as unknown;
 
-export const unitArgWithoutConversionU: () => string = DocstringsJS.unitArgWithoutConversionU as any;
+const unitArgWithoutConversionU: () => string = DocstringsJS.unitArgWithoutConversionU as unknown;
 
-export const unitArgWithConversion: () => t = DocstringsJS.unitArgWithConversion as any;
+const unitArgWithConversion: () => t = DocstringsJS.unitArgWithConversion as unknown;
 
-export const unitArgWithConversionU: () => t = DocstringsJS.unitArgWithConversionU as any;
+const unitArgWithConversionU: () => t = DocstringsJS.unitArgWithConversionU as unknown;
 
-==================================== */

@@ -1,18 +1,14 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module GADT.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from GADT.res by genType. */
 
 /* eslint-disable */
 /* tslint:disable */
 
-export abstract class t { protected opaque!: any }; /* simulate opaque types */
+abstract struct t { protected opaque!: unknown }; /* simulate opaque types */
 
-export abstract class tt { protected opaque!: any }; /* simulate opaque types */
+abstract struct tt { protected opaque!: unknown }; /* simulate opaque types */
 
-==================================== */

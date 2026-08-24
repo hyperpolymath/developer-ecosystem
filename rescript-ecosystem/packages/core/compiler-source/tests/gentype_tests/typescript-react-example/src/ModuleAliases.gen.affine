@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module ModuleAliases.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from ModuleAliases.res by genType. */
 
 /* eslint-disable */
@@ -13,24 +10,23 @@ module ModuleAliases.gen;
 
 import * as ModuleAliasesJS from './ModuleAliases.res.js';
 
-export type Outer_Inner_innerT = { readonly inner: string };
+struct Outer_Inner_innerT { { readonly inner: string };
 
-export type Outer2_Inner2_InnerNested_t = { readonly nested: number };
+struct Outer2_Inner2_InnerNested_t { { readonly nested: number };
 
-export type Outer2_OuterInnerAlias_innerT = Outer_Inner_innerT;
+struct Outer2_OuterInnerAlias_innerT { Outer_Inner_innerT;
 
-export type Outer2_Inner2_OuterInnerAlias2_innerT = Outer2_OuterInnerAlias_innerT;
+struct Outer2_Inner2_OuterInnerAlias2_innerT { Outer2_OuterInnerAlias_innerT;
 
-export type Outer2Alias_OuterInnerAlias_innerT = Outer2_OuterInnerAlias_innerT;
+struct Outer2Alias_OuterInnerAlias_innerT { Outer2_OuterInnerAlias_innerT;
 
-export type Outer2Alias_Inner2_OuterInnerAlias2_innerT = Outer2_Inner2_OuterInnerAlias2_innerT;
+struct Outer2Alias_Inner2_OuterInnerAlias2_innerT { Outer2_Inner2_OuterInnerAlias2_innerT;
 
-export type InnerNestedAlias_t = Outer2_Inner2_InnerNested_t;
+struct InnerNestedAlias_t { Outer2_Inner2_InnerNested_t;
 
-export const testNested: (x:InnerNestedAlias_t) => InnerNestedAlias_t = ModuleAliasesJS.testNested as any;
+const testNested: (x:InnerNestedAlias_t) => InnerNestedAlias_t = ModuleAliasesJS.testNested as unknown;
 
-export const testInner: (x:Outer2Alias_OuterInnerAlias_innerT) => Outer2Alias_OuterInnerAlias_innerT = ModuleAliasesJS.testInner as any;
+const testInner: (x:Outer2Alias_OuterInnerAlias_innerT) => Outer2Alias_OuterInnerAlias_innerT = ModuleAliasesJS.testInner as unknown;
 
-export const testInner2: (x:Outer2Alias_Inner2_OuterInnerAlias2_innerT) => Outer2Alias_Inner2_OuterInnerAlias2_innerT = ModuleAliasesJS.testInner2 as any;
+const testInner2: (x:Outer2Alias_Inner2_OuterInnerAlias2_innerT) => Outer2Alias_Inner2_OuterInnerAlias2_innerT = ModuleAliasesJS.testInner2 as unknown;
 
-==================================== */

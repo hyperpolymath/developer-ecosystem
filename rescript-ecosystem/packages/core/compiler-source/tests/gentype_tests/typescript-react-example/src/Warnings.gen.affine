@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module Warnings.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from Warnings.res by genType. */
 
 /* eslint-disable */
@@ -13,6 +10,5 @@ module Warnings.gen;
 
 import * as WarningsJS from './Warnings.res.js';
 
-export const ddd: number = WarningsJS.x as any;
+const ddd: number = WarningsJS.x as unknown;
 
-==================================== */

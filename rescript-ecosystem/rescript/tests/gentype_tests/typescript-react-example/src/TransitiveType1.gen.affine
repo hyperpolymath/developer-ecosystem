@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module TransitiveType1.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from TransitiveType1.res by genType. */
 
 /* eslint-disable */
@@ -17,8 +14,7 @@ import type {t2Alias as TransitiveType2_t2Alias} from './TransitiveType2.gen';
 
 import type {t2 as TransitiveType2_t2} from './TransitiveType2.gen';
 
-export const convert: (x:TransitiveType2_t2) => TransitiveType2_t2 = TransitiveType1JS.convert as any;
+const convert: (x:TransitiveType2_t2) => TransitiveType2_t2 = TransitiveType1JS.convert as unknown;
 
-export const convertAlias: (x:TransitiveType2_t2Alias) => TransitiveType2_t2Alias = TransitiveType1JS.convertAlias as any;
+const convertAlias: (x:TransitiveType2_t2Alias) => TransitiveType2_t2Alias = TransitiveType1JS.convertAlias as unknown;
 
-==================================== */

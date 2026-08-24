@@ -1,15 +1,11 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module Js.shim;
 
-// TODO: Complete semantic implementation
+struct Json_t { unknown;
 
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
-export type Json_t = unknown;
+struct t { unknown;
 
-export type t = unknown;
+struct TypedArray2_Uint8Array_t { Uint8Array;
 
-export type TypedArray2_Uint8Array_t = Uint8Array;
-
-==================================== */

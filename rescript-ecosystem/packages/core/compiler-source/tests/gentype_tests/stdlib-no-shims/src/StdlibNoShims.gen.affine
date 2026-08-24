@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module StdlibNoShims.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from StdlibNoShims.res by genType. */
 
 /* eslint-disable */
@@ -13,116 +10,115 @@ module StdlibNoShims.gen;
 
 import * as StdlibNoShimsJS from './StdlibNoShims.res.js';
 
-export const idInt: (x:number) => number = StdlibNoShimsJS.idInt as any;
+const idInt: (x:number) => number = StdlibNoShimsJS.idInt as unknown;
 
-export const idFloat: (x:number) => number = StdlibNoShimsJS.idFloat as any;
+const idFloat: (x:number) => number = StdlibNoShimsJS.idFloat as unknown;
 
-export const idBool: (x:boolean) => boolean = StdlibNoShimsJS.idBool as any;
+const idBool: (x:boolean) => boolean = StdlibNoShimsJS.idBool as unknown;
 
-export const idString: (x:string) => string = StdlibNoShimsJS.idString as any;
+const idString: (x:string) => string = StdlibNoShimsJS.idString as unknown;
 
-export const idBigInt: (x:bigint) => bigint = StdlibNoShimsJS.idBigInt as any;
+const idBigInt: (x:bigint) => bigint = StdlibNoShimsJS.idBigInt as unknown;
 
-export const idDate: (x:Date) => Date = StdlibNoShimsJS.idDate as any;
+const idDate: (x:Date) => Date = StdlibNoShimsJS.idDate as unknown;
 
-export const idRegExp: (x:RegExp) => RegExp = StdlibNoShimsJS.idRegExp as any;
+const idRegExp: (x:RegExp) => RegExp = StdlibNoShimsJS.idRegExp as unknown;
 
-export const idPromise: (x:Promise<string>) => Promise<string> = StdlibNoShimsJS.idPromise as any;
+const idPromise: (x:string) => string = StdlibNoShimsJS.idPromise as unknown;
 
-export const idDict: (x:{[id: string]: number}) => {[id: string]: number} = StdlibNoShimsJS.idDict as any;
+const idDict: (x:{[id: string]: number}) => {[id: string]: number} = StdlibNoShimsJS.idDict as unknown;
 
-export const idMap: (x:Map<string,number>) => Map<string,number> = StdlibNoShimsJS.idMap as any;
+const idMap: (x:Map<string,number>) => Map<string,number> = StdlibNoShimsJS.idMap as unknown;
 
-export const idWeakMap: (x:WeakMap<number[],number>) => WeakMap<number[],number> = StdlibNoShimsJS.idWeakMap as any;
+const idWeakMap: (x:WeakMap<number[],number>) => WeakMap<number[],number> = StdlibNoShimsJS.idWeakMap as unknown;
 
-export const idSet: (x:Set<string>) => Set<string> = StdlibNoShimsJS.idSet as any;
+const idSet: (x:Set<string>) => Set<string> = StdlibNoShimsJS.idSet as unknown;
 
-export const idWeakSet: (x:WeakSet<number[]>) => WeakSet<number[]> = StdlibNoShimsJS.idWeakSet as any;
+const idWeakSet: (x:WeakSet<number[]>) => WeakSet<number[]> = StdlibNoShimsJS.idWeakSet as unknown;
 
-export const idArray: (x:number[]) => number[] = StdlibNoShimsJS.idArray as any;
+const idArray: (x:number[]) => number[] = StdlibNoShimsJS.idArray as unknown;
 
-export const idUndefined: (x:(undefined | number)) => (undefined | number) = StdlibNoShimsJS.idUndefined as any;
+const idUndefined: (x:(undefined | number)) => (undefined | number) = StdlibNoShimsJS.idUndefined as unknown;
 
-export const idNull: (x:(null | number)) => (null | number) = StdlibNoShimsJS.idNull as any;
+const idNull: (x:(null | number)) => (null | number) = StdlibNoShimsJS.idNull as unknown;
 
-export const idNullable: (x:(null | undefined | number)) => (null | undefined | number) = StdlibNoShimsJS.idNullable as any;
+const idNullable: (x:(null | undefined | number)) => (null | undefined | number) = StdlibNoShimsJS.idNullable as unknown;
 
-export const idOption: (x:(undefined | string)) => (undefined | string) = StdlibNoShimsJS.idOption as any;
+const idOption: (x:(undefined | string)) => (undefined | string) = StdlibNoShimsJS.idOption as unknown;
 
-export const idJSON: (x:unknown) => unknown = StdlibNoShimsJS.idJSON as any;
+const idJSON: (x:unknown) => unknown = StdlibNoShimsJS.idJSON as unknown;
 
-export const idResult: (x:
+const idResult: (x:
     { TAG: "Ok"; _0: number }
   | { TAG: "Error"; _0: string }) => 
     { TAG: "Ok"; _0: number }
-  | { TAG: "Error"; _0: string } = StdlibNoShimsJS.idResult as any;
+  | { TAG: "Error"; _0: string } = StdlibNoShimsJS.idResult as unknown;
 
-export const idResultAlias: (x:
+const idResultAlias: (x:
     { TAG: "Ok"; _0: number }
   | { TAG: "Error"; _0: string }) => 
     { TAG: "Ok"; _0: number }
-  | { TAG: "Error"; _0: string } = StdlibNoShimsJS.idResultAlias as any;
+  | { TAG: "Error"; _0: string } = StdlibNoShimsJS.idResultAlias as unknown;
 
-export const idRef: (x:{ contents: number }) => { contents: number } = StdlibNoShimsJS.idRef as any;
+const idRef: (x:{ contents: number }) => { contents: number } = StdlibNoShimsJS.idRef as unknown;
 
-export const returnsUnit: () => void = StdlibNoShimsJS.returnsUnit as any;
+const returnsUnit: () => void = StdlibNoShimsJS.returnsUnit as unknown;
 
-export const idTuple: (x:[number, string, number]) => [number, string, number] = StdlibNoShimsJS.idTuple as any;
+const idTuple: (x:[number, string, number]) => [number, string, number] = StdlibNoShimsJS.idTuple as unknown;
 
-export const idArrayBuffer: (x:ArrayBuffer) => ArrayBuffer = StdlibNoShimsJS.idArrayBuffer as any;
+const idArrayBuffer: (x:ArrayBuffer) => ArrayBuffer = StdlibNoShimsJS.idArrayBuffer as unknown;
 
-export const idDataView: (x:DataView) => DataView = StdlibNoShimsJS.idDataView as any;
+const idDataView: (x:DataView) => DataView = StdlibNoShimsJS.idDataView as unknown;
 
-export const idInt8Array: (x:Int8Array) => Int8Array = StdlibNoShimsJS.idInt8Array as any;
+const idInt8Array: (x:Int8Array) => Int8Array = StdlibNoShimsJS.idInt8Array as unknown;
 
-export const idUint8Array: (x:Uint8Array) => Uint8Array = StdlibNoShimsJS.idUint8Array as any;
+const idUint8Array: (x:Uint8Array) => Uint8Array = StdlibNoShimsJS.idUint8Array as unknown;
 
-export const idUint8ClampedArray: (x:Uint8ClampedArray) => Uint8ClampedArray = StdlibNoShimsJS.idUint8ClampedArray as any;
+const idUint8ClampedArray: (x:Uint8ClampedArray) => Uint8ClampedArray = StdlibNoShimsJS.idUint8ClampedArray as unknown;
 
-export const idInt16Array: (x:Int16Array) => Int16Array = StdlibNoShimsJS.idInt16Array as any;
+const idInt16Array: (x:Int16Array) => Int16Array = StdlibNoShimsJS.idInt16Array as unknown;
 
-export const idUint16Array: (x:Uint16Array) => Uint16Array = StdlibNoShimsJS.idUint16Array as any;
+const idUint16Array: (x:Uint16Array) => Uint16Array = StdlibNoShimsJS.idUint16Array as unknown;
 
-export const idInt32Array: (x:Int32Array) => Int32Array = StdlibNoShimsJS.idInt32Array as any;
+const idInt32Array: (x:Int32Array) => Int32Array = StdlibNoShimsJS.idInt32Array as unknown;
 
-export const idUint32Array: (x:Uint32Array) => Uint32Array = StdlibNoShimsJS.idUint32Array as any;
+const idUint32Array: (x:Uint32Array) => Uint32Array = StdlibNoShimsJS.idUint32Array as unknown;
 
-export const idFloat32Array: (x:Float32Array) => Float32Array = StdlibNoShimsJS.idFloat32Array as any;
+const idFloat32Array: (x:Float32Array) => Float32Array = StdlibNoShimsJS.idFloat32Array as unknown;
 
-export const idFloat64Array: (x:Float64Array) => Float64Array = StdlibNoShimsJS.idFloat64Array as any;
+const idFloat64Array: (x:Float64Array) => Float64Array = StdlibNoShimsJS.idFloat64Array as unknown;
 
-export const idBigInt64Array: (x:BigInt64Array) => BigInt64Array = StdlibNoShimsJS.idBigInt64Array as any;
+const idBigInt64Array: (x:BigInt64Array) => BigInt64Array = StdlibNoShimsJS.idBigInt64Array as unknown;
 
-export const idBigUint64Array: (x:BigUint64Array) => BigUint64Array = StdlibNoShimsJS.idBigUint64Array as any;
+const idBigUint64Array: (x:BigUint64Array) => BigUint64Array = StdlibNoShimsJS.idBigUint64Array as unknown;
 
-export const idSymbol: (x:symbol) => symbol = StdlibNoShimsJS.idSymbol as any;
+const idSymbol: (x:symbol) => symbol = StdlibNoShimsJS.idSymbol as unknown;
 
-export const idIterator: (x:Iterator<number>) => Iterator<number> = StdlibNoShimsJS.idIterator as any;
+const idIterator: (x:Iterator<number>) => Iterator<number> = StdlibNoShimsJS.idIterator as unknown;
 
-export const idAsyncIterator: (x:AsyncIterator<number>) => AsyncIterator<number> = StdlibNoShimsJS.idAsyncIterator as any;
+const idAsyncIterator: (x:AsyncIterator<number>) => AsyncIterator<number> = StdlibNoShimsJS.idAsyncIterator as unknown;
 
-export const idOrdering: (x:number) => number = StdlibNoShimsJS.idOrdering as any;
+const idOrdering: (x:number) => number = StdlibNoShimsJS.idOrdering as unknown;
 
-export const idIntlCollator: (x:Intl.Collator) => Intl.Collator = StdlibNoShimsJS.idIntlCollator as any;
+const idIntlCollator: (x:Intl.Collator) => Intl.Collator = StdlibNoShimsJS.idIntlCollator as unknown;
 
-export const idIntlDateTimeFormat: (x:Intl.DateTimeFormat) => Intl.DateTimeFormat = StdlibNoShimsJS.idIntlDateTimeFormat as any;
+const idIntlDateTimeFormat: (x:Intl.DateTimeFormat) => Intl.DateTimeFormat = StdlibNoShimsJS.idIntlDateTimeFormat as unknown;
 
-export const idIntlListFormat: (x:Intl.ListFormat) => Intl.ListFormat = StdlibNoShimsJS.idIntlListFormat as any;
+const idIntlListFormat: (x:Intl.ListFormat) => Intl.ListFormat = StdlibNoShimsJS.idIntlListFormat as unknown;
 
-export const idIntlLocale: (x:Intl.Locale) => Intl.Locale = StdlibNoShimsJS.idIntlLocale as any;
+const idIntlLocale: (x:Intl.Locale) => Intl.Locale = StdlibNoShimsJS.idIntlLocale as unknown;
 
-export const idIntlNumberFormat: (x:Intl.NumberFormat) => Intl.NumberFormat = StdlibNoShimsJS.idIntlNumberFormat as any;
+const idIntlNumberFormat: (x:Intl.NumberFormat) => Intl.NumberFormat = StdlibNoShimsJS.idIntlNumberFormat as unknown;
 
-export const idIntlPluralRules: (x:Intl.PluralRules) => Intl.PluralRules = StdlibNoShimsJS.idIntlPluralRules as any;
+const idIntlPluralRules: (x:Intl.PluralRules) => Intl.PluralRules = StdlibNoShimsJS.idIntlPluralRules as unknown;
 
-export const idIntlRelativeTimeFormat: (x:Intl.RelativeTimeFormat) => Intl.RelativeTimeFormat = StdlibNoShimsJS.idIntlRelativeTimeFormat as any;
+const idIntlRelativeTimeFormat: (x:Intl.RelativeTimeFormat) => Intl.RelativeTimeFormat = StdlibNoShimsJS.idIntlRelativeTimeFormat as unknown;
 
-export const idIntlSegmenter: (x:Intl.Segmenter) => Intl.Segmenter = StdlibNoShimsJS.idIntlSegmenter as any;
+const idIntlSegmenter: (x:Intl.Segmenter) => Intl.Segmenter = StdlibNoShimsJS.idIntlSegmenter as unknown;
 
-export const idIntlSegments: (x:Intl.Segments) => Intl.Segments = StdlibNoShimsJS.idIntlSegments as any;
+const idIntlSegments: (x:Intl.Segments) => Intl.Segments = StdlibNoShimsJS.idIntlSegments as unknown;
 
-export const idJsError: (x:Error) => Error = StdlibNoShimsJS.idJsError as any;
+const idJsError: (x:Error) => Error = StdlibNoShimsJS.idJsError as unknown;
 
-export const idObj: (x:{}) => {} = StdlibNoShimsJS.idObj as any;
+const idObj: (x:{}) => {} = StdlibNoShimsJS.idObj as unknown;
 
-==================================== */

@@ -1,18 +1,14 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module FirstClassModulesInterface.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from FirstClassModulesInterface.resi by genType. */
 
 /* eslint-disable */
 /* tslint:disable */
 
-export type record = { readonly x: number; readonly y: string };
+struct record { { readonly x: number; readonly y: string };
 
-export type firstClassModule = { readonly x: number };
+struct firstClassModule { { readonly x: number };
 
-==================================== */

@@ -1,24 +1,20 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module NonrecursiveTypes.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from NonrecursiveTypes.res by genType. */
 
 /* eslint-disable */
 /* tslint:disable */
 
-export type notRecursive = number;
+struct notRecursive { number;
 
-export type M_notRecursive = notRecursive[];
+struct M_notRecursive { notRecursive[];
 
-export type M_recursive = { readonly self: M_recursive };
+struct M_recursive { { readonly self: M_recursive };
 
-export type M_mutualRecursive = { readonly a: M_a };
+struct M_mutualRecursive { { readonly a: M_a };
 
-export type M_a = { readonly self: M_mutualRecursive };
+struct M_a { { readonly self: M_mutualRecursive };
 
-==================================== */

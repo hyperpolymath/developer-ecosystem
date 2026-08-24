@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module Variants.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from Variants.res by genType. */
 
 /* eslint-disable */
@@ -15,7 +12,7 @@ import * as VariantsJS from './Variants.res.js';
 
 import type {list} from '../src/shims/RescriptPervasives.shim';
 
-export type weekday = 
+struct weekday { 
     "monday"
   | "tuesday"
   | "wednesday"
@@ -24,71 +21,70 @@ export type weekday =
   | "saturday"
   | "sunday";
 
-export type testGenTypeAs = "type_" | "module_" | "fortytwo";
+struct testGenTypeAs { "type_" | "module_" | "fortytwo";
 
-export type testGenTypeAs2 = "type_" | "module" | 42;
+struct testGenTypeAs2 { "type_" | "module" | 42;
 
-export type testGenTypeAs3 = "type_" | "module" | 42;
+struct testGenTypeAs3 { "type_" | "module" | 42;
 
-export type x1 = "x" | "x1";
+struct x1 { "x" | "x1";
 
-export type x2 = "x" | "x2";
+struct x2 { "x" | "x2";
 
-export type type_ = "Type";
-export type type = type_;
+struct type_ { "Type";
+struct type { type_;
 
-export type myList = "E" | { TAG: "C"; _0: number; _1: myList };
+struct myList { "E" | { TAG: "C"; _0: number; _1: myList };
 
-export type builtinList = list<number>;
+struct builtinList { list<number>;
 
-export type result1<a,b> = 
+type result1<a,b> = 
     { TAG: "Ok"; _0: a }
   | { TAG: "Error"; _0: b };
 
-export type result2<a,b> = 
+type result2<a,b> = 
     { TAG: "Ok"; _0: a }
   | { TAG: "Error"; _0: b };
 
-export type result3<a,b> = 
+type result3<a,b> = 
     { TAG: "Ok"; _0: a }
   | { TAG: "Error"; _0: b };
 
-export const isWeekend: (x:weekday) => boolean = VariantsJS.isWeekend as any;
+const isWeekend: (x:weekday) => boolean = VariantsJS.isWeekend as unknown;
 
-export const monday: "monday" = VariantsJS.monday as any;
+const monday: "monday" = VariantsJS.monday as unknown;
 
-export const saturday: "saturday" = VariantsJS.saturday as any;
+const saturday: "saturday" = VariantsJS.saturday as unknown;
 
-export const sunday: "sunday" = VariantsJS.sunday as any;
+const sunday: "sunday" = VariantsJS.sunday as unknown;
 
-export const onlySunday: (param:"sunday") => void = VariantsJS.onlySunday as any;
+const onlySunday: (param:"sunday") => void = VariantsJS.onlySunday as unknown;
 
-export const swap: (x:"saturday" | "sunday") => "saturday" | "sunday" = VariantsJS.swap as any;
+const swap: (x:"saturday" | "sunday") => "saturday" | "sunday" = VariantsJS.swap as unknown;
 
-export const testConvert: (x:testGenTypeAs) => testGenTypeAs = VariantsJS.testConvert as any;
+const testConvert: (x:testGenTypeAs) => testGenTypeAs = VariantsJS.testConvert as unknown;
 
-export const fortytwoOK: testGenTypeAs = VariantsJS.fortytwoOK as any;
+const fortytwoOK: testGenTypeAs = VariantsJS.fortytwoOK as unknown;
 
-export const fortytwoBAD: "fortytwo" = VariantsJS.fortytwoBAD as any;
+const fortytwoBAD: "fortytwo" = VariantsJS.fortytwoBAD as unknown;
 
-export const testConvert2: (x:testGenTypeAs2) => testGenTypeAs2 = VariantsJS.testConvert2 as any;
+const testConvert2: (x:testGenTypeAs2) => testGenTypeAs2 = VariantsJS.testConvert2 as unknown;
 
-export const testConvert3: (x:testGenTypeAs3) => testGenTypeAs3 = VariantsJS.testConvert3 as any;
+const testConvert3: (x:testGenTypeAs3) => testGenTypeAs3 = VariantsJS.testConvert3 as unknown;
 
-export const testConvert2to3: (x:testGenTypeAs2) => testGenTypeAs3 = VariantsJS.testConvert2to3 as any;
+const testConvert2to3: (x:testGenTypeAs2) => testGenTypeAs3 = VariantsJS.testConvert2to3 as unknown;
 
-export const id1: (x:x1) => x1 = VariantsJS.id1 as any;
+const id1: (x:x1) => x1 = VariantsJS.id1 as unknown;
 
-export const id2: (x:x2) => x2 = VariantsJS.id2 as any;
+const id2: (x:x2) => x2 = VariantsJS.id2 as unknown;
 
-export const polyWithOpt: (foo:string) => (undefined | (
+const polyWithOpt: (foo:string) => (undefined | (
     { NAME: "One"; VAL: string }
-  | { NAME: "Two"; VAL: number })) = VariantsJS.polyWithOpt as any;
+  | { NAME: "Two"; VAL: number })) = VariantsJS.polyWithOpt as unknown;
 
-export const restResult1: (x:result1<number,string>) => result1<number,string> = VariantsJS.restResult1 as any;
+const restResult1: (x:result1<number,string>) => result1<number,string> = VariantsJS.restResult1 as unknown;
 
-export const restResult2: (x:result2<number,string>) => result2<number,string> = VariantsJS.restResult2 as any;
+const restResult2: (x:result2<number,string>) => result2<number,string> = VariantsJS.restResult2 as unknown;
 
-export const restResult3: (x:result3<number,string>) => result3<number,string> = VariantsJS.restResult3 as any;
+const restResult3: (x:result3<number,string>) => result3<number,string> = VariantsJS.restResult3 as unknown;
 
-==================================== */

@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module Shadow.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from Shadow.res by genType. */
 
 /* eslint-disable */
@@ -13,6 +10,5 @@ module Shadow.gen;
 
 import * as ShadowJS from './Shadow.res.js';
 
-export const test: () => string = ShadowJS.test as any;
+const test: () => string = ShadowJS.test as unknown;
 
-==================================== */

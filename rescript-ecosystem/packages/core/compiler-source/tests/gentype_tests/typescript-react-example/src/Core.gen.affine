@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module Core.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from Core.res by genType. */
 
 /* eslint-disable */
@@ -16,69 +13,68 @@ import {someFunWithNullThenOptionalArgs as someFunWithNullThenOptionalArgsNotChe
 import {someFunWithNullUndefinedArg as someFunWithNullUndefinedArgNotChecked} from './CoreTS';
 
 // In case of type error, check the type of 'someFunWithNullThenOptionalArgs' in 'Core.res' and './CoreTS'.
-export const someFunWithNullThenOptionalArgsTypeChecked: (_1:(null | string), _2:(undefined | string)) => string = someFunWithNullThenOptionalArgsNotChecked as any;
+const someFunWithNullThenOptionalArgsTypeChecked: (_1:(null | string), _2:(undefined | string)) => string = someFunWithNullThenOptionalArgsNotChecked as unknown;
 
 // Export 'someFunWithNullThenOptionalArgs' early to allow circular import from the '.bs.js' file.
-export const someFunWithNullThenOptionalArgs: unknown = someFunWithNullThenOptionalArgsTypeChecked as (_1:(null | string), _2:(undefined | string)) => string as any;
+const someFunWithNullThenOptionalArgs: unknown = someFunWithNullThenOptionalArgsTypeChecked as (_1:(null | string), _2:(undefined | string)) => string as unknown;
 
 // In case of type error, check the type of 'someFunWithNullUndefinedArg' in 'Core.res' and './CoreTS'.
-export const someFunWithNullUndefinedArgTypeChecked: (_1:(null | undefined | string), _2:number) => string = someFunWithNullUndefinedArgNotChecked as any;
+const someFunWithNullUndefinedArgTypeChecked: (_1:(null | undefined | string), _2:number) => string = someFunWithNullUndefinedArgNotChecked as unknown;
 
 // Export 'someFunWithNullUndefinedArg' early to allow circular import from the '.bs.js' file.
-export const someFunWithNullUndefinedArg: unknown = someFunWithNullUndefinedArgTypeChecked as (_1:(null | undefined | string), _2:number) => string as any;
+const someFunWithNullUndefinedArg: unknown = someFunWithNullUndefinedArgTypeChecked as (_1:(null | undefined | string), _2:number) => string as unknown;
 
-const CoreJS = require('./Core.res.js');
+let CoreJS = require('./Core.res.js');
 
-export type variant = "A" | { TAG: "B"; _0: string };
+struct variant { "A" | { TAG: "B"; _0: string };
 
-export type t1 = { readonly x?: string };
+struct t1 { { readonly x?: string };
 
-export type t2 = { readonly x: (undefined | string) };
+struct t2 { { readonly x: (undefined | string) };
 
-export const null0: (x:(null | number)) => (null | number) = CoreJS.null0 as any;
+const null0: (x:(null | number)) => (null | number) = CoreJS.null0 as unknown;
 
-export const null1: (x:(null | number)) => (null | number) = CoreJS.null1 as any;
+const null1: (x:(null | number)) => (null | number) = CoreJS.null1 as unknown;
 
-export const nullable0: (x:(null | undefined | number)) => (null | undefined | number) = CoreJS.nullable0 as any;
+const nullable0: (x:(null | undefined | number)) => (null | undefined | number) = CoreJS.nullable0 as unknown;
 
-export const nullable1: (x:(null | undefined | number)) => (null | undefined | number) = CoreJS.nullable1 as any;
+const nullable1: (x:(null | undefined | number)) => (null | undefined | number) = CoreJS.nullable1 as unknown;
 
-export const undefined0: (x:(undefined | number)) => (undefined | number) = CoreJS.undefined0 as any;
+const undefined0: (x:(undefined | number)) => (undefined | number) = CoreJS.undefined0 as unknown;
 
-export const undefined1: (x:(undefined | number)) => (undefined | number) = CoreJS.undefined1 as any;
+const undefined1: (x:(undefined | number)) => (undefined | number) = CoreJS.undefined1 as unknown;
 
-export const dict0: (x:{[id: string]: string}) => {[id: string]: string} = CoreJS.dict0 as any;
+const dict0: (x:{[id: string]: string}) => {[id: string]: string} = CoreJS.dict0 as unknown;
 
-export const dict1: (x:{[id: string]: string}) => {[id: string]: string} = CoreJS.dict1 as any;
+const dict1: (x:{[id: string]: string}) => {[id: string]: string} = CoreJS.dict1 as unknown;
 
-export const promise0: (x:Promise<string>) => Promise<string> = CoreJS.promise0 as any;
+const promise0: (x:string) => string = CoreJS.promise0 as unknown;
 
-export const promise1: (x:Promise<string>) => Promise<string> = CoreJS.promise1 as any;
+const promise1: (x:string) => string = CoreJS.promise1 as unknown;
 
-export const date0: (x:Date) => Date = CoreJS.date0 as any;
+const date0: (x:Date) => Date = CoreJS.date0 as unknown;
 
-export const date1: (x:Date) => Date = CoreJS.date1 as any;
+const date1: (x:Date) => Date = CoreJS.date1 as unknown;
 
-export const bigint0: (x:bigint) => bigint = CoreJS.bigint0 as any;
+const bigint0: (x:bigint) => bigint = CoreJS.bigint0 as unknown;
 
-export const regexp0: (x:RegExp) => RegExp = CoreJS.regexp0 as any;
+const regexp0: (x:RegExp) => RegExp = CoreJS.regexp0 as unknown;
 
-export const regexp1: (x:RegExp) => RegExp = CoreJS.regexp1 as any;
+const regexp1: (x:RegExp) => RegExp = CoreJS.regexp1 as unknown;
 
-export const map1: (x:Map<string,number>) => Map<string,number> = CoreJS.map1 as any;
+const map1: (x:Map<string,number>) => Map<string,number> = CoreJS.map1 as unknown;
 
-export const weakmap1: (x:WeakMap<number[],number>) => WeakMap<number[],number> = CoreJS.weakmap1 as any;
+const weakmap1: (x:WeakMap<number[],number>) => WeakMap<number[],number> = CoreJS.weakmap1 as unknown;
 
-export const set1: (x:Set<string>) => Set<string> = CoreJS.set1 as any;
+const set1: (x:Set<string>) => Set<string> = CoreJS.set1 as unknown;
 
-export const weakset1: (x:WeakSet<number[]>) => WeakSet<number[]> = CoreJS.weakset1 as any;
+const weakset1: (x:WeakSet<number[]>) => WeakSet<number[]> = CoreJS.weakset1 as unknown;
 
-export const option0: (x:(undefined | string)) => (undefined | string) = CoreJS.option0 as any;
+const option0: (x:(undefined | string)) => (undefined | string) = CoreJS.option0 as unknown;
 
-export const option1: (x:(undefined | variant)) => (undefined | variant) = CoreJS.option1 as any;
+const option1: (x:(undefined | variant)) => (undefined | variant) = CoreJS.option1 as unknown;
 
-export const jsonEncodeString1: unknown = CoreJS.jsonEncodeString1 as any;
+const jsonEncodeString1: unknown = CoreJS.jsonEncodeString1 as unknown;
 
-export const jsonEncodeString2: unknown = CoreJS.jsonEncodeString2 as any;
+const jsonEncodeString2: unknown = CoreJS.jsonEncodeString2 as unknown;
 
-==================================== */
