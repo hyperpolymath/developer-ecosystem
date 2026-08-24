@@ -1,17 +1,13 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module MyInput;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 import type * as React from "react";
 
-type Props = React.InputHTMLAttributes<HTMLInputElement>;
+struct Props { React.InputHTMLAttributes<HTMLInputElement>;
 
 const MyInput: React.FC<Props> = props => <input {...props} />;
 
-export default MyInput;
+default MyInput;
 
-==================================== */

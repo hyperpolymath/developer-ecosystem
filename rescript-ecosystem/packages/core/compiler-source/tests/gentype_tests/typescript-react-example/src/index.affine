@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module index;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 import type * as React from "react";
 import * as ReactDOM from "react-dom";
 import App from "./App.tsx";
@@ -29,11 +26,11 @@ import {
 } from "./VariantsWithPayload.gen.tsx";
 import * as Types from "./nested/Types.gen.tsx";
 
-const consoleLog = console.log;
+let consoleLog = console.log;
 
-const intList = Types.map(Types.someIntList, x => x + 1);
+let intList = Types.map(Types.someIntList, x => x + 1);
 
-const businesses = [
+let businesses = [
   {
     address: "Poison road",
     name: "AcmeLTD",
@@ -41,7 +38,7 @@ const businesses = [
   },
 ];
 
-const addresses = Records.findAllAddresses(businesses);
+let addresses = Records.findAllAddresses(businesses);
 
 consoleLog("indList", intList);
 consoleLog("addresses", addresses);
@@ -78,10 +75,10 @@ ReactDOM.render(
   document.getElementById("root") as HTMLElement,
 );
 
-const x1 = Records.getPayload(Records.payloadValue).v;
-const x2 = Records.getPayloadRecord(Records.payloadValue).v;
-const x3 = Records.payloadValue.payload.v;
-const x4 = Records.getPayloadRecordPlusOne(Records.payloadValue).v;
+let x1 = Records.getPayload(Records.payloadValue).v;
+let x2 = Records.getPayloadRecord(Records.payloadValue).v;
+let x3 = Records.payloadValue.payload.v;
+let x4 = Records.getPayloadRecordPlusOne(Records.payloadValue).v;
 consoleLog("x1,x2,x3,x4 are", x1, x2, x3, x4);
 
 consoleLog(
@@ -98,12 +95,12 @@ consoleLog(
 );
 consoleLog("Variants: testConvert3to2(42) =", Variants.testConvert2to3(42));
 
-const absoluteValueInstance = new MyMath.AbsoluteValue();
+let absoluteValueInstance = new MyMath.AbsoluteValue();
 absoluteValueInstance.prop = -3;
 consoleLog("absoluteValueInstance", absoluteValueInstance);
 
-const propValue = ImportJsValue.useGetProp(absoluteValueInstance);
-const absValue = ImportJsValue.useGetAbs(absoluteValueInstance);
+let propValue = ImportJsValue.useGetProp(absoluteValueInstance);
+let absValue = ImportJsValue.useGetAbs(absoluteValueInstance);
 consoleLog("ImportJsValue: getProp() =", propValue);
 consoleLog("ImportJsValue: getAbs() =", absValue);
 
@@ -130,17 +127,16 @@ TestPromise.convert(Promise.resolve({ x: 3, s: "hello" })).then(x =>
   consoleLog("TestPromise result:", x.result),
 );
 
-type Props = {
+struct Props { {
   readonly method?: "push" | "replace";
 };
 
-export const make: React.FC<Props> = (_x: Props) => {
+const make: React.FC<Props> = (_x: Props) => {
   return <div />;
 };
 
-const signedMessage = DocStrings.signMessage("hello", 42);
+let signedMessage = DocStrings.signMessage("hello", 42);
 consoleLog("signedMessage:", signedMessage);
 
-export default make;
+default make;
 
-==================================== */

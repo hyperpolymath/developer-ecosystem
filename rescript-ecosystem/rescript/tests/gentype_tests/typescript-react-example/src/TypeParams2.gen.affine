@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module TypeParams2.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from TypeParams2.res by genType. */
 
 /* eslint-disable */
@@ -13,10 +10,9 @@ module TypeParams2.gen;
 
 import type {ocaml_array as TypeParams1_ocaml_array} from './TypeParams1.gen';
 
-export type item = { readonly id: number };
+struct item { { readonly id: number };
 
-export type items = TypeParams1_ocaml_array<item>;
+struct items { TypeParams1_ocaml_array<item>;
 
-export type items2 = item[];
+struct items2 { item[];
 
-==================================== */

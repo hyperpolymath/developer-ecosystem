@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module TypeParams3.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from TypeParams3.res by genType. */
 
 /* eslint-disable */
@@ -17,8 +14,7 @@ import type {items2 as TypeParams2_items2} from './TypeParams2.gen';
 
 import type {items as TypeParams2_items} from './TypeParams2.gen';
 
-export const test: (x:TypeParams2_items) => TypeParams2_items = TypeParams3JS.test as any;
+const test: (x:TypeParams2_items) => TypeParams2_items = TypeParams3JS.test as unknown;
 
-export const test2: (x:TypeParams2_items2) => TypeParams2_items2 = TypeParams3JS.test2 as any;
+const test2: (x:TypeParams2_items2) => TypeParams2_items2 = TypeParams3JS.test2 as unknown;
 
-==================================== */

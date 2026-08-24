@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module counter.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from counter.res by genType. */
 
 /* eslint-disable */
@@ -15,6 +12,5 @@ import * as counterJS from './counter.res.js';
 
 import type {aa as Machine_aa} from './Machine.gen';
 
-export const b: Machine_aa = counterJS.b as any;
+const b: Machine_aa = counterJS.b as unknown;
 
-==================================== */

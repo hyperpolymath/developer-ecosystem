@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module Comments.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from Comments.res by genType. */
 
 /* eslint-disable */
@@ -13,15 +10,15 @@ module Comments.gen;
 
 import * as CommentsJS from './Comments.res.js';
 
-export type DecideSubject_payload = { 
+struct DecideSubject_payload { { 
 /** A hint to use as a guide when thinking of your poem. */
 readonly hint: string };
 
 /** The input used to generate the prompt and system prompt. */
-export abstract class DecideSubject_input { protected opaque!: any }; /* simulate opaque types */
+abstract struct DecideSubject_input { protected opaque!: unknown }; /* simulate opaque types */
 
 /** The output from evaluating the llm prompt */
-export type DecideSubject_output = {
+struct DecideSubject_output { {
   /** The text of the poem. */
   readonly text: string; 
   /** The prompt used to generate the poem. */
@@ -31,10 +28,9 @@ export type DecideSubject_output = {
 };
 
 /** Decide on a subject matter for a poem. */
-export const DecideSubject__placeholder: (run:string, times:number) => void = CommentsJS.DecideSubject._placeholder as any;
+const DecideSubject__placeholder: (run:string, times:number) => void = CommentsJS.DecideSubject._placeholder as unknown;
 
-export const DecideSubject: { 
+const DecideSubject: { 
 /** Decide on a subject matter for a poem. */
-_placeholder: (run:string, times:number) => void } = CommentsJS.DecideSubject as any;
+_placeholder: (run:string, times:number) => void } = CommentsJS.DecideSubject as unknown;
 
-==================================== */

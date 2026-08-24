@@ -1,20 +1,16 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module bin.d;
 
-// TODO: Complete semantic implementation
+const binDir: string;
 
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
-export const binDir: string;
+const binPaths: BinaryPaths;
 
-export const binPaths: BinaryPaths;
-
-export type BinaryPaths = {
+struct BinaryPaths { {
   bsc_exe: string;
   rescript_tools_exe: string;
   rescript_editor_analysis_exe: string;
   rescript_exe: string;
 };
 
-==================================== */

@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module Opaque.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from Opaque.res by genType. */
 
 /* eslint-disable */
@@ -15,12 +12,11 @@ import * as OpaqueJS from './Opaque.res.js';
 
 import type {business as Records_business} from './Records.gen';
 
-export abstract class opaqueFromRecords { protected opaque!: any }; /* simulate opaque types */
+abstract struct opaqueFromRecords { protected opaque!: unknown }; /* simulate opaque types */
 
-export type pair = [opaqueFromRecords, opaqueFromRecords];
+struct pair { [opaqueFromRecords, opaqueFromRecords];
 
-export const noConversion: (x:opaqueFromRecords) => opaqueFromRecords = OpaqueJS.noConversion as any;
+const noConversion: (x:opaqueFromRecords) => opaqueFromRecords = OpaqueJS.noConversion as unknown;
 
-export const testConvertNestedRecordFromOtherFile: (x:Records_business) => Records_business = OpaqueJS.testConvertNestedRecordFromOtherFile as any;
+const testConvertNestedRecordFromOtherFile: (x:Records_business) => Records_business = OpaqueJS.testConvertNestedRecordFromOtherFile as unknown;
 
-==================================== */

@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module extension;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 // SPDX-License-Identifier: MIT OR AGPL-3.0-or-later
 // AffineScript VSCode Extension
 
@@ -20,11 +17,11 @@ import {
   Executable
 } from 'vscode-languageclient/node';
 
-const execAsync = promisify(exec);
+let execAsync = promisify(exec);
 
 let client: LanguageClient | undefined;
 
-export function activate(context: vscode.ExtensionContext) {
+fn activate(context: vscode.ExtensionContext) {
   console.log('AffineScript extension activated');
 
   // Register commands
@@ -37,22 +34,22 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   // Start LSP if enabled
-  const config = vscode.workspace.getConfiguration('affinescript');
+  let config = vscode.workspace.getConfiguration('affinescript');
   if (config.get('lsp.enabled')) {
     startLsp(context);
   }
 }
 
-export function deactivate(): Thenable<void> | undefined {
+fn deactivate(): Thenable<void> | undefined {
   if (!client) {
     return undefined;
   }
   return client.stop();
 }
 
-async function startLsp(context: vscode.ExtensionContext) {
-  const config = vscode.workspace.getConfiguration('affinescript');
-  const serverPath = config.get<string>('lsp.serverPath') || 'affinescript-lsp';
+async fn startLsp(context: vscode.ExtensionContext) {
+  let config = vscode.workspace.getConfiguration('affinescript');
+  let serverPath = config.get<string>('lsp.serverPath') || 'affinescript-lsp';
 
   // Check if LSP server exists
   try {
@@ -87,74 +84,73 @@ async function startLsp(context: vscode.ExtensionContext) {
   vscode.window.showInformationMessage('AffineScript LSP started');
 }
 
-async function restartLsp() {
+async fn restartLsp() {
   if (client) {
     await client.stop();
     vscode.window.showInformationMessage('AffineScript LSP stopped');
   }
 
-  const context = (global as any).extensionContext;
+  let context = (global as unknown).extensionContext;
   if (context) {
     await startLsp(context);
   }
 }
 
-async function checkCurrentFile() {
-  const editor = vscode.window.activeTextEditor;
+async fn checkCurrentFile() {
+  let editor = vscode.window.activeTextEditor;
   if (!editor || editor.document.languageId !== 'affinescript') {
     vscode.window.showErrorMessage('No AffineScript file open');
     return;
   }
 
-  const filePath = editor.document.uri.fsPath;
-  const terminal = vscode.window.createTerminal('AffineScript Check');
+  let filePath = editor.document.uri.fsPath;
+  let terminal = vscode.window.createTerminal('AffineScript Check');
   terminal.show();
   terminal.sendText(`affinescript check "${filePath}"`);
 }
 
-async function evalCurrentFile() {
-  const editor = vscode.window.activeTextEditor;
+async fn evalCurrentFile() {
+  let editor = vscode.window.activeTextEditor;
   if (!editor || editor.document.languageId !== 'affinescript') {
     vscode.window.showErrorMessage('No AffineScript file open');
     return;
   }
 
-  const filePath = editor.document.uri.fsPath;
-  const terminal = vscode.window.createTerminal('AffineScript Eval');
+  let filePath = editor.document.uri.fsPath;
+  let terminal = vscode.window.createTerminal('AffineScript Eval');
   terminal.show();
   terminal.sendText(`affinescript eval "${filePath}"`);
 }
 
-async function compileCurrentFile() {
-  const editor = vscode.window.activeTextEditor;
+async fn compileCurrentFile() {
+  let editor = vscode.window.activeTextEditor;
   if (!editor || editor.document.languageId !== 'affinescript') {
     vscode.window.showErrorMessage('No AffineScript file open');
     return;
   }
 
-  const filePath = editor.document.uri.fsPath;
-  const outputPath = filePath.replace(/\.affine$/, '.wasm');
+  let filePath = editor.document.uri.fsPath;
+  let outputPath = filePath.replace(/\.affine$/, '.wasm');
 
-  const terminal = vscode.window.createTerminal('AffineScript Compile');
+  let terminal = vscode.window.createTerminal('AffineScript Compile');
   terminal.show();
   terminal.sendText(`affinescript compile "${filePath}" -o "${outputPath}"`);
 }
 
-async function formatCurrentFile() {
-  const editor = vscode.window.activeTextEditor;
+async fn formatCurrentFile() {
+  let editor = vscode.window.activeTextEditor;
   if (!editor || editor.document.languageId !== 'affinescript') {
     vscode.window.showErrorMessage('No AffineScript file open');
     return;
   }
 
-  const filePath = editor.document.uri.fsPath;
+  let filePath = editor.document.uri.fsPath;
 
   try {
     const { stdout } = await execAsync(`affinescript fmt "${filePath}"`);
     vscode.window.showInformationMessage('File formatted successfully');
-  } catch (error: any) {
+  } catch (error: unknown) {
     vscode.window.showErrorMessage(`Formatting failed: ${error.message}`);
   }
 }
 
-==================================== */

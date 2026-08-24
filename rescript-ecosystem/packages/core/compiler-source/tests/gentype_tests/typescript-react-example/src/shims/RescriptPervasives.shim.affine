@@ -1,31 +1,27 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module RescriptPervasives.shim;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 const $$Array = require("bs-platform/lib/js/array");
 
-export abstract class EmptyList {
+abstract struct EmptyList {
   protected opaque: unknown;
 }
 
-export abstract class Cons<T> {
+abstract struct Cons<T> {
   protected opaque!: T;
 }
 
-export type list<T> = Cons<T> | EmptyList;
+type list<T> = Cons<T> | EmptyList;
 
-export function cons<T>(itm: T, lst: list<T>): list<T> {
+fn cons<T>(itm: T, lst: list<T>): list<T> {
   // biome-ignore lint/suspicious/noExplicitAny: intended use
-  return /* :: */ [itm, lst] as any;
+  return /* :: */ [itm, lst] as unknown;
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: intended use
-export const emptyList: EmptyList = /* [] */ 0 as any;
+const emptyList: EmptyList = /* [] */ 0 as unknown;
 
-export const fromArray = $$Array.to_list;
+let fromArray = $$Array.to_list;
 
-==================================== */

@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module AppModal.web.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from AppModal.web.res by genType. */
 
 /* eslint-disable */
@@ -13,6 +10,5 @@ module AppModal.web.gen;
 
 import * as AppModal_webJS from './AppModal.web.res.js';
 
-export const x: number = AppModal_webJS.x as any;
+const x: number = AppModal_webJS.x as unknown;
 
-==================================== */

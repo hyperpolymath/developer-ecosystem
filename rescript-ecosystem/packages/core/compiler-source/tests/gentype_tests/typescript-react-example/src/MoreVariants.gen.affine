@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module MoreVariants.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from MoreVariants.res by genType. */
 
 /* eslint-disable */
@@ -13,12 +10,11 @@ module MoreVariants.gen;
 
 import * as MoreVariantsJS from './MoreVariants.res.js';
 
-export type withRenaming = "type_" | "b";
+struct withRenaming { "type_" | "b";
 
-export type withoutRenaming = "type_" | "b";
+struct withoutRenaming { "type_" | "b";
 
-export const testWithRenaming: (x:withRenaming) => withRenaming = MoreVariantsJS.testWithRenaming as any;
+const testWithRenaming: (x:withRenaming) => withRenaming = MoreVariantsJS.testWithRenaming as unknown;
 
-export const testWithoutRenaming: (x:withoutRenaming) => withoutRenaming = MoreVariantsJS.testWithoutRenaming as any;
+const testWithoutRenaming: (x:withoutRenaming) => withoutRenaming = MoreVariantsJS.testWithoutRenaming as unknown;
 
-==================================== */

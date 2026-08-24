@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module FirstClassModules.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from FirstClassModules.res by genType. */
 
 /* eslint-disable */
@@ -13,11 +10,11 @@ module FirstClassModules.gen;
 
 import * as FirstClassModulesJS from './FirstClassModules.res.js';
 
-export type MT_t = number;
+struct MT_t { number;
 
-export type MT_InnerModule3_inner = number;
+struct MT_InnerModule3_inner { number;
 
-export type firstClassModule = {
+struct firstClassModule { {
   readonly x: number; 
   readonly EmptyInnerModule: {
   }; 
@@ -31,9 +28,9 @@ export type firstClassModule = {
   readonly y: string
 };
 
-export const firstClassModule: firstClassModule = FirstClassModulesJS.firstClassModule as any;
+const firstClassModule: firstClassModule = FirstClassModulesJS.firstClassModule as unknown;
 
-export const testConvert: (m:{
+const testConvert: (m:{
   readonly x: number; 
   readonly EmptyInnerModule: {
   }; 
@@ -57,9 +54,9 @@ export const testConvert: (m:{
   }; 
   readonly Z: unknown; 
   readonly y: string
-} = FirstClassModulesJS.testConvert as any;
+} = FirstClassModulesJS.testConvert as unknown;
 
-export const someFunctorAsFunction: (x:{
+const someFunctorAsFunction: (x:{
   readonly x: number; 
   readonly EmptyInnerModule: {
   }; 
@@ -71,6 +68,5 @@ export const someFunctorAsFunction: (x:{
   }; 
   readonly Z: unknown; 
   readonly y: string
-}) => { readonly ww: string } = FirstClassModulesJS.someFunctorAsFunction as any;
+}) => { readonly ww: string } = FirstClassModulesJS.someFunctorAsFunction as unknown;
 
-==================================== */

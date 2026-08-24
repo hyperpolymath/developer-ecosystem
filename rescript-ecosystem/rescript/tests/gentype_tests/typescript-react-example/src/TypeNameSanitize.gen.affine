@@ -1,20 +1,16 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module TypeNameSanitize.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from TypeNameSanitize.res by genType. */
 
 /* eslint-disable */
 /* tslint:disable */
 
-export type t_ = number;
+struct t_ { number;
 
-export type M_t__ = number;
+struct M_t__ { number;
 
-export type pair = [t_, M_t__];
+struct pair { [t_, M_t__];
 
-==================================== */

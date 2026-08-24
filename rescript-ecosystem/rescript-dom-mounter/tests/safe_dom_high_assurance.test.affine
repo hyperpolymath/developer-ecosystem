@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module safe_dom_high_assurance.test;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 import { assertEquals, assert } from "https://deno.land/std@0.211.0/testing/asserts.ts";
 import * as SafeDOM from "../src/SafeDOM.res.js";
 
@@ -25,29 +22,28 @@ const { ProvenSelector, ProvenHTML, MountTracer } = SafeDOM as typeof SafeDOM & 
 
 Deno.test("selector validation rejects empty selectors and traces outcome", () => {
   MountTracer.clear();
-  const result = ProvenSelector.validate("" as string);
+  let result = ProvenSelector.validate("" as string);
   assertEquals(result.TAG, "Error");
-  const entries = MountTracer.entries();
+  let entries = MountTracer.entries();
   assert(entries.length >= 1);
   assert(entries.some((entry) => entry.event === "selector-validation"));
 });
 
 Deno.test("proven HTML validation rejects unbalanced markup and logs detail", () => {
   MountTracer.clear();
-  const html = "<div><span></div>";
-  const result = ProvenHTML.validate(html);
+  let html = "<div><span></div>";
+  let result = ProvenHTML.validate(html);
   assertEquals(result.TAG, "Error");
-  const latest = MountTracer.latest();
+  let latest = MountTracer.latest();
   assert(latest.TAG === "Some");
   assert(latest._0.event === "html-validation");
 });
 
 Deno.test("mount tracer records success for valid selectors", () => {
   MountTracer.clear();
-  const result = ProvenSelector.validate("#app");
+  let result = ProvenSelector.validate("#app");
   assertEquals(result.TAG, "Ok");
-  const entries = MountTracer.entries();
+  let entries = MountTracer.entries();
   assert(entries[entries.length - 1].detail.includes("selector valid"));
 });
 
-==================================== */

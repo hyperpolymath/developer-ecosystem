@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module TestPromise.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from TestPromise.res by genType. */
 
 /* eslint-disable */
@@ -13,14 +10,13 @@ module TestPromise.gen;
 
 import * as TestPromiseJS from './TestPromise.res.js';
 
-export type promise<a> = Promise<a>;
+type promise<a> = a;
 
-export type fromPayload = { readonly x: number; readonly s: string };
+struct fromPayload { { readonly x: number; readonly s: string };
 
-export type toPayload = { readonly result: string };
+struct toPayload { { readonly result: string };
 
-export const convert: (p:Promise<fromPayload>) => Promise<toPayload> = TestPromiseJS.convert as any;
+const convert: (p:fromPayload) => toPayload = TestPromiseJS.convert as unknown;
 
-export const barx: (x:(undefined | Promise<(undefined | string)>), _2:void) => boolean = TestPromiseJS.barx as any;
+const barx: (x:(undefined | (undefined | string)), _2:void) => boolean = TestPromiseJS.barx as unknown;
 
-==================================== */

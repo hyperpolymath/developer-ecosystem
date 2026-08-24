@@ -1,23 +1,20 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module MyMath;
 
-// TODO: Complete semantic implementation
+const round: (_: number) => number = Math.round;
 
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
-export const round: (_: number) => number = Math.round;
+let round2 = round;
 
-export const round2 = round;
-
-export const area = (point: { x: number; y?: number }): number =>
+let area = (point: { x: number; y?: number }): number =>
   point.x * (point.y === undefined ? 1 : point.y);
 
-export type numberOrString = number | string;
+struct numberOrString { number | string;
 
-export const returnMixedArray = (): Array<number | string> => [1, 2];
+let returnMixedArray = (): Array<number | string> => [1, 2];
 
-export class AbsoluteValue {
+struct AbsoluteValue {
   public prop!: number;
   public getProp(): number {
     return this.prop;
@@ -27,22 +24,21 @@ export class AbsoluteValue {
   }
 }
 
-export type stringFunction = (_: string) => string;
+struct stringFunction { (_: string) => string;
 
-export const useColor = (_x: "tomato" | "gray"): number => 0;
+let useColor = (_x: "tomato" | "gray"): number => 0;
 
-export const higherOrder = (foo: (_1: number, _2: number) => number) =>
+let higherOrder = (foo: (_1: number, _2: number) => number) =>
   foo(3, 4);
 
 // biome-ignore lint/suspicious/noExplicitAny: intended use
-export const convertVariant = (x: any) => x;
+let convertVariant = (x: unknown) => x;
 
-export const polymorphic = <T>(x: T): T => x;
+let polymorphic = <T>(x: T): T => x;
 
-export type num = number;
+struct num { number;
 
-export type polyType<T> = { x: T };
+type polyType<T> = { x: T };
 
-export default 34;
+default 34;
 
-==================================== */

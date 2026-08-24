@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module NestedModules.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from NestedModules.res by genType. */
 
 /* eslint-disable */
@@ -13,29 +10,29 @@ module NestedModules.gen;
 
 import * as NestedModulesJS from './NestedModules.res.js';
 
-export type Universe_nestedType = string[];
+struct Universe_nestedType { string[];
 
-export type Universe_Nested2_nested2Type = Array<string[]>;
+struct Universe_Nested2_nested2Type { Array<string[]>;
 
-export type Universe_Nested2_Nested3_nested3Type = Array<Array<string[]>>;
+struct Universe_Nested2_Nested3_nested3Type { Array<Array<string[]>>;
 
-export type Universe_variant = "A" | { TAG: "B"; _0: string };
+struct Universe_variant { "A" | { TAG: "B"; _0: string };
 
-export const notNested: number = NestedModulesJS.notNested as any;
+const notNested: number = NestedModulesJS.notNested as unknown;
 
-export const Universe_theAnswer: number = NestedModulesJS.Universe.theAnswer as any;
+const Universe_theAnswer: number = NestedModulesJS.Universe.theAnswer as unknown;
 
-export const Universe_Nested2_nested2Value: number = NestedModulesJS.Universe.Nested2.nested2Value as any;
+const Universe_Nested2_nested2Value: number = NestedModulesJS.Universe.Nested2.nested2Value as unknown;
 
-export const Universe_Nested2_Nested3_nested3Value: string = NestedModulesJS.Universe.Nested2.Nested3.nested3Value as any;
+const Universe_Nested2_Nested3_nested3Value: string = NestedModulesJS.Universe.Nested2.Nested3.nested3Value as unknown;
 
-export const Universe_Nested2_Nested3_nested3Function: (x:Universe_Nested2_nested2Type) => Universe_Nested2_nested2Type = NestedModulesJS.Universe.Nested2.Nested3.nested3Function as any;
+const Universe_Nested2_Nested3_nested3Function: (x:Universe_Nested2_nested2Type) => Universe_Nested2_nested2Type = NestedModulesJS.Universe.Nested2.Nested3.nested3Function as unknown;
 
-export const Universe_Nested2_nested2Function: (x:Universe_Nested2_Nested3_nested3Type) => Universe_Nested2_Nested3_nested3Type = NestedModulesJS.Universe.Nested2.nested2Function as any;
+const Universe_Nested2_nested2Function: (x:Universe_Nested2_Nested3_nested3Type) => Universe_Nested2_Nested3_nested3Type = NestedModulesJS.Universe.Nested2.nested2Function as unknown;
 
-export const Universe_someString: string = NestedModulesJS.Universe.someString as any;
+const Universe_someString: string = NestedModulesJS.Universe.someString as unknown;
 
-export const Universe: {
+const Universe: {
   theAnswer: number; 
   Nested2: {
     nested2Function: (x:Universe_Nested2_Nested3_nested3Type) => Universe_Nested2_Nested3_nested3Type; 
@@ -46,6 +43,5 @@ export const Universe: {
     }
   }; 
   someString: string
-} = NestedModulesJS.Universe as any;
+} = NestedModulesJS.Universe as unknown;
 
-==================================== */

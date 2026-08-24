@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module detect_test;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 // SPDX-License-Identifier: MPL-2.0
 // Tests for runtime detection
 
@@ -15,33 +12,32 @@ import { assertEquals, assertExists } from "@std/assert";
 // For now, test the detection logic directly
 
 Deno.test("runtime detection - identifies Deno", () => {
-  const isDeno = typeof (globalThis as any).Deno !== "undefined";
+  let isDeno = typeof (globalThis as unknown).Deno !== "undefined";
   assertEquals(isDeno, true, "Should detect Deno runtime");
 });
 
 Deno.test("runtime detection - Deno version exists", () => {
-  const version = (globalThis as any).Deno?.version?.deno;
+  let version = (globalThis as unknown).Deno?.version?.deno;
   assertExists(version, "Deno version should exist");
 });
 
 Deno.test("runtime detection - Bun not present in Deno", () => {
-  const isBun = typeof (globalThis as any).Bun !== "undefined";
+  let isBun = typeof (globalThis as unknown).Bun !== "undefined";
   assertEquals(isBun, false, "Bun should not be detected in Deno");
 });
 
 Deno.test("capabilities - filesystem available", () => {
-  const hasFs = typeof Deno.readFile === "function";
+  let hasFs = typeof Deno.readFile === "function";
   assertEquals(hasFs, true, "Filesystem should be available");
 });
 
 Deno.test("capabilities - network available", () => {
-  const hasNet = typeof fetch === "function";
+  let hasNet = typeof fetch === "function";
   assertEquals(hasNet, true, "Network (fetch) should be available");
 });
 
 Deno.test("capabilities - WebAssembly available", () => {
-  const hasWasm = typeof WebAssembly !== "undefined";
+  let hasWasm = typeof WebAssembly !== "undefined";
   assertEquals(hasWasm, true, "WebAssembly should be available");
 });
 
-==================================== */

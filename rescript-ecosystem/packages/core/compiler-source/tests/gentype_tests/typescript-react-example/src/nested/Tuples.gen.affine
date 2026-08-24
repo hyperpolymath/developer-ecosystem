@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module Tuples.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from Tuples.res by genType. */
 
 /* eslint-disable */
@@ -13,30 +10,29 @@ module Tuples.gen;
 
 import * as TuplesJS from './Tuples.res.js';
 
-export type coord = [number, number, (undefined | number)];
+struct coord { [number, number, (undefined | number)];
 
-export type coord2 = [number, number, (null | undefined | number)];
+struct coord2 { [number, number, (null | undefined | number)];
 
-export type person = { readonly name: string; readonly age: number };
+struct person { { readonly name: string; readonly age: number };
 
-export type couple = [person, person];
+struct couple { [person, person];
 
-export const testTuple: (param:[number, number]) => number = TuplesJS.testTuple as any;
+const testTuple: (param:[number, number]) => number = TuplesJS.testTuple as unknown;
 
-export const origin: [number, number, (undefined | number)] = TuplesJS.origin as any;
+const origin: [number, number, (undefined | number)] = TuplesJS.origin as unknown;
 
-export const computeArea: (param:[number, number, (undefined | number)]) => number = TuplesJS.computeArea as any;
+const computeArea: (param:[number, number, (undefined | number)]) => number = TuplesJS.computeArea as unknown;
 
-export const computeAreaWithIdent: (param:coord) => number = TuplesJS.computeAreaWithIdent as any;
+const computeAreaWithIdent: (param:coord) => number = TuplesJS.computeAreaWithIdent as unknown;
 
-export const computeAreaNoConverters: (param:[number, number]) => number = TuplesJS.computeAreaNoConverters as any;
+const computeAreaNoConverters: (param:[number, number]) => number = TuplesJS.computeAreaNoConverters as unknown;
 
-export const coord2d: <T1,T2,T3>(x:T1, y:T2) => [T1, T2, (undefined | T3)] = TuplesJS.coord2d as any;
+const coord2d: <T1,T2,T3>(x:T1, y:T2) => [T1, T2, (undefined | T3)] = TuplesJS.coord2d as unknown;
 
-export const getFirstName: (param:couple) => string = TuplesJS.getFirstName as any;
+const getFirstName: (param:couple) => string = TuplesJS.getFirstName as unknown;
 
-export const marry: (first:person, second:person) => couple = TuplesJS.marry as any;
+const marry: (first:person, second:person) => couple = TuplesJS.marry as unknown;
 
-export const changeSecondAge: (param:couple) => couple = TuplesJS.changeSecondAge as any;
+const changeSecondAge: (param:couple) => couple = TuplesJS.changeSecondAge as unknown;
 
-==================================== */

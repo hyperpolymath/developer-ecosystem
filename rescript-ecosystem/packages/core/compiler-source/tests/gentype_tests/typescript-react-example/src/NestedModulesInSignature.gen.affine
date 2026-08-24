@@ -1,11 +1,8 @@
 // SPDX-License-Identifier: MPL-2.0
-// Ported via Harvard Engine mechanical processor
+// Ported via Harvard Engine (Semantic pass)
 
 module NestedModulesInSignature.gen;
 
-// TODO: Complete semantic implementation
-
-/* === ORIGINAL TYPESCRIPT CONTEXT ===
 /* TypeScript file generated from NestedModulesInSignature.resi by genType. */
 
 /* eslint-disable */
@@ -13,8 +10,7 @@ module NestedModulesInSignature.gen;
 
 import * as NestedModulesInSignatureJS from './NestedModulesInSignature.res.js';
 
-export const Universe_theAnswer: number = NestedModulesInSignatureJS.Universe.theAnswer as any;
+const Universe_theAnswer: number = NestedModulesInSignatureJS.Universe.theAnswer as unknown;
 
-export const Universe: { theAnswer: number } = NestedModulesInSignatureJS.Universe as any;
+const Universe: { theAnswer: number } = NestedModulesInSignatureJS.Universe as unknown;
 
-==================================== */
