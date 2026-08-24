@@ -1,0 +1,125 @@
+ReScript
+
+Fast, Simple, Fully Typed JavaScript from the Future.
+
+Introduction · Installation · Try Online · Forum · Contribute
+
+ReScript is a robustly typed language that compiles to efficient and
+human-readable JavaScript. It comes with a lightning fast compiler
+toolchain that scales to any codebase size.
+
+* *Fast and Simple.* ReScript cares about a consistent and fast feedback
+loop for any codebase size. Refactor code, pull complex changes, or
+switch to feature branches as you please. No sluggish CI builds, stale
+caches, wrong type hints, or memory hungry language servers that slow
+you down.
+* *A Robust Type System.* Every ReScript app is fully typed and provides
+reliable type information for any given value in your program. We
+prioritize simpler types over complex types for the sake of clarity and
+easy debugability. No `+any+`, no magic types, no surprise
+`+undefined+`.
+* *Seamless Integration.* Use any library from JavaScript, export
+ReScript libraries to JavaScript, automatically generate TypeScript
+types. It’s like you’ve never left the good parts of JavaScript at all.
+* *Tooling that just works out of the box.* A builtin pretty printer,
+memory friendly https://github.com/rescript-lang/rescript-vscode[VSCode]
+& https://github.com/rescript-lang/vim-rescript[Vim] plugins, a stable
+type system and compiler that doesn’t require lots of extra
+configuration. ReScript brings all the tools you need to build reliable
+JavaScript, Node and ReactJS applications.
+* *Easy to adopt — without any lock-in.* ReScript was made with gradual
+adoption in mind. If you ever want to go back to plain JavaScript, just
+remove all source files and keep its clean JavaScript output. Tell your
+coworkers that your project will keep functioning with or without
+ReScript!
+
+ReScript is used by many companies to ship and maintain mission-critical
+products and is maintained by the
+https://rescript-lang.org/community[ReScript community].
+
+== Contents
+
+* link:#-getting-started[Getting Started]
+* link:#-documentation[Documentation]
+* link:#-upgrading[Upgrading]
+* link:#-how-to-contribute[How to Contribute]
+* link:#-license[License]
+* link:#-Acknowledgments[Acknowledgments]
+
+== 🎉 Getting Started
+
+Follow the
+https://rescript-lang.org/docs/manual/latest/installation[Installation
+Guide] to set up a new ReScript project or integrate ReScript into your
+existing JavaScript project.
+
+For more information on building React apps with ReScript, see the
+https://rescript-lang.org/docs/react/latest/installation[rescript-react
+documentation].
+
+For React Native apps, see the
+https://rescript-react-native.github.io/[rescript-react-native website].
+
+== 📖 Documentation
+
+The full documentation for the ReScript language can be found on our
+https://rescript-lang.org/[website].
+
+The source for the ReScript documentation and website is hosted in a
+https://github.com/rescript-association/rescript-lang.org[separate
+repo].
+
+== 🚀 Upgrading
+
+See the
+https://rescript-lang.org/docs/manual/latest/installation[Upgrading
+Guide] for instructions on upgrading to newer ReScript versions.
+
+== 👏 How to Contribute
+
+=== link:CONTRIBUTING.md[Contributing Guide]
+
+Read our link:CONTRIBUTING.md[Contributing Guide] to learn about our
+development process, how to propose bugfixes and improvements, and how
+to build and test your changes to ReScript.
+
+[[code-of-conductcode]]
+=== https://rescript-lang.org/community/code-of-conduct[Code of Conduct]
+
+The ReScript community has adopted a Code of Conduct that we expect
+project participants to adhere to. Please read the
+https://rescript-lang.org/community/code-of-conduct[full text] so that
+you can understand what actions will and will not be tolerated.
+
+[[roadmaproadmap]]
+=== https://rescript-lang.org/community/roadmap[Roadmap]
+
+You can learn more about our vision for ReScript in the
+https://rescript-lang.org/community/roadmap[Roadmap].
+
+[[discussionsdiscussions]]
+=== https://rescript-lang.org/community/roadmap[Discussions]
+
+For discussions on ongoing development, see the
+https://forum.rescript-lang.org/c/development/8[Development] section of
+the ReScript forum.
+
+== 📄 License
+
+ReScript uses multiple licenses in this monorepo:
+
+* `+compiler/+`: LGPL-3.0-or-later
+* `+compiler/syntax/+`: MIT
+* `+packages/@rescript/runtime/+`: MIT
+* `+rewatch/+`: MIT
+
+See the repository license index in link:LICENSE[`+LICENSE+`] and full
+license texts in link:COPYING.LESSER[`+COPYING.LESSER+`] and
+link:LICENSE.MIT[`+LICENSE.MIT+`].
+
+== 🏅 Acknowledgments
+
+ReScript was originally created by https://github.com/bobzhang[Hongbo
+Zhang] in 2015.
+
+See CREDITS.md for further acknowledgements and project history.

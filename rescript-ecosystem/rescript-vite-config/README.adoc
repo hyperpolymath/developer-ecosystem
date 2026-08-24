@@ -1,0 +1,54 @@
+== rescript-vite-config
+
+Use `+vite.config.res+` instead of `+vite.config.ts+`.
+
+Vite core rejected native ReScript config support
+(https://github.com/vitejs/vite/issues/21649[vitejs/vite#21649]), but
+suggested a CLI wrapper. This is that wrapper.
+
+=== Install
+
+[source,bash]
+----
+deno add npm:rescript-vite-config
+# or
+npm install -D rescript-vite-config
+----
+
+=== Usage
+
+Write your Vite config in ReScript:
+
+[source,rescript]
+----
+// vite.config.res
+let default = Vite.defineConfig({
+  "build": {"outDir": "dist"},
+  "server": {"port": 3000},
+})
+----
+
+Then use the CLI instead of `+vite+` directly:
+
+[source,bash]
+----
+npx rescript-vite-config dev      # compile config + vite dev
+npx rescript-vite-config build    # compile config + vite build
+npx rescript-vite-config preview  # compile config + vite preview
+----
+
+=== How it works
+
+[arabic]
+. Compiles `+vite.config.res+` → `+vite.config.res.mjs+` using
+`+rescript+`
+. Creates a thin `+vite.config.js+` bridge that re-exports from the
+compiled output
+. Invokes Vite with your command
+. Cleans up the generated bridge on exit
+
+Works with `+rescript+`, `+rescript-legacy+`, and Deno-based ReScript.
+
+=== License
+
+PMPL-1.0-or-later

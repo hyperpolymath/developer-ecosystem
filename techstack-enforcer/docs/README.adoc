@@ -1,0 +1,47 @@
+== Techstack Enforcer Documentation
+
+Welcome to the comprehensive documentation for Techstack Enforcer - a
+formally verified technology stack enforcement system.
+
+=== Documentation Index
+
+==== Getting Started
+
+* link:./getting-started.md[Quick Start Guide] - Installation and first
+steps
+* link:./installation.md[Installation Guide] - Detailed installation
+options
+
+==== User Guide
+
+* link:./cli-reference.md[CLI Reference] - Complete command-line
+reference
+* link:./tui-guide.md[TUI Guide] - Terminal user interface guide
+* link:./definition-sets.md[Definition Sets] - Pre-configured filter
+collections
+* link:./configuration.md[Configuration] - TOML configuration reference
+
+==== Integration
+
+* link:./ci-integration.md[CI/CD Integration] - GitLab CI and GitHub
+Actions
+* link:./git-hooks.md[Git Hooks] - Pre-commit, pre-push, commit-msg
+hooks
+* link:./api-json-format.md[API & JSON Format] - JSON input/output
+specification
+
+==== Development
+
+* link:./architecture.md[Architecture] - System design and components
+* link:./ada-spark-guide.md[Ada/SPARK Guide] - Development with
+Ada/SPARK
+* link:./contributing.md[Contributing] - Contribution guidelines
+* link:./building.md[Building from Source] - Build instructions
+
+==== Reference
+
+* link:./filter-patterns.md[Filter Patterns] - Glob pattern syntax
+* link:./block-levels.md[Block Levels] - Allow, Warn, Block, Fatal
+* link:./enforcement-modes.md[Enforcement Modes] - Learning, Warn,
+Enforce, Lockdown
+* link:./philosophy.md[Philosophy] - Design principles and rationale

@@ -1,0 +1,195 @@
+== TUI Guide
+
+The Terminal User Interface (TUI) provides an interactive way to manage
+filters and monitor enforcement.
+
+=== Starting the TUI
+
+[source,bash]
+----
+./bin/techstack_tui_main
+# or if installed:
+techstack-tui
+----
+
+=== Interface Overview
+
+....
+==========================================
+     TECHSTACK ENFORCER v1.0
+     Ada/SPARK Filter Management TUI
+==========================================
+  Mode: [ENFORCE] - Blocking enabled
+
+  FILTER LIST (45 entries)
+  -----------------------------------------------
+ > [#] *.py                     | Python: No static typing...
+   [#] *.php                    | PHP: Memory-unsafe, injection...
+   [X] *.c                      | C: Manual memory management
+   [!] *.sh                     | Shell script - verify manually
+   [+] *.rs                     | Rust: Memory-safe with ownership
+
+  [a]dd [e]dit [d]elete [Space]toggle [1-4]mode [s]can [?]help [q]uit
+....
+
+=== Keyboard Shortcuts
+
+==== Navigation
+
+[cols=",",options="header",]
+|===
+|Key |Action
+|`+j+` or `+↓+` |Move selection down
+|`+k+` or `+↑+` |Move selection up
+|`+g+` |Go to first filter
+|`+G+` |Go to last filter
+|===
+
+==== Filter Management
+
+[cols=",",options="header",]
+|===
+|Key |Action
+|`+a+` |Add new filter
+|`+e+` |Edit selected filter
+|`+d+` |Delete selected filter
+|`+Space+` |Toggle enabled/disabled
+|===
+
+==== Enforcement Mode
+
+[cols=",,",options="header",]
+|===
+|Key |Mode |Description
+|`+1+` |Learning |Observe only, no blocking
+|`+2+` |Warn |Warnings only
+|`+3+` |Enforce |Block violations
+|`+4+` |Lockdown |Maximum enforcement
+|===
+
+==== Other Actions
+
+[cols=",",options="header",]
+|===
+|Key |Action
+|`+s+` |Scan repository
+|`+S+` |View statistics
+|`+r+` |Reset hit counters
+|`+w+` |Save configuration
+|`+?+` |Show help
+|`+q+` |Quit
+|===
+
+'''''
+
+=== Views
+
+==== Filter List (Main View)
+
+Shows all configured filters with: - Level indicator: `+[+]+` Allow,
+`+[!]+` Warn, `+[X]+` Block, `+[#]+` Fatal - Pattern (glob) -
+Reason/description - `+[L]+` marker for learned filters
+
+==== Add Filter
+
+Interactive prompts for: 1. *Pattern* - Glob pattern (e.g., `+*.py+`,
+`+Dockerfile+`) 2. *Severity* - `+a+`=Allow, `+w+`=Warn, `+b+`=Block,
+`+f+`=Fatal 3. *Reason* - Description of why it’s blocked
+
+==== Edit Filter
+
+Modify an existing filter: - Shows current values - Press Enter to keep
+current value - Change pattern, level, or reason
+
+==== Statistics
+
+Shows aggregate information: - Total filters - Enabled/disabled count -
+Learned filters - Breakdown by severity - Total pattern hits
+
+==== Scan Repository
+
+Scan a directory for violations: 1. Enter repository path 2. View
+results (files scanned, violations, fatal blocks)
+
+'''''
+
+=== Level Indicators
+
+[cols=",,,",options="header",]
+|===
+|Symbol |Color |Level |Meaning
+|`+[+]+` |Green |Allow |Explicitly permitted
+|`+[!]+` |Yellow |Warn |Warning only
+|`+[X]+` |Magenta |Block |Blocked in enforce mode
+|`+[#]+` |Red |Fatal |Always blocked
+|===
+
+'''''
+
+=== Mode Indicators
+
+[cols=",,",options="header",]
+|===
+|Mode |Color |Description
+|`+[LEARNING]+` |Blue |Observing only
+|`+[WARN]+` |Yellow |Warnings only
+|`+[ENFORCE]+` |Magenta |Blocking enabled
+|`+[LOCKDOWN]+` |Red |Maximum enforcement
+|===
+
+'''''
+
+=== Example Workflows
+
+==== Adding a Custom Filter
+
+[arabic]
+. Press `+a+` to add
+. Enter pattern: `+*.legacy+`
+. Enter severity: `+b+` (block)
+. Enter reason: `+Legacy code not permitted+`
+. Press `+w+` to save configuration
+
+==== Editing a Filter
+
+[arabic]
+. Navigate to the filter with `+j+`/`+k+`
+. Press `+e+` to edit
+. Modify values (or press Enter to keep)
+. Press `+w+` to save
+
+==== Scanning a Project
+
+[arabic]
+. Press `+s+` to scan
+. Enter path: `+/path/to/project+`
+. Review results
+. Press any key to return
+
+==== Changing Enforcement Mode
+
+[arabic]
+. Press `+1+` for learning mode (testing)
+. Press `+3+` for enforce mode (production)
+. Press `+4+` for lockdown mode (high security)
+
+'''''
+
+=== Configuration File
+
+The TUI saves configuration to `+techstack.toml+` in the current
+directory.
+
+To load a specific configuration:
+
+[source,bash]
+----
+cd /path/with/config
+techstack-tui
+----
+
+=== See Also
+
+* link:./cli-reference.md[CLI Reference]
+* link:./configuration.md[Configuration]
+* link:./filter-patterns.md[Filter Patterns]

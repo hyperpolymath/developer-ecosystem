@@ -1,122 +1,54 @@
-image:https://img.shields.io/badge/License-MPL--2.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
-image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-license"]
+== asdf-security-plugin
 
+image:https://img.shields.io/badge/License-MPL–2.0-blue.svg[License:
+PMPL-1.0,link="`https://github.com/hyperpolymath/palimpsest-license`"]
+image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,link="`https://github.com/hyperpolymath/palimpsest-license`"]
 
-// SPDX-License-Identifier: CC-BY-SA-4.0
-= asdf-security-plugin
+Security-focused extensions and policies for the
+https://asdf-vm.com[asdf] version manager ecosystem.
 
-:toc: macro
-:toc-title: Contents
-:toclevels: 2
+=== Status
 
-**Security scanning plugin for asdf version manager**
+____
+*Note:* This repository is currently a project skeleton. Implementation
+is pending.
+____
 
-toc::[]
+=== Overview
 
-== Status
+`+asdf-security-plugin+` provides security tooling and policies for the
+asdf plugin ecosystem:
 
-[NOTE]
-====
-This plugin is *fully functional* at version 1.0.0.
-====
+* *Security scanning* - Vulnerability detection for installed tools
+* *Policy enforcement* - Ensure only approved versions are installed
+* *Audit logging* - Track version changes and installations
+* *Signature verification* - Validate tool authenticity
 
-== Overview
+=== Planned Features
 
-`asdf-security-plugin` is a security-focused plugin for the https://asdf-vm.com/[asdf version manager]. It provides security scanning capabilities for asdf installations, including plugin auditing, signature verification, and vulnerability reporting.
+* Integration with Trivy, Grype, and Syft for scanning
+* Policy-as-code support via OPA/Rego
+* SBOM generation for installed tool chains
+* Supply chain attestation via Sigstore
 
-== Installation
+=== Related Projects
 
-[source,bash]
-----
-asdf plugin add asdf-security https://github.com/hyperpolymath/asdf-security-plugin.git
-asdf install asdf-security 1.0.0
-asdf global asdf-security 1.0.0
-----
-
-== Usage
-
-[source,bash]
-----
-asdf-security <command> [args...]
-----
-
-=== Commands
-
-[cols="2,3",options="header"]
+[width="100%",cols="40%,60%",options="header",]
 |===
-| Command | Description
+|Project |Relationship
+|https://github.com/hyperpolymath/asdf-metaiconic-plugin[asdf-metaiconic-plugin]
+|Metadata registry
 
-| `audit`
-| Audit all installed asdf plugins for known vulnerabilities
-
-| `verify <plugin>`
-| Verify GPG signatures and SHA256 checksums of a plugin
-
-| `report`
-| Generate a comprehensive security report of all plugins
-
-| `update-db`
-| Update the local vulnerability database
+|https://github.com/hyperpolymath/asdf-ui-plugin[asdf-ui-plugin] |Visual
+interface
 |===
 
-=== Examples
+=== License
 
-[source,bash]
-----
-# Audit all plugins
-asdf-security audit
+Licensed under the link:LICENSE[Palimpsest-MPL License (PMPL-1.0)].
 
-# Verify a specific plugin
-asdf-security verify nodejs
+'''''
 
-# Generate security report
-asdf-security report
-
-# Update vulnerability database
-asdf-security update-db
-----
-
-== Components
-
-[cols="2,3",options="header"]
-|===
-| Component | Description
-
-| `bin/list-all`
-| Lists available versions of asdf-security
-
-| `bin/download`
-| Downloads the specified version
-
-| `bin/install`
-| Installs asdf-security to the specified path
-
-| `lib/utils.bash`
-| Shared utility functions
-
-| `.github/workflows/`
-| CI/CD infrastructure including security scanning
-
-| `hooks/`
-| Pre-commit validation hooks for security standards
-|===
-
-== Security Features
-
-* *Plugin Auditing*: Scans installed plugins against known vulnerability databases
-* *Signature Verification*: Validates GPG signatures on plugin releases
-* *Checksum Validation*: SHA256 integrity verification for downloads
-* *Security Reports*: Comprehensive JSON/text reports of security posture
-
-== Development Standards
-
-Per the Hyperpolymath Language Policy:
-
-* **Primary languages**: Bash/POSIX Shell (for asdf plugin scripts)
-* **Package management**: Guix (primary), Nix (fallback)
-* **Security**: SHA256+ hashing, HTTPS only, no hardcoded secrets, SHA-pinned dependencies
-* **Code quality**: ShellCheck linting, SPDX license headers
-
-== License
-
-PMPL-1.0-or-later
+____
+Maintained by https://github.com/hyperpolymath[hyperpolymath]
+____

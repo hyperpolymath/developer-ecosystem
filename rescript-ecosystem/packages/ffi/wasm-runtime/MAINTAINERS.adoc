@@ -1,47 +1,207 @@
-// SPDX-License-Identifier: CC-BY-SA-4.0
-= Maintainers
-:toc: preamble
+== Maintainers
 
-This document lists the maintainers of this project and their responsibilities.
+=== Active Maintainers
 
-== Current Maintainers
+This file lists the current maintainers of the ReScript WASM Runtime
+project.
 
-[cols="2,3,2",options="header"]
-|===
-| Name | Role | Contact
+==== Lead Maintainer
 
-| Jonathan D.A. Jewell
-| Lead Maintainer
-| https://github.com/hyperpolymath[@hyperpolymath]
-|===
+*[Your Name]* (@username) - *Role*: Project Lead, Architecture -
+*Focus*: Core runtime, ReScript modules, build system - *Timezone*: UTC
+- *Availability*: Weekdays - *Email*: maintainer@example.com - *PGP*:
+See .well-known/pgp-key.txt
 
-== Responsibilities
+==== Core Team
 
-Maintainers are responsible for:
+Currently seeking core team members. See CONTRIBUTING.md for how to get
+involved.
 
-* Reviewing and merging pull requests
-* Triaging issues and feature requests
-* Ensuring code quality and security standards
-* Managing releases and versioning
-* Upholding the project's code of conduct
+=== Areas of Responsibility
 
-== Becoming a Maintainer
+==== Core Runtime
 
-Contributors who demonstrate:
+* *Maintainer*: Lead Maintainer
+* *Scope*: Deno.res, Bun.res, Server.res, Router.res
+* *Backup*: TBD
 
-* Consistent, high-quality contributions
-* Understanding of the project's goals and standards
-* Constructive participation in discussions
-* Commitment to the project's long-term health
+==== Middleware
 
-May be invited to become maintainers at the discretion of existing maintainers.
+* *Maintainer*: Lead Maintainer
+* *Scope*: Middleware.res, Session.res, Upload.res, Stream.res
+* *Backup*: TBD
 
-== Decision Making
+==== Examples
 
-* Routine decisions (bug fixes, minor improvements) can be made by any maintainer
-* Significant changes require discussion and consensus among maintainers
-* Breaking changes or major features should be discussed in issues before implementation
+* *Maintainer*: Community
+* *Scope*: All examples/ directory
+* *Review*: Lead Maintainer
 
-== Contact
+==== Documentation
 
-For questions about project governance, open an issue or contact the maintainers listed above.
+* *Maintainer*: Community
+* *Scope*: README.md, docs/, examples/
+* *Review*: Lead Maintainer
+
+==== Testing
+
+* *Maintainer*: Lead Maintainer
+* *Scope*: tests/, benchmarks
+* *Backup*: TBD
+
+==== Build System
+
+* *Maintainer*: Lead Maintainer
+* *Scope*: Justfile, CI/CD, Containerfile, flake.nix
+* *Backup*: TBD
+
+==== Security
+
+* *Maintainer*: Lead Maintainer
+* *Scope*: Security policy, vulnerability response
+* *Contact*: security@example.com
+
+==== Community
+
+* *Maintainer*: Lead Maintainer
+* *Scope*: Code of Conduct, community health
+* *Contact*: conduct@example.com
+
+=== Maintainer Duties
+
+==== All Maintainers
+
+* Review pull requests in their area
+* Respond to issues within 7 days
+* Participate in release planning
+* Maintain documentation
+* Enforce Code of Conduct
+* Mentor new contributors
+* Attend monthly maintainer meetings (when established)
+
+==== Lead Maintainer Additional Duties
+
+* Release management
+* Security response coordination
+* Architecture decisions
+* Conflict resolution
+* Community health monitoring
+* Budget/funding (if applicable)
+
+=== Decision Making
+
+==== Consensus Model
+
+* *Minor changes*: Any maintainer can approve
+* *Major changes*: 2 maintainer approvals required
+* *Breaking changes*: All maintainers must approve
+* *Disputes*: Lead maintainer has final say
+
+==== What Requires Consensus
+
+* Breaking API changes
+* New major features
+* Architecture changes
+* Dependency additions
+* License changes
+* Code of Conduct changes
+* Maintainer additions/removals
+
+=== Becoming a Maintainer
+
+==== Criteria
+
+[arabic]
+. *Sustained Contributions*: 6+ months of regular contributions
+. *Technical Excellence*: High-quality PRs, good judgment
+. *Community Engagement*: Helpful in issues, reviews
+. *Alignment*: Demonstrates project values and goals
+. *Commitment*: Available for ongoing maintenance
+
+==== Process
+
+[arabic]
+. *Nomination*: Self-nominate or be nominated by maintainer
+. *Discussion*: Current maintainers discuss in private
+. *Vote*: Consensus required (all maintainers agree)
+. *Invitation*: Formal invitation sent
+. *Onboarding*: Access granted, added to MAINTAINERS.md
+. *Announcement*: Public announcement in project channels
+
+==== Trial Period
+
+* New maintainers have a 3-month trial period
+* Can be revoked if expectations not met
+* After 3 months, becomes permanent
+
+=== Stepping Down
+
+Maintainers can step down at any time by: 1. Notifying other maintainers
+2. Transferring responsibilities 3. Removing themselves from
+MAINTAINERS.md
+
+We thank all past maintainers for their service.
+
+=== Emeritus Maintainers
+
+Past maintainers who have stepped down but contributed significantly:
+
+_None yet - this is the initial release._
+
+=== Contact
+
+* *General Maintainer Contact*: maintainers@example.com
+* *Private Matters*: Use individual emails above
+* *Security*: security@example.com
+* *Code of Conduct*: conduct@example.com
+
+=== Maintainer Onboarding
+
+New maintainers receive: - Write access to repository - Access to
+private maintainer channels - Security@example.com email access - CI/CD
+admin access - Documentation on release process - Invitation to
+maintainer meetings - Mentorship from existing maintainers
+
+=== Maintainer Expectations
+
+==== Time Commitment
+
+* *Minimum*: 4 hours/month
+* *Expected*: 8-16 hours/month
+* *During releases*: 20+ hours/month
+
+==== Responsiveness
+
+* *Issues*: Respond within 7 days
+* *PRs*: Initial review within 7 days
+* *Security*: Respond within 48 hours
+* *Code of Conduct*: Respond within 24 hours
+
+==== Burnout Prevention
+
+* Set realistic expectations
+* Take breaks when needed
+* Communicate availability
+* Share responsibilities
+* Ask for help
+* Step down if needed (no judgment)
+
+=== Conflict Resolution
+
+[arabic]
+. *Direct Communication*: Discuss privately first
+. *Mediation*: Involve neutral maintainer
+. *Lead Decision*: Lead maintainer makes final call
+. *Escalation*: Code of Conduct team for behavioral issues
+
+=== Recognition
+
+Maintainers are recognized: - Listed in MAINTAINERS.md - Mentioned in
+CHANGELOG.md releases - Listed in project README - Conference talk
+opportunities - Authorship on academic papers (if applicable)
+
+'''''
+
+*Last Updated*: 2025-01-22 *Version*: 1.0.0
+
+For questions about maintainership, email: maintainers@example.com

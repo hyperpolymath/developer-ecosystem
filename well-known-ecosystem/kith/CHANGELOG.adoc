@@ -1,9 +1,9 @@
-// SPDX-License-Identifier: CC-BY-SA-4.0
-= Changelog
+== Changelog
 
 All notable changes to this project will be documented in this file.
 
-== [Unreleased]
+=== [Unreleased]
 
-=== Added
-- RSR compliance files
+==== Added
+
+* RSR compliance files

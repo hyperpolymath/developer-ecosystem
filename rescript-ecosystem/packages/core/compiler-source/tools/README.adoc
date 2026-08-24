@@ -1,0 +1,53 @@
+== ReScript Tools
+
+=== Install
+
+[source,sh]
+----
+npm install --save-dev @rescript/tools
+----
+
+=== CLI Usage
+
+[source,sh]
+----
+rescript-tools --help
+----
+
+==== Generate documentation
+
+Print JSON:
+
+[source,sh]
+----
+rescript-tools doc src/EntryPointLibFile.res
+----
+
+Write JSON:
+
+[source,sh]
+----
+rescript-tools doc src/EntryPointLibFile.res > doc.json
+----
+
+==== Reanalyze
+
+[source,sh]
+----
+rescript-tools reanalyze --help
+----
+
+=== Decode JSON
+
+Add to `+bs-dev-dependencies+`:
+
+[source,json]
+----
+"dev-dependencies": ["@rescript/tools"]
+----
+
+[source,rescript]
+----
+// Read JSON file and parse with `Js.Json.parseExn`
+json->RescriptTools.Docgen.decodeFromJson
+----

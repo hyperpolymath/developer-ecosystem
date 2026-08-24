@@ -1,0 +1,56 @@
+== Bootstrapping `+k9-ecosystem+` into a standalone repository
+
+This directory was authored as the *standalone `+k9-ecosystem+` hub* but
+is currently *staged inside `+developer-ecosystem/+`* because the
+delivering session’s scope did not permit creating a new top-level
+GitHub repository. Everything here is defined as if `+k9-ecosystem/+`
+were a repository root (its own `+.gitmodules+`, `+README.adoc+`,
+`+LICENSE+`, `+.machine_readable/6a2/+`), so promotion is mechanical.
+
+=== Option A — extract preserving history (recommended)
+
+[source,sh]
+----
+# from the developer-ecosystem repo root
+git subtree split -P k9-ecosystem -b k9-ecosystem-export
+
+# create the empty repo hyperpolymath/k9-ecosystem on GitHub first, then:
+mkdir ../k9-ecosystem && cd ../k9-ecosystem
+git init
+git pull ../developer-ecosystem k9-ecosystem-export
+git remote add origin git@github.com:hyperpolymath/k9-ecosystem.git
+git push -u origin main
+
+# activate the members
+just init        # or: bash scripts/init-submodules.sh
+----
+
+=== Option B — fresh start (no history)
+
+[source,sh]
+----
+cp -r developer-ecosystem/k9-ecosystem /path/to/k9-ecosystem
+cd /path/to/k9-ecosystem
+git init && git add -A && git commit -m "Initialise k9-ecosystem hub"
+git remote add origin git@github.com:hyperpolymath/k9-ecosystem.git
+git push -u origin main
+bash scripts/init-submodules.sh
+----
+
+=== After extraction
+
+[arabic]
+. Copy the full MPL-2.0 text to `+license/MPL-2.0.txt+` (see
+`+LICENSE+`).
+. Remove the staging copy from `+developer-ecosystem/+` and, if desired,
+add the new repo back as a submodule or cross-reference it from
+`+developer-ecosystem/.machine_readable/6a2/ECOSYSTEM.a2ml+`.
+. Point each member repo’s `+.machine_readable/6a2/ECOSYSTEM.a2ml+` at
+`+k9-ecosystem+` (relationship `+dependency+` / `+sibling-standard+`) so
+the graph is bidirectional.
+
+=== Alternative: let the agent push it directly
+
+If you add `+hyperpolymath/k9-ecosystem+` to the session’s repository
+scope (and create the empty repo), the agent can push the hub and open
+its PR directly, skipping the manual extraction above.

@@ -1,0 +1,83 @@
+== asdf-envoy
+
+https://github.com/hyperpolymath/asdf-envoy-plugin/actions/workflows/build.yml[image:https://github.com/hyperpolymath/asdf-envoy-plugin/actions/workflows/build.yml/badge.svg[Build]]
+https://github.com/hyperpolymath/asdf-envoy-plugin/actions/workflows/lint.yml[image:https://github.com/hyperpolymath/asdf-envoy-plugin/actions/workflows/lint.yml/badge.svg[Lint]]
+image:https://img.shields.io/badge/License-MPL–2.0-blue.svg[License:
+PMPL-1.0,link="`https://github.com/hyperpolymath/palimpsest-license`"]
+
+https://asdf-vm.com[asdf] plugin for https://www.envoyproxy.io[Envoy
+Proxy].
+
+Cloud-native proxy.
+
+=== Contents
+
+* link:#dependencies[Dependencies]
+* link:#install[Install]
+* link:#usage[Usage]
+* link:#contributing[Contributing]
+* link:#license[License]
+
+=== Dependencies
+
+* `+bash+`, `+curl+`, `+tar+`, and
+https://pubs.opengroup.org/onlinepubs/9699919799/idx/utilities.html[POSIX
+utilities]
+
+=== Install
+
+Plugin:
+
+[source,bash]
+----
+asdf plugin add envoy https://github.com/hyperpolymath/asdf-envoy-plugin.git
+----
+
+envoy:
+
+[source,bash]
+----
+# Show all installable versions
+asdf list-all envoy
+
+# Install specific version
+asdf install envoy latest
+
+# Set a version globally (in your ~/.tool-versions file)
+asdf global envoy latest
+
+# Now envoy commands are available
+envoy --version
+----
+
+Check https://asdf-vm.com/guide/getting-started.html[asdf] readme for
+more instructions.
+
+=== Usage
+
+[source,bash]
+----
+# List installed versions
+asdf list envoy
+
+# Set local version for current directory
+asdf local envoy <version>
+
+# Uninstall a version
+asdf uninstall envoy <version>
+----
+
+=== Contributing
+
+Contributions welcome! Read the link:CONTRIBUTING.adoc[contributing
+guidelines] first.
+
+=== License
+
+Licensed under the link:LICENSE[Palimpsest-MPL License (PMPL-1.0)].
+
+'''''
+
+____
+Maintained by https://github.com/hyperpolymath[hyperpolymath]
+____
