@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: MPL-2.0
+// Ported via Harvard Engine mechanical processor
+
+module with_underscore.gen;
+
+// TODO: Complete semantic implementation
+
+/* === ORIGINAL TYPESCRIPT CONTEXT ===
+/* TypeScript file generated from with_underscore.res by genType. */
+
+/* eslint-disable */
+/* tslint:disable */
+
+import * as with_underscoreJS from './with_underscore.res.js';
+
+export const x: number = with_underscoreJS.x as any;
+
+==================================== */

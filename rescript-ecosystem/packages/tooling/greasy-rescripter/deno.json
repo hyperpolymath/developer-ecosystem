@@ -1,7 +1,0 @@
-{
-  "tasks": {
-    "res:build": "deno run -A npm:rescript build",
-    "res:clean": "deno run -A npm:rescript clean"
-  },
-  "nodeModulesDir": "auto"
-}

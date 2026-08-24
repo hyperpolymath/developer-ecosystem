@@ -1,0 +1,16 @@
+// SPDX-License-Identifier: MPL-2.0
+// Ported via Harvard Engine mechanical processor
+
+module location.gen;
+
+// TODO: Complete semantic implementation
+
+/* === ORIGINAL TYPESCRIPT CONTEXT ===
+/* TypeScript file generated from location.res by genType. */
+
+/* eslint-disable */
+/* tslint:disable */
+
+export type t = { readonly id: string; readonly name: string };
+
+==================================== */

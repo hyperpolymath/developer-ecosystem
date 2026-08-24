@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: MPL-2.0
+// Ported via Harvard Engine mechanical processor
+
+module _under.gen;
+
+// TODO: Complete semantic implementation
+
+/* === ORIGINAL TYPESCRIPT CONTEXT ===
+/* TypeScript file generated from _under.res by genType. */
+
+/* eslint-disable */
+/* tslint:disable */
+
+import * as _underJS from './_under.res.js';
+
+export const x: number = _underJS.x as any;
+
+==================================== */

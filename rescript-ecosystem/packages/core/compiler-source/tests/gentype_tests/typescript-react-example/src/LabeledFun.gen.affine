@@ -1,0 +1,18 @@
+// SPDX-License-Identifier: MPL-2.0
+// Ported via Harvard Engine mechanical processor
+
+module LabeledFun.gen;
+
+// TODO: Complete semantic implementation
+
+/* === ORIGINAL TYPESCRIPT CONTEXT ===
+/* TypeScript file generated from LabeledFun.res by genType. */
+
+/* eslint-disable */
+/* tslint:disable */
+
+import * as LabeledFunJS from './LabeledFun.res.js';
+
+export const labelled: (a:number, b:(undefined | number), c:number, _4:number, e:number, f:number) => number = LabeledFunJS.labelled as any;
+
+==================================== */
