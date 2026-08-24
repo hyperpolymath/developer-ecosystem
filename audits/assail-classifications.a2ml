@@ -1,4 +1,8 @@
 %A2ML
+# SPDX-License-Identifier: MPL-2.0
+name: assail-classifications
+version: "1.0.0"
+
 - suppression:
     file: 'dnfinition/src/data_layer/lib/dnfinition/mirror/list_manager.ex'
     rule: 'AtomExhaustion'

@@ -30,6 +30,24 @@ jobs:
           if [ "$COUNT" -eq 0 ]; then
             echo "::warning::No .a2ml manifest files found. Every RSR repo should have 0-AI-MANIFEST.a2ml"
           fi
+      - name: Prove A2ML validator rejects an invalid manifest
+        run: |
+          set -euo pipefail
+          control_dir=$(mktemp -d "$RUNNER_TEMP/a2ml-negative-control.XXXXXX")
+          trap 'rm -rf "$control_dir"' EXIT
+          touch "$control_dir/invalid.a2ml"
+
+          if output=$(INPUT_PATH="$control_dir" bash .githooks/validate-a2ml.sh 2>&1); then
+            echo "::error::A2ML validator accepted an empty manifest"
+            exit 1
+          fi
+          if ! grep -q 'Missing required identity field' <<< "$output"; then
+            echo "::error::A2ML validator failed for an unexpected reason"
+            printf '%s\n' "$output"
+            exit 1
+          fi
+
+          echo "A2ML negative control rejected as expected"
       - name: Validate A2ML manifests
         if: steps.detect.outputs.count > 0
         run: bash .githooks/validate-a2ml.sh
