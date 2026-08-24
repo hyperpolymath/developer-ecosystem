@@ -115,8 +115,12 @@ assail:
 # VALIDATION
 # ═══════════════════════════════════════════════════════════════════════════════
 
+# Reject legacy directive paths in satellite batches already migrated under #117.
+validate-bot-directives:
+    @bash hooks/validate-bot-directives.sh
+
 # Validate RSR compliance
-validate-rsr:
+validate-rsr: validate-bot-directives
     #!/usr/bin/env bash
     echo "=== RSR Compliance Check ==="
     MISSING=""
