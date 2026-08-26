@@ -19,14 +19,14 @@ The following files in `.machine_readable/` contain structured project metadata:
 
 | Language/Tool | Use Case | Notes |
 |---------------|----------|-------|
-| **AffineScript** | Primary application code | Affine-typed, compiles to typed-wasm or Deno-ESM |
-| **Deno** | Runtime & package management | Replaces Node/npm/bun |
+| **AffineScript** | Primary application code | Affine-typed, compiles to typed-wasm or ESM |
+| **Bun** | JS/TS runtime & package management (tier 1) | Default for all new work. Executes `.ts` directly, no build step. Uses an npm-compatible `package.json` plus `bun.lock` — both are expected, not anti-patterns. |
 | **Rust** | Performance-critical, systems, WASM | Preferred for CLI tools |
 | **Tauri 2.0+** | Mobile apps (iOS/Android) | Rust backend + web UI |
 | **Dioxus** | Mobile apps (native UI) | Pure Rust, React-like |
 | **Gleam** | Backend services | Runs on BEAM or compiles to JS |
 | **Bash/POSIX Shell** | Scripts, automation | Keep minimal |
-| **JavaScript** | Only where AffineScript cannot | MCP protocol glue, Deno APIs |
+| **JavaScript** | Only where AffineScript cannot | MCP protocol glue, Bun APIs |
 | **Nickel** | Configuration language | For complex configs |
 | **Guile Scheme** | State/meta files | .machine_readable/6a2/STATE.a2ml, .machine_readable/6a2/META.a2ml, .machine_readable/6a2/ECOSYSTEM.a2ml |
 | **Julia** | Batch scripts, data processing | Per RSR |
@@ -39,10 +39,9 @@ The following files in `.machine_readable/` contain structured project metadata:
 |--------|-------------|
 | TypeScript | AffineScript |
 | ReScript | AffineScript |
-| Node.js | Deno |
-| npm | Deno |
-| Bun | Deno |
-| pnpm/yarn | Deno |
+| Node.js | Bun |
+| npm | Bun |
+| pnpm/yarn | Bun |
 | Go | Rust |
 | Python | Julia/Rust/AffineScript |
 | Java/Kotlin | Rust/Tauri/Dioxus |

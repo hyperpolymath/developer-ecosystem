@@ -138,7 +138,7 @@ This project uses:
 ### Package Management
 - **Primary**: Guix (guix.scm)
 - **Fallback**: Nix (flake.nix)
-- **JS deps**: Deno (deno.json imports)
+- **JS deps**: Bun (`package.json` + `bun.lock`); `bunx <tool>` for one-off tooling
 
 ## Evangelism Goals
 
