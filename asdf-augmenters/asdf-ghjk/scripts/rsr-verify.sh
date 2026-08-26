@@ -118,7 +118,7 @@ section "Category 5: Governance"
 check "MAINTAINERS exists" "[[ -f MAINTAINERS.adoc ]] || [[ -f MAINTAINERS.adoc ]]"
 check "CODEOWNERS exists" "[[ -f .github/CODEOWNERS ]]"
 check "Maintainer responsibilities documented" "grep -q 'Responsibilities' MAINTAINERS.adoc 2>/dev/null || grep -qi 'responsibilities' MAINTAINERS.adoc 2>/dev/null"
-check "Decision-making process documented" "grep -q 'Decision Making' MAINTAINERS.adoc 2>/dev/null || grep -qi 'decision' MAINTAINERS.adoc 2>/dev/null || grep -q 'decision' MAINTAINERS.adoc 2>/dev/null"
+check "Decision-making process documented" "grep -qi 'decision' MAINTAINERS.adoc 2>/dev/null"
 check "RSR.md with TPCF declaration exists" "[[ -f RSR.md ]]"
 check "TPCF perimeter declared" "grep -q 'Perimeter 3' RSR.md"
 
