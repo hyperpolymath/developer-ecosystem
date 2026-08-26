@@ -137,7 +137,7 @@ find "$TEST_REPO_PATH" -type f \
                 sed -i "s|$placeholder|$value|g" "$file"
             fi
         done
-    ' _ "$file"
+    ' _ {} \;
 
 log_pass "All placeholder tokens replaced"
 
