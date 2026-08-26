@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 DEBUG_FLAG="-debug"
 
 if [ "$RUNNER_OS" == "Windows" ]; then

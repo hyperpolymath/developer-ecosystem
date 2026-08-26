@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 output="expected/termination.txt"
 dune exec rescript-tools -- reanalyze -config -ci -debug > $output
 # CI. We use LF, and the CI OCaml fork prints CRLF. Convert.

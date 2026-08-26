@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 for file in src/*.{res,resi}; do
   output="$(dirname $file)/expected/$(basename $file).json"
   ../../_build/install/default/bin/rescript-tools doc $file > $output

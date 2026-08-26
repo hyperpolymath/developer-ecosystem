@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 for file in src/*.{res,resi}; do
   output="$(dirname $file)/expected/$(basename $file).txt"
   ../../../_build/install/default/bin/rescript-editor-analysis test $file &> $output
