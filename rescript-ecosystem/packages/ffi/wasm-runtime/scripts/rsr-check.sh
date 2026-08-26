@@ -69,10 +69,10 @@ echo ""
 echo -e "${BLUE}1. Documentation${NC}"
 check_file "README.md" "README.md"
 check_file "LICENSE" "LICENSE"
-check_file "CHANGELOG.md" "CHANGELOG.md"
+check_file "CHANGELOG.adoc" "CHANGELOG.adoc"
 check_file "CONTRIBUTING.md" "CONTRIBUTING.md"
 check_file "CODE_OF_CONDUCT.md" "CODE_OF_CONDUCT.md"
-check_file "MAINTAINERS.md" "MAINTAINERS.md"
+check_file "MAINTAINERS.adoc" "MAINTAINERS.adoc"
 check_file "SECURITY.md" "SECURITY.md"
 check_file "TPCF.md" "TPCF.md (Tri-Perimeter Contribution Framework)"
 echo ""
@@ -278,8 +278,8 @@ if [ "$FAILED" -gt 0 ] || [ "$WARNINGS" -gt 0 ]; then
         echo "- Add CODE_OF_CONDUCT.md for community guidelines"
     fi
 
-    if [ ! -f "MAINTAINERS.md" ]; then
-        echo "- Add MAINTAINERS.md listing project maintainers"
+    if [ ! -f "MAINTAINERS.adoc" ]; then
+        echo "- Add MAINTAINERS.adoc listing project maintainers"
     fi
 
     if [ ! -d ".well-known" ]; then
