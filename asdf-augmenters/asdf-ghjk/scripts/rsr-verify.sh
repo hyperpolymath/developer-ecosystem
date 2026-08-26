@@ -66,7 +66,7 @@ check "CONTRIBUTING exists" "[[ -f CONTRIBUTING.md ]] || [[ -f CONTRIBUTING.adoc
 check "CODE_OF_CONDUCT.md exists" "[[ -f CODE_OF_CONDUCT.md ]]"
 check "MAINTAINERS exists" "[[ -f MAINTAINERS.adoc ]]"
 check "SECURITY.md exists" "[[ -f SECURITY.md ]]"
-check "CHANGELOG exists" "[[ -f CHANGELOG.adoc ]] || [[ -f CHANGELOG.adoc ]]"
+check "CHANGELOG exists" "[[ -f CHANGELOG.adoc ]]"
 check "ARCHITECTURE.md exists" "[[ -f docs/ARCHITECTURE.md ]]"
 check "API_REFERENCE.md exists" "[[ -f docs/API_REFERENCE.md ]]"
 check "FAQ.md exists" "[[ -f docs/FAQ.md ]]"
@@ -115,7 +115,7 @@ check "PR template exists" "[[ -f .github/pull_request_template.md ]]"
 # =============================================================================
 section "Category 5: Governance"
 
-check "MAINTAINERS exists" "[[ -f MAINTAINERS.adoc ]] || [[ -f MAINTAINERS.adoc ]]"
+check "MAINTAINERS exists" "[[ -f MAINTAINERS.adoc ]]"
 check "CODEOWNERS exists" "[[ -f .github/CODEOWNERS ]]"
 check "Maintainer responsibilities documented" "grep -qi 'responsibilities' MAINTAINERS.adoc 2>/dev/null"
 check "Decision-making process documented" "grep -qi 'decision' MAINTAINERS.adoc 2>/dev/null"
@@ -140,7 +140,7 @@ check "CI tests multiple platforms" "grep -q 'ubuntu-latest' .github/workflows/c
 section "Category 7: Build System"
 
 check "Build system exists" "[[ -f Makefile ]] || [[ -f Justfile ]] || [[ -f Justfile ]]"
-check "Justfile exists" "[[ -f Justfile ]] || [[ -f Justfile ]]"
+check "Justfile exists" "[[ -f Justfile ]]"
 check "Nix/Guix package definition exists" "[[ -f flake.nix ]] || [[ -f guix.scm ]] || [[ -f default.nix ]]"
 check "Build system has test target" "grep -qi 'test' Makefile 2>/dev/null || grep -qi 'test' Justfile 2>/dev/null || grep -qi 'test' Justfile 2>/dev/null"
 check "Build system has lint target" "grep -qi 'lint' Makefile 2>/dev/null || grep -qi 'lint' Justfile 2>/dev/null || grep -qi 'lint' Justfile 2>/dev/null"
