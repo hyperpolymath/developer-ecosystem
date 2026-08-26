@@ -64,9 +64,9 @@ check "README exists" "[[ -f README.md ]] || [[ -f README.adoc ]]"
 check "README is comprehensive (>100 lines)" "[[ -f README.md ]] && [[ \$(wc -l < README.md) -gt 100 ]] || [[ -f README.adoc ]] && [[ \$(wc -l < README.adoc) -gt 100 ]]"
 check "CONTRIBUTING exists" "[[ -f CONTRIBUTING.md ]] || [[ -f CONTRIBUTING.adoc ]]"
 check "CODE_OF_CONDUCT.md exists" "[[ -f CODE_OF_CONDUCT.md ]]"
-check "MAINTAINERS exists" "[[ -f MAINTAINERS.md ]] || [[ -f MAINTAINERS.adoc ]]"
+check "MAINTAINERS exists" "[[ -f MAINTAINERS.adoc ]]"
 check "SECURITY.md exists" "[[ -f SECURITY.md ]]"
-check "CHANGELOG exists" "[[ -f CHANGELOG.md ]] || [[ -f CHANGELOG.adoc ]]"
+check "CHANGELOG exists" "[[ -f CHANGELOG.adoc ]]"
 check "ARCHITECTURE.md exists" "[[ -f docs/ARCHITECTURE.md ]]"
 check "API_REFERENCE.md exists" "[[ -f docs/API_REFERENCE.md ]]"
 check "FAQ.md exists" "[[ -f docs/FAQ.md ]]"
@@ -115,10 +115,10 @@ check "PR template exists" "[[ -f .github/pull_request_template.md ]]"
 # =============================================================================
 section "Category 5: Governance"
 
-check "MAINTAINERS exists" "[[ -f MAINTAINERS.md ]] || [[ -f MAINTAINERS.adoc ]]"
+check "MAINTAINERS exists" "[[ -f MAINTAINERS.adoc ]]"
 check "CODEOWNERS exists" "[[ -f .github/CODEOWNERS ]]"
-check "Maintainer responsibilities documented" "grep -q 'Responsibilities' MAINTAINERS.md 2>/dev/null || grep -qi 'responsibilities' MAINTAINERS.adoc 2>/dev/null"
-check "Decision-making process documented" "grep -q 'Decision Making' MAINTAINERS.md 2>/dev/null || grep -qi 'decision' MAINTAINERS.adoc 2>/dev/null || grep -q 'decision' MAINTAINERS.md 2>/dev/null"
+check "Maintainer responsibilities documented" "grep -qi 'responsibilities' MAINTAINERS.adoc 2>/dev/null"
+check "Decision-making process documented" "grep -qi 'decision' MAINTAINERS.adoc 2>/dev/null"
 check "RSR.md with TPCF declaration exists" "[[ -f RSR.md ]]"
 check "TPCF perimeter declared" "grep -q 'Perimeter 3' RSR.md"
 
@@ -140,7 +140,7 @@ check "CI tests multiple platforms" "grep -q 'ubuntu-latest' .github/workflows/c
 section "Category 7: Build System"
 
 check "Build system exists" "[[ -f Makefile ]] || [[ -f Justfile ]] || [[ -f Justfile ]]"
-check "Justfile exists" "[[ -f Justfile ]] || [[ -f Justfile ]]"
+check "Justfile exists" "[[ -f Justfile ]]"
 check "Nix/Guix package definition exists" "[[ -f flake.nix ]] || [[ -f guix.scm ]] || [[ -f default.nix ]]"
 check "Build system has test target" "grep -qi 'test' Makefile 2>/dev/null || grep -qi 'test' Justfile 2>/dev/null || grep -qi 'test' Justfile 2>/dev/null"
 check "Build system has lint target" "grep -qi 'lint' Makefile 2>/dev/null || grep -qi 'lint' Justfile 2>/dev/null || grep -qi 'lint' Justfile 2>/dev/null"
@@ -152,9 +152,9 @@ check "Setup script is executable" "[[ -x scripts/setup-dev.sh ]]"
 # =============================================================================
 section "Category 8: Versioning"
 
-check "CHANGELOG follows Keep a Changelog" "grep -qi 'Changelog' CHANGELOG.md 2>/dev/null || grep -qi 'Changelog' CHANGELOG.adoc 2>/dev/null"
-check "CHANGELOG has Unreleased section" "grep -qi 'Unreleased' CHANGELOG.md 2>/dev/null || grep -qi 'Unreleased' CHANGELOG.adoc 2>/dev/null"
-check "Semantic versioning mentioned" "grep -qi 'Semantic Versioning' CHANGELOG.md 2>/dev/null || grep -qi 'semver' CHANGELOG.adoc 2>/dev/null || grep -qi 'Semantic' CHANGELOG.adoc 2>/dev/null"
+check "CHANGELOG follows Keep a Changelog" "grep -qi 'Changelog' CHANGELOG.adoc 2>/dev/null"
+check "CHANGELOG has Unreleased section" "grep -qi 'Unreleased' CHANGELOG.adoc 2>/dev/null || grep -qi 'Unreleased' CHANGELOG.adoc 2>/dev/null"
+check "Semantic versioning mentioned" "grep -qi 'Semantic Versioning' CHANGELOG.adoc 2>/dev/null || grep -qi 'semver' CHANGELOG.adoc 2>/dev/null || grep -qi 'Semantic' CHANGELOG.adoc 2>/dev/null"
 
 # =============================================================================
 # Category 9: .well-known
