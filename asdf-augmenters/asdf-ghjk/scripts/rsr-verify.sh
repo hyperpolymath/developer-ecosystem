@@ -152,7 +152,7 @@ check "Setup script is executable" "[[ -x scripts/setup-dev.sh ]]"
 # =============================================================================
 section "Category 8: Versioning"
 
-check "CHANGELOG follows Keep a Changelog" "grep -qi 'Changelog' CHANGELOG.adoc 2>/dev/null || grep -qi 'Changelog' CHANGELOG.adoc 2>/dev/null"
+check "CHANGELOG follows Keep a Changelog" "grep -qi 'Changelog' CHANGELOG.adoc 2>/dev/null"
 check "CHANGELOG has Unreleased section" "grep -qi 'Unreleased' CHANGELOG.adoc 2>/dev/null || grep -qi 'Unreleased' CHANGELOG.adoc 2>/dev/null"
 check "Semantic versioning mentioned" "grep -qi 'Semantic Versioning' CHANGELOG.adoc 2>/dev/null || grep -qi 'semver' CHANGELOG.adoc 2>/dev/null || grep -qi 'Semantic' CHANGELOG.adoc 2>/dev/null"
 
