@@ -13,7 +13,7 @@ Current host application language: ReScript (migration to AffineScript planned i
 |---------------|----------|-------|
 | **AffineScript** | Flagship target language; future host | Affine/linear types, borrow checker, QTT, WASM backend |
 | **ReScript** | Current host application code; legacy target | Compiles to JS, type-safe |
-| **Bun** | JS/TS runtime & package management (tier 1) | Default for all new work. Executes `.ts` directly, no build step. Uses an npm-compatible `package.json` plus `bun.lock` — both are expected, not anti-patterns. |
+| **Bun** | JS runtime & package management (tier 1) | Default for all new work. Runs compiled ESM/JS directly — no bundler step. Uses an npm-compatible `package.json` plus `bun.lock` — both are expected, not anti-patterns. |
 | **Rust** | Performance-critical, systems, WASM | Preferred for CLI tools |
 | **Zig** | FFI, C-ABI bridges, systems | Canonical FFI layer (per `0-AI-MANIFEST.a2ml`) |
 | **Tauri 2.0+** | Mobile apps (iOS/Android) | Rust backend + web UI |
@@ -32,6 +32,7 @@ Current host application language: ReScript (migration to AffineScript planned i
 | Banned | Replacement |
 |--------|-------------|
 | TypeScript | AffineScript (preferred) or ReScript |
+| Deno | Bun |
 | Node.js | Bun |
 | npm | Bun |
 | pnpm/yarn | Bun |
@@ -66,7 +67,7 @@ Both are FOSS with independent governance (no Big Tech).
 
 - **Primary**: Guix (guix.scm)
 - **Fallback**: Nix (flake.nix)
-- **JS deps**: Bun (`package.json` + `bun.lock`); `bunx <tool>` for one-off tooling
+- **JS deps**: Bun (`package.json` + `bun.lock`). Declare tooling as a devDependency and run `bunx --no-install --bun <tool>` — a bare `bunx <tool>` can fetch an unpinned package and may start Node via its shebang.
 
 ### Security Requirements
 
