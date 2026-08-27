@@ -25,13 +25,14 @@ The following files in `.machine_readable/` contain structured project metadata:
 |----------|----------|
 | **ReScript** | All library code (src/*.res, src/*.resi) |
 | **JavaScript** | Only compiled output (.res.js) - never hand-written |
-| **Deno** | Runtime and task runner |
+| **Bun** | Runtime and task runner |
 | **Guile Scheme** | Machine-readable metadata files |
 
 ### BANNED
 
-- TypeScript (use ReScript)
-- Node.js/npm/yarn/pnpm/bun (use Deno)
+- TypeScript (use AffineScript)
+- Deno (use Bun)
+- Node.js/npm/yarn/pnpm (use Bun)
 - Go, Python, Java, Kotlin, Swift
 
 ### Key Files
