@@ -29,7 +29,7 @@ This repository serves as a resource hub for:
 - Nickel (configuration)
 
 **BANNED:**
-- TypeScript (use ReScript)
+- TypeScript (use AffineScript)
 - Node.js (use Deno)
 - npm/bun (use Deno)
 - Makefile (use Justfile)

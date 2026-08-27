@@ -30,8 +30,9 @@ The following files in `.machine_readable/` contain structured project metadata:
 
 ### BANNED
 
-- TypeScript (use ReScript)
-- Node.js/npm/yarn/pnpm/bun (use Deno)
+- TypeScript (use AffineScript)
+- Deno (use Bun)
+- Node.js/npm/yarn/pnpm (use Bun)
 - Go, Python, Java, Kotlin, Swift
 
 ### Key Files
