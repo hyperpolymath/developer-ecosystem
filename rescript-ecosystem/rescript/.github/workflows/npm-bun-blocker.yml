@@ -10,10 +10,10 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Block npm/bun
+      - name: Block npm/pnpm/yarn lockfiles
         run: |
-          if [ -f "package-lock.json" ] || [ -f "bun.lockb" ] || [ -f ".npmrc" ]; then
-            echo "❌ npm/bun artifacts detected. Use Deno instead."
+          if [ -f "package-lock.json" ] || [ -f "pnpm-lock.yaml" ] || [ -f "yarn.lock" ] || [ -f ".npmrc" ]; then
+            echo "❌ npm/pnpm/yarn artifacts detected. Use Bun (package.json + bun.lock) instead."
             exit 1
           fi
-          echo "✅ No npm/bun violations"
+          echo "✅ No npm/pnpm/yarn violations"
