@@ -1,6 +1,6 @@
 ; SPDX-License-Identifier: MPL-2.0
 ;; guix.scm — GNU Guix package definition for idaptik-rescript13-staging
-;; Usage: guix shell -f guix.scm
+;; Usage: guix shell -f build/guix.scm
 
 (use-modules (guix packages)
              (guix build-system gnu)

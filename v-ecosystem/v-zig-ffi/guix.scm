@@ -4,8 +4,8 @@
 ;; Guix package definition for v-zig-ffi
 ;;
 ;; Usage:
-;;   guix shell -D -f guix.scm    # Enter development shell
-;;   guix build -f guix.scm       # Build package
+;;   guix shell -D -f build/guix.scm    # Enter development shell
+;;   guix build -f build/guix.scm       # Build package
 ;;
 ;; TODO: Replace v-zig-ffi and customize inputs for your language/stack.
 ;; See: https://guix.gnu.org/manual/en/html_node/Defining-Packages.html

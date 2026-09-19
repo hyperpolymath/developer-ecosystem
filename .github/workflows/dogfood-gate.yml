@@ -37,7 +37,7 @@ jobs:
           trap 'rm -rf "$control_dir"' EXIT
           touch "$control_dir/invalid.a2ml"
 
-          if output=$(INPUT_PATH="$control_dir" bash .githooks/validate-a2ml.sh 2>&1); then
+          if output=$(INPUT_PATH="$control_dir" bash .github/hooks/validate-a2ml.sh 2>&1); then
             echo "::error::A2ML validator accepted an empty manifest"
             exit 1
           fi
@@ -50,7 +50,7 @@ jobs:
           echo "A2ML negative control rejected as expected"
       - name: Validate A2ML manifests
         if: steps.detect.outputs.count > 0
-        run: bash .githooks/validate-a2ml.sh
+        run: bash .github/hooks/validate-a2ml.sh
       - name: Write summary
         run: |
           A2ML_COUNT="${{ steps.detect.outputs.count }}"
@@ -90,7 +90,7 @@ jobs:
           fi
       - name: Validate K9 contracts
         if: steps.detect.outputs.k9_count > 0
-        run: bash .githooks/validate-k9.sh
+        run: bash .github/hooks/validate-k9.sh
       - name: Write summary
         run: |
           K9_COUNT="${{ steps.detect.outputs.k9_count }}"

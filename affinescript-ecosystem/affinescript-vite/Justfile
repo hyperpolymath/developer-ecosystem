@@ -476,8 +476,8 @@ self-assess:
         echo "    → KEEP if others might build with Nix."
     fi
 
-    if [ -f "guix.scm" ] && ! command -v guix >/dev/null 2>&1; then
-        echo "  ○ guix.scm — Guix package. Safe to remove if you don't use Guix."
+    if [ -f "build/guix.scm" ] && ! command -v guix >/dev/null 2>&1; then
+        echo "  ○ build/guix.scm — Guix package. Safe to remove if you don't use Guix."
         echo "    → KEEP if others might build with Guix."
     fi
 
@@ -1182,11 +1182,11 @@ state-phase:
 
 # Enter Guix development shell (primary)
 guix-shell:
-    guix shell -D -f guix.scm
+    guix shell -D -f build/guix.scm
 
 # Build with Guix
 guix-build:
-    guix build -f guix.scm
+    guix build -f build/guix.scm
 
 # Enter Nix development shell (fallback)
 nix-shell:

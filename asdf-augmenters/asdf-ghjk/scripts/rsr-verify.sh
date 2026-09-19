@@ -141,7 +141,7 @@ section "Category 7: Build System"
 
 check "Build system exists" "[[ -f Makefile ]] || [[ -f Justfile ]] || [[ -f Justfile ]]"
 check "Justfile exists" "[[ -f Justfile ]]"
-check "Nix/Guix package definition exists" "[[ -f flake.nix ]] || [[ -f guix.scm ]] || [[ -f default.nix ]]"
+check "Nix/Guix package definition exists" "[[ -f flake.nix ]] || [[ -f build/guix.scm ]] || [[ -f default.nix ]]"
 check "Build system has test target" "grep -qi 'test' Makefile 2>/dev/null || grep -qi 'test' Justfile 2>/dev/null || grep -qi 'test' Justfile 2>/dev/null"
 check "Build system has lint target" "grep -qi 'lint' Makefile 2>/dev/null || grep -qi 'lint' Justfile 2>/dev/null || grep -qi 'lint' Justfile 2>/dev/null"
 check "Dev setup script exists" "[[ -f scripts/setup-dev.sh ]]"
