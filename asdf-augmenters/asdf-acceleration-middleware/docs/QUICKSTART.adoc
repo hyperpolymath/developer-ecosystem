@@ -267,7 +267,7 @@ chmod 700 ~/.cache/asdf-acceleration
 === Next Steps
 
 * Read link:ARCHITECTURE.md[Architecture Documentation]
-* Review link:../CONTRIBUTING.md[Contributing Guidelines]
+* Review link:../../../.github/CONTRIBUTING.md[Contributing Guidelines]
 * Explore link:../examples/[Example Configurations]
 * Join
 https://github.com/Hyperpolymath/asdf-acceleration-middleware/discussions[Discussions]

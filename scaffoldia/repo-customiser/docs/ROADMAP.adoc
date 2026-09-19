@@ -215,7 +215,7 @@ The RSR antipattern workflow automatically blocks:
 
 == Contributing
 
-See link:../CONTRIBUTING.md[CONTRIBUTING.md] for how to contribute to this roadmap.
+See link:../../../.github/CONTRIBUTING.md[CONTRIBUTING.md] for how to contribute to this roadmap.
 
 == References
 

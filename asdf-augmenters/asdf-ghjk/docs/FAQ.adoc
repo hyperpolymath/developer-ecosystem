@@ -297,7 +297,7 @@ Node.js, Python, Ruby, etc., all with asdf.
 
 ==== How can I contribute?
 
-See link:../CONTRIBUTING.md[CONTRIBUTING.md] for contribution
+See link:../../../.github/CONTRIBUTING.md[CONTRIBUTING.md] for contribution
 guidelines.
 
 ==== How do I test my changes?

@@ -204,7 +204,7 @@ TPCF is a component of RSR (Rhodium Standard Repository) compliance:
 === References
 
 * link:../CODE_OF_CONDUCT.md[Code of Conduct]
-* link:../CONTRIBUTING.md[Contributing Guidelines]
+* link:../../../.github/CONTRIBUTING.md[Contributing Guidelines]
 * link:../MAINTAINERS.md[Maintainers]
 * link:../SECURITY.md[Security Policy]
 * Palimpsest License: link:../LICENSE.txt[LICENSE.txt]

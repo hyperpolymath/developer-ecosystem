@@ -255,7 +255,7 @@ just --list
 |link:architecture.adoc[architecture.adoc]
 |Repository structure philosophy
 
-|link:CONTRIBUTING.md[CONTRIBUTING.md]
+|link:../../.github/CONTRIBUTING.md[CONTRIBUTING.md]
 |Contribution guidelines with perimeter model
 
 |link:SECURITY.md[SECURITY.md]

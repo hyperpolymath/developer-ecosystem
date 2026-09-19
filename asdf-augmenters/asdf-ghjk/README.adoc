@@ -371,7 +371,7 @@ shellcheck bin/* lib/*.sh
 
 == Contributing
 
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Contributions are welcome! Please see [CONTRIBUTING.md](../../.github/CONTRIBUTING.md) for guidelines.
 
 === Quick Start
 

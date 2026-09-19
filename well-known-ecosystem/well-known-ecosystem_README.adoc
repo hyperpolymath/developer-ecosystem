@@ -299,7 +299,7 @@ npm run coverage
 === Contributing
 
 Contributions are welcome! Please read our
-link:CONTRIBUTING.md[Contributing Guidelines] for details on: - Adding
+link:../.github/CONTRIBUTING.md[Contributing Guidelines] for details on: - Adding
 new well-known resource types - Improving validation logic - Framework
 integrations - Documentation improvements
 

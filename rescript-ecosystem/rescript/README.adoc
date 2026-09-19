@@ -77,9 +77,9 @@ Guide] for instructions on upgrading to newer ReScript versions.
 
 == 👏 How to Contribute
 
-=== link:CONTRIBUTING.md[Contributing Guide]
+=== link:../../.github/CONTRIBUTING.md[Contributing Guide]
 
-Read our link:CONTRIBUTING.md[Contributing Guide] to learn about our
+Read our link:../../.github/CONTRIBUTING.md[Contributing Guide] to learn about our
 development process, how to propose bugfixes and improvements, and how
 to build and test your changes to ReScript.
 

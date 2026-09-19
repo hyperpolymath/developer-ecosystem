@@ -199,7 +199,7 @@ deno task test
 
 == Contributing
 
-Contributions are welcome once implementation begins. See link:CONTRIBUTING.md[CONTRIBUTING.md] for guidelines.
+Contributions are welcome once implementation begins. See link:../../../../.github/CONTRIBUTING.md[CONTRIBUTING.md] for guidelines.
 
 The project uses a **perimeter-based contribution model**:
 
@@ -231,7 +231,7 @@ This project encourages (non-binding) adherence to the https://github.com/hyperp
 == Links
 
 * link:ROADMAP.adoc[Development Roadmap]
-* link:CONTRIBUTING.md[Contributing Guidelines]
+* link:../../../../.github/CONTRIBUTING.md[Contributing Guidelines]
 * link:SECURITY.md[Security Policy]
 * link:.claude/CLAUDE.md[Hyperpolymath Language Policy]
 
