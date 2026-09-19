@@ -62,7 +62,7 @@ dune install
 
 [source,bash]
 ----
-guix shell -f guix.scm
+guix shell -f build/guix.scm
 dune build
 ----
 
