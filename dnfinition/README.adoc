@@ -250,7 +250,7 @@ SPDX-License-Identifier: CC-BY-SA-4.0
 
 == Contributing
 
-Contributions are welcome! Please see link:CONTRIBUTING.md[CONTRIBUTING.md] for guidelines.
+Contributions are welcome! Please see link:../.github/CONTRIBUTING.md[CONTRIBUTING.md] for guidelines.
 
 == Roadmap
 

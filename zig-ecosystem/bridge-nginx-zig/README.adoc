@@ -111,7 +111,7 @@ See link:LICENSE.txt[LICENSE.txt] for details.
 
 == Contributing
 
-See link:CONTRIBUTING.md[CONTRIBUTING.md] for development setup and contribution guidelines.
+See link:../../.github/CONTRIBUTING.md[CONTRIBUTING.md] for development setup and contribution guidelines.
 
 == Security
 

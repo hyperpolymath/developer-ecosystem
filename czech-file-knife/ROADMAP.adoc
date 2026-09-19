@@ -164,7 +164,7 @@ This roadmap outlines the development plan for Czech File Knife (CFK), the cloud
 
 == Contributing
 
-See link:CONTRIBUTING.md[Contributing Guidelines] for how to contribute to Czech File Knife development.
+See link:../.github/CONTRIBUTING.md[Contributing Guidelines] for how to contribute to Czech File Knife development.
 
 == Versioning
 

@@ -120,7 +120,7 @@ just container-build   # Build verified OCI image
 
 == Documentation
 
-* link:CONTRIBUTING.md[Contributing Guide]
+* link:../../.github/CONTRIBUTING.md[Contributing Guide]
 * link:ROADMAP.adoc[Roadmap]
 * link:TOPOLOGY.md[Architecture Topology]
 * link:docs/[Technical Documentation]

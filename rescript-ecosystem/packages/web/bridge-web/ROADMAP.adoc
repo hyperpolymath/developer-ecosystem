@@ -274,7 +274,7 @@ This roadmap is a living document. To propose changes:
 3. Explain the rationale and any dependencies
 4. Discuss with maintainers
 
-See link:CONTRIBUTING.md[CONTRIBUTING.md] for general contribution guidelines.
+See link:../../../../.github/CONTRIBUTING.md[CONTRIBUTING.md] for general contribution guidelines.
 
 ---
 

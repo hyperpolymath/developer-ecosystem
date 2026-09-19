@@ -216,7 +216,7 @@ See link:docs/RSR_COMPLIANCE.md[RSR_COMPLIANCE.md] for full details.
 
 == Documentation
 
-* link:CONTRIBUTING.md[CONTRIBUTING.md] - How to contribute
+* link:../../../../.github/CONTRIBUTING.md[CONTRIBUTING.md] - How to contribute
 * link:CODE_OF_CONDUCT.md[CODE_OF_CONDUCT.md] - Community guidelines
 * link:SECURITY.md[SECURITY.md] - Security policies
 * link:CHANGELOG.md[CHANGELOG.md] - Version history
@@ -225,7 +225,7 @@ See link:docs/RSR_COMPLIANCE.md[RSR_COMPLIANCE.md] for full details.
 
 == Contributing
 
-We welcome contributions! See link:CONTRIBUTING.md[CONTRIBUTING.md] for:
+We welcome contributions! See link:../../../../.github/CONTRIBUTING.md[CONTRIBUTING.md] for:
 
 * Code of Conduct
 * Development setup

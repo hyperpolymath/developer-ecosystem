@@ -396,7 +396,7 @@ This library is part of the **ReScript Full Stack** ecosystem:
 
 == Contributing
 
-See link:CONTRIBUTING.md[CONTRIBUTING.md] for guidelines.
+See link:../../../../.github/CONTRIBUTING.md[CONTRIBUTING.md] for guidelines.
 
 == Licence
 
