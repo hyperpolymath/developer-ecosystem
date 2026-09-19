@@ -134,7 +134,7 @@ These are explicitly out of scope:
 
 == Contributing
 
-See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc] for how to propose features.
+See link:../../../../.github/CONTRIBUTING.md[../../../../.github/CONTRIBUTING.md] for how to propose features.
 
 Priority is given to:
 

@@ -103,7 +103,7 @@ ephapaxiser/
 ├── README.adoc                 # High-level orientation
 ├── ROADMAP.adoc                # Phase plan (0-6)
 ├── TOPOLOGY.md                 # Repository structure map
-├── CONTRIBUTING.adoc           # Human contribution guide
+├── ../../.github/CONTRIBUTING.md           # Human contribution guide
 ├── Justfile                    # Task runner
 ├── Containerfile               # OCI build (Chainguard base)
 ├── Cargo.toml                  # Rust package definition

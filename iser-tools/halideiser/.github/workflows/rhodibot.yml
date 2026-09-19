@@ -2,7 +2,7 @@
 # rhodibot.yml — Automated RSR compliance enforcement
 #
 # Reads root-hygiene rules and auto-fixes what it can:
-#   - Delete banned files (AI.djot, duplicate CONTRIBUTING.adoc, stale snapshots)
+#   - Delete banned files (AI.djot, duplicate ../../../../.github/CONTRIBUTING.md, stale snapshots)
 #   - Rename misnamed files (AI.a2ml → 0-AI-MANIFEST.a2ml)
 #   - Fix SPDX headers (AGPL → PMPL in dotfiles)
 #   - Create missing required files (SECURITY.md, CONTRIBUTING.md)
@@ -63,9 +63,9 @@ jobs:
           fi
 
           # --- 3. Delete duplicate format files ---
-          if [ -f "CONTRIBUTING.md" ] && [ -f "CONTRIBUTING.adoc" ]; then
-            rm CONTRIBUTING.adoc
-            FIXES="$FIXES\n- Deleted duplicate \`CONTRIBUTING.adoc\` (keeping .md for GitHub)"
+          if [ -f "CONTRIBUTING.md" ] && [ -f "../../../../.github/CONTRIBUTING.md" ]; then
+            rm ../../../../.github/CONTRIBUTING.md
+            FIXES="$FIXES\n- Deleted duplicate \`../../../../.github/CONTRIBUTING.md\` (keeping .md for GitHub)"
             CHANGED=true
           fi
 

@@ -26,7 +26,7 @@ echo "── Required RSR files ──"
 check "README.adoc present"            '[ -f README.adoc ]'
 check "LICENSE present"                '[ -f LICENSE ]'
 check "SECURITY.md present"            '[ -f SECURITY.md ]'
-check "CONTRIBUTING.adoc present"      '[ -f CONTRIBUTING.adoc ]'
+check "../../../.github/CONTRIBUTING.md present"      '[ -f ../../../.github/CONTRIBUTING.md ]'
 check "CODE_OF_CONDUCT.md present"     '[ -f CODE_OF_CONDUCT.md ]'
 check "CHANGELOG.adoc present"         '[ -f CHANGELOG.adoc ]'
 check "EXPLAINME.adoc present"         '[ -f EXPLAINME.adoc ]'

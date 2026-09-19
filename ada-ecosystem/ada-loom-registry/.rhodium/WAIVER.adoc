@@ -101,7 +101,7 @@ ada-loom-registry targets Rhodium Silver, not Gold. Gold-level documentation is 
 **Silver Requirements (Must Complete):**
 
 * ✅ README.adoc (from README.md conversion)
-* ✅ CONTRIBUTING.adoc
+* ✅ ../../../.github/CONTRIBUTING.md
 * ✅ ONBOARDING.adoc
 * ✅ ADR framework
 * ✅ REVERSIBILITY.adoc

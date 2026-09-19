@@ -68,4 +68,4 @@ Terminal user interface plugin for asdf version manager.
 
 == Contributing
 
-Contributions are welcome! See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc] for guidelines.
+Contributions are welcome! See link:../../../../.github/CONTRIBUTING.md[../../../../.github/CONTRIBUTING.md] for guidelines.

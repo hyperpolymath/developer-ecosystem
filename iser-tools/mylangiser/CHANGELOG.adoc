@@ -18,7 +18,7 @@ and this project adheres to https://semver.org/spec/v2.0.0.html[Semantic Version
 - Manifest parser for mylangiser.toml
 - Codegen engine stubs for layered API wrapper generation
 - Full RSR template (17 CI workflows, governance, bot directives)
-- Bespoke documentation: README.adoc, ROADMAP.adoc, CONTRIBUTING.adoc
+- Bespoke documentation: README.adoc, ROADMAP.adoc, ../../.github/CONTRIBUTING.md
 - RSR compliance sweep: STATE.a2ml updated, contractiles made bespoke, Intendfile added
 - CHANGELOG converted from Markdown to AsciiDoc
 

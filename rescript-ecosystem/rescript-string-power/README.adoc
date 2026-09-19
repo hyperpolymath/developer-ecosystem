@@ -485,4 +485,4 @@ See link:LICENSE[LICENSE] for the full text.
 GitHub: https://github.com/hyperpolymath/rescript-string-power
 
 Issues and pull requests welcome. Please use ReScript v13 syntax and
-UK English spelling in documentation. See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc].
+UK English spelling in documentation. See link:../../.github/CONTRIBUTING.md[../../.github/CONTRIBUTING.md].

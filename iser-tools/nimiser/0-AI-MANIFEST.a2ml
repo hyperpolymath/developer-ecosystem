@@ -99,7 +99,7 @@ nimiser/
 ├── README.adoc                 # Nim metaprogramming pipeline overview
 ├── ROADMAP.adoc                # Phase 0-6 with Nim-specific milestones
 ├── TOPOLOGY.md                 # Module dependency graph
-├── CONTRIBUTING.adoc           # Human contribution guide
+├── ../../.github/CONTRIBUTING.md           # Human contribution guide
 ├── Justfile                    # Task runner
 ├── Cargo.toml                  # Rust CLI build
 ├── Containerfile               # OCI build

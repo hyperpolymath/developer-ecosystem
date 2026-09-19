@@ -33,7 +33,7 @@ Run the full suite: `+just test+`.
 `+tests/validate_structure.sh+` asserts:
 
 * All required RSR files are present (README.adoc, LICENSE, SECURITY.md,
-CONTRIBUTING.adoc, CODE_OF_CONDUCT.md, CHANGELOG.adoc, EXPLAINME.adoc,
+../../.github/CONTRIBUTING.md, CODE_OF_CONDUCT.md, CHANGELOG.adoc, EXPLAINME.adoc,
 0-AI-MANIFEST.a2ml, READINESS.md, TEST-NEEDS.md,
 .well-known/security.txt, .github/FUNDING.yml,
 .github/workflows/ci.yml).

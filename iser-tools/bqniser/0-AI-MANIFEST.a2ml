@@ -87,7 +87,7 @@ bqniser/
 ├── 0-AI-MANIFEST.a2ml         # THIS FILE (start here)
 ├── README.adoc                 # What bqniser does, architecture, BQN primer
 ├── ROADMAP.adoc                # Phase 0-6 development plan
-├── CONTRIBUTING.adoc           # Contribution guide
+├── ../../.github/CONTRIBUTING.md           # Contribution guide
 ├── Cargo.toml                  # Rust CLI dependencies
 ├── Justfile                    # Task runner
 ├── Containerfile               # OCI build (Chainguard base)

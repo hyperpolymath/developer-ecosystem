@@ -435,4 +435,4 @@ See link:LICENSE.txt[LICENSE.txt] for full terms.
 
 == Contributing
 
-See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc] for guidelines.
+See link:../../../../.github/CONTRIBUTING.md[../../../../.github/CONTRIBUTING.md] for guidelines.

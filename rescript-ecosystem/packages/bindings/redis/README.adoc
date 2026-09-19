@@ -605,7 +605,7 @@ The https://github.com/hyperpolymath/rescript-full-stack[ReScript Full Stack] ec
 
 == Contributing
 
-See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc] for guidelines.
+See link:../../../../.github/CONTRIBUTING.md[../../../../.github/CONTRIBUTING.md] for guidelines.
 
 == Changelog
 

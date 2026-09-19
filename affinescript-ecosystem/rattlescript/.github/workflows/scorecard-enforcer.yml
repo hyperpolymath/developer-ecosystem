@@ -62,7 +62,7 @@ jobs:
           fi
       - name: Check CONTRIBUTING exists
         run: |
-          if [ ! -f "CONTRIBUTING.md" ] && [ ! -f "CONTRIBUTING.adoc" ]; then
+          if [ ! -f "CONTRIBUTING.md" ] && [ ! -f "../../../../.github/CONTRIBUTING.md" ]; then
             echo "::error::CONTRIBUTING file is required for OpenSSF Best Practices"
             exit 1
           fi

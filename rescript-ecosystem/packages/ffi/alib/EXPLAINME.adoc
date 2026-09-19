@@ -295,7 +295,7 @@ link:https://github.com/hyperpolymath/aggregate-library[`aggregate-library`] is 
 
 == Contributing
 
-See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc] for the full "No Tears" protocol.
+See link:../../../../.github/CONTRIBUTING.md[../../../../.github/CONTRIBUTING.md] for the full "No Tears" protocol.
 
 === What We Want
 

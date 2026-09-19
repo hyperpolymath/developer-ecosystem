@@ -34,7 +34,7 @@ Inventory snapshot at audit time:
 
 | Docs links used `.adoc` files not present
 | legacy `README.adoc` (pre-migration)
-| `CONTRIBUTING.adoc`, `GOVERNANCE.adoc`, `SECURITY.adoc`
+| `../../.github/CONTRIBUTING.md`, `GOVERNANCE.adoc`, `SECURITY.adoc`
 | outdated
 | Actual files are `CONTRIBUTING.md`, no root `GOVERNANCE.adoc`, `SECURITY.md`.
 | Fixed README links to existing files.

@@ -450,7 +450,7 @@ just lint
 
 == Contributing
 
-See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc] for guidelines.
+See link:../../../../.github/CONTRIBUTING.md[../../../../.github/CONTRIBUTING.md] for guidelines.
 
 * Sign all commits (DCO required)
 * Follow conventional commits

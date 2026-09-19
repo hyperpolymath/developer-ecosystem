@@ -113,7 +113,7 @@ Only 2 Markdown files to convert:
 Questions about AI usage:
 
 * Open an issue with label: `ai-transparency`
-* See CONTRIBUTING.adoc
+* See ../../.github/CONTRIBUTING.md
 
 ---
 

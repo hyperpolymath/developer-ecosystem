@@ -93,7 +93,7 @@
       (file "LICENSE.txt" #t "Dual MIT/PMPL-1.0-or-later")
       (file "SECURITY.md" #t "Security policy with SLA")
       (file "CODE_OF_CONDUCT.md" #t "Present")
-      (file "CONTRIBUTING.adoc" #t "Contribution guidelines")
+      (file "../.github/CONTRIBUTING.md" #t "Contribution guidelines")
       (file "FUNDING.yml" #t "Funding information")
       (file "GOVERNANCE.adoc" #t "Project governance")
       (file "MAINTAINERS.md" #t "Maintainer list")

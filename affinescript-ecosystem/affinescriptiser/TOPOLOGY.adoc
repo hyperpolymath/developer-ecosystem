@@ -14,7 +14,7 @@ and invariants
 
 |`+TOPOLOGY.md+` |This file — repository structure map
 
-|`+CONTRIBUTING.adoc+` |Contribution guide
+|`+../../.github/CONTRIBUTING.md+` |Contribution guide
 
 |`+SECURITY.md+` |Security policy
 

@@ -13,7 +13,7 @@ anvomidaviser/
 ├── Cargo.toml                       # Rust project manifest
 ├── Containerfile                    # OCI container build (Chainguard base)
 ├── contractile.just                 # Contractile task recipes
-├── CONTRIBUTING.adoc                # Contribution guide
+├── ../../.github/CONTRIBUTING.md                # Contribution guide
 ├── Justfile                         # Primary task runner
 ├── LICENSE                          # PMPL-1.0-or-later
 ├── README.adoc                      # Project overview

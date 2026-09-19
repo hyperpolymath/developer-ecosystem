@@ -181,7 +181,7 @@ All Redis operations return properly typed values:
 
 == Contributing
 
-See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc] for how to contribute to this roadmap.
+See link:../../../../.github/CONTRIBUTING.md[../../../../.github/CONTRIBUTING.md] for how to contribute to this roadmap.
 
 We welcome:
 

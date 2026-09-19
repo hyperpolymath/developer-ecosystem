@@ -293,7 +293,7 @@ PMPL-1.0-or-later
 
 == Contributing
 
-See CONTRIBUTING.adoc for guidelines.
+See ../../../../.github/CONTRIBUTING.md for guidelines.
 
 == OPSM Link
 

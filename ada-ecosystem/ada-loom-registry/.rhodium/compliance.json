@@ -132,7 +132,7 @@
         },
         "contributing_guide": {
           "status": "compliant",
-          "details": "CONTRIBUTING.adoc exists"
+          "details": "../../../.github/CONTRIBUTING.md exists"
         },
         "carbon_reporting": {
           "status": "planned",

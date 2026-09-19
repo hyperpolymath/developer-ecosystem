@@ -130,7 +130,7 @@ julianiser/
 ├── README.adoc                 # What julianiser does, supported patterns, architecture
 ├── ROADMAP.adoc                # Phase 0-6 development plan
 ├── TOPOLOGY.md                 # Module map and data flow
-├── CONTRIBUTING.adoc           # Human contribution guide
+├── ../../.github/CONTRIBUTING.md           # Human contribution guide
 ├── Justfile                    # Task runner
 ├── Containerfile               # OCI build
 ├── Cargo.toml                  # Rust dependencies

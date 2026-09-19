@@ -561,7 +561,7 @@ verify:
 
     check_either "SECURITY.md" "SECURITY.adoc"
     check_file "LICENSE"
-    check_either "CONTRIBUTING.md" "CONTRIBUTING.adoc"
+    check_either "CONTRIBUTING.md" "../../.github/CONTRIBUTING.md"
     check_either "README.adoc" "README.md"
     check_file ".machine_readable/STATE.a2ml"
     check_file ".machine_readable/META.a2ml"
