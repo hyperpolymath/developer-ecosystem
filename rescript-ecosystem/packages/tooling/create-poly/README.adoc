@@ -51,7 +51,7 @@ Generated projects include:
 
 == Documentation
 - link:ROADMAP.adoc[Project Roadmap]
-- link:CONTRIBUTING.adoc[Contribution Guidelines]
+- link:../../../../.github/CONTRIBUTING.md[Contribution Guidelines]
 - link:FUNDING.adoc[Funding & Sponsorship]
 - link:licences/[Licenses]
 

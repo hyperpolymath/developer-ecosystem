@@ -246,7 +246,7 @@ toc::[]
 
 == Contributing
 
-See `CONTRIBUTING.adoc` for guidelines on:
+See `../../../.github/CONTRIBUTING.md` for guidelines on:
 
 * Bug reports and feature requests
 * Pull request process

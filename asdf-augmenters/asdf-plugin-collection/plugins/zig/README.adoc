@@ -157,7 +157,7 @@ required.
 
 == Contributing
 
-See link:CONTRIBUTING.adoc[CONTRIBUTING] for guidelines.
+See link:../../../../.github/CONTRIBUTING.md[CONTRIBUTING] for guidelines.
 
 == License
 

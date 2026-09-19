@@ -373,7 +373,7 @@ language.
 
 == Contributing
 
-See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc] for guidelines. All contributions
+See link:../../.github/CONTRIBUTING.md[../../.github/CONTRIBUTING.md] for guidelines. All contributions
 must pass the full CI suite including Hypatia neurosymbolic scanning.
 
 == License

@@ -52,7 +52,7 @@ These are housekeeping items, not blockers.
 
 ### no-duplicate-contributing
 - description: Only one CONTRIBUTING format
-- run: "! (test -f CONTRIBUTING.md && test -f CONTRIBUTING.adoc)"
+- run: "! (test -f CONTRIBUTING.md && test -f ../../../../../.github/CONTRIBUTING.md)"
 - severity: warning
 
 ### no-duplicate-readme

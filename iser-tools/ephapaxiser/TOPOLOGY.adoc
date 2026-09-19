@@ -16,7 +16,7 @@ ephapaxiser/
 ├── ROADMAP.adoc                    # Phase plan (0-6)
 ├── TOPOLOGY.md                     # THIS FILE
 ├── SECURITY.md                     # Security policy
-├── CONTRIBUTING.adoc               # Contribution guide
+├── ../../.github/CONTRIBUTING.md               # Contribution guide
 ├── CHANGELOG.md                    # Release notes
 │
 ├── src/                            # Rust source code

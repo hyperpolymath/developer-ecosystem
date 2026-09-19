@@ -282,4 +282,4 @@ Operation
 
 * link:api-reference.adoc[API Reference]
 * link:../README.adoc[README]
-* link:../CONTRIBUTING.adoc[Contributing Guide]
+* link:../../../../../.github/CONTRIBUTING.md[Contributing Guide]

@@ -87,7 +87,7 @@ dafniser/
 ├── 0-AI-MANIFEST.a2ml         # THIS FILE (start here)
 ├── README.adoc                 # What dafniser does and why
 ├── ROADMAP.adoc                # Phase 0-6 roadmap
-├── CONTRIBUTING.adoc           # Human contribution guide
+├── ../../.github/CONTRIBUTING.md           # Human contribution guide
 ├── Justfile                    # Task runner
 ├── Containerfile               # OCI build (Chainguard base)
 ├── Cargo.toml                  # Rust CLI dependencies

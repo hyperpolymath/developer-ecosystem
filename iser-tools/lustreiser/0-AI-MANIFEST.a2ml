@@ -129,7 +129,7 @@ lustreiser/
 ├── 0-AI-MANIFEST.a2ml         # THIS FILE (start here)
 ├── README.adoc                 # High-level orientation (Rich Human)
 ├── ROADMAP.adoc                # Phased development plan
-├── CONTRIBUTING.adoc           # Human contribution guide
+├── ../../.github/CONTRIBUTING.md           # Human contribution guide
 ├── Justfile                    # Task runner
 ├── Containerfile               # OCI build
 ├── Cargo.toml                  # Rust dependencies

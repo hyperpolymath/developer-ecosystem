@@ -46,7 +46,7 @@ jobs:
           echo "LICENSE: OK"
       - name: Check CONTRIBUTING exists
         run: |
-          if [ ! -f "CONTRIBUTING.md" ] && [ ! -f "CONTRIBUTING.adoc" ]; then
+          if [ ! -f "CONTRIBUTING.md" ] && [ ! -f "../../../../.github/CONTRIBUTING.md" ]; then
             echo "::error::CONTRIBUTING file is required for OpenSSF Best Practices"
             exit 1
           fi
@@ -84,7 +84,7 @@ jobs:
 
           # Collect all required files that exist
           for f in SECURITY.md SECURITY.adoc .github/SECURITY.md LICENSE LICENSE.txt \
-                   CONTRIBUTING.md CONTRIBUTING.adoc README.md README.adoc \
+                   CONTRIBUTING.md ../../../../.github/CONTRIBUTING.md README.md README.adoc \
                    .machine_readable/STATE.a2ml .machine_readable/META.a2ml \
                    .machine_readable/ECOSYSTEM.a2ml CHANGELOG.md CHANGELOG.adoc; do
             [ -f "$f" ] && REQUIRED_FILES="$REQUIRED_FILES $f"

@@ -14,7 +14,7 @@ alloyiser/
 ├── ROADMAP.adoc                    # Phased implementation plan
 ├── TOPOLOGY.md                     # THIS FILE — repository map
 ├── CHANGELOG.md                    # Version history
-├── CONTRIBUTING.adoc               # Contribution guidelines
+├── ../../.github/CONTRIBUTING.md               # Contribution guidelines
 ├── SECURITY.md                     # Security policy
 │
 ├── src/                            # Rust source code

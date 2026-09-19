@@ -107,7 +107,7 @@ ponyiser/
 ├── 0-AI-MANIFEST.a2ml         # THIS FILE (start here)
 ├── README.adoc                 # High-level orientation (Rich Human)
 ├── ROADMAP.adoc                # Phased roadmap with Pony milestones
-├── CONTRIBUTING.adoc           # Human contribution guide
+├── ../../.github/CONTRIBUTING.md           # Human contribution guide
 ├── Justfile                    # Task runner
 ├── Cargo.toml                  # Rust CLI build
 ├── Containerfile               # OCI build

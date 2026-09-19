@@ -742,4 +742,4 @@ Supported methods:
 
 * link:architecture.adoc[Architecture Guide]
 * link:../README.adoc[README]
-* link:../CONTRIBUTING.adoc[Contributing]
+* link:../../../../../.github/CONTRIBUTING.md[Contributing]

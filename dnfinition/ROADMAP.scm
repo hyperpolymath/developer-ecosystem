@@ -351,7 +351,7 @@
       (deliverables
        ("Stress test suite"
         "Performance benchmarks"
-        "CONTRIBUTING.adoc"
+        "../.github/CONTRIBUTING.md"
         "CODE_OF_CONDUCT.adoc"))
 
       (blockers ("0.1.0 feature complete"))

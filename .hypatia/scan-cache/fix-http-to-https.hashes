@@ -48,7 +48,7 @@ fa6a3420e598f1dc17634d74e470e9302c9522f254d0348fed9206952331916e  rescript-ecosy
 80b6e585ae7e406e4d5197277376f7150c8ad1d13ace6d853e6c4d7d2b6fa7f1  rescript-ecosystem/cadre-router/tea-router/.github/workflows/guix-nix-policy.yml
 14ce67a51799e50d2ddd0fc122746782dfb2ce6f78eee59ee4dc653d86f52e52  rescript-ecosystem/packages/core/poly-core/src/PolyCore.res
 4bec44dea35f5c2600a55e32b79126c6133bea7329070f62575715a871dbce3b  rescript-ecosystem/packages/web/full-stack/contractiles/k9/README.adoc
-c7734a8a2489c3695b6120737eabd4cb1753ad75a33cc1a59d13e403025844b4  rescript-ecosystem/packages/core/poly-core/CONTRIBUTING.adoc
+c7734a8a2489c3695b6120737eabd4cb1753ad75a33cc1a59d13e403025844b4  rescript-ecosystem/packages/core/poly-core/../../.github/CONTRIBUTING.md
 16ec3496846aaf06c51b7f7670a3b90b85c222e7151b0fa2c8a1852ef7e4b39b  rescript-ecosystem/packages/web/tea/src/Tea.res
 ac540a5dcd66e6085ce61681ca4124acd8cbeae25b9c1dcc81929bc506670ed4  rescript-ecosystem/packages/web/http-server/.github/workflows/ts-blocker.yml
 29e66f6a1b157ddebc0531b8ddebecc6cd73595602f46bbf7fccf26913c19b05  rescript-ecosystem/packages/tooling/greasy-rescripter/.github/workflows/scorecard-enforcer.yml
@@ -199,11 +199,11 @@ a1bd22ab344d006d22acb6bd61428234300bd940c3caca0788495d13aacae4ca  rescript-ecosy
 8300a8536156fd53e716b0cddbdba28fb7e1d11b2145abca19bec74cdbf49854  rescript-ecosystem/packages/tooling/alib-for-rescript/.gitlab-ci.yml
 38d1ea673c098b105dde769844ac9910b95dad4a5e8633c363a53a98ddff048b  rescript-ecosystem/packages/tooling/alib-for-rescript/CONTRIBUTING.md
 6619200de99990cd10b8e885d49247af38a6edfde53ea1fa85f762ff28b16e57  rescript-ecosystem/packages/ffi/wasm-runtime/MAINTAINERS.md
-07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/packages/tooling/alib-interop/CONTRIBUTING.adoc
+07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/packages/tooling/alib-interop/../../.github/CONTRIBUTING.md
 0d88b0abb77102905dab20146fabf36dca248b7223a95953652d58020efaaf34  rescript-ecosystem/cadre-router/tea-router/.github/dependabot.yml
 4f72488a8813d5d65fce25c7c171166278a751e69d380aa9b5a04c588bdc5f50  rescript-ecosystem/packages/tooling/evangeliser/src/Narrative.res
 47c36345d4ff9f8a86c921bcdbbb403c0639e87cd5c752ac186e986b1b60787c  rescript-ecosystem/packages/tooling/alib-for-rescript/packages/common/Comparison.res
-07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/packages/tooling/alib-codemods/CONTRIBUTING.adoc
+07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/packages/tooling/alib-codemods/../../.github/CONTRIBUTING.md
 a78fb69c29d85552670df7702c75eb4b6648906697a0ecd1f06828c4e77b1bcf  rescript-ecosystem/rescript-vite/LICENSES/PMPL-1.0-or-later.txt
 4bec44dea35f5c2600a55e32b79126c6133bea7329070f62575715a871dbce3b  rescript-ecosystem/packages/bindings/postgres/contractiles/k9/README.adoc
 b74481386a47045577597c6b88a1447cea431817730b98eb69f5b92c947ec68d  rescript-ecosystem/packages/web/http-server/.github/workflows/jekyll.yml
@@ -289,7 +289,7 @@ d845d94f3331a6f0fc2a2f8490bd19c431448f1b6cbee86b37804cf6c120588f  ada-ecosystem/
 f2db79f524530670040be83b7bf72ba6ebc945c29a01599faf61083d2d040582  rescript-ecosystem/packages/tooling/create-poly/docs/CITATIONS.adoc
 80b6e585ae7e406e4d5197277376f7150c8ad1d13ace6d853e6c4d7d2b6fa7f1  rescript-ecosystem/packages/tooling/alib-codemods/.github/workflows/guix-nix-policy.yml
 bf6b6ff89746b260c20b96a019ac721f6afcead6b4737aa54f4edcf8c59f2349  rescript-ecosystem/packages/web/tea/GOVERNANCE.adoc
-07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/packages/ffi/wasm-runtime/CONTRIBUTING.adoc
+07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/packages/ffi/wasm-runtime/../../.github/CONTRIBUTING.md
 8d073f916200d5cbc67ac6df25252f67740b9c162fa68fc972cdc311c1ed40ea  coq-ecosystem/coq-jr/.github/FUNDING.yml
 1a2ffdd6451acb889279281c4b6c976fec95500433fe28e4484f0890efa78a1a  rescript-ecosystem/packages/web/http-server/STATE.adoc
 7e1e06f9dc594f9a8bbf7464ccbb16b697498f359f0b16e2d095f36b98585a36  rescript-ecosystem/packages/core/poly-core/README.adoc
@@ -332,7 +332,7 @@ dfc22ec3e7a007ccda6474178bbf64d59ca2ea9fb68af08a5a1b585d71112c18  rescript-ecosy
 45e9960c70243fed3a4478c873ab1e00acc322a67c763a1f3eca35d6ec19fc51  rescript-ecosystem/packages/core/poly-core/.github/workflows/hypatia-scan.yml
 6841e7284e3a267f2820e6979efcfb44306cefc1e6808420c61918e4f6face02  rescript-ecosystem/cadre-router/hooks/validate-permissions.sh
 8300a8536156fd53e716b0cddbdba28fb7e1d11b2145abca19bec74cdbf49854  rescript-ecosystem/packages/web/http-server/.gitlab-ci.yml
-07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/packages/tooling/greasy-rescripter/CONTRIBUTING.adoc
+07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/packages/tooling/greasy-rescripter/../../.github/CONTRIBUTING.md
 36c7f05f1aa4beda2e050f64e956237b93e203399573d7c48b35da58c97a0076  rescript-ecosystem/packages/tooling/create-poly/SECURITY.md
 bc9d7c004dc3bf8ac5a1c9f9de51ca67215fbd53f4727998c857dbb809f7af83  rescript-ecosystem/packages/tooling/alib-for-rescript/.github/workflows/npm-bun-blocker.yml
 7aa83fdf5c4f2be6a4fc01b500e81ee7dd21a8a0fa685d27b08232a603bba653  rescript-ecosystem/packages/tooling/alib-conformance/.github/dependabot.yml
@@ -408,7 +408,7 @@ efe0911920aca4eab74920c94f909be1b1e307e1547efad2194d3fe4aa389e08  rescript-ecosy
 ee58dd9f056176c8120959ae29f254d67c44ff65a12ce540fb77c909f122c004  rescript-ecosystem/packages/core/env/.github/ISSUE_TEMPLATE/question.md
 9d8189f32682c87c063464d1f8a32c7f26c8e1037b8b8c8ff2004798b9b210c2  rescript-ecosystem/packages/bindings/tauri/examples/opsm-shell/src-tauri/src/main.rs
 45e9960c70243fed3a4478c873ab1e00acc322a67c763a1f3eca35d6ec19fc51  rescript-ecosystem/cadre-tea-router/.github/workflows/hypatia-scan.yml
-a6cf39f84bc1fd8aa1f038fb706f65dd7197678fd019484482505f97bc1e5a3f  rescript-ecosystem/packages/bindings/redis/CONTRIBUTING.adoc
+a6cf39f84bc1fd8aa1f038fb706f65dd7197678fd019484482505f97bc1e5a3f  rescript-ecosystem/packages/bindings/redis/../../.github/CONTRIBUTING.md
 a062d66844de4e399924f13739309fcd6fa478edca7a6733ba2f9bdb85b9f45d  techstack-enforcer/.github/ISSUE_TEMPLATE/custom.md
 cca2ebc8e799ab6c31e1762ec874c8292d6454871a020d7585f8a18166c15d55  rescript-ecosystem/packages/tooling/alib-for-rescript/.github/workflows/scorecard.yml
 df1cb50faf96e4e421c42721256653771588675979361293120efc909138e1b8  rescript-ecosystem/packages/bindings/tauri/test/Tauri_Core_test.res
@@ -480,7 +480,7 @@ a9f1e734d13f341d4a2a58613b9f0e3ef17b7395ac3c43e61b8593c0bc27dd8d  rescript-ecosy
 bb29ce6e9fd1d30260b077f36e36acb4487777a616499f8ecc6eae8de0ce1f1f  techstack-enforcer/docs/cli-reference.md
 da8774ad19915a75cfe74d3462b5234244cdb47d21fe8efb7658f5651cf94008  rescript-ecosystem/packages/core/poly-core/.github/workflows/instant-sync.yml
 332be9ed89be31bb757d925897534450a3b85ea67ea469930d96a248c534c4f9  rescript-ecosystem/packages/tooling/greasy-rescripter/docs/CITATIONS.adoc
-07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/packages/core/env/CONTRIBUTING.adoc
+07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/packages/core/env/../../.github/CONTRIBUTING.md
 77a31bf35f40618dcb9704eb715b950b05c44302f2afe21f85bf47c7ccfedb9a  rescript-ecosystem/packages/bindings/openapi/.clusterfuzzlite/build.sh
 7afe36c476d31b554e949d43cd5cece7ddf2a4880da54f581be68ff125967249  coq-ecosystem/coq-jr/src/Deno.res
 61bcdd50a23c56de73cb3edd42370a4ec1524b15332c005e764d7119cb5de9fa  rescript-ecosystem/packages/bindings/tauri/examples/opsm-shell/src-tauri/tauri.conf.json
@@ -492,7 +492,7 @@ aa477fe53fdcacd9678388bbe3f313db1f6105720d03ad061e1f11dc197a5494  README.adoc
 cca2ebc8e799ab6c31e1762ec874c8292d6454871a020d7585f8a18166c15d55  rescript-ecosystem/cadre-tea-router/.github/workflows/scorecard.yml
 aa61aebd454b0c20e4003e5effa4ef5235ed840e54037920481ce46450471feb  coq-ecosystem/coq-jr/.github/ISSUE_TEMPLATE/documentation.md
 51c28435e750d93391668f84a05f4c6fdaeafe2d31aec379f31cdb6090aad30d  rescript-ecosystem/rescript-vite/.github/ISSUE_TEMPLATE/config.yml
-07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/cadre-tea-router/CONTRIBUTING.adoc
+07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/cadre-tea-router/../../.github/CONTRIBUTING.md
 332be9ed89be31bb757d925897534450a3b85ea67ea469930d96a248c534c4f9  rescript-ecosystem/packages/web/websocket/docs/CITATIONS.adoc
 d49f8597b574270f9169ede4ca6e6f3b0023e94f9afc2043d9425be34ea086e1  ada-ecosystem/ada-loom-registry/examples/SafeDOMExample.res
 900e054019472b269778f35b7b81945411bcfd3cc444526b4b7428de6946efc9  ABI-FFI-README.md
@@ -584,7 +584,7 @@ f3e843847726bf7f2dbffdafe0267f4e6a8c09f96ee6fa2bded9ae8d3565ad08  rescript-ecosy
 8300a8536156fd53e716b0cddbdba28fb7e1d11b2145abca19bec74cdbf49854  rescript-ecosystem/packages/tooling/alib-codemods/.gitlab-ci.yml
 9705e390a824e7cae3e7f819e8fd43ff93da285d2f5df5911a14c4a0abd93364  rescript-ecosystem/packages/bindings/grpc/runtime/src/WasmCodec.res
 1f984b0bacb0d4d19a9965c4db1107b013618bcbc97864066c93682cd80ffdf7  rescript-ecosystem/cadre-router/tea-router/src/CadreTeaRouter_Url.res
-07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/packages/tooling/alib-for-rescript/CONTRIBUTING.adoc
+07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/packages/tooling/alib-for-rescript/../../.github/CONTRIBUTING.md
 a9f1e734d13f341d4a2a58613b9f0e3ef17b7395ac3c43e61b8593c0bc27dd8d  rescript-ecosystem/packages/ffi/wasm-runtime/MAINTAINERS.adoc
 29e66f6a1b157ddebc0531b8ddebecc6cd73595602f46bbf7fccf26913c19b05  rescript-ecosystem/packages/web/websocket/.github/workflows/scorecard-enforcer.yml
 a062d66844de4e399924f13739309fcd6fa478edca7a6733ba2f9bdb85b9f45d  rescript-ecosystem/packages/web/tea/.github/ISSUE_TEMPLATE/custom.md
@@ -640,7 +640,7 @@ d1bd74163204871ea5ff0aa0017447e87c72b566c2004e4f652cb6b26fc46352  rescript-ecosy
 d49f8597b574270f9169ede4ca6e6f3b0023e94f9afc2043d9425be34ea086e1  rescript-ecosystem/packages/tooling/create-poly/examples/SafeDOMExample.res
 8952e786703ae9d9b0e81e979c012f395d3d1b2daa2fce67cb5c1e8efce38e68  rescript-ecosystem/packages/bindings/grpc/examples/basic/src/Example.res
 48971b83eaa02ce82a907691f3e0e377c412c2014688f37e082b264fffa879be  coq-ecosystem/coq-jr/.github/ISSUE_TEMPLATE/config.yml
-07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  coq-ecosystem/coq-jr/CONTRIBUTING.adoc
+07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  coq-ecosystem/coq-jr/../../.github/CONTRIBUTING.md
 27395f10cd25326d71d90965a11a59f88f8c18c3062cdc3751313b0d95c9e607  rescript-ecosystem/packages/web/dom-mounter/.github/workflows/codeql.yml
 4df0847d40124245dd2b11557ac5e7220365f8918fc524cd7c671209b560c1bf  rescript-ecosystem/packages/tooling/alib-for-rescript/CODE_OF_CONDUCT.md
 a9f1e734d13f341d4a2a58613b9f0e3ef17b7395ac3c43e61b8593c0bc27dd8d  coq-ecosystem/coq-jr/MAINTAINERS.adoc
@@ -656,7 +656,7 @@ c99377d63ce53b86e1cdb09734183eeed22aa413fd9fd06f97485bc3a6f5856e  rescript-ecosy
 1ea8a8a323863e1d7620bb5dae19038885299901adc9c400eface543af665f1e  rescript-ecosystem/packages/web/websocket/.github/workflows/quality.yml
 f81a13df0c9b8345276e8d6f6eabe1a98b85a671af051bb7b84836193914b9ad  rescript-ecosystem/cadre-tea-router/licenses/PALIMPSEST-NL.txt
 897e3a76a880b796363af66b072561402fcc2fb2ab433e28ee243fb8565d0ee9  coq-ecosystem/coq-jr/SECURITY.md
-179e2fd8123ea4bdd03ab11ae39f80897417a4002ab283d4f4af5405bb16136f  rescript-ecosystem/packages/web/websocket/CONTRIBUTING.adoc
+179e2fd8123ea4bdd03ab11ae39f80897417a4002ab283d4f4af5405bb16136f  rescript-ecosystem/packages/web/websocket/../../.github/CONTRIBUTING.md
 d1bd74163204871ea5ff0aa0017447e87c72b566c2004e4f652cb6b26fc46352  rescript-ecosystem/packages/tooling/alib-conformance/.github/workflows/security-policy.yml
 aa61aebd454b0c20e4003e5effa4ef5235ed840e54037920481ce46450471feb  rescript-ecosystem/packages/tooling/greasy-rescripter/.github/ISSUE_TEMPLATE/documentation.md
 ad10dc85bb86974ed38e2bb2154947df5f60d0bb91ffc2fff423e97e79f39c0f  rescript-ecosystem/packages/tooling/alib-interop/contractiles/README.adoc
@@ -681,7 +681,7 @@ dbc55529834d09d017e7a9be2a2ca7df565b4af53951cf5be3a2a1695d576a07  rescript-ecosy
 5919dbb54124479a111425bbf6848e26f777c8b5441389406b7f574a841b4032  rescript-ecosystem/packages/ffi/wasm-runtime/src/Server.res
 2992af6d77a166d294a7c58eea65d5f9694a14679debe938772037104290cd0d  rescript-ecosystem/packages/ffi/wasm-runtime/examples/graphql/main.res
 8300a8536156fd53e716b0cddbdba28fb7e1d11b2145abca19bec74cdbf49854  rescript-ecosystem/packages/bindings/postgres/.gitlab-ci.yml
-07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/cadre-router/tea-router/CONTRIBUTING.adoc
+07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/cadre-router/tea-router/../../.github/CONTRIBUTING.md
 a8e16c14b1fff9f4544ac802eff12c12a9c99d8de012159ed5fed2254579e20f  rescript-ecosystem/packages/web/http-server/CONTRIBUTING.md
 8ae456b7ddecf0f475ecdb2326b0b02052b06c3047559871c3e03cea4f2c4513  rescript-ecosystem/cadre-router/RSR_OUTLINE.adoc
 02aac82ccaeae7b9d89aa2975aa24a39ee4ffef6cfb45d94144075d4668e7830  rescript-ecosystem/packages/tooling/alib-for-rescript/README.adoc
@@ -740,7 +740,7 @@ b148ba48c84e70bb256a6d39cd6a72d81e6b155ba874e3b34e2187b96425761c  rescript-ecosy
 7f734c33f46b3db46ddf2045897d38adb139df19e07cbae6a1f2dd9726b03712  rescript-ecosystem/packages/tooling/alib-for-rescript/tests/String_test.res
 c0d69bd328680d8ca19b0d7205f2b471144b600f6c0c1161a602da7b14229465  rescript-ecosystem/packages/tooling/create-poly/CHANGELOG.adoc
 ad10dc85bb86974ed38e2bb2154947df5f60d0bb91ffc2fff423e97e79f39c0f  rescript-ecosystem/packages/tooling/alib-codemods/contractiles/README.adoc
-847549986734bb8fd14690b519f5b408dd41d1bd5cf605270ac1edec02e1c146  rescript-ecosystem/packages/web/tea/CONTRIBUTING.adoc
+847549986734bb8fd14690b519f5b408dd41d1bd5cf605270ac1edec02e1c146  rescript-ecosystem/packages/web/tea/../../.github/CONTRIBUTING.md
 8ae456b7ddecf0f475ecdb2326b0b02052b06c3047559871c3e03cea4f2c4513  rescript-ecosystem/packages/web/bridge-web/RSR_OUTLINE.adoc
 50aec0a38408421970b472c9bec39731eb5f8110af5d0f46d0ab922423ec2b51  rescript-ecosystem/packages/ffi/zig-ffi/.github/workflows/quality.yml
 28caee8f40caa563009715dd38402678c19c652aee332ceedb4bbfbc5535c157  rescript-ecosystem/packages/core/poly-core/STATE.adoc
@@ -776,7 +776,7 @@ f83b604f0701145646bfcbd361e72426d9ebea10e4f200469e4830da239859fe  rescript-ecosy
 e9d2610ca868abd017526c2868462ddce9445cb7659f3f34b5d5d1f642e587d8  rescript-ecosystem/packages/ffi/alib/ROADMAP.adoc
 91ffe40848455e87f330b8d26db0de31ed44433cae795e7e6065b299e858e3d6  rescript-ecosystem/cadre-router/docs/NAFA_MIGRATION_GUIDE.adoc
 c409ed118be53c1b43e18886fbc7d96fb7749338566858ce4476814892d44d52  coq-ecosystem/coq-jr/src/Dom.res
-6b40904c7055fd82e6b33ff68b680db40700fe8e0165f82c6b9685ac444cebff  CONTRIBUTING.adoc
+6b40904c7055fd82e6b33ff68b680db40700fe8e0165f82c6b9685ac444cebff  ../../.github/CONTRIBUTING.md
 27395f10cd25326d71d90965a11a59f88f8c18c3062cdc3751313b0d95c9e607  rescript-ecosystem/rescript-dom-mounter/.github/workflows/codeql.yml
 743a0aef9357d4b5a2ba89ee2c8d935ef777967689220205bacbdc9eeacc094f  rescript-ecosystem/packages/tooling/alib-for-rescript/examples/web-project-deno.json
 6421137efa5b6717bac9f60cd2f4f2c65a6561bbedf2454a93bf245e884f11cb  rescript-ecosystem/packages/core/runtime-tools/CODE_OF_CONDUCT.md
@@ -925,7 +925,7 @@ e6e9887a6e316aae3922f5716e4e8f04f7fb1764fd3a8de700e8ab060e113cc5  rescript-ecosy
 cee4a3b8760bbecabad16dc47b38b24e5f7fc4c2bc15d1d3431bebcdbe0c344b  ada-ecosystem/ada-loom-registry/PRIVACY.adoc
 c0b4460720174b0ed7d74d00758663fcf8b5d4c9f84bab423d2a53c681e2d881  rescript-ecosystem/cadre-router/tea-router/deno.json
 a1bd22ab344d006d22acb6bd61428234300bd940c3caca0788495d13aacae4ca  coq-ecosystem/coq-jr/.github/workflows/security-checks.yml
-cc6513aab4175307f6e9089fc4c33facb1c83a0adedba86fa76ce178fe15adf9  rescript-ecosystem/packages/tooling/create-poly/CONTRIBUTING.adoc
+cc6513aab4175307f6e9089fc4c33facb1c83a0adedba86fa76ce178fe15adf9  rescript-ecosystem/packages/tooling/create-poly/../../.github/CONTRIBUTING.md
 80b6e585ae7e406e4d5197277376f7150c8ad1d13ace6d853e6c4d7d2b6fa7f1  rescript-ecosystem/packages/tooling/alib-conformance/.github/workflows/guix-nix-policy.yml
 02998b560d7e8f185467cad3f7dbb4e781352dbc07ab5125bd5d2c13e6dbed52  .github/workflows/ts-blocker.yml
 4055112ba28cbe5fd05ed7952852044523a927b8d22d578f415f7c8a3e872c0e  rescript-ecosystem/packages/core/poly-core/.github/workflows/mirror.yml
@@ -970,7 +970,7 @@ ae8efc6de34979296cd1f202e49b60f184808a7ec10d31213b16fcbed6d59741  rescript-ecosy
 84449935bd50b70020f4c4cdebbed801a905c00ad5dc0f99624267563bcc7820  rescript-ecosystem/packages/ffi/wasm-runtime/CONTRIBUTING.md
 7cd1b4c70ef0f3594847d96d7d6d96b3d2b22ee469731188c4dce357c2801a3a  rescript-ecosystem/packages/core/early-return/docs/COST-BENEFIT.adoc
 0a9572710bdc24dbc2b4188d5531dafefd3a39e0628a913fb7c457196d772b33  rescript-ecosystem/packages/web/http-server/.github/ISSUE_TEMPLATE/feature_request.md
-6b40904c7055fd82e6b33ff68b680db40700fe8e0165f82c6b9685ac444cebff  techstack-enforcer/CONTRIBUTING.adoc
+6b40904c7055fd82e6b33ff68b680db40700fe8e0165f82c6b9685ac444cebff  techstack-enforcer/../../.github/CONTRIBUTING.md
 fc8889aa1aeb5cba9c1c9f3b5769ca68ff19298f10fa4b2a19d77d972b83e628  rescript-ecosystem/packages/web/http-server/.github/workflows/codeql.yml
 0a9572710bdc24dbc2b4188d5531dafefd3a39e0628a913fb7c457196d772b33  rescript-ecosystem/packages/core/poly-core/.github/ISSUE_TEMPLATE/feature_request.md
 4df0847d40124245dd2b11557ac5e7220365f8918fc524cd7c671209b560c1bf  rescript-ecosystem/rescript-vite/CODE_OF_CONDUCT.md
@@ -1031,7 +1031,7 @@ d1bd74163204871ea5ff0aa0017447e87c72b566c2004e4f652cb6b26fc46352  rescript-ecosy
 ac540a5dcd66e6085ce61681ca4124acd8cbeae25b9c1dcc81929bc506670ed4  rescript-ecosystem/packages/core/env/.github/workflows/ts-blocker.yml
 db9a5908f6425c9893c9a280c7b114f3161c1572243def11d8a727407399f5ec  rescript-ecosystem/cadre-tea-router/src/CadreTeaRouter_QueryParams.res
 dce1bb04cec38773ad7d842cd4d988989316a3305bfcffcfad2346802be6b171  ada-ecosystem/ada-loom-registry/.github/workflows/scorecard-enforcer.yml
-07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/cadre-router/CONTRIBUTING.adoc
+07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/cadre-router/../../.github/CONTRIBUTING.md
 3d6cc93a424c1d4c6488b566b7c571fdedc50bd3775860eb0244414b7026d471  rescript-ecosystem/packages/ffi/wasm-bridge/.github/ISSUE_TEMPLATE/bug_report.md
 fc8889aa1aeb5cba9c1c9f3b5769ca68ff19298f10fa4b2a19d77d972b83e628  rescript-ecosystem/packages/core/poly-core/.github/workflows/codeql.yml
 45e9960c70243fed3a4478c873ab1e00acc322a67c763a1f3eca35d6ec19fc51  techstack-enforcer/.github/workflows/hypatia-scan.yml
@@ -1057,7 +1057,7 @@ b74481386a47045577597c6b88a1447cea431817730b98eb69f5b92c947ec68d  rescript-ecosy
 d0d245ede3d0b7837400b1be7e4a1d999a428c926fcd9bcb79c8c949f0ee7eac  rescript-ecosystem/packages/core/poly-core/rescript.json
 ec6ec8709d489feb42710c74180de4b70fe45d362683febe08e47a1b92e7b25a  rescript-ecosystem/cadre-router/src/client/CadreRouter.res
 a062d66844de4e399924f13739309fcd6fa478edca7a6733ba2f9bdb85b9f45d  rescript-ecosystem/packages/tooling/alib-codemods/.github/ISSUE_TEMPLATE/custom.md
-07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/packages/web/http-server/CONTRIBUTING.adoc
+07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/packages/web/http-server/../../.github/CONTRIBUTING.md
 483f2c95b677225911b4dbd9a0c796857a607a5ccf2cd5cd76025ac4ed65d2d5  rescript-ecosystem/packages/web/http-server/.github/workflows/jekyll-gh-pages.yml
 dacc6e84cecb8f5975232ec706f1ab1b5d08cf8cf47358349c7b80ef5e198733  rescript-ecosystem/packages/ffi/alib/deno.json
 16cd55956146c4de4da73ffef66d2c1d8ed38e8ef63236ee94c8ce187244e368  rescript-ecosystem/rescript-vite/.devcontainer/README.adoc
@@ -1082,7 +1082,7 @@ ac540a5dcd66e6085ce61681ca4124acd8cbeae25b9c1dcc81929bc506670ed4  rescript-ecosy
 a78fb69c29d85552670df7702c75eb4b6648906697a0ecd1f06828c4e77b1bcf  rescript-ecosystem/packages/bindings/redis/LICENSE.txt
 8bc039ddcde838b929322ffb36afd61d38a4441ce1c3ba8ef75beb2a770890cd  rescript-ecosystem/cadre-router/tea-router/.github/workflows/wellknown-enforcement.yml
 8d073f916200d5cbc67ac6df25252f67740b9c162fa68fc972cdc311c1ed40ea  rescript-ecosystem/packages/web/http-server/.github/FUNDING.yml
-07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/packages/tooling/alib-conformance/CONTRIBUTING.adoc
+07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/packages/tooling/alib-conformance/../../.github/CONTRIBUTING.md
 1b8f7050d61e0d70875d203cf747850883bed4936a21c7413ec3cf0d6c355f07  rescript-ecosystem/packages/core/env/.well-known/security.txt
 8300a8536156fd53e716b0cddbdba28fb7e1d11b2145abca19bec74cdbf49854  rescript-ecosystem/packages/tooling/alib-interop/.gitlab-ci.yml
 1157212b3aa959cd5b6a9bc2486110e5676aae974b8713a98b0fdf606a7df83b  rescript-ecosystem/cadre-router/tea-router/README.adoc
@@ -1164,13 +1164,13 @@ ac540a5dcd66e6085ce61681ca4124acd8cbeae25b9c1dcc81929bc506670ed4  rescript-ecosy
 ad10dc85bb86974ed38e2bb2154947df5f60d0bb91ffc2fff423e97e79f39c0f  rescript-ecosystem/rescript-dom-mounter/contractiles/README.adoc
 9af88e2836ce16af43c59542eca7a9270dfbfaaa8bc9a3a92d8e357d11a869c3  rescript-ecosystem/rescript-dom-mounter/README.adoc
 45e9960c70243fed3a4478c873ab1e00acc322a67c763a1f3eca35d6ec19fc51  rescript-ecosystem/packages/core/runtime-tools/.github/workflows/hypatia-scan.yml
-07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/packages/bindings/postgres/CONTRIBUTING.adoc
+07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/packages/bindings/postgres/../../.github/CONTRIBUTING.md
 93ba7ce62bd3f9dd54049cb8c2e709d7bc9756899e1c80aed35a6a0ae6c8d985  rescript-ecosystem/rescript-vite/.github/copilot-instructions.md
 d38bf6fcc6064aca3db062354deb0adbdcd6574194a3b809ce92b32a60b03f75  .github/workflows/quality.yml
 821394fb6fcd90346d698568d90bb66cf72cc9eeb0f1f771f6de9810cdb353e5  rescript-ecosystem/rescript-dom-mounter/src/Core/SafeDOMCore.res
 ed248f0eec236ede38475b37c2a9fa9c85658ff02fffd8d3d711f56ec996d1dd  rescript-ecosystem/packages/tooling/evangeliser/CODE_OF_CONDUCT.md
 8450969ec561830535ba7546326930a948a0b1b5649c4d1d8b71a026612daa32  rescript-ecosystem/packages/ffi/alib/src/Compat/Alib_Compat_Belt.res
-07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/packages/core/early-return/CONTRIBUTING.adoc
+07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/packages/core/early-return/../../.github/CONTRIBUTING.md
 75cc4f34f1cba25000c736ec2e160b07e996ed221e3fd7ed83b19d77401df9eb  rescript-ecosystem/packages/web/bridge-web/ROADMAP.adoc
 ee58dd9f056176c8120959ae29f254d67c44ff65a12ce540fb77c909f122c004  rescript-ecosystem/packages/tooling/alib-codemods/.github/ISSUE_TEMPLATE/question.md
 fe0fb8ce41314fe9fc7a4dbfa66087f46597fa87f6108574754eb59456de2aa0  rescript-ecosystem/packages/bindings/openapi/src/codegen/client.rs
@@ -1258,7 +1258,7 @@ a062d66844de4e399924f13739309fcd6fa478edca7a6733ba2f9bdb85b9f45d  rescript-ecosy
 ee58dd9f056176c8120959ae29f254d67c44ff65a12ce540fb77c909f122c004  rescript-ecosystem/packages/tooling/alib-conformance/.github/ISSUE_TEMPLATE/question.md
 b148ba48c84e70bb256a6d39cd6a72d81e6b155ba874e3b34e2187b96425761c  rescript-ecosystem/cadre-router/tea-router/PALIMPSEST.adoc
 fa9b7886ebb58494a9c05fafe5323382ab11924037a4a12725d5c5ad58e01c68  rescript-ecosystem/rescript-vite/MAINTAINERS.md
-07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/packages/tooling/evangeliser/CONTRIBUTING.adoc
+07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/packages/tooling/evangeliser/../../.github/CONTRIBUTING.md
 cd0bf73efacd99915b82aa2d36659d377c43ff839b7f406af7917a653a667bdb  rescript-ecosystem/rescript-vite/examples/web-project-deno.json
 ac540a5dcd66e6085ce61681ca4124acd8cbeae25b9c1dcc81929bc506670ed4  rescript-ecosystem/cadre-router/.github/workflows/ts-blocker.yml
 ad10dc85bb86974ed38e2bb2154947df5f60d0bb91ffc2fff423e97e79f39c0f  contractiles/README.adoc
@@ -1493,7 +1493,7 @@ cc552879117aa819c7c2bfb5bc4d4482a97aa45cdd3bdd0cf3910dc551013c62  license/PMPL-1
 aa9b7433fc893cee9f05e3e3a02e964e65371865ba9d2acdac7177bac38a971b  rescript-ecosystem/cadre-router/src/client/HashNavigation.res
 a78fb69c29d85552670df7702c75eb4b6648906697a0ecd1f06828c4e77b1bcf  coq-ecosystem/coq-jr/LICENSE.txt
 e82ea6e7c67209800d3758436a1a7b24ff054edb9b9f7580fd70767990b00448  ada-ecosystem/ada-loom-registry/docs/adr/0001-adopt-rhodium-standard.adoc
-3ca7dc91a2248ccc1a61cc6b2db2f2874b86b190ae01e258275528f418921df7  ada-ecosystem/ada-loom-registry/CONTRIBUTING.adoc
+3ca7dc91a2248ccc1a61cc6b2db2f2874b86b190ae01e258275528f418921df7  ada-ecosystem/ada-loom-registry/../../.github/CONTRIBUTING.md
 4df0847d40124245dd2b11557ac5e7220365f8918fc524cd7c671209b560c1bf  rescript-ecosystem/packages/tooling/alib-interop/CODE_OF_CONDUCT.md
 05e0f17a9f5cdc917d6eb555142071e2e9e843a796dc5996a11653ecf107ac5d  rescript-ecosystem/packages/core/env/.github/workflows/wellknown-enforcement.yml
 e83149637372c9e2b3e01776ddedb02706dee1e13782daef16ed8a4760f510e0  rescript-ecosystem/packages/bindings/grpc/runtime/src/Message.res
@@ -1518,7 +1518,7 @@ ad10dc85bb86974ed38e2bb2154947df5f60d0bb91ffc2fff423e97e79f39c0f  rescript-ecosy
 45e9960c70243fed3a4478c873ab1e00acc322a67c763a1f3eca35d6ec19fc51  rescript-ecosystem/packages/tooling/alib-codemods/.github/workflows/hypatia-scan.yml
 7a1b051c81185603172e535ef99db0719df3e7344ec7fdf12cc0f3fb494c5c68  rescript-ecosystem/packages/ffi/wasm-bridge/.github/workflows/rsr-antipattern.yml
 1083f73954099a4bdae01fe3b23b01d7585e0dd3907d29cb5dfead3cc73f5513  rescript-ecosystem/packages/ffi/wasm-runtime/src/Vdom.res
-07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/packages/web/bridge-web/CONTRIBUTING.adoc
+07efd5aa99ec74c71ff2dc7ab4a2712d2a4bf7846c4a30ec0842527a0ea44be7  rescript-ecosystem/packages/web/bridge-web/../../.github/CONTRIBUTING.md
 193926f7320c66a01363394bfe38740c30df601f8675d86be0576bb83e8b1dee  rescript-ecosystem/packages/bindings/openapi/.github/workflows/cflite_batch.yml
 cc552879117aa819c7c2bfb5bc4d4482a97aa45cdd3bdd0cf3910dc551013c62  techstack-enforcer/license/PMPL-1.0.txt
 36c7f05f1aa4beda2e050f64e956237b93e203399573d7c48b35da58c97a0076  rescript-ecosystem/packages/tooling/alib-interop/SECURITY.md

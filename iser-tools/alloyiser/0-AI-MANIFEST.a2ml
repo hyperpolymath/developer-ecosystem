@@ -90,7 +90,7 @@ alloyiser/
 ├── 0-AI-MANIFEST.a2ml         # THIS FILE (start here)
 ├── README.adoc                 # High-level orientation (Rich Human)
 ├── ROADMAP.adoc                # Future direction
-├── CONTRIBUTING.adoc           # Human contribution guide
+├── ../../.github/CONTRIBUTING.md           # Human contribution guide
 ├── GOVERNANCE.adoc             # Decision-making model
 ├── Justfile                    # Task runner
 ├── Containerfile               # OCI build

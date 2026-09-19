@@ -83,7 +83,7 @@ iseriser/
 ├── 0-AI-MANIFEST.a2ml         # THIS FILE (start here)
 ├── README.adoc                 # What iseriser does, architecture, -iser family table
 ├── ROADMAP.adoc                # Phase 0-6 roadmap
-├── CONTRIBUTING.adoc           # Human contribution guide
+├── ../../.github/CONTRIBUTING.md           # Human contribution guide
 ├── Cargo.toml                  # Rust CLI project (clap, serde, handlebars, etc.)
 ├── Justfile                    # Task runner
 ├── Containerfile               # OCI build (Chainguard base)

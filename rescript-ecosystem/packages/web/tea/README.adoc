@@ -400,7 +400,7 @@ This project is dual-licensed under:
 * link:LICENSE.txt[Palimpsest-MPL-1.0 License]
 * link:LICENSE-PALIMPSEST.txt[Palimpsest License v0.8]
 
-See link:CONTRIBUTING.adoc[CONTRIBUTING] for details on how to contribute.
+See link:../../../../.github/CONTRIBUTING.md[CONTRIBUTING] for details on how to contribute.
 
 == RSR Compliance
 

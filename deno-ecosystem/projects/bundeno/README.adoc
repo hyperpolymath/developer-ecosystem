@@ -163,7 +163,7 @@ See link:ROADMAP.adoc[ROADMAP.adoc] for planned features.
 
 == Contributing
 
-See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc] for guidelines.
+See link:../../../.github/CONTRIBUTING.md[../../../.github/CONTRIBUTING.md] for guidelines.
 
 == License
 

@@ -113,7 +113,7 @@ eclexiaiser/
 ├── README.adoc                 # High-level orientation (Rich Human)
 ├── ROADMAP.adoc                # Phase 0-6 roadmap
 ├── TOPOLOGY.md                 # Module map and data flow
-├── CONTRIBUTING.adoc           # Human contribution guide
+├── ../../.github/CONTRIBUTING.md           # Human contribution guide
 ├── GOVERNANCE.adoc             # Decision-making model
 ├── Justfile                    # Task runner
 ├── Cargo.toml                  # Rust CLI build

@@ -40,7 +40,7 @@ jobs:
           MISSING=""
           [ ! -f "README.md" ] && [ ! -f "README.adoc" ] && MISSING="$MISSING README"
           [ ! -f "LICENSE" ] && [ ! -f "LICENSE.txt" ] && [ ! -f "LICENSE.md" ] && MISSING="$MISSING LICENSE"
-          [ ! -f "CONTRIBUTING.md" ] && [ ! -f "CONTRIBUTING.adoc" ] && MISSING="$MISSING CONTRIBUTING"
+          [ ! -f "CONTRIBUTING.md" ] && [ ! -f "../../../../../../.github/CONTRIBUTING.md" ] && MISSING="$MISSING CONTRIBUTING"
 
           if [ -n "$MISSING" ]; then
             echo "::warning::Missing docs:$MISSING"

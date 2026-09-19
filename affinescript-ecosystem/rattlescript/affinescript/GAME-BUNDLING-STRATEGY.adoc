@@ -408,7 +408,7 @@ Full license texts:
 - PMPL-1.0: https://github.com/hyperpolymath/palimpsest-license
 ----
 
-==== 3. CONTRIBUTING.adoc
+==== 3. ../../../.github/CONTRIBUTING.md
 
 [source,markdown]
 ----

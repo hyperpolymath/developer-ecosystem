@@ -68,7 +68,7 @@ asdf uninstall openssh <version>
 
 === Contributing
 
-Contributions welcome! Read the link:CONTRIBUTING.adoc[contributing
+Contributions welcome! Read the link:../../../../.github/CONTRIBUTING.md[contributing
 guidelines] first.
 
 === License

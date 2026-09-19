@@ -139,7 +139,7 @@ We welcome community input on the roadmap:
 2. **Priority feedback** - Comment on existing roadmap issues
 3. **Implementation** - PRs welcome for any roadmap item
 
-See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc] for contribution guidelines.
+See link:../../../../.github/CONTRIBUTING.md[../../../../.github/CONTRIBUTING.md] for contribution guidelines.
 
 == Related Projects
 

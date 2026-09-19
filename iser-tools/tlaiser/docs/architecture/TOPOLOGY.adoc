@@ -19,7 +19,7 @@ tlaiser/
 ├── README.adoc                     # Human-readable orientation
 ├── ROADMAP.adoc                    # Phased development plan
 ├── SECURITY.md                     # Security policy
-├── CONTRIBUTING.adoc               # Contribution guide
+├── ../../../../.github/CONTRIBUTING.md               # Contribution guide
 ├── LICENSE                         # PMPL-1.0-or-later
 │
 ├── src/                            # Rust source code

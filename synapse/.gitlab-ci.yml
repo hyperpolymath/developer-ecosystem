@@ -94,7 +94,7 @@ validate:rsr:
   script:
     - |
       echo "Checking RSR Gold compliance..."
-      for f in README.md LICENSE.txt SECURITY.md CODE_OF_CONDUCT.md CONTRIBUTING.adoc \
+      for f in README.md LICENSE.txt SECURITY.md CODE_OF_CONDUCT.md ../.github/CONTRIBUTING.md \
                FUNDING.yml GOVERNANCE.adoc MAINTAINERS.md .gitignore .gitattributes \
                REVERSIBILITY.md CHANGELOG.md ROADMAP.md CLAUDE.md; do
         if [ ! -f "$f" ]; then

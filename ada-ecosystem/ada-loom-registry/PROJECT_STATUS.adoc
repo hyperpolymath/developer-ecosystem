@@ -252,14 +252,14 @@ cabal build --with-ghc wasm32-wasi-ghc
 **Documentation:** All Rhodium Silver docs complete
 * SECURITY.adoc (includes package registry security - may need revision if not a registry)
 * PRIVACY.adoc (includes package registry privacy - may need revision if not a registry)
-* CONTRIBUTING.adoc, TESTING.adoc (Haskell, Hspec, QuickCheck)
+* ../../.github/CONTRIBUTING.md, TESTING.adoc (Haskell, Hspec, QuickCheck)
 * CI_CD.adoc (Haskell CI)
 * WASM_STATUS.adoc (✅ Ready)
 
 **Community:**
 * Repository: `https://github.com/hyperpolymath/ada-loom-registry`
 * License: PMPL-1.0
-* Contact: See CONTRIBUTING.adoc
+* Contact: See ../../.github/CONTRIBUTING.md
 
 **Recommendation:** Rename repository to match actual purpose
 

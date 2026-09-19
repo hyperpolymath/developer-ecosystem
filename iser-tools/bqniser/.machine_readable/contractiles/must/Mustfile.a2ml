@@ -30,8 +30,8 @@ These are hard requirements — CI fails if any check fails.
 - severity: critical
 
 ### contributing
-- description: CONTRIBUTING.adoc must exist
-- run: test -f CONTRIBUTING.adoc || test -f CONTRIBUTING.md
+- description: ../../../../../.github/CONTRIBUTING.md must exist
+- run: test -f ../../../../../.github/CONTRIBUTING.md || test -f CONTRIBUTING.md
 - severity: warning
 
 ### editorconfig

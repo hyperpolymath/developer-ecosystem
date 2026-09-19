@@ -215,7 +215,7 @@ These are explicitly out of scope:
 
 == Contributing
 
-See link:CONTRIBUTING.adoc[CONTRIBUTING.adoc] for how to contribute to the roadmap.
+See link:../../../../.github/CONTRIBUTING.md[../../../../.github/CONTRIBUTING.md] for how to contribute to the roadmap.
 
 Feature requests and feedback are welcome via https://github.com/hyperpolymath/rescript-poly-core/issues[GitHub Issues].
 

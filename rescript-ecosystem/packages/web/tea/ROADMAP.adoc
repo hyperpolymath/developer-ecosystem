@@ -179,7 +179,7 @@ Declarative animations:
 
 == Contributing to the Roadmap
 
-See link:CONTRIBUTING.adoc[CONTRIBUTING] for how to propose changes.
+See link:../../../../.github/CONTRIBUTING.md[CONTRIBUTING] for how to propose changes.
 
 Priority is determined by:
 1. User demand (issues, discussions)

@@ -98,7 +98,7 @@ atsiser/
 ├── README.adoc                 # What atsiser does, architecture, CLI commands
 ├── ROADMAP.adoc                # 7-phase roadmap (C analysis → ATS2 generation → proofs)
 ├── TOPOLOGY.md                 # Module map and data flow diagram
-├── CONTRIBUTING.adoc           # Human contribution guide
+├── ../../.github/CONTRIBUTING.md           # Human contribution guide
 ├── GOVERNANCE.adoc             # Decision-making model
 ├── Justfile                    # Task runner
 ├── Containerfile               # OCI build (Chainguard base)

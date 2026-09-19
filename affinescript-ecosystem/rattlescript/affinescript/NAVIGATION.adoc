@@ -51,7 +51,7 @@ This guide helps you navigate the AffineScript repository structure.
 
 **Governance documents:**
 
-* link:docs/governance/CONTRIBUTING.adoc[Contributing Guide] - How to contribute
+* link:docs/governance/../../../.github/CONTRIBUTING.md[Contributing Guide] - How to contribute
 * link:docs/governance/CODE_OF_CONDUCT.md[Code of Conduct] - Community standards
 * link:docs/governance/SECURITY.md[Security Policy] - Reporting vulnerabilities
 * link:docs/governance/MAINTAINERS.adoc[Maintainers] - Project maintainers
@@ -140,7 +140,7 @@ just fmt             # Format code
 
 === Contributing
 
-1. Read link:docs/governance/CONTRIBUTING.adoc[Contributing Guide]
+1. Read link:docs/governance/../../../.github/CONTRIBUTING.md[Contributing Guide]
 2. Check link:docs/governance/CODE_OF_CONDUCT.md[Code of Conduct]
 3. Review link:docs/standards/DECISIONS.md[Architecture Decisions]
 4. Follow link:docs/standards/ROADMAP.md[Development Roadmap]

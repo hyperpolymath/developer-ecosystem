@@ -174,7 +174,7 @@ The parser correctly:
 |LICENSE.txt|YES|Dual MIT/PMPL-1.0-or-later
 |SECURITY.md|YES|Security policy with SLA
 |CODE_OF_CONDUCT.md|YES|Present
-|CONTRIBUTING.adoc|YES|Contribution guidelines
+|../.github/CONTRIBUTING.md|YES|Contribution guidelines
 |FUNDING.yml|YES|Funding information
 |GOVERNANCE.adoc|YES|Project governance
 |MAINTAINERS.md|YES|Maintainer list
