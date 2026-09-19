@@ -141,7 +141,7 @@ jobs:
           cd extension
           npx vsce package
       - name: Upload VSIX artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5  # v3
         with:
           name: nextgen-languages-evangeliser-vsix
           path: extension/*.vsix
@@ -205,7 +205,7 @@ jobs:
           cd extension
           npx vsce package
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844  # v1
         with:
           files: extension/*.vsix
           generate_release_notes: true
