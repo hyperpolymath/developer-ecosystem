@@ -50,13 +50,6 @@ jobs:
         run: |
           cd extension
           npm run test:coverage
-      - name: Upload coverage to Codecov
-        if: matrix.os == 'ubuntu-latest'
-        uses: codecov/codecov-action@ab904c41d6ece82784817410c45d8b8c02684457  # v3
-        with:
-          files: ./extension/coverage/lcov.info
-          flags: unittests
-          name: codecov-umbrella
   security:
     name: Security Audit
     runs-on: ubuntu-latest
