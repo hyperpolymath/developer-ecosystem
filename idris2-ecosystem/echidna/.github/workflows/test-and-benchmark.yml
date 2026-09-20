@@ -62,7 +62,7 @@ jobs:
           mkdir -p benchmark-results
           idris2 --exec bench/VocabularyBench.idr > benchmark-results/$(date +%Y%m%d-%H%M%S).txt
       - name: Upload benchmark results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5  # v3
         with:
           name: benchmark-results
           path: /var/mnt/eclipse/repos/developer-ecosystem/idris2-ecosystem/echidna/benchmark-results/
@@ -74,7 +74,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - name: Download benchmark results
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a  # v3
         with:
           name: benchmark-results
       - name: Analyze regression

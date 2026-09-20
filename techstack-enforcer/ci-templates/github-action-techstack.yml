@@ -43,16 +43,16 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
 
       - name: Checkout techstack-enforcer
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
         with:
           repository: ${{ env.TECHSTACK_REPO }}
           path: techstack-enforcer
 
       - name: Setup Ada/GNAT
-        uses: alire-project/setup-alire@v3
+        uses: alire-project/setup-alire@b607671067a8ca5d7b7f4a12dadb4dc009cd2cc7  # v3
 
       - name: Build techstack-enforcer
         working-directory: techstack-enforcer
@@ -81,18 +81,18 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
         with:
           fetch-depth: 0
 
       - name: Checkout techstack-enforcer
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
         with:
           repository: ${{ env.TECHSTACK_REPO }}
           path: techstack-enforcer
 
       - name: Setup Ada/GNAT
-        uses: alire-project/setup-alire@v3
+        uses: alire-project/setup-alire@b607671067a8ca5d7b7f4a12dadb4dc009cd2cc7  # v3
 
       - name: Build techstack-enforcer
         working-directory: techstack-enforcer
@@ -113,7 +113,7 @@ jobs:
             --mode=$TECHSTACK_MODE
 
       - name: Upload decision report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4
         with:
           name: techstack-decisions
           path: changed_files.txt
@@ -127,16 +127,16 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
 
       - name: Checkout techstack-enforcer
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
         with:
           repository: ${{ env.TECHSTACK_REPO }}
           path: techstack-enforcer
 
       - name: Setup Ada/GNAT
-        uses: alire-project/setup-alire@v3
+        uses: alire-project/setup-alire@b607671067a8ca5d7b7f4a12dadb4dc009cd2cc7  # v3
 
       - name: Build techstack-enforcer
         working-directory: techstack-enforcer
@@ -155,7 +155,7 @@ jobs:
             --mode=$TECHSTACK_MODE
 
       - name: Upload audit report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4
         with:
           name: techstack-audit
           path: |
@@ -171,16 +171,16 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
 
       - name: Checkout techstack-enforcer
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
         with:
           repository: ${{ env.TECHSTACK_REPO }}
           path: techstack-enforcer
 
       - name: Setup Ada/GNAT
-        uses: alire-project/setup-alire@v3
+        uses: alire-project/setup-alire@b607671067a8ca5d7b7f4a12dadb4dc009cd2cc7  # v3
 
       - name: Build techstack-enforcer
         working-directory: techstack-enforcer
@@ -194,7 +194,7 @@ jobs:
           cat techstack.log || true
 
       - name: Upload learning report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4
         with:
           name: techstack-learning
           path: techstack.log

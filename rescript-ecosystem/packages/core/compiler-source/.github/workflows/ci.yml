@@ -83,7 +83,7 @@ jobs:
         run: yarn install
       - name: Install dependencies (Linux)
         if: runner.os == 'Linux'
-        uses: awalsh128/cache-apt-pkgs-action@v1.4.3
+        uses: awalsh128/cache-apt-pkgs-action@5902b33ae29014e6ca012c5d8025d4346556bd40  # v1.4.3
         with:
           # https://github.com/ocaml/setup-ocaml/blob/2f57267f071bc8547dfcb9433ff21d44fffef190/packages/setup-ocaml/src/unix.ts#L48
           # plus OPAM wants cmake
@@ -107,7 +107,9 @@ jobs:
           echo "version=${version}" >> "$GITHUB_OUTPUT"
       - name: Install rust toolchain
         if: steps.rewatch-build-cache.outputs.cache-hit != 'true'
-        uses: dtolnay/rust-toolchain@master
+        uses: dtolnay/rust-toolchain@02cb101ec7c40f2c49e1d9714d64511d8e1b74de  # master
+        with:
+          toolchain: master
         with:
           toolchain: ${{ steps.rust-version.outputs.version }}
           targets: ${{ matrix.rust-target }}
@@ -137,7 +139,7 @@ jobs:
         run: echo "opam_cache_key=opam-env-v8-${{ matrix.os }}-${{ env.SETUP_OCAML_VERSION }}-${{ matrix.ocaml_compiler }}-${{ hashFiles('*.opam') }}" | sed 's/,/-/g' >> $GITHUB_ENV
       - name: Restore OPAM environment
         id: cache-opam-env
-        uses: actions/cache/restore@v5
+        uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25  # v5
         with:
           path: |-
             ${{ runner.tool_cache }}/opam

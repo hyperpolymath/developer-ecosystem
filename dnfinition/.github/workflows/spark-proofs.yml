@@ -20,7 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       - name: Setup Alire
-        uses: alire-project/setup-alire@v3
+        uses: alire-project/setup-alire@b607671067a8ca5d7b7f4a12dadb4dc009cd2cc7  # v3
         with:
           toolchain: gnat_native^14 gprbuild^22
       - name: Install SPARK
