@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MPL-2.0
-// V-API-Interfaces - Unified Hexadeca-Connector standard for V-lang.
+// V-API-Interfaces - UnifiedApiAdapter standard for V-lang.
 //
 // Consolidates sixteen bidirectional API interfaces into a single high-rigor suite.
 
@@ -39,13 +39,13 @@ pub fn (s IPFSStore) start() { println('V-IPFS (Umoja Layer) starting on port ${
 pub struct ArrowFlight { pub mut: port int }
 pub fn (s ArrowFlight) start() { println('V-ArrowFlight (Big Data) starting on port ${s.port}...') }
 
-pub struct HexadecaSuite {
+pub struct UnifiedApiAdapter {
 pub mut:
 	adapters map[string]ProtocolAdapter
 }
 
-pub fn new_hexadeca_suite(base_port int) &HexadecaSuite {
-	mut suite := &HexadecaSuite{
+pub fn new_unified_api_adapter_suite(base_port int) &UnifiedApiAdapter {
+	mut suite := &UnifiedApiAdapter{
 		adapters: map[string]ProtocolAdapter{}
 	}
 
@@ -73,6 +73,6 @@ pub fn new_hexadeca_suite(base_port int) &HexadecaSuite {
 }
 
 // Backward compatibility
-pub fn new_suite(port int) &HexadecaSuite {
-	return new_hexadeca_suite(port)
+pub fn new_suite(port int) &UnifiedApiAdapter {
+	return new_unified_api_adapter_suite(port)
 }
