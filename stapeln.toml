@@ -16,7 +16,7 @@ name = "developer-ecosystem"
 version = "0.5.0"
 description = "Monorepo container builds for the hyperpolymath developer ecosystem"
 author = "Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>"
-license = "PMPL-1.0-or-later"
+license = "MPL-2.0"
 registry = "ghcr.io/hyperpolymath"
 
 [build]

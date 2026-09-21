@@ -397,7 +397,7 @@ idris2 --cg c-header src/abi/Types.idr -o generated/abi/{{project}}.h
 
 === License
 
-PMPL-1.0-or-later
+MPL-2.0 (code) / CC-BY-SA-4.0 (docs)
 
 === See Also
 
