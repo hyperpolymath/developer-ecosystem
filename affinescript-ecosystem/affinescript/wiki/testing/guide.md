@@ -614,10 +614,7 @@ aspm coverage --format lcov --output coverage.lcov
 - name: Run tests with coverage
   run: aspm test --coverage
 
-- name: Upload coverage
-  uses: codecov/codecov-action@v3
-  with:
-    file: coverage.lcov
+# Coverage stays in-repo (coverage.lcov); no third-party uploader is configured.
 ```
 
 ---
