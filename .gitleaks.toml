@@ -41,10 +41,6 @@ paths = [
   # named secret_value.toml — inputs to a manifest/invariant test.
   '''(^|/)shellstate/test/''',
 
-  # Documentation. The match is an illustrative connection string in a
-  # distributed-filesystem explainer.
-  '''(^|/)czech-file-knife/docs/''',
-
   # A DETECTOR definition: the flagged line is the literal '-----BEGIN
   # PRIVATE KEY-----' inside a list of patterns this contract searches FOR.
   # The scanner matched the rule, not a key.
