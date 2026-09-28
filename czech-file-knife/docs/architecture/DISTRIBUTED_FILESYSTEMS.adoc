@@ -43,7 +43,7 @@ let config = SmbConfig {
     server: "fileserver".into(),
     share: "Documents".into(),
     username: Some("user".into()),
-    password: Some("pass".into()),
+    password: std::env::var("CFK_SMB_PASSWORD").ok(),
     version: SmbVersion::Smb3,
     ..Default::default()
 };
@@ -127,8 +127,8 @@ let backend = CephBackend::new("my-ceph", config);
 let rgw_backend = CephBackend::rgw(
     "my-rgw",
     "https://rgw.example.com",
-    "access_key",
-    "secret_key",
+    &std::env::var("CFK_S3_ACCESS_KEY_ID")?,
+    &std::env::var("CFK_S3_SECRET_ACCESS_KEY")?,
     "my-bucket"
 );
 ----
@@ -211,8 +211,8 @@ let backend = S3Backend::cloudflare_r2(
     "my-r2",
     "account-id",
     "my-bucket",
-    "access_key",
-    "secret_key"
+    &std::env::var("CFK_S3_ACCESS_KEY_ID")?,
+    &std::env::var("CFK_S3_SECRET_ACCESS_KEY")?
 );
 ----
 
@@ -231,7 +231,7 @@ let config = WebDavConfig {
     base_url: "https://dav.example.com/files/".into(),
     auth: Some(WebDavAuth::Basic {
         username: "user".into(),
-        password: "pass".into(),
+        password: std::env::var("CFK_WEBDAV_PASSWORD")?,
     }),
     ..Default::default()
 };
@@ -243,7 +243,7 @@ let backend = WebDavBackend::nextcloud(
     "my-nextcloud",
     "https://cloud.example.com",
     "username",
-    "app-password"
+    &std::env::var("CFK_NEXTCLOUD_APP_PASSWORD")?
 );
 ----
 

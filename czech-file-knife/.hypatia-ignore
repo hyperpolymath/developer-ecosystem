@@ -53,3 +53,8 @@ research_extensions/RE005:.github/workflows/static-analysis-gate.yml
 # Dependabot workflow uses the unprivileged pull_request event and also verifies
 # github.event.pull_request.user.login, so that threat model does not apply.
 research_extensions/RE008:.github/workflows/dependabot-automerge.yml
+
+# iOS File Provider Extension: NSFileProviderReplicatedExtension is a Swift-only
+# Apple API with no Rust/Tauri equivalent. Carried over from
+# developer-ecosystem/.hypatia-baseline.json (tracking: developer-ecosystem#111).
+cicd_rules/banned_language_file:src/cfk-ios/swift/
