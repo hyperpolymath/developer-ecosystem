@@ -1,4 +1,0 @@
-# Agda proof manifest — read by scripts/check-proofs.sh agda
-# Format: <source-root>|<module-relative-to-source-root>|gated|quarantine|<note>
-# Ground-truthed 2026-07-17 with agda (agda --safe).
-verification/proofs/agda|Properties.agda|gated| compiles under `agda --safe`

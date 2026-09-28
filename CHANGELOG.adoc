@@ -16,6 +16,14 @@ https://semver.org/spec/v2.0.0.html[Semantic Versioning].
 
 === [Unreleased]
 
+==== Removed
+
+* `czech-file-knife/` extracted to its own repository,
+  https://github.com/hyperpolymath/czech-file-knife[hyperpolymath/czech-file-knife]
+  (it was only held here). The standalone, RSR-template-compliant tree is the
+  `czech-file-knife/` prefix at commit `60ba3be3`; history is preserved
+  with `git subtree split --prefix=czech-file-knife`.
+
 ==== Fixed
 
 * fix(licence): developer-ecosystem — clear scaffold-placeholder leak
