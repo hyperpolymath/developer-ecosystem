@@ -1,0 +1,81 @@
+# SPDX-License-Identifier: MPL-2.0
+#
+# Rokur secrets-gate configuration for Czech File Knife
+#
+# Rokur (stapeln container stack) is a secrets-management gate: a small
+# Deno service that sits in front of the application and refuses to pass
+# traffic unless the declared secrets are present and valid. It rate-limits
+# per client and writes a structured audit log of every secret access.
+#
+# Most settings can also be supplied as environment variables (the ROKUR_*
+# names below); this file is the declarative equivalent consumed at startup
+# and re-read on SIGHUP. Environment variables win over file values.
+#
+# Usage:
+#   rokur serve --config build/container/stapeln/rokur.toml
+#   # or, in the stack, via compose (see compose.toml / compose.yaml)
+
+[metadata]
+name = "czech-file-knife-gate"
+version = "0.1.0"
+
+# ============================================================================
+# Listener / routing  (env: ROKUR_LISTEN, ROKUR_BACKEND)
+# ============================================================================
+
+[server]
+# Address rokur listens on (inside the container).
+listen = "[::]:8081"
+# The upstream application rokur fronts once the gate is satisfied.
+backend = "http://czech-file-knife:8080"
+# Health/readiness endpoints rokur exposes for vordr / orchestrators.
+health_path = "/health"
+ready_path = "/ready"
+
+# ============================================================================
+# Required secrets  (env: ROKUR_REQUIRED_SECRETS, comma-separated)
+# ============================================================================
+#
+# Names of secrets that MUST be present (as environment variables or in the
+# mounted secret store) before rokur will start the gate. An empty list means
+# the gate starts open — tighten this before production.
+
+[secrets]
+required = []
+# Example:
+# required = ["DATABASE_URL", "JWT_SIGNING_KEY", "TLS_PRIVATE_KEY"]
+
+# Where rokur looks for secret material, in order. "env" reads process
+# environment; "file" reads a mounted directory (one file per secret).
+sources = ["env"]
+# file_dir = "/run/secrets"
+
+# ============================================================================
+# Rate limiting  (rokur/rate_limit.js — per-client token bucket)
+# ============================================================================
+
+[rate_limit]
+enabled = true
+requests_per_second = 100
+burst = 200
+
+# ============================================================================
+# Policy engine  (rokur/policy/engine.js — pluggable evaluator)
+# ============================================================================
+
+[policy]
+# "builtin" uses rokur's built-in evaluator; "external" delegates to a
+# command/endpoint you supply.
+engine = "builtin"
+# external_command = "/usr/local/bin/my-policy"
+
+# ============================================================================
+# Audit log  (env: ROKUR_AUDIT_LOG, ROKUR_LOG_FORMAT)
+# ============================================================================
+
+[audit]
+log = "/var/log/rokur/audit.jsonl"
+format = "json"
+# Record a hash of secret values (never the values themselves) for tamper
+# evidence in the audit trail.
+hash_values = true

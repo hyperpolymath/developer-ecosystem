@@ -1,0 +1,14 @@
+; SPDX-License-Identifier: MPL-2.0
+;
+; Reverse zone for 192.0.2.0/24 (RFC 5737 documentation range) — template
+; symmetry with the forward zone. Bump the serial on every edit.
+$TTL 3600
+$ORIGIN 2.0.192.in-addr.arpa.
+@       IN  SOA     ns1.example.invalid. hostmaster.example.invalid. (
+                    2026091701 3600 900 604800 300 )
+        IN  NS      ns1.example.invalid.
+        IN  NS      ns2.example.invalid.
+
+1       IN  PTR     ns1.example.invalid.
+2       IN  PTR     ns2.example.invalid.
+10      IN  PTR     example.invalid.

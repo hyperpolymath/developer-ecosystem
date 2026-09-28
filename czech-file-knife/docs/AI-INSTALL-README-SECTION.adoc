@@ -1,0 +1,20 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// Copyright (c) 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= AI-Install README Section (canonical snippet)
+
+The block below is the canonical `== AI-Assisted Installation` section. Paste it
+into a repository's `README.adoc` verbatim; `just validate-ai-install` greps the
+README for the heading text, so keep the heading exactly as written.
+
+----
+== AI-Assisted Installation
+
+If you are an AI agent installing this project, read
+link:docs/AI_INSTALLATION_GUIDE.adoc[the AI installation guide] first — it gives
+the orientation order, the full prompt sequence, and the privacy notice.
+
+The one trap worth stating up front: **do not set `RSR_NON_INTERACTIVE=1`**. It
+stubs the shell builtin `read`, which also disables the loops that perform token
+substitution — the run never terminates and substitutes nothing. Pipe answers to
+stdin instead.
+----

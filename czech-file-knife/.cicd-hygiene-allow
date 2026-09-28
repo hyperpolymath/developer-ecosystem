@@ -1,0 +1,12 @@
+# Code-hygiene gate allowlist (consumed by cicd-suite actions/code-hygiene-check).
+# Patterns are git pathspec excludes, applied to both the debt-marker scan and
+# the proof-circumvention scan.
+#
+# The two entries below are TEMPLATE SCAFFOLDS, not implementation debt:
+# their TODOs are the instantiation seams every minted repo is meant to fill
+# in (entrypoint command, e2e sections). Excluding them keeps the gate's
+# debt-tracking signal clean for real source in instantiated repos, which
+# inherit this file. If an instantiated repo later owns genuine debt in
+# these paths, resolve or issue-link it there — do not widen this list.
+build/container/entrypoint.sh
+tests/e2e.sh

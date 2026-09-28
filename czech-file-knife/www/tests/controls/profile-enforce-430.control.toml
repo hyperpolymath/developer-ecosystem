@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: MPL-2.0
+# PLANTED CONTROL — must be REJECTED by check-profiles.sh: it tries to
+# enable HTTP 430 enforcement, which no profile in this bundle may do.
+profile = "consent-aware-web-rogue-control"
+version = "0.0.1"
+status = "planted-control"
+enforcement_http_430 = true
+components = []

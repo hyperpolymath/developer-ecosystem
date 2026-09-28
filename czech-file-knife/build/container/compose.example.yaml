@@ -1,0 +1,108 @@
+# SPDX-License-Identifier: MPL-2.0
+#
+# Example portable compose stack (Tier B) — multi-service
+#
+# A concrete, fully-commented example: a Rust API + Elixir worker behind the
+# rokur secrets gate and the svalinn edge gateway. Copy to compose.yaml and
+# customise. Works with podman / nerdctl / docker compose unchanged.
+#
+#   cp build/container/compose.example.yaml build/container/compose.yaml
+#   # edit service names, ports, images
+#   just container-up          # or: podman compose -f build/container/compose.yaml up -d
+#
+# For the sovereign selur path see build/container/stapeln/compose.example.toml.
+
+services:
+  # Rust API — primary HTTP/gRPC backend.
+  rust-api:
+    build:
+      context: ..
+      dockerfile: build/container/Containerfile
+    image: ghcr.io/hyperpolymath/myproject-api:latest
+    ports:
+      - "8080:8080"
+    environment:
+      RUST_LOG: "info"
+      APP_HOST: "[::]"
+      APP_PORT: "8080"
+      APP_LOG_FORMAT: "json"
+      APP_DATA_DIR: "/data"
+    volumes:
+      - api-data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Elixir worker — background processing, talks to the API over the network.
+  elixir-worker:
+    image: ghcr.io/hyperpolymath/myproject-worker:latest
+    ports:
+      - "4000:4000"
+    environment:
+      API_URL: "http://rust-api:8080/api/v1"
+      MIX_ENV: "prod"
+      APP_LOG_FORMAT: "json"
+      POOL_SIZE: "10"
+    depends_on:
+      rust-api:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # rokur — secrets gate. Refuses to come up unless required secrets are present.
+  rokur:
+    image: ghcr.io/hyperpolymath/rokur:latest
+    ports:
+      - "8081:8081"
+    environment:
+      ROKUR_BACKEND: "http://rust-api:8080"
+      ROKUR_LISTEN: "[::]:8081"
+      ROKUR_REQUIRED_SECRETS: "DATABASE_URL,JWT_SIGNING_KEY"
+      ROKUR_AUDIT_LOG: "/var/log/rokur/audit.jsonl"
+      ROKUR_LOG_FORMAT: "json"
+    volumes:
+      - rokur-audit:/var/log/rokur
+    depends_on:
+      rust-api:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8081/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # svalinn — edge gateway. TLS, auth, rate limiting, audit. The only
+  # externally exposed service.
+  svalinn:
+    image: ghcr.io/hyperpolymath/svalinn:latest
+    ports:
+      - "443:443"
+      - "80:80"
+    environment:
+      SVALINN_BACKEND: "http://rokur:8081"
+      SVALINN_WORKER_BACKEND: "http://elixir-worker:4000"
+      SVALINN_POLICY_FILE: "/etc/svalinn/gatekeeper.yaml"
+      SVALINN_TLS_AUTO: "true"
+    volumes:
+      - ./stapeln/.gatekeeper.yaml:/etc/svalinn/gatekeeper.yaml:ro
+    depends_on:
+      - rokur
+      - elixir-worker
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  api-data:
+  rokur-audit:

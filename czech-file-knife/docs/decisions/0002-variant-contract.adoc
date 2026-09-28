@@ -1,0 +1,75 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Architecture Decision Record: 0002-variant-contract
+
+== 2. Variant templates declare a machine-readable contract with their parent
+
+Date: 2026-07-07
+
+=== Status
+
+Accepted (ratified by owner 2026-07-07; first instance live in
+rsr-julia-library-template-repo)
+
+=== Context
+
+The RSR template family grows variants where the spine genuinely diverges —
+build system, test/docs toolchain, ABI story (first: the Julia library
+template; candidates: Rust+SPARK paired-lib). Hand-maintained variant repos
+silently drift from the canonical template: the parent gains fixes the
+variant never receives, the variant fixes defects the parent cannot see
+(especially while the parent's own CI is red), and nothing records which
+differences are intentional.
+
+Anti-proliferation doctrine requires that variation be *declared, bounded and
+enforceable*, and the long-term plan (Scaffoldia as composer; template repos
+becoming generated artifacts with a maintenance sync loop until cut-off)
+needs variant deltas to exist as data, not tribal knowledge.
+
+=== Decision
+
+Every variant template carries a **variant contract** at
+`.machine_readable/descriptiles/VARIANT.a2ml` declaring:
+
+- **parent** (owner/repo) and **parent-pin** — the last reconciled parent
+  commit. Bumping the pin after reconciling is the template-maintenance sync
+  operation.
+- **normalisation rules** separating per-repo operational state from spine
+  content: 40-hex action/reusable pin SHAs (dependabot cadence differs per
+  repo) and self-name folding (both repo names → `SELF` on both sides).
+- **path lists**, verified against the parent at the pin:
+  `added`, `removed`, `diverged` (permanently variant-owned),
+  `diverged-pending-upstream` (fixes made variant-first; doubles as the
+  upstream-promotion worklist), and `operational-state` (excluded from
+  comparison, e.g. coaptation receipts).
+
+A **drift gate** (`scripts/check-variant-drift.sh` + the Variant Drift Gate
+workflow: push / PR / weekly cron / manual, no `paths:` filter) enforces the
+contract: any tracked file not declared variant-owned must be identical to
+the parent at the pin modulo normalisation, and declared additions/removals
+are asserted in both directions.
+
+CLADE stays identity-only: `[lineage]` records *who* the parent is and gains
+a one-line `variant-contract` pointer; the operational mechanics (pin, path
+lists) live in VARIANT.a2ml so pin bumps never churn the identity file.
+
+The contract is **direction-agnostic**: today the parent is the source and
+the variant a hand-maintained specialisation (`direction =
+"template-is-source"`); after the Scaffoldia inversion the same lists
+describe how to regenerate the variant from core + variant pack
+(`direction = "generated-from-core"`).
+
+=== Consequences
+
+- Variant drift becomes a red check instead of an archaeology project.
+- The `diverged-pending-upstream` list is a standing, exact worklist for
+  upstream promotion (first use: rsr-template-repo PR #137).
+- Scaffoldia can consume variant contracts as data when composing or
+  regenerating repos; GitHub's "Use this template" path and the composer
+  path cannot silently diverge because both are checked against the same
+  contract.
+- New variants must justify spine divergence in the contract's `[variant]`
+  block; anything expressible as a feature or profile should not become a
+  variant repo (anti-proliferation).
+- Reference implementation: rsr-julia-library-template-repo (VARIANT.a2ml,
+  scripts/check-variant-drift.sh, .github/workflows/variant-drift-gate.yml).

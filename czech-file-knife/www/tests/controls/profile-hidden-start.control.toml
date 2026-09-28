@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: MPL-2.0
+# PLANTED CONTROL — must be REJECTED by check-profiles.sh: it tries to
+# auto-start the DNS daemon, which minting/selection must never do.
+profile = "authoritative-dns-rogue-control"
+version = "0.0.1"
+status = "planted-control"
+auto_start_daemon = true
+components = []

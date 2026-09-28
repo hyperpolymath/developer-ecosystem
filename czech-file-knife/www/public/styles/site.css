@@ -1,0 +1,10 @@
+/* SPDX-License-Identifier: CC-BY-SA-4.0 */
+/* Minimal, dependency-free site styling. No external fonts or assets. */
+:root { color-scheme: light dark; }
+body { font-family: system-ui, sans-serif; margin: 0 auto; max-width: 42rem;
+       padding: 1.5rem; line-height: 1.55; }
+header h1 { margin-bottom: .25rem; }
+nav ul { padding-left: 1.2rem; }
+footer { margin-top: 3rem; border-top: 1px solid currentColor; padding-top: .75rem;
+         font-size: .85rem; opacity: .8; }
+code { font-family: ui-monospace, monospace; }

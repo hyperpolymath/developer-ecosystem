@@ -1,0 +1,117 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= `www/` — Site-Operations Bundle
+:toc: left
+:icons: font
+
+Canonical source tree for everything a project publishes or operates about a
+public web presence: protocol metadata, site policy, security headers,
+web-server integration, authoritative DNS, encrypted-DNS/privacy discovery,
+TLS policy, validation and runbooks.
+
+This directory is a *source bundle*, **not** a document root. Never point a
+web server at `www/` wholesale — see <<_publication_boundary>>.
+
+== Layout
+
+[cols="1,3", options="header"]
+|===
+| Path | Role
+
+| `.well-known/`
+| Explicitly public protocol metadata (RFC 8615): `security.txt` (RFC 9116),
+  `humans.txt`, `ai.txt`, and the experimental `aibdp.json` declaration.
+  Canonical location — the former repository-root `.well-known/` was migrated
+  here (see `scripts/migrate-wellknown-to-www.sh`).
+
+| `public/`
+| Ordinary publishable HTML/assets. The site's document root content.
+
+| `policies/`
+| Human-readable policy *sources* (AsciiDoc): privacy, AI use, acceptable
+  use. Rendered into `public/policies/` at deploy time — see
+  `runbooks/deploy.adoc`.
+
+| `errors/`
+| Static 4xx/5xx bodies. No server identification, no stack details.
+
+| `security_headers/`
+| CSP/HSTS/etc. source templates. Included by server configuration;
+  never served as content.
+
+| `webservers/`
+| Caddy, nginx and Apache integration examples implementing the
+  publication boundary.
+
+| `dns/bind9/`
+| Authoritative-only BIND 9 starting hand. No recursion, no automatically
+  started daemon, reserved example zones only.
+
+| `dns/records/`
+| Zone and resource-record templates (example.invalid, RFC 3849/RFC 5737
+  documentation ranges), DNSSEC and CAA guidance.
+
+| `dns/privacy/`
+| DoT/DoQ/DoH/ODoH/ECH discovery guidance with the roles correctly
+  distinguished and capability detection documented.
+
+| `tls/`
+| Certificate and rotation policy. **Never** private keys, issued
+  certificate secrets, TSIG secrets, journals, caches, PID files, logs or
+  runtime databases — in this tree or in git.
+
+| `profiles/`
+| Explicit opt-in composition (baseline-site, consent-aware-web,
+  authoritative-dns, privacy-enhanced, full-expert). Nothing is enabled
+  by minting; no profile hides an enablement.
+
+| `schemas/`
+| Validators and machine-readable declarations for public/generated
+  artefacts, including the publishable-paths boundary declaration and the
+  vendored AIBDP 0.2 schema.
+
+| `tests/`
+| Local probes with planted controls: publication boundary, BIND safety,
+  profile enablement, AIBDP shape, well-known content, root migration.
+  Run them all: `bash www/tests/run-all.sh`.
+
+| `runbooks/`
+| Deploy, rollback, certificate rotation, DNS change and incident
+  procedures.
+|===
+
+[#_publication_boundary]
+== Publication boundary (security-critical)
+
+A supported deployment:
+
+. serves `www/public/` as ordinary content;
+. explicitly exposes `www/.well-known/` at the URL path `/.well-known/`;
+. keeps `dns/`, `tls/`, `security_headers/`, `webservers/`, `profiles/`,
+  `schemas/`, `tests/` and `runbooks/` — and the `policies/` *sources* —
+  outside the public document surface;
+. fails validation if a generated deployment would publish operational
+  configuration (`tests/check-publication-boundary.sh`, enforced in CI and
+  wired into the mint smoke test).
+
+The canonical machine-readable statement of the boundary is
+`schemas/publishable-paths.txt`.
+
+== Experimental material
+
+`aibdp.json` implements AIBDP 0.2 (`draft-jewell-aibdp-00`, experimental,
+not a Datatracker submission; a mapped alternative representation of AIPREF
+where they overlap). The `consent-aware-web` profile is
+*declaration/observe-only by default*: minting or installing this template
+never emits HTTP 430. Enforcement would require a separate, explicit,
+versioned, provenance-bearing and independently testable profile choice —
+none exists in this bundle.
+
+Purpose headers are unverified assertions; User-Agent inference is
+heuristic; unknown purpose remains unknown.
+
+== Provenance
+
+Bundle shape and constraints: `czech-file-knife` issue #53. AIBDP schema
+vendored from `metadatastician/consent-aware-web` (MPL-2.0) — see
+`schemas/aibdp-schema-v0.2.json.license`.

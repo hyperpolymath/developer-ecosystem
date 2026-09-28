@@ -1,0 +1,42 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= `webservers/` — Integration Examples
+
+Three starting-hand configurations implementing the publication boundary
+for a staged document root (see `www/runbooks/deploy.adoc`):
+
+[cols="1,2", options="header"]
+|===
+| File | Server
+
+| `caddy/Caddyfile.example`
+| Caddy 2 — automatic HTTPS; header block carries the canonical set.
+
+| `nginx/site.conf.example`
+| nginx — `server` block for inclusion from `sites-available`; TLS material
+  referenced from outside the repository.
+
+| `apache/vhost.conf.example`
+| Apache httpd 2.4 — `VirtualHost` with `mod_headers`.
+|===
+
+All three:
+
+. point their document root at a **staged directory** produced by the deploy
+  runbook — never at the `www/` bundle itself;
+. serve `/.well-known/` explicitly;
+. deny the operational categories (`dns`, `tls`, `security_headers`,
+  `webservers`, `profiles`, `schemas`, `tests`, `runbooks`) as defence in
+  depth, even though a correct stage never contains them;
+. map 4xx/5xx statuses onto the staged `errors/` bodies;
+. embed the header values from `www/security_headers/csp.conf` (keep in
+  sync).
+
+Hostnames use `site.example.invalid` (RFC 2606 reserved). TLS certificate
+paths are placeholders; see `www/tls/POLICY.adoc` — keys never live in the
+repository.
+
+`www/tests/check-publication-boundary.sh` statically scans these examples:
+a document root inside the bundle, or a missing operational deny, fails the
+check. The planted control `www/tests/controls/caddy-serve-everything.control`
+demonstrates the rejection.

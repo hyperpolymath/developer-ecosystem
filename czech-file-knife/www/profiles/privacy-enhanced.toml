@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: MPL-2.0
+# privacy-enhanced — issue #53 initial profile.
+# ECH and encrypted-DNS discovery/configuration guidance WHERE ACTUALLY
+# SUPPORTED: capability_detection_required means every claim must be backed
+# by a dated probe result (dns/privacy/ENCRYPTED-DNS.adoc), never by the
+# protocol wish-list. Direct DoT/DoQ remain non-oblivious; ODoH (OHTTP) is
+# the only oblivious mode — there is no ODoT/ODoQ and none is claimed.
+profile = "privacy-enhanced"
+version = "0.1.0"
+status = "experimental"
+requires = ["baseline-site"]
+capability_detection_required = true
+claims_oblivious_dot_or_doq = false
+components = ["www/dns/privacy/", "www/tls/POLICY.adoc", "www/runbooks/cert-rotation.adoc"]

@@ -1,54 +1,117 @@
 # SPDX-License-Identifier: MPL-2.0
-# RSR-compliant .gitattributes
+# Hyperpolymath estate canonical .gitattributes  (standards#343 phase 1)
+# Canon lives in czech-file-knife; do not add a per-repo name to this header.
+#
+# Only diff drivers that git actually ships are used here. MEASURED on git
+# 2.47.3: diff=go and diff=zig are NOT drivers (git silently falls back to the
+# default heuristic); the Go driver is named `golang`.
 
 * text=auto eol=lf
 
-# Source
+# --- Source ----------------------------------------------------------------
 *.rs    text eol=lf diff=rust
 *.ex    text eol=lf diff=elixir
 *.exs   text eol=lf diff=elixir
-*.jl    text eol=lf
-*.res   text eol=lf
-*.resi  text eol=lf
 *.ada   text eol=lf diff=ada
 *.adb   text eol=lf diff=ada
 *.ads   text eol=lf diff=ada
+*.gpr   text eol=lf diff=ada
+*.go    text eol=lf diff=golang
+*.scm   text eol=lf diff=scheme linguist-language=Scheme
+*.rkt   text eol=lf
+*.jl    text eol=lf
 *.hs    text eol=lf
+*.zig   text eol=lf
 *.chpl  text eol=lf
-*.scm   text eol=lf
+*.idr   text eol=lf linguist-language=Idris
+*.ipkg  text eol=lf linguist-language=Idris
+*.agda  text eol=lf linguist-language=Agda
+*.lagda text eol=lf linguist-language=Agda
+*.lean  text eol=lf
+# `.v` is ambiguous (Coq / Verilog / V). This estate's `.v` files are Coq
+# proofs; 49 repos currently mislabel them `linguist-language=V`.
+*.v     text eol=lf linguist-language=Coq
 *.ncl   text eol=lf
-*.nix   text eol=lf
+*.k9    text eol=lf linguist-language=Nickel
+*.deed  text eol=lf linguist-language=SCM
+*.ebnf  text eol=lf
+*.js    text eol=lf
+*.sh    text eol=lf diff=bash
+*.bash  text eol=lf diff=bash
 
-# Docs
+# --- Windows hosts require CRLF --------------------------------------------
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+*.ps1   text eol=crlf
+
+# --- Docs ------------------------------------------------------------------
 *.md    text eol=lf diff=markdown
 *.adoc  text eol=lf
 *.txt   text eol=lf
+*.tex   text eol=lf diff=tex
+*.bib   text eol=lf diff=bibtex
 
-# Data
+# --- Data / config ---------------------------------------------------------
 *.json  text eol=lf
+*.jsonl text eol=lf
 *.yaml  text eol=lf
 *.yml   text eol=lf
 *.toml  text eol=lf
+*.svg   text eol=lf
+*.csv   text eol=lf
+*.html  text eol=lf diff=html
+*.css   text eol=lf diff=css
 
-# Config
+# --- Repo control files ----------------------------------------------------
 .gitignore     text eol=lf
 .gitattributes text eol=lf
-justfile       text eol=lf
-Makefile       text eol=lf
+.editorconfig  text eol=lf
+.tool-versions text eol=lf
+Justfile       text eol=lf
+*.just         text eol=lf
+Mustfile       text eol=lf
 Containerfile  text eol=lf
 
-# Scripts
-*.sh   text eol=lf
-
-# Binary
+# --- Binary ----------------------------------------------------------------
 *.png   binary
 *.jpg   binary
+*.jpeg  binary
 *.gif   binary
+*.webp  binary
+*.ico   binary
 *.pdf   binary
+*.woff  binary
 *.woff2 binary
+*.ttf   binary
+*.otf   binary
+*.eot   binary
 *.zip   binary
+*.tar   binary
 *.gz    binary
+*.xz    binary
+*.bz2   binary
+*.so    binary
+*.dylib binary
+*.dll   binary
+*.exe   binary
+*.wasm  binary
+*.rlib  binary
+*.beam  binary
 
-# Lock files
-Cargo.lock  text eol=lf -diff
-flake.lock  text eol=lf -diff
+# --- Generated lockfiles: no diff noise, not counted as source -------------
+Cargo.lock        text eol=lf -diff linguist-generated=true
+mix.lock          text eol=lf -diff linguist-generated=true
+bun.lock          text eol=lf -diff linguist-generated=true
+bun.lockb         binary -diff linguist-generated=true
+pnpm-lock.yaml    text eol=lf -diff linguist-generated=true
+package-lock.json text eol=lf -diff linguist-generated=true
+
+# --- Legacy / retired toolchains (byte hygiene only) -----------------------
+# ReScript is retired (LANGUAGE-POLICY 1.2); Nix was retired 2026-06-01. These
+# lines keep surviving files normalised and keep retired tech out of the
+# GitHub primary-language badge. Removal is a per-repo judgement, never a sweep.
+*.res      text eol=lf
+*.resi     text eol=lf
+**/*.res   linguist-detectable=false
+*.nix      text eol=lf
+flake.lock text eol=lf -diff linguist-generated=true

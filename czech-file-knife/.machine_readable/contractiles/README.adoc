@@ -1,0 +1,169 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Contractiles Template Set
+:toc:
+:sectnums:
+
+This directory contains the canonical contractile templates for the
+hyperpolymath estate. `czech-file-knife` mirrors the standards master
+structure; copy `.machine_readable/contractiles/` into a new repo to
+establish a consistent operational, validation, trust, recovery,
+aspiration, and service-automation framework.
+
+[IMPORTANT]
+====
+The normative grammar for the record family used throughout this directory
+is `1-formats/deed/spec/DEED-GRAMMAR-SPEC.adoc` in
+https://github.com/hyperpolymath/standards[hyperpolymath/standards]. The
+format formerly called A2ML is now *DEED* (`.deed`); files here still carry
+`.a2ml` pending a single atomic estate-wide rename, so do not hand-convert
+them. Verb-file naming is tracked separately.
+
+The "contractile CLI" has never been built -- enforcement currently rides on
+the CI gates, not on that tool.
+====
+
+Each verb directory holds a *trident* of files:
+
+* `<Verb>file.a2ml` — the project-specific declaration (data)
+* `<verb>.ncl` — the paired Nickel runner (pedigree + schema + run policy)
+* `<verb>.k9.ncl` — the k9 service-automation component (trust-tiered)
+
+A per-verb `<verb>.manifest.a2ml` asserts that exactly these three files
+constitute the trident, pins their content-hashes, and requires the
+cross-references to round-trip — no partial publication is permitted.
+
+Anything else in a verb directory is human-only notes or archive; machines
+ignore it. Filenames use lowercase verb in the `.ncl` name and noun-form
+PascalCase in the A2ML (e.g. `intend.ncl` + `Intentfile.a2ml`,
+`must.ncl` + `Mustfile.a2ml`).
+
+All verb runners import `_base.ncl` (shared pedigree + run-defaults +
+probe-schema). The `INDEX.a2ml` registry catalogues every verb; consumers
+(CI scripts, the contractile CLI, Hypatia rules) SHOULD read it to discover
+available verbs rather than hard-coding the list. See
+https://github.com/hyperpolymath/standards/blob/main/docs/CONTRACTILE-SPEC.adoc[the normative specification].
+
+== Verbs (6 + k9 exception)
+
+[cols="1,2,3", options="header"]
+|===
+| Verb | A2ML file | Role
+
+| `must`
+| `must/Mustfile.a2ml`
+| Release-blocking invariants that must hold. Gating — fails block.
+
+| `trust`
+| `trust/Trustfile.a2ml`
+| Trust boundary, allowed actions, integrity checks. Gating.
+
+| `adjust`
+| `adjust/Adjustfile.a2ml`
+| Controlled corrective actions — bounded drift tolerances and responses.
+
+| `dust`
+| `dust/Dustfile.a2ml`
+| Rollback, recovery, and deprecation semantics. Report + act on undo.
+
+| `bust`
+| `bust/Bustfile.a2ml`
+| Breakage, expiry, and hard-stop conditions. Gating — declares "this is
+  broken" rather than "this must stay healthy".
+
+| `intend`
+| `intend/Intentfile.a2ml`
+| North-star: committed next-actions (\[[intents]] with probes) AND horizon
+  aspirations (\[[wishes]] grouped near/mid/far). Non-gating (report only).
+  Absorbed the deprecated `lust` verb 2026-04-18.
+|===
+
+NOTE: The `lust/` verb was deprecated 2026-04-18 (name had unwanted
+associations). Its \[[wishes]] semantics live inside `intend/Intentfile.a2ml`
+as a second section alongside \[[intents]]. Any `lust/` dir encountered in
+an estate repo is drift and should be removed.
+
+== k9 — Service-Automation Layer (EXCEPTION to the one-verbfile rule)
+
+IMPORTANT: `k9/` is **not a contractile verb** and does NOT follow the
+`<Verb>file.a2ml` + `<verb>.ncl` pattern. This is an intentional, documented
+exception. Do not apply the naming rule to k9.
+
+=== Why k9 is different
+
+The six verb contractiles each declare *one concern per repo* in a single
+xfile. k9 is not a concern; it is the *graded automation surface* that
+enforces or validates concern declarations. k9 provides three trust-tier
+*templates* that repos copy and instantiate:
+
+[cols="1,1,3", options="header"]
+|===
+| File | Trust tier | Description
+
+| `k9/template-kennel.k9.ncl`
+| Kennel
+| Pure data. No subprocess, no filesystem write, no network. Safe for
+  metadata and declarative settings.
+
+| `k9/template-yard.k9.ncl`
+| Yard
+| Nickel evaluation with contracts and validation. No side effects.
+
+| `k9/template-hunt.k9.ncl`
+| Hunt
+| Full execution surface. Must declare side effects, support dry-run, and
+  be signed before the estate treats it as trustworthy automation.
+|===
+
+Each verb's `<verb>.k9.ncl` instantiates one of these tiers (the runners in
+this set import `../k9/template-hunt.k9.ncl`).
+
+=== Why the naming rule does not apply
+
+The one-verb-one-Verbfile rule exists to enforce clean concern separation.
+k9 is meta-infrastructure: it does not have a `K9file.a2ml` because it is
+not a declarative xfile — it is a template set that instantiates into
+specific repos. Applying the rule would produce a meaningless `K9file.a2ml`
+with nothing to declare.
+
+=== Audit rule
+
+If a repo claims `k9` enforcement, each k9 component in that repo MUST
+declare a `paired_xfile` pointing to a specific contractile xfile (e.g.
+`../must/Mustfile.a2ml`). Floating k9 components with no paired xfile are
+non-conformant.
+
+See https://github.com/hyperpolymath/standards/blob/main/docs/CONTRACTILE-SPEC.adoc#k9-exception[the normative statement].
+
+== Fill-In Instructions
+
+When copying this set into a new repo:
+
+1. Replace every template file's placeholders with project-specific content.
+2. `Mustfile` — encode real invariants (schema versions, ports, required
+   checks), not generic samples.
+3. `Trustfile` — point at actual keys, policies, and authority boundaries.
+4. `Adjustfile` — define the drift tolerances and corrective actions the
+   repo commits to.
+5. `Dustfile` — describe how this repo actually rolls back or retires
+   behaviour while preserving the audit trail.
+6. `Bustfile` — declare real breakage / expiry / hard-stop conditions.
+7. `Intentfile` — list tracked next-actions with observable probes
+   (\[[intents]] section) AND horizon aspirations (\[[wishes]] section).
+8. Pair any `k9/*.k9.ncl` with a specific contractile via `paired_xfile`.
+
+== Intentfile: Commitments vs Aspirations — Two Sections, One File
+
+Since 2026-04-18 both axes live inside `intend/Intentfile.a2ml`:
+
+* `\[[intents]]` is the **commitment axis**. Items here are tracked
+  next-actions with probes. Status progresses
+  declared → in_progress → done/deferred/retired.
+* `\[[wishes]]` is the **aspiration axis**. Items here are horizon goals
+  grouped near/mid/far. Status progresses
+  declared → in_progress → achieved/abandoned.
+
+If something is concrete enough to have a probe, it belongs in `\[[intents]]`.
+If it is a horizon-level desire that might never be acted on, it belongs
+in `\[[wishes]]`. A wish can graduate to an intent when a concrete plan
+materialises.

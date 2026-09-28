@@ -1,0 +1,91 @@
+# This workflow is managed by gh actions-lock.
+# SPDX-License-Identifier: MPL-2.0
+name: "🟡 CHECK: Groove Protocol Compliance"
+
+on:
+  pull_request:
+    branches: ['**']
+  push:
+    branches: [main, master]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  groove-check:
+    name: "🟡 CHECK: Groove manifest check"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Check for Groove manifest
+        id: groove
+        run: |
+          # Check for static or dynamic Groove endpoints
+          HAS_MANIFEST="false"
+          HAS_GROOVE_CODE="false"
+
+          # Canonical manifest location is www/.well-known/groove/ (issue #53);
+          # the repository-root path is accepted, with a warning, during the
+          # migration window.
+          MANIFEST=""
+          if [ -f "www/.well-known/groove/manifest.json" ]; then
+            MANIFEST="www/.well-known/groove/manifest.json"
+          elif [ -f ".well-known/groove/manifest.json" ]; then
+            MANIFEST=".well-known/groove/manifest.json"
+            echo "::warning::Groove manifest at legacy root .well-known/ — canonical location is www/.well-known/ (run scripts/migrate-wellknown-to-www.sh)"
+          fi
+
+          if [ -n "$MANIFEST" ]; then
+            HAS_MANIFEST="true"
+            # Validate the manifest JSON
+            if ! jq empty "$MANIFEST" 2>/dev/null; then
+              echo "::error file=$MANIFEST::Invalid JSON in Groove manifest"
+              exit 1
+            else
+              SVC_ID=$(jq -r '.service_id // "unknown"' "$MANIFEST")
+              echo "service_id=$SVC_ID" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
+          # Check for Groove endpoint code (Rust, Elixir, Zig, V)
+          if grep -rl 'well-known/groove' --include='*.rs' --include='*.ex' --include='*.zig' --include='*.v' --include='*.res' . 2>/dev/null | head -1 | grep -q .; then
+            HAS_GROOVE_CODE="true"
+          fi
+
+          # Check if this repo likely serves HTTP in production. Key on
+          # production HTTP-server framework markers only. A bare `TcpListener`
+          # is deliberately NOT a signal: it is dominated by test/utility use
+          # (e.g. a #[cfg(test)] loopback fake), so matching it produced a
+          # spurious groove nudge on client-only apps. A real hand-rolled Rust
+          # server still pairs the listener with `axum::serve`/`hyper::Server`,
+          # which are matched here.
+          HAS_SERVER="false"
+          if grep -rl 'Bandit\|Plug.Cowboy\|httpz\|vweb\|axum::serve\|actix_web\|hyper::Server\|rocket::build\|warp::serve' --include='*.rs' --include='*.ex' --include='*.zig' --include='*.v' . 2>/dev/null | head -1 | grep -q .; then
+            HAS_SERVER="true"
+          fi
+
+          echo "has_manifest=$HAS_MANIFEST" >> "$GITHUB_OUTPUT"
+          echo "has_groove_code=$HAS_GROOVE_CODE" >> "$GITHUB_OUTPUT"
+          echo "has_server=$HAS_SERVER" >> "$GITHUB_OUTPUT"
+
+          if [ "$HAS_SERVER" = "true" ] && [ "$HAS_MANIFEST" = "false" ] && [ "$HAS_GROOVE_CODE" = "false" ]; then
+            echo "::warning::This repo has server code but no Groove endpoint. Add www/.well-known/groove/manifest.json for service discovery."
+          fi
+
+      - name: "Write summary"
+        run: |
+          echo "## Groove Protocol Check" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Check | Status |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|-------|--------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Static manifest (www/.well-known/groove/manifest.json) | ${{ steps.groove.outputs.has_manifest }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Groove endpoint in code | ${{ steps.groove.outputs.has_groove_code }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Has HTTP server code | ${{ steps.groove.outputs.has_server }} |" >> "$GITHUB_STEP_SUMMARY"

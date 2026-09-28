@@ -1,0 +1,69 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= `profiles/` — Explicit Opt-In Composition
+
+Profiles are how a repository selects parts of this bundle. Selection is
+always explicit; **minting a repository enables nothing** — no daemon
+starts, no experimental declaration is published, no HTTP 430 enforcement
+exists to enable.
+
+[cols="1,1,2", options="header"]
+|===
+| Profile | Status | Adds
+
+| `baseline-site`
+| stable
+| Headers, `.well-known` trio, safe errors, publishable content, boundary
+  validation, deploy/rollback runbooks.
+
+| `consent-aware-web`
+| experimental
+| AIBDP 0.2 declaration + AI-use policy page. *Declaration/observe-only:*
+  `enforcement_http_430 = false` is a hard default; enforcement would
+  require a separate explicit versioned profile that this bundle does not
+  ship.
+
+| `authoritative-dns`
+| stable
+| BIND 9 authoritative-only hand, zone/RR templates, DNSSEC/CAA guidance,
+  safety checks, DNS change runbook. `auto_start_daemon = false`.
+
+| `privacy-enhanced`
+| experimental
+| Encrypted-DNS/ECH guidance under a *capability-detection-required* rule,
+  TLS policy, certificate rotation runbook. Claims no ODoT/ODoQ (they do
+  not exist); ODoH is the only oblivious mode.
+
+| `full-expert`
+| stable-composition
+| `includes` the four above — explicitly listed, independently removable.
+  Composition never escalates flags: 430 stays false, daemons stay off.
+|===
+
+== Format
+
+Deliberately a flat, greppable TOML subset (single-line arrays, scalar
+flags) so `www/tests/check-profiles.sh` — and the estate propagation
+mechanism — can validate profiles without a TOML runtime. Keys the checks
+enforce:
+
+* every profile declares `profile`, `version`, `status`;
+* `consent-aware-web` and `full-expert` must carry
+  `enforcement_http_430 = false`;
+* `authoritative-dns` and `full-expert` must carry
+  `auto_start_daemon = false`;
+* `full-expert.includes` must name exactly the other four profiles;
+* every path in `components` must exist in the bundle;
+* `requires`/`includes` must resolve to sibling profile files.
+
+The planted controls (`www/tests/controls/profile-enforce-430.control.toml`,
+`profile-hidden-start.control.toml`) violate the flag rules and must be
+rejected — proof the defaults cannot silently flip.
+
+== Applying a profile
+
+Selection means: keep the listed `components` active in your deployment
+pipeline (stage them, run their checks, follow their runbooks) and delete or
+ignore the rest. Repositories without a website may retain the whole bundle
+as inactive template material or decline the capability outright; nothing
+here forces a deployment (issue #53, migration rule 5).

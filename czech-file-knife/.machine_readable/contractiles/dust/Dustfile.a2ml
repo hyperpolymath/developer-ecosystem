@@ -1,0 +1,75 @@
+# SPDX-License-Identifier: MPL-2.0
+# Dustfile — Cleanup and hygiene contract for czech-file-knife
+# Author: Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+#
+# Paired runner: dust.ncl
+# Verb:          dust
+# Semantics:     What should be cleaned up. Housekeeping, not blockers.
+#
+# This repository: czech-file-knife is the canonical template.
+# Cleanup items here ensure the template itself remains pristine.
+
+@abstract:
+Cleanup and hygiene items for czech-file-knife. These are maintenance tasks
+that ensure the template repository remains clean and ready for distribution
+to new repositories.
+@end
+
+## Stale Files
+
+### no-template-artifacts
+- description: No generated files from template testing in root
+- run: test -z "$(ls template-test-* 2>/dev/null)"
+- severity: info
+- notes: Template testing should use /tmp or dedicated test directories
+
+### no-example-placeholders
+- description: No example placeholder files (EXAMPLE-, SAMPLE-) in contractiles/
+- run: test -z "$(find .machine_readable/contractiles/ -name 'EXAMPLE-*' -o -name 'SAMPLE-*' 2>/dev/null)"
+- severity: warning
+- notes: All placeholders should be replaced with actual content or removed
+
+### no-old-contractile-formats
+- description: No old .contractile or .hs files remaining
+- run: test -z "$(find .machine_readable/contractiles/ \( -name '*.contractile' -o -name '*.hs' \) 2>/dev/null)"
+- severity: warning
+- notes: All contractiles should be .a2ml format
+
+## Format Duplicates
+
+### justfile-imports-in-sync
+- description: The root Justfile and its contractiles mirror declare the SAME import? set
+- run: diff <(grep '^import?' Justfile) <(grep '^import?' .machine_readable/contractiles/Justfile) >/dev/null
+- severity: warning
+- notes: |
+    Replaces a no-duplicate-justfile rule that compared INODES to assert the two
+    files were hardlinked. That rule could never pass: git does not track
+    hardlinks, so the pair have separate inodes after any clone (measured:
+    1026120 vs 1031824). Its premise was also false — these are not one file
+    seen twice but two deliberately different Justfiles, differing by 88 lines,
+    so swapping the inode test for `cmp` would merely exchange one
+    always-failing check for another. `stat -c` is GNU-only too, so it broke on
+    macOS regardless.
+
+    What actually must hold is that the mirror declares the same import? set as
+    the root — that is the drift which silently breaks recipes, because `import?`
+    is the OPTIONAL form and fails quietly rather than erroring. Both currently
+    declare 7 imports and agree.
+
+### no-duplicate-readme-format
+- description: Only one README format in contractiles/ (.adoc canonical)
+- run: test ! -f .machine_readable/contractiles/README.md
+- severity: info
+
+## Template Hygiene
+
+### no-stale-template-references
+- description: No references to czech-file-knife in generic template files
+- run: test -z "$(grep -r 'czech-file-knife' machine-readable-design/ 2>/dev/null)"
+- severity: warning
+- notes: Generic templates should use Czech File Knife or similar placeholders
+
+### version-sync-checked
+- description: Version in canonical-directory-structure matches .machine_readable/contractiles
+- verification: compare version identifiers in both locations
+- severity: info

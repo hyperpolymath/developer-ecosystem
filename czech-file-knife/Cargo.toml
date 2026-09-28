@@ -1,21 +1,22 @@
+# SPDX-License-Identifier: MPL-2.0
 [workspace]
 resolver = "2"
 members = [
-    "cfk-core",
-    "cfk-providers",
-    "cfk-cache",
-    "cfk-search",
-    "cfk-vfs",
-    "cfk-cli",
-    "cfk-integrations",
-    "cfk-ios",
+    "src/cfk-core",
+    "src/cfk-providers",
+    "src/cfk-cache",
+    "src/cfk-search",
+    "src/cfk-vfs",
+    "src/cfk-cli",
+    "src/cfk-integrations",
+    "src/cfk-ios",
 ]
 
 [workspace.package]
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.75"
-license = "AGPL-3.0-or-later"
+license = "MPL-2.0"
 repository = "https://github.com/hyperpolymath/czech-file-knife"
 homepage = "https://github.com/hyperpolymath/czech-file-knife"
 documentation = "https://docs.rs/cfk-core"

@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: MPL-2.0
+# baseline-site — issue #53 initial profile.
+# Security headers, the .well-known trio, safe error bodies, publishable
+# content and the boundary validation. No service is started by selecting
+# this profile; it composes SOURCE material plus the deploy runbook.
+profile = "baseline-site"
+version = "0.1.0"
+status = "stable"
+requires = []
+components = ["www/security_headers/csp.conf", "www/.well-known/security.txt", "www/.well-known/humans.txt", "www/.well-known/ai.txt", "www/public/", "www/errors/", "www/policies/privacy.adoc", "www/policies/acceptable-use.adoc", "www/schemas/publishable-paths.txt", "www/webservers/", "www/tests/", "www/runbooks/deploy.adoc", "www/runbooks/rollback.adoc"]

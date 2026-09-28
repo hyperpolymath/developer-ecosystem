@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: MPL-2.0
+#
+# publishable-paths.txt — machine-readable declaration of the publication
+# boundary (issue #53). Exactly the bundle subtrees listed below (one per
+# line; '#' comments ignored) may reach a deployed document root:
+#
+#   www/public/        ordinary publishable content, served at /
+#   www/.well-known/   public protocol metadata, served at /.well-known/
+#
+# Staging rules (runbooks/deploy.adoc):
+#   * www/errors/ bodies are staged INTO <docroot>/errors/ — they publish as
+#     public content, not as a third publishable source category;
+#   * www/policies/*.adoc sources are rendered INTO <docroot>/policies/*.html;
+#   * everything else — dns/, tls/, security_headers/, webservers/,
+#     profiles/, schemas/, tests/, runbooks/ — is OPERATIONAL material and
+#     must never appear in a deployed document root.
+#
+# Consumed by: www/tests/check-publication-boundary.sh (CI + mint smoke test).
+www/public/
+www/.well-known/

@@ -1,0 +1,56 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Aspects Pillar
+:icons: font
+
+[.lead]
+The **Aspects Pillar** is where a project declares the cross-cutting
+_capabilities_ it wears — the **Aspect-Oriented Language Design (AOLD)** seam of
+an RSR repository.
+
+== What an "aspect" is
+
+An aspect is a capability woven in from a _specialist language_ without adopting
+that language wholesale: distribution (Chapel), GPU kernels (Futhark),
+data-race freedom (Pony), fault tolerance (OTP), correct-by-construction proof
+(Dafny), energy-awareness (Eclexia), reversibility (Oblíbený), and so on.
+
+Each aspect is delivered by an **-iser** — a Rust CLI that injects the
+capability through a uniform, proof-carrying pipeline:
+
+[literal]
+....
+  manifest  ──►  Idris2 ABI  ──►  Zig FFI  ──►  target-language codegen  ──►  build/run
+....
+
+Your application stays itself; the aspect is an _addable, removable, reversible_
+exoskeleton bolted on at the boundary (the "mech suit" model). Multiple aspects
+compose over the same Idris2-ABI/Zig-FFI seam — the _Integrated Stack of Stacks_
+(iSOS).
+
+== What lives in `src/aspects/`
+
+Sub-pillars for the cross-cutting concerns this repo weaves in, e.g.:
+
+* `integrity/` — attestation, tamper-evidence, provenance.
+* `observability/` — logging, metrics, tracing.
+* `security/` — authz, sandboxing, supply-chain controls.
+
+A project records _which_ aspects it wears (and the manifest that configures
+each -iser) here, so the augmentation is explicit, auditable, and reversible —
+never hidden in the core.
+
+== Keeping aspects honest
+
+When an aspect crosses the FFI seam into the host, its proven invariant must not
+be silently over-generalised (`theorem → guarantee → "universal claim"`). The
+**invariant-path** tool is the conscience of this pillar: it traces each aspect's
+proven invariant from its Idris2 ABI into the host call sites and flags any point
+where the guarantee is carried further than it was proved.
+
+== See also
+
+* https://github.com/hyperpolymath/iseriser/blob/main/docs/ATLAS.adoc[The -iser Atlas] — route a need to the right aspect.
+* https://github.com/hyperpolymath/iseriser/blob/main/docs/theory/AOLD.adoc[AOLD] — the design philosophy.
+* https://github.com/hyperpolymath/iseriser/blob/main/docs/theory/iSOS.adoc[iSOS] — composing aspects.
+* https://github.com/hyperpolymath/invariant-path[invariant-path] — the claim-path conscience.

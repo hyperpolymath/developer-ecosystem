@@ -1,0 +1,17 @@
+<!--
+SPDX-License-Identifier: CC-BY-SA-4.0
+Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+-->
+# Project Wikis
+
+This directory contains the source files for the project wiki. It is intended for long-form documentation, deep-dives, and community-maintained knowledge.
+
+## Structure
+
+- **Core Concepts:** Fundamental architectural ideas.
+- **Workflows:** Step-by-step guides for contributors.
+- **Glossary:** Definitions of project-specific terminology.
+
+## Wiki Synchronization
+
+Changes made here should be synchronised with the forge-hosted wiki (GitHub/GitLab) using the project's sync scripts.

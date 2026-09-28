@@ -1,0 +1,91 @@
+# This workflow is managed by gh actions-lock.
+# SPDX-License-Identifier: MPL-2.0
+# GitHub Pages via casket-ssg (hyperpolymath's pure-Haskell static site generator).
+# Replaces the orphan one-off Pages deployment with a reproducible build.
+name: GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Serialise Pages deploys; never cancel an in-flight deploy.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+
+      - name: Checkout casket-ssg
+        uses: actions/checkout@v7.0.1
+        with:
+          repository: hyperpolymath/casket-ssg
+          path: .casket-ssg
+
+      - name: Setup GHCup
+        uses: haskell-actions/setup@v2.12.1
+        with:
+          ghc-version: '9.8.2'
+          cabal-version: '3.10'
+
+      - name: Cache Cabal
+        uses: actions/cache@v6.1.0
+        with:
+          path: |
+            ~/.cabal/packages
+            ~/.cabal/store
+            .casket-ssg/dist-newstyle
+          key: ${{ runner.os }}-casket-${{ hashFiles('.casket-ssg/casket-ssg.cabal') }}
+
+      - name: Build casket-ssg
+        working-directory: .casket-ssg
+        run: cabal build
+
+      - name: Build site
+        run: |
+          mkdir -p site _site
+          # Seed site/index.md from README if the author hasn't provided one.
+          if [ ! -f site/index.md ]; then
+            {
+              echo "---"
+              echo "title: $(basename "$PWD")"
+              echo "date: $(date +%Y-%m-%d)"
+              echo "---"
+              if [ -f README.adoc ]; then cat README.adoc
+              elif [ -f README.md ]; then cat README.md
+              else printf '\n# %s\n\nDocumentation coming soon.\n' "$(basename "$PWD")"
+              fi
+            } > site/index.md
+          fi
+          cd .casket-ssg && cabal run casket-ssg -- build ../site ../_site
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v6.0.0
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v5.0.0
+        with:
+          path: '_site'
+
+  deploy:
+    timeout-minutes: 20
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5.0.1

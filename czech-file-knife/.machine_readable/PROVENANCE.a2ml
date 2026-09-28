@@ -1,0 +1,41 @@
+# SPDX-License-Identifier: MPL-2.0
+#
+# PROVENANCE.a2ml — what this repo was minted FROM.
+# Written once, at mint, by build/just/repo-init.just. Not a hand-edited
+# file: tools that want "what is this repo" read STATE.a2ml; tools that
+# want "where did this repo come from" read this.
+
+[provenance]
+minted_at          = "2026-09-28"
+
+template_repo      = "hyperpolymath/rsr-template-repo"
+template_branch    = "master"
+template_commit    = "933507582ef2467d77541dbf2837d278d321db1b"
+template_tree      = "42883b5a9d3e4dcf1b2cdc69ecf820425b4f39b7"
+# Contract: branches this repo is EXPECTED to carry beyond the default.
+# Empty means default-only. A mint must never inherit template work
+# branches (coderabbit/, chore/, bot-task or stale branches) — that is
+# how knot-knot received a byte-identical copy of a template work branch
+# with no common ancestor (#203). Enforced by
+# scripts/check-template-conformance.sh.
+extra_branches     = []
+
+canon_version      = "2.1.1"
+criteria_sha256    = "6a5aa8857bd0d0d58ef48827938ca17c251b6b854dacf59d306388d61694d82a"
+gates_sha256       = "e70efd2f53c9445e30da4baf770366f04a4a84ffd844a01426e587e565b53e6a"
+
+archetype          = ""
+# Which minting path actually ran. Hardcoded as "hand" before this, so
+# every scripted mint claimed to be hand-minted — which destroyed the
+# one signal that would have told #201/#203 which path to trust.
+minted_by          = "repo-init"
+mint_mode          = "interactive"
+
+[substitutions]
+# ADR-0003 records the old state honestly: "renders 34 substitutions and
+# derives identity, but leaves 12 tokens UNASSIGNED". Listing them here
+# converts that from a known defect into a QUERYABLE one: a non-empty
+# list means the mint did not fully render, and the validation step
+# below already fails on a leftover token.
+rendered   = 34
+unassigned = []

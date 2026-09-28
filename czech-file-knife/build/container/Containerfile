@@ -1,0 +1,41 @@
+# SPDX-License-Identifier: MPL-2.0
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# Czech File Knife — CLI container. `cfk` is a command-line tool, not a
+# service: no port, no healthcheck. Mount the storage you want to work on at
+# /data; the reversible-operation journal persists in /state.
+#
+# Build:  podman build -f build/container/Containerfile -t czech-file-knife .
+# Run:    podman run --rm -v "$PWD:/data" -v cfk-state:/state czech-file-knife ls /data
+
+# ── builder ────────────────────────────────────────────────────────────────
+FROM cgr.dev/chainguard/wolfi-base:latest AS builder
+RUN apk add --no-cache build-base rust pkgconf fuse3-dev
+WORKDIR /build
+COPY Cargo.toml Cargo.lock ./
+COPY src/ src/
+COPY benches/ benches/
+COPY tests/ tests/
+RUN cargo build --release --locked -p cfk-cli
+
+# ── runtime ────────────────────────────────────────────────────────────────
+FROM cgr.dev/chainguard/wolfi-base:latest
+LABEL org.opencontainers.image.title="Czech File Knife" \
+      org.opencontainers.image.description="The Swiss File Knife of the hybrid machine: one reversible, space-aware interface over local, network and cloud storage." \
+      org.opencontainers.image.url="https://github.com/hyperpolymath/czech-file-knife" \
+      org.opencontainers.image.source="https://github.com/hyperpolymath/czech-file-knife" \
+      org.opencontainers.image.vendor="hyperpolymath" \
+      org.opencontainers.image.licenses="MPL-2.0" \
+      org.opencontainers.image.authors="Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>" \
+      dev.cerrotorre.manifest="build/container/stapeln/manifest.toml" \
+      dev.cerrotorre.gatekeeper="build/container/stapeln/.gatekeeper.yaml" \
+      dev.stapeln.compose="build/container/stapeln/compose.toml"
+RUN apk add --no-cache ca-certificates fuse3
+RUN addgroup -S cfk && adduser -S cfk -G cfk \
+ && mkdir -p /data /state && chown cfk:cfk /data /state
+COPY --from=builder /build/target/release/cfk /usr/local/bin/cfk
+ENV CFK_JOURNAL_DIR=/state/journal
+VOLUME ["/data", "/state"]
+USER cfk
+WORKDIR /data
+ENTRYPOINT ["/usr/local/bin/cfk"]

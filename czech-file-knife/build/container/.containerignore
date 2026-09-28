@@ -1,0 +1,59 @@
+# SPDX-License-Identifier: MPL-2.0
+#
+# Build-context exclusions for the OCI image build (Tier A).
+# Honoured by podman, nerdctl and docker (all read .containerignore;
+# docker also reads .dockerignore — this file is the portable name).
+#
+# Keeping the context lean speeds builds and prevents secrets, VCS
+# history and local cruft from leaking into image layers.
+
+# Version control
+.git/
+.gitignore
+.gitattributes
+
+# CI / forge metadata
+.github/
+ci/
+
+# Editor / agent / local state
+.claude/
+.devcontainer/
+.editorconfig
+.envrc
+.direnv/
+*.swp
+*~
+
+# Build outputs and caches
+build/ttc/
+target/
+_build/
+deps/
+zig-out/
+zig-cache/
+node_modules/
+dist/
+result/
+
+# Docs, tests, examples (not needed in the runtime image)
+docs/
+build/docs-seed/
+benches/
+examples/
+tests/
+
+# The container tooling itself (don't recurse the build files into the image)
+build/container/stapeln/
+build/container/compose*.yaml
+build/container/compose*.toml
+build/container/.containerignore
+build/container/README.adoc
+
+# Secrets and environment files — never ship these
+*.env
+.env
+.env.*
+*.pem
+*.key
+secrets/

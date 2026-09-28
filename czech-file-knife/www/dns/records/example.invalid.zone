@@ -1,0 +1,38 @@
+; SPDX-License-Identifier: MPL-2.0
+;
+; example.invalid.zone — forward-zone template (RFC 2606 reserved name).
+; Addresses are RFC 5737 / RFC 3849 documentation ranges. Substitute your
+; real apex, hosts and CA before deployment; bump the serial on EVERY edit
+; (runbooks/dns-change.adoc).
+$TTL 3600
+$ORIGIN example.invalid.
+@       IN  SOA     ns1.example.invalid. hostmaster.example.invalid. (
+                    2026091701  ; serial YYYYMMDDnn — bump per change
+                    3600        ; refresh
+                    900         ; retry
+                    604800      ; expire
+                    300 )       ; minimum (negative-cache TTL)
+
+        IN  NS      ns1.example.invalid.
+        IN  NS      ns2.example.invalid.
+
+ns1     IN  A       192.0.2.1
+ns1     IN  AAAA    2001:db8::1
+ns2     IN  A       192.0.2.2
+ns2     IN  AAAA    2001:db8::2
+
+@       IN  A       192.0.2.10
+@       IN  AAAA    2001:db8::10
+www     IN  CNAME   example.invalid.
+
+; CAA (RFC 8659): which CAs may issue for this name. Placeholder CA — set to
+; your actual issuer(s), or 'issue ";"' to forbid issuance entirely.
+@       IN  CAA     0 issue "ca.example.invalid"
+@       IN  CAA     0 issuewild "ca.example.invalid"
+@       IN  CAA     0 iodef "mailto:j.d.a.jewell@open.ac.uk"
+
+; This zone sends no mail: hard-fail SPF, and declare MTA-STS/TLSRPT so
+; senders to a spoofed address get a correct rejection signal (RFC 8461/8460).
+@       IN  TXT     "v=spf1 -all"
+_mta-sts    IN  TXT "v=STSv1; id=20260917000000Z;"
+_smtp._tls  IN  TXT "v=TLSRPTv1; rua=mailto:j.d.a.jewell@open.ac.uk"

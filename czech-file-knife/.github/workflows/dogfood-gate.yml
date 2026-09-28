@@ -1,0 +1,632 @@
+# This workflow is managed by gh actions-lock.
+# SPDX-License-Identifier: MPL-2.0
+# This workflow is managed by gh actions-lock.
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# dogfood-gate.yml — Hyperpolymath Dogfooding Quality Gate
+# Validates that the repo uses hyperpolymath's own formats and tools.
+# Companion to static-analysis-gate.yml (security) — this is for format compliance.
+name: Dogfood Gate
+
+on:
+  pull_request:
+    branches: ['**']
+  push:
+    branches: [main, master]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Job 1: DEED manifest validation
+  # ---------------------------------------------------------------------------
+  deed-validate:
+    name: Validate DEED manifests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Check for manifest files (.a2ml/.deed)
+        id: detect
+        run: |
+          COUNT=$(find . \( -name '*.a2ml' -o -name '*.deed' \) -not -path './.git/*' | wc -l)
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          if [ "$COUNT" -eq 0 ]; then
+            echo "::warning::No .a2ml/.deed manifest files found. Every RSR repo should have a repo deed (<reponame>_chora.deed); legacy 0-AI-MANIFEST.a2ml accepted mid-migration — standards #837"
+          fi
+
+      - name: Validate DEED manifests
+        if: steps.detect.outputs.count > 0
+        uses: hyperpolymath/deed-ecosystem/validate-action@main
+        with:
+          path: '.'
+          strict: 'false'
+
+      - name: Write summary
+        run: |
+          MANIFEST_COUNT="${{ steps.detect.outputs.count }}"
+          if [ "$MANIFEST_COUNT" -eq 0 ]; then
+            cat <<'EOF' >> "$GITHUB_STEP_SUMMARY"
+          ## DEED Manifest Validation
+
+          :warning: **No .a2ml/.deed manifest files found.** Every RSR-compliant repo should have a repo deed (`<reponame>_chora.deed`) at its root.
+
+          Copy it from [czech-file-knife](https://github.com/hyperpolymath/czech-file-knife). Manifests are validated against the DEED grammar (standards `1-formats/deed/`); the `.a2ml` → `.deed` extension migration is tracked in standards #837 — the deed validator scans both.
+          EOF
+          else
+            echo "## DEED Manifest Validation" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "Scanned **${MANIFEST_COUNT}** .a2ml/.deed manifest(s). See step output for details." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  # ---------------------------------------------------------------------------
+  # Job 2: K9 contract validation
+  # ---------------------------------------------------------------------------
+  k9-validate:
+    name: Validate K9 contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Check for K9 files
+        id: detect
+        run: |
+          COUNT=$(find . \( -name '*.k9' -o -name '*.k9.ncl' \) -not -path './.git/*' | wc -l)
+          CONFIG_COUNT=$(find . \( -name '*.toml' -o -name '*.yaml' -o -name '*.yml' -o -name '*.json' \) \
+            -not -path './.git/*' -not -path './node_modules/*' -not -path './.deno/*' \
+            -not -name 'package-lock.json' -not -name 'Cargo.lock' -not -name 'deno.lock' | wc -l)
+          echo "k9_count=$COUNT" >> "$GITHUB_OUTPUT"
+          echo "config_count=$CONFIG_COUNT" >> "$GITHUB_OUTPUT"
+          if [ "$COUNT" -eq 0 ] && [ "$CONFIG_COUNT" -gt 0 ]; then
+            echo "::warning::Found $CONFIG_COUNT config files but no K9 contracts. Run k9iser to generate contracts."
+          fi
+
+      - name: Validate K9 contracts
+        if: steps.detect.outputs.k9_count > 0
+        uses: hyperpolymath/k9-ecosystem/validate-action@main
+        with:
+          path: '.'
+          strict: 'false'
+
+      - name: Write summary
+        run: |
+          K9_COUNT="${{ steps.detect.outputs.k9_count }}"
+          CFG_COUNT="${{ steps.detect.outputs.config_count }}"
+          if [ "$K9_COUNT" -eq 0 ]; then
+            cat <<'EOF' >> "$GITHUB_STEP_SUMMARY"
+          ## K9 Contract Validation
+
+          :warning: **No K9 contract files found.** Run `k9iser` to generate contracts.
+
+          Generate contracts with: `k9iser generate .`
+          EOF
+          else
+            echo "## K9 Contract Validation" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "Validated **${K9_COUNT}** K9 contract(s) against **${CFG_COUNT}** config file(s)." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  # ---------------------------------------------------------------------------
+  # Job 3: Empty-linter — invisible character detection
+  # ---------------------------------------------------------------------------
+  empty-lint:
+    name: "🔴 GATE: Empty-linter (invisible characters)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Scan for invisible characters
+        id: lint
+        run: |
+          RESULTS_FILE="$RUNNER_TEMP/empty-lint-results.bin"
+          BLOCKING_FILE="$RUNNER_TEMP/empty-lint-blocking-results.bin"
+          if ! scripts/check-invisible-characters.sh \
+              "$GITHUB_WORKSPACE" "$RESULTS_FILE" "$BLOCKING_FILE"; then
+            echo "::error::Invisible-character scanner failed; refusing a partial pass"
+            exit 2
+          fi
+
+          FINDINGS=0
+          while IFS= read -r -d '' filepath; do
+            FINDINGS=$((FINDINGS + 1))
+            REL_PATH="${filepath#"$GITHUB_WORKSPACE"/}"
+            SAFE_PATH="${REL_PATH//'%'/'%25'}"
+            SAFE_PATH="${SAFE_PATH//$'\r'/'%0D'}"
+            SAFE_PATH="${SAFE_PATH//$'\n'/'%0A'}"
+            SAFE_PATH="${SAFE_PATH//':'/'%3A'}"
+            SAFE_PATH="${SAFE_PATH//','/'%2C'}"
+            echo "::warning file=${SAFE_PATH}::Invisible Unicode or C0 characters detected"
+          done < "$RESULTS_FILE"
+
+          BLOCKING=0
+          while IFS= read -r -d '' filepath; do
+            BLOCKING=$((BLOCKING + 1))
+            REL_PATH="${filepath#"$GITHUB_WORKSPACE"/}"
+            SAFE_PATH="${REL_PATH//'%'/'%25'}"
+            SAFE_PATH="${SAFE_PATH//$'\r'/'%0D'}"
+            SAFE_PATH="${SAFE_PATH//$'\n'/'%0A'}"
+            SAFE_PATH="${SAFE_PATH//':'/'%3A'}"
+            SAFE_PATH="${SAFE_PATH//','/'%2C'}"
+            echo "::error file=${SAFE_PATH}::C0 control character or NUL byte detected"
+          done < "$BLOCKING_FILE"
+
+          echo "findings=$FINDINGS" >> "$GITHUB_OUTPUT"
+          echo "blocking=$BLOCKING" >> "$GITHUB_OUTPUT"
+          echo "ready=true" >> "$GITHUB_OUTPUT"
+
+          if [ "$BLOCKING" -gt 0 ]; then
+            echo "## Empty-linter: BLOCKED — $BLOCKING file(s) contain C0/NUL corruption" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+      - name: Write summary
+        run: |
+          if [ "${{ steps.lint.outputs.ready }}" = "true" ]; then
+            FINDINGS="${{ steps.lint.outputs.findings }}"
+            if [ "$FINDINGS" -gt 0 ] 2>/dev/null; then
+              echo "## Empty-Linter Results" >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              echo "Found **${FINDINGS}** invisible character issue(s). See annotations above." >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "## Empty-Linter Results" >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              echo ":white_check_mark: No invisible character issues found." >> "$GITHUB_STEP_SUMMARY"
+            fi
+          else
+            echo "## Empty-Linter" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "Skipped: empty-linter not available." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  # ---------------------------------------------------------------------------
+  # Job 4: Groove manifest check (for repos that should expose services)
+  # ---------------------------------------------------------------------------
+  groove-check:
+    name: "🟡 CHECK: Groove manifest check"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Check for Groove manifest
+        id: groove
+        run: |
+          # Check for static or dynamic Groove endpoints
+          HAS_MANIFEST="false"
+          HAS_GROOVE_CODE="false"
+
+          # Canonical manifest location is www/.well-known/groove/ (issue #53);
+          # the repository-root path is accepted, with a warning, during the
+          # migration window.
+          MANIFEST=""
+          if [ -f "www/.well-known/groove/manifest.json" ]; then
+            MANIFEST="www/.well-known/groove/manifest.json"
+          elif [ -f ".well-known/groove/manifest.json" ]; then
+            MANIFEST=".well-known/groove/manifest.json"
+            echo "::warning::Groove manifest at legacy root .well-known/ — canonical location is www/.well-known/ (run scripts/migrate-wellknown-to-www.sh)"
+          fi
+
+          if [ -n "$MANIFEST" ]; then
+            HAS_MANIFEST="true"
+            # Validate the manifest JSON
+            if ! jq empty "$MANIFEST" 2>/dev/null; then
+              # Gate, don't annotate: an unparseable manifest is a real error,
+              # not a warning — same behaviour as the standalone
+              # groove-check.yml (this job had drifted to annotation-only,
+              # the class of "check that cannot fail" from nexia-list#49).
+              echo "::error file=$MANIFEST::Invalid JSON in Groove manifest"
+              exit 1
+            else
+              SVC_ID=$(jq -r '.service_id // "unknown"' "$MANIFEST")
+              echo "service_id=$SVC_ID" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
+          # Check for Groove endpoint code (Rust, Elixir, Zig, V)
+          if grep -rl 'well-known/groove' --include='*.rs' --include='*.ex' --include='*.zig' --include='*.v' --include='*.res' . 2>/dev/null | head -1 | grep -q .; then
+            HAS_GROOVE_CODE="true"
+          fi
+
+          # Check if this repo likely serves HTTP in production. Key on
+          # production HTTP-server framework markers only. A bare `TcpListener`
+          # is deliberately NOT a signal: it is dominated by test/utility use
+          # (e.g. a #[cfg(test)] loopback fake), so matching it produced a
+          # spurious groove nudge on client-only apps. A real hand-rolled Rust
+          # server still pairs the listener with `axum::serve`/`hyper::Server`,
+          # which are matched here.
+          HAS_SERVER="false"
+          if grep -rl 'Bandit\|Plug.Cowboy\|httpz\|vweb\|axum::serve\|actix_web\|hyper::Server\|rocket::build\|warp::serve' --include='*.rs' --include='*.ex' --include='*.zig' --include='*.v' . 2>/dev/null | head -1 | grep -q .; then
+            HAS_SERVER="true"
+          fi
+
+          echo "has_manifest=$HAS_MANIFEST" >> "$GITHUB_OUTPUT"
+          echo "has_groove_code=$HAS_GROOVE_CODE" >> "$GITHUB_OUTPUT"
+          echo "has_server=$HAS_SERVER" >> "$GITHUB_OUTPUT"
+
+          if [ "$HAS_SERVER" = "true" ] && [ "$HAS_MANIFEST" = "false" ] && [ "$HAS_GROOVE_CODE" = "false" ]; then
+            echo "::warning::This repo has server code but no Groove endpoint. Add www/.well-known/groove/manifest.json for service discovery."
+          fi
+
+      - name: Write summary
+        run: |
+          echo "## Groove Protocol Check" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Check | Status |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|-------|--------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Static manifest (www/.well-known/groove/manifest.json) | ${{ steps.groove.outputs.has_manifest }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Groove endpoint in code | ${{ steps.groove.outputs.has_groove_code }} |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Has HTTP server code | ${{ steps.groove.outputs.has_server }} |" >> "$GITHUB_STEP_SUMMARY"
+
+  # ---------------------------------------------------------------------------
+  # Job 5: eclexiaiser manifest validation
+  # ---------------------------------------------------------------------------
+  eclexiaiser-validate:
+    name: Validate eclexiaiser manifest
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Check and validate eclexiaiser manifest
+        id: eclex
+        run: |
+          if [ ! -f "eclexiaiser.toml" ]; then
+            # Check if repo has a Containerfile — if so, recommend eclexiaiser
+            if [ -f "Containerfile" ]; then
+              echo "::warning::Containerfile present but no eclexiaiser.toml. Run \`eclexiaiser init\` to scaffold energy/carbon budgets."
+            fi
+            echo "has_manifest=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "has_manifest=true" >> "$GITHUB_OUTPUT"
+
+          # Validate eclexiaiser.toml structure (bash + grep; NO Python per estate policy).
+          # Structural presence checks only — deep schema validation is eclexiaiser's own job.
+          err=0
+          grep -qE '^[[:space:]]*\[project\]'        eclexiaiser.toml || { echo "::error file=eclexiaiser.toml::[project] section is required"; err=1; }
+          grep -qE '^[[:space:]]*name[[:space:]]*=[[:space:]]*"[^"]+"' eclexiaiser.toml || { echo "::error file=eclexiaiser.toml::a non-empty name is required"; err=1; }
+          grep -qE '^[[:space:]]*\[\[functions\]\]'  eclexiaiser.toml || { echo "::error file=eclexiaiser.toml::at least one [[functions]] entry is required"; err=1; }
+          if [ "$err" -ne 0 ]; then
+            exit 1
+          fi
+          fns=$(grep -cE '^[[:space:]]*\[\[functions\]\]' eclexiaiser.toml)
+          echo "Valid: eclexiaiser.toml structure present (${fns} function block(s))"
+
+      - name: Write summary
+        run: |
+          if [ "${{ steps.eclex.outputs.has_manifest }}" = "true" ]; then
+            echo "## Eclexiaiser Manifest" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo ":white_check_mark: **eclexiaiser.toml** present and valid." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "## Eclexiaiser Manifest" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo ":ballot_box_with_check: No eclexiaiser.toml. Add one with \`eclexiaiser init\` for energy/carbon tracking." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  # ---------------------------------------------------------------------------
+  # Job 6: Canon lockstep — does this template still implement the canon?
+  #
+  # The canon<->spine binding. hyperpolymath/standards publishes canon.lock: the
+  # released identity of the law, with a sha256 per law artefact. This repo
+  # declares the SAME hashes in .machine_readable/rsr-profile.a2ml [canon].
+  #
+  # Before this job, the declaration was two free-text strings
+  # (`spec = "rsr-criteria-v2"`, `declares-against = "2.0.0-draft"`) and nothing
+  # failed when the canon changed. This makes it a comparison.
+  #
+  # Deliberately a bare `run:` step with NO `uses:`. Adding an action reference
+  # would have required an actions.lock row, and this repo's lock records
+  # FLOATING refs ('actions/checkout@v7.0.1') where the canon's records SHAs -
+  # so a pinned `uses:` here would mismatch the lock and fail at LOAD time with
+  # `jobs=0` and no annotation. Read-only over the public internet needs no auth.
+  # ---------------------------------------------------------------------------
+  canon-lockstep:
+    name: Canon lockstep
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Fetch the canon's released identity
+        id: canon
+        run: |
+          set -euo pipefail
+          LOCK="$RUNNER_TEMP/canon.lock"
+          URL="https://raw.githubusercontent.com/hyperpolymath/standards/main/canon.lock"
+          if ! curl -fsSL --retry 3 --max-time 30 "$URL" -o "$LOCK"; then
+            echo "::error::could not fetch canon.lock from $URL"
+            echo "The canon does not publish a released identity, so this repo"
+            echo "cannot be shown to implement it. Fix at source: add canon.lock."
+            exit 1
+          fi
+          # Read (not compute) the criteria hash canon.lock asserts.
+          #
+          # awk only JOINS the record — the artefact entries are inline tables
+          # that span lines — then grep -oE extracts the hash. Deliberately the
+          # same two-step the canon's own check-canon-lockstep.sh uses, so
+          # there is one technique across both repos.
+          #
+          # Two traps this avoids, both found by running it rather than reading
+          # it. (1) An earlier version used `gsub(/.*"|"/,"",s)` to strip the
+          # quotes; the `.*"` is GREEDY, so it ate the entire string and the
+          # hash came out EMPTY. (2) awk interval expressions are not portable
+          # across mawk/gawk builds; grep -oE is.
+          rec="$(awk '
+            /^[[:space:]]*#/ { next }
+            /^criteria[[:space:]]*=/ { on=1 }
+            on {
+              line=$0; sub(/#.*/,"",line); rec = rec " " line
+              if (line ~ /}/) { on=0 }
+            }
+            END { print rec }' "$LOCK")"
+          want="$(printf '%s\n' "$rec" \
+            | grep -oE 'sha256[[:space:]]*=[[:space:]]*"[0-9a-f]{64}"' \
+            | grep -oE '[0-9a-f]{64}' | head -1)"
+          if [ -z "$want" ]; then
+            echo "::error::canon.lock carries no criteria sha256 — malformed, or"
+            echo "the criteria record no longer starts a line with 'criteria ='."
+            exit 1
+          fi
+          echo "want=$want" >> "$GITHUB_OUTPUT"
+
+      - name: Compare this repo's declared pin
+        env:
+          WANT: ${{ steps.canon.outputs.want }}
+          # This job has NO `uses:` steps, deliberately: any added action would
+          # have to be pinned in actions.lock, and `uses ⊆ actions.lock` is already
+          # failing on main, so this job must not make it worse. That means no
+          # actions/checkout — and therefore NO WORKING TREE. Which is what
+          # broke this job: it read "machine-readable/rsr-profile.a2ml" from a
+          # directory that was never populated, so it failed 100% of the time
+          # with "no rsr-profile.a2ml", and would have whatever the pin said.
+          #
+          # Fetch the profile by SHA instead, exactly as canon.lock is fetched
+          # above. Deliberately NOT github.sha: on pull_request that is the
+          # ephemeral MERGE commit, which is not on the remote and would 404.
+          # The event's head sha is the commit that actually exists there.
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          PROFILE="$RUNNER_TEMP/rsr-profile.a2ml"
+          fetched=""
+          for p in ".machine_readable/rsr-profile.a2ml" "machine-readable/rsr-profile.a2ml"; do
+            URL="https://raw.githubusercontent.com/hyperpolymath/czech-file-knife/${HEAD_SHA}/${p}"
+            if curl -fsSL --retry 3 --max-time 30 "$URL" -o "$PROFILE" 2>/dev/null; then
+              fetched="$p"; break
+            fi
+          done
+          if [ -z "$fetched" ]; then
+            echo "::error::no rsr-profile.a2ml at ${HEAD_SHA:0:7} — this repo cannot declare a canon pin"
+            echo "Looked for .machine_readable/rsr-profile.a2ml and machine-readable/rsr-profile.a2ml."
+            exit 1
+          fi
+          echo "profile: $fetched @ ${HEAD_SHA:0:7}"
+
+          # ALL THREE PINS, BOTH SIDES.
+          #
+          # This step used to compare only criteria_sha256, while this repo's own
+          # rsr-profile.a2ml stated that "these values ... equal canon.lock
+          # [canon.artifacts]" — plural. The claim was wider than the check, so
+          # `version` and `gates_sha256` could sit at stale values and nothing
+          # reported it. They did: canon 2.0.1 changed gates_sha256, and this repo
+          # kept asserting 2.0.0 and the superseded hash. A pin nothing verifies
+          # is not a binding. See hyperpolymath/standards docs/AUDIT.adoc F8.
+          #
+          # Both readers below are the technique the canon's own
+          # check-canon-lockstep.sh uses, so there is one idiom across both repos.
+          canon_key() {
+            awk -v key="$1" '
+              /^[[:space:]]*#/ { next }
+              /^\[/ { f = ($0 == "[canon]") ? 1 : 0; next }
+              f && $0 ~ "^[[:space:]]*" key "[[:space:]]*=" {
+                sub(/^[^=]*=[[:space:]]*/, ""); gsub(/^["[:space:]]+|["[:space:]]+$/, ""); print; exit
+              }' "$2"
+          }
+          # The artefact records are inline tables spanning lines, so awk JOINS the
+          # record and grep extracts the hash. Deliberately not anchored to the
+          # sha256 being on any particular line of the record.
+          artefact_hash() {
+            awk -v key="$1" '
+              $0 ~ "^" key "[[:space:]]*=" { f = 1 }
+              f { buf = buf " " $0 }
+              f && /sha256[[:space:]]*=/ { print buf; exit }
+            ' "$2" | grep -oE '[0-9a-f]{64}' | head -1
+          }
+
+          want_crit="$WANT"
+          want_gates="$(artefact_hash gates "$RUNNER_TEMP/canon.lock")"
+          want_ver="$(canon_key version "$RUNNER_TEMP/canon.lock")"
+          got_crit="$(canon_key criteria_sha256 "$PROFILE")"
+          got_gates="$(canon_key gates_sha256 "$PROFILE")"
+          got_ver="$(canon_key version "$PROFILE")"
+
+          # An unreadable pin must not pass. Hashing or parsing nothing yields an
+          # empty string, and `"" = ""` is a green build with nothing behind it —
+          # the same class of bug as this job reading a file that was never there.
+          for pair in "want_crit:$want_crit" "want_gates:$want_gates" "want_ver:$want_ver" \
+                      "got_crit:$got_crit" "got_gates:$got_gates" "got_ver:$got_ver"; do
+            if [ -z "${pair#*:}" ]; then
+              echo "::error::could not read ${pair%%:*} — refusing to compare an empty value"
+              exit 1
+            fi
+          done
+
+          ok=1
+          row() {
+            mark=":x:"
+            if [ "$2" = "$3" ]; then mark=":white_check_mark:"; else ok=0; fi
+            printf '| `%s` | `%s` | `%s` | %s |\n' "$1" "${2:0:16}" "${3:0:16}" "$mark"
+          }
+          {
+            echo "## Canon lockstep"
+            echo ""
+            echo "| pin | canon.lock asserts | this repo declares | |"
+            echo "|---|---|---|---|"
+            row version         "$want_ver"   "$got_ver"
+            row criteria_sha256 "$want_crit"  "$got_crit"
+            row gates_sha256    "$want_gates" "$got_gates"
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ "$ok" = "1" ]; then
+            echo ":white_check_mark: This template implements the canon at HEAD."
+            exit 0
+          fi
+          echo "::error::canon lockstep broken — the template does not implement the canon at HEAD"
+          {
+            echo ""
+            echo ":x: **Lockstep broken.**"
+            echo ""
+            echo "The canon's law changed and this template has not adopted it."
+            echo "Order matters (\`canon.lock [canon.lockstep].order\` is"
+            echo "\`spine-adopts-then-canon-releases\`): re-pin \`[canon]\` in"
+            echo "\`.machine_readable/rsr-profile.a2ml\` to the new hashes and fix any"
+            echo "criteria this repo now fails, BEFORE the canon release lands."
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit 1
+  # ---------------------------------------------------------------------------
+  # Job 7: Dogfooding summary
+  # ---------------------------------------------------------------------------
+  dogfood-summary:
+    name: "ℹ️ ADVISORY: Dogfooding compliance summary (non-gating)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [deed-validate, k9-validate, empty-lint, groove-check, eclexiaiser-validate, canon-lockstep]
+    if: always()
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Generate dogfooding scorecard
+        run: |
+          SCORE=0
+          MAX=6
+
+          # DEED manifest present? (.a2ml legacy extension accepted during standards #837 migration)
+          if find . \( -name '*.a2ml' -o -name '*.deed' \) -not -path './.git/*' | head -1 | grep -q .; then
+            SCORE=$((SCORE + 1))
+            DEED_STATUS=":white_check_mark:"
+          else
+            DEED_STATUS=":x:"
+          fi
+
+          # K9 contracts present?
+          if find . \( -name '*.k9' -o -name '*.k9.ncl' \) -not -path './.git/*' | head -1 | grep -q .; then
+            SCORE=$((SCORE + 1))
+            K9_STATUS=":white_check_mark:"
+          else
+            K9_STATUS=":x:"
+          fi
+
+          # .editorconfig present?
+          if [ -f ".editorconfig" ]; then
+            SCORE=$((SCORE + 1))
+            EC_STATUS=":white_check_mark:"
+          else
+            EC_STATUS=":x:"
+          fi
+
+          # Groove manifest or code?
+          if [ -f "www/.well-known/groove/manifest.json" ] || [ -f ".well-known/groove/manifest.json" ] || grep -rl 'well-known/groove' --include='*.rs' --include='*.ex' --include='*.zig' . 2>/dev/null | head -1 | grep -q .; then
+            SCORE=$((SCORE + 1))
+            GROOVE_STATUS=":white_check_mark:"
+          else
+            GROOVE_STATUS=":ballot_box_with_check:"
+          fi
+
+          # VeriSimDB integration?
+          if grep -rl 'verisimdb\|VeriSimDB' --include='*.toml' --include='*.yaml' --include='*.yml' --include='*.json' --include='*.rs' --include='*.ex' . 2>/dev/null | head -1 | grep -q .; then
+            SCORE=$((SCORE + 1))
+            VSDB_STATUS=":white_check_mark:"
+          else
+            VSDB_STATUS=":ballot_box_with_check:"
+          fi
+
+          # eclexiaiser energy tracking?
+          if [ -f "eclexiaiser.toml" ]; then
+            SCORE=$((SCORE + 1))
+            ECLEX_STATUS=":white_check_mark:"
+          else
+            ECLEX_STATUS=":ballot_box_with_check:"
+          fi
+
+          cat <<EOF >> "$GITHUB_STEP_SUMMARY"
+          ## Dogfooding Scorecard
+
+          **Score: ${SCORE}/${MAX}**
+
+          | Tool/Format | Status | Notes |
+          |-------------|--------|-------|
+          | DEED repo deed (`<reponame>_chora.deed`) | ${DEED_STATUS} | Required for all RSR repos |
+          | K9 contracts | ${K9_STATUS} | Required for repos with config files |
+          | .editorconfig | ${EC_STATUS} | Required for all repos |
+          | Groove endpoint | ${GROOVE_STATUS} | Required for service repos |
+          | VeriSimDB integration | ${VSDB_STATUS} | Required for stateful repos |
+          | eclexiaiser | ${ECLEX_STATUS} | Energy/carbon budgets for container services |
+
+          ---
+          *Generated by the [Dogfood Gate](https://github.com/hyperpolymath/czech-file-knife) workflow.*
+          *Dogfooding is guinea pig fooding — we test our tools on ourselves.*
+          EOF
+
+  rsr-score-self:
+    name: RSR oracle — dogfood this repo
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/checkout@v7.0.1
+        with:
+          repository: hyperpolymath/standards
+          path: _standards
+      - uses: actions/checkout@v7.0.1
+        with:
+          repository: hyperpolymath/hypatia
+          path: _hypatia
+      - name: Setup Elixir for the oracle
+        uses: erlef/setup-beam@v1.24.1
+        with:
+          elixir-version: '1.19.4'
+          otp-version: '28.3'
+      - name: Compile the oracle
+        working-directory: _hypatia
+        run: mix deps.get && mix compile
+      - name: Score this repo against the canon
+        working-directory: _hypatia
+        run: |
+          # --ssot is explicit until the hypatia M-3 fix lands (the
+          # --standards default still points at the pre-reorg path).
+          mix hypatia.rsr_score .. \
+            --ssot ../_standards/0-canon/rsr/rsr-criteria-v2.a2ml \
+            --write
+      - name: Show the scorecard
+        if: always()
+        run: |
+          if [ -f .machine_readable/descriptiles/SCORECARD.a2ml ]; then
+            cat .machine_readable/descriptiles/SCORECARD.a2ml
+          else
+            echo "::warning::no scorecard written — the oracle failed; see the step log"
+          fi
+      # Deliberately NO --fail-under: the point is to publish the honest
+      # scorecard (provisional=true until the coverage worklist is triaged),
+      # not to gate the spine on itself. Tightens in the PR that lands the
+      # first coverage tranche.

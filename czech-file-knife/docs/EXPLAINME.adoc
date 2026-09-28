@@ -1,0 +1,118 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= RSR Template Repo - Explainme
+image:https://img.shields.io/badge/License-MPL_2.0-blue.svg[License: MPL-2.0,link="https://opensource.org/licenses/MPL-2.0"]
+
+:toc:
+:icons: font
+
+This file explains how the key template claims map to real files.
+
+== Central Session Protocol Authority
+
+Claim:
+Session protocols are centrally maintained and not duplicated in this template.
+
+How this is implemented:
+
+* The local dispatcher (`session/dispatch.sh`) maps canonical commands to central
+  protocol paths in `standards/3-practice/session-management-standards`.
+* Local files (`session/custom-checks.k9`, `session/local-hooks.sh`,
+  `coordination.k9`) are integration-only.
+
+Caveat:
+
+* If `SESSION_STANDARDS_DIR` is unset and no adjacent standards checkout exists,
+  the dispatcher records the command but cannot resolve central checklist paths.
+
+== Canonical Command Surface
+
+Claim:
+Template bindings align to one canonical command model.
+
+How this is implemented:
+
+* `Justfile` provides thin aliases (`intake-repo`, `checkpoint-change`,
+  `verify-maintenance`, `verify-substantial`, `verify-release`, `close-planned`,
+  `close-urgent`, `recover-repo`, `handover-*`).
+* Every alias calls `session/dispatch.sh` with canonical verb-object pairs.
+
+Caveat:
+
+* Recipes are wrappers only. They do not replace protocol content from
+  the central standards repo.
+
+== Runtime State Is Local
+
+Claim:
+Session state is per-repository runtime output, not standards text.
+
+How this is implemented:
+
+* `session/dispatch.sh` writes command and continuity-core capture stubs to
+  `.session/LAST-CANONICAL-COMMAND.md` in the target repository path.
+
+Caveat:
+
+* Runtime files are intentionally lightweight and require human/agent completion.
+
+== Template Token Policy
+
+Claim:
+Placeholders are explicit template content until initialization.
+
+How this is implemented:
+
+* `README.adoc` and bootstrap recipes keep `{{TOKEN}}` placeholders visible.
+* `just init` performs token replacement.
+
+Caveat:
+
+* Uninitialized placeholders must not be treated as project-specific truth.
+
+== Dependency Updates (Dependabot)
+
+Claim:
+Dependency bumps land fast and safely, without manual chasing.
+
+How this is implemented:
+
+* `dependabot.yml` watches the Dependabot-supported ecosystems the estate
+  actually uses: `github-actions`, `cargo`, `mix` (Elixir), `docker`.
+* `dependabot-automerge.yml` auto-merges *every* bump (patch/minor/major,
+  security or routine) **once the required checks are green** — a broken bump
+  fails CI and stays open (you get an email); it never lands on a red `main`.
+
+Caveat:
+
+* Dependabot has **no  or Bun ecosystem**, and `pnpm` only rides under the
+  `npm` ecosystem (itself banned). For this -first estate Dependabot cannot
+  watch the runtime dependencies; the `npm`/`pip` entries are retained only for
+  transitional/legacy manifests and are otherwise inert.  dependency
+  currency is managed via `.json`/`.lock`, not Dependabot.
+* Do **not** add Dependabot as a ruleset *bypass* actor: that lets bumps skip
+  the required checks (secret-scanning, SAST), removing the safety gate and the
+  "it broke" signal. Auto-merge-on-green gives fast merges without it.
+
+== Julia Registry Packages — Standalone Repo Requirement
+
+Claim:
+If this template is used to create a Julia package, it must remain a standalone repository registered with the Julia package registry.
+
+How this is implemented:
+
+* Julia's package registry (General.jl or other) expects each package to be a standalone GitHub repository with `Project.toml` at the repository root.
+* Installation via `Pkg.add()`, dependency resolution, and automated CI/CD all depend on this canonical structure.
+
+Caveat:
+
+* Do NOT move this repository into a monorepo or subdirectory, as this breaks registry registration and package discoverability.
+* Julia packages published to a registry must each remain a standalone top-level repository (registry registration and package discovery require it).
+* Non-registry Julia packages can be organized differently if they are not published to any registry.
+
+
+== License
+
+This project is licensed under the Mozilla Public License, v. 2.0. See the `LICENSE` file for details.
+
+SPDX-License-Identifier: CC-BY-SA-4.0

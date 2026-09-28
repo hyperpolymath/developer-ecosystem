@@ -1,0 +1,58 @@
+# SPDX-License-Identifier: MPL-2.0
+#
+# www-bundle.campaign — propagate the canonical www/ test suite and runbooks.
+#
+# THE GAP THIS CLOSES
+#
+# Issue #119 stage 5 moved every estate repository's root .well-known/ to
+# www/.well-known/. What it could not do was bring the rest of the bundle:
+#
+#   "no www/tests bundle" — all 262 sweep results
+#   0/269 estate repositories carry any www/ tree
+#
+# so repositories ended up with a www/.well-known/ directory and nothing that
+# knows how to check it. This campaign carries the checks and the runbooks that
+# operate them.
+#
+# WHY IT IS SCOPED TO TWO DIRECTORIES AND NOT ALL OF www/
+#
+# Measured 2026-09-18 by applying the suite to a real post-migration checkout
+# (Axiom.jl at chore/well-known-to-www):
+#
+#   www/tests/ alone      -> 3 of 6 checks FAIL
+#   www/tests/ + guards   -> 0 failures, 3 explicit SKIPs
+#
+# The failures were checks whose INPUTS the bundle does not supply:
+# check-publication-boundary.sh wants www/schemas/ + www/webservers/,
+# check-aibdp.sh wants www/.well-known/aibdp.json, check-migration.sh wants the
+# template-side migrator. Those guards now exist, so the suite states that it
+# does not apply instead of failing where it does not apply.
+#
+# The rest of www/ is deliberately NOT propagated:
+#
+#   www/public/       per-repo placeholders (Czech File Knife and friends)
+#   www/policies/     per-repo placeholders
+#   www/dns/          a DNS scaffold most repositories do not operate
+#   www/tls/          as above
+#   www/webservers/   as above
+#   www/schemas/      only meaningful alongside the servers above
+#   www/profiles/     as above
+#   www/.well-known/  per-repo CONTENT, already migrated by stage 5 — the
+#                     spine's copy holds placeholders and would overwrite
+#                     every repository's real security.txt contact
+#
+# Carrying those would re-plant template identity in 262 repositories at once.
+# They are a separate campaign with per-repo substitution, and they need their
+# own decision and their own review.
+#
+# The two directories here contain no non-meta {{TOKEN}} at all, so every file
+# travels verbatim. rsr-campaign.sh still checks, so this manifest cannot
+# silently become untrue.
+
+[meta]
+name        = chore/rsr-www-bundle
+description = canonical www/ test suite + operational runbooks (issue #119 follow-on)
+
+[paths]
+www/tests/
+www/runbooks/

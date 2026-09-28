@@ -1,0 +1,231 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Root Cleanup Proposal — Reconcile Template With Its Own Audit
+:toc:
+:toclevels: 3
+:sectnums:
+
+== Motivation
+
+`TEMPLATE-STANDARDS-AUDIT.adoc` ships a "Proposed Final Directory Map" for the
+template root. The tracked root violates that map by roughly 5x:
+
+[cols="1,1,1",options="header"]
+|===
+| Bucket | Audit-mandated count | Actual count
+
+| Root files (visible)
+| 6
+| 36
+
+| Root directories (visible)
+| 3
+| 17
+|===
+
+Downstream repositories (e.g. `the-nash-equilibrium`) inherit the violation
+verbatim. This proposal describes the relocations that bring the template back
+into compliance with its own map, and adds an automated guard
+(`scripts/check-root-shape.sh` against `.machine_readable/root-allow.txt`) so
+the violation cannot silently return.
+
+NOTE: This is a template-side change. Downstream repos pick it up via a
+one-shot relocation PR per project once the template lands.
+
+== Allowlist (canonical root)
+
+The full enumeration lives in `.machine_readable/root-allow.txt`. Summary:
+
+* *Authority files (root):* `README.adoc`, `AUDIT.adoc`, `EXPLAINME.adoc`,
+  `0-AI-MANIFEST.a2ml` (thin pointer), `LICENSE`, `CHANGELOG.md`.
+* *Build entry points (root):* `Justfile`, `coordination.k9`.
+* *Tool-required dotfiles (root):* `.editorconfig`, `.envrc`, `.gitattributes`,
+  `.gitignore`, `.tool-versions`.
+* *Directories (root):* `.git/`, `.github/`, `.machine_readable/`,
+  `.well-known/`, `build/`, `ci/`, `docs/`, `session/`, plus the conventional
+  source/test trees (`src/`, `tests/`, `benches/`, `examples/`, `features/`,
+  `scripts/`, `verification/`, `build/container/`).
+
+== Relocation plan
+
+Each line is a `git mv` (or delete) plus the references that need updating.
+Run from the template repo root.
+
+=== Onboarding prose → `docs/onboarding/`
+
+[source,bash]
+----
+mkdir -p docs/onboarding
+git mv QUICKSTART-DEV.adoc        docs/onboarding/
+git mv QUICKSTART-USER.adoc       docs/onboarding/
+git mv QUICKSTART-MAINTAINER.adoc docs/onboarding/
+git mv llm-warmup-dev.md          docs/onboarding/
+git mv llm-warmup-user.md         docs/onboarding/
+----
+
+References to update:
+
+* `README.adoc` — any `link:QUICKSTART-*.adoc[…]`.
+* `Justfile` — any `cat QUICKSTART-*` echoes in `init`/`help`.
+
+=== Status/roadmap docs → `docs/status/`
+
+[source,bash]
+----
+mkdir -p docs/status docs/architecture
+git mv READINESS.md     docs/status/
+git mv ROADMAP.adoc     docs/status/
+git mv TEST-NEEDS.md    docs/status/
+git mv PROOF-NEEDS.md   docs/status/
+git mv PROOF-STATUS.md  docs/status/
+git mv TOPOLOGY.md      docs/architecture/   # validate-template.sh already accepts this path
+----
+
+References to update:
+
+* `README.adoc` — `link:ROADMAP.adoc[…]` and similar.
+* `Justfile` — `readiness:` recipe (currently reads `READINESS.md`).
+
+=== Health files → `.github/`
+
+GitHub auto-discovers these under `.github/`, so the move is transparent to
+contributors and tools.
+
+[source,bash]
+----
+git mv CONTRIBUTING.md    .github/
+git mv CODE_OF_CONDUCT.md .github/
+git mv SECURITY.md        .github/
+----
+
+=== Build orchestration → `build/`
+
+`Justfile` stays at root (just convention) but becomes thin: it imports
+phase-specific just files from `build/`.
+
+[source,bash]
+----
+mkdir -p build
+git mv contractile.just build/
+git mv setup.sh         build/
+git mv guix.scm         build/
+git mv .guix-channel    build/
+# Containerfile may already live in build/container/ — keep whichever the project uses.
+[ -f Containerfile ] && git mv Containerfile  build/
+----
+
+References to update in `Justfile`:
+
+[source,diff]
+----
+- import? "contractile.just"
++ import? "build/contractile.just"
+----
+
+The current Justfile already supports `build/container/Containerfile` *or* root
+`Containerfile` — extend that to also accept `build/Containerfile`.
+
+The 62 KB monolithic `Justfile` is a separate smell. A follow-up should split
+it under `build/just/{init,verify,test,docs,container,security}.just` with
+`import?` lines from the thin root file.
+
+=== CI configs → `ci/`
+
+Most CI tools accept a custom config path; where they don't, a one-line root
+shim file is acceptable.
+
+[source,bash]
+----
+mkdir -p ci
+git mv .gitlab-ci.yml         ci/
+git mv .pre-commit-config.yaml ci/
+----
+
+Updates required:
+
+* GitLab CI: project setting "CI/CD configuration file" → `ci/.gitlab-ci.yml`.
+* pre-commit: invoke as `pre-commit run --config ci/.pre-commit-config.yaml`,
+  or leave a one-line root shim.
+
+=== Custom-format configs → `.machine_readable/configs/`
+
+[source,bash]
+----
+git mv eclexiaiser.toml   .machine_readable/configs/
+git mv selur-compose.toml .machine_readable/configs/
+git mv stapeln.toml       .machine_readable/configs/
+----
+
+References to update wherever any tool reads them (grep for the filenames
+across `Justfile`, `scripts/`, `.machine_readable/`).
+
+=== AI manifest deduplication
+
+`.machine_readable/0.1-AI-MANIFEST.a2ml` is the canonical AI manifest in both
+the template and downstream repos (e.g. `the-nash-equilibrium` README line
+244). The root `0-AI-MANIFEST.a2ml` becomes a thin pointer:
+
+[source,a2ml]
+----
+# 0-AI-MANIFEST.a2ml — pointer file
+authority = ".machine_readable/0.1-AI-MANIFEST.a2ml"
+note = "AI agents MUST read the canonical manifest at the path above."
+----
+
+Once the canonical version is stable, decide whether to keep this pointer at
+root or delete it entirely.
+
+=== Template-only relocations
+
+A dry-run of `check-root-shape.sh` against the unmodified template flagged
+three template-only extras that aren't drift in downstream repos but should
+move regardless:
+
+[source,bash]
+----
+# The audit doc itself is drift — it doesn't apply at root.
+git mv TEMPLATE-STANDARDS-AUDIT.adoc docs/governance/
+
+# `tools/` and `scripts/` overlap; pick one (proposal: keep `scripts/`).
+# Inspect tools/ contents and either merge into scripts/ or rename and document
+# the split (e.g. `scripts/` = repo-local helpers, `tools/` = bundled binaries).
+----
+
+=== Hygiene: case collisions in `affinescript/stdlib/`
+
+Cloning the template on a case-insensitive filesystem (Windows, default macOS)
+silently drops files because of pairs like `Math.affine` vs `math.affine`.
+
+Pick one canonical case per name and `git mv` the duplicates away. Keeping
+both is not portable.
+
+== Justfile recipe
+
+[source,just]
+----
+# Verify root layout against the canonical allowlist.
+check-root-shape:
+    ./scripts/check-root-shape.sh
+
+# Add to the existing aggregate `verify` target.
+verify: ... check-root-shape ...
+----
+
+A pre-commit hook (in `ci/.pre-commit-config.yaml`) and a CI job
+(`ci/.gitlab-ci.yml`) should both call `just check-root-shape`.
+
+== Downstream rollout
+
+For each downstream repo (start with `the-nash-equilibrium`):
+
+1. Apply the same `git mv` set (skip moves whose source doesn't exist locally).
+2. Copy the new `.machine_readable/root-allow.txt` and adapt comments/extras.
+3. Update internal links (README, docs, Justfile recipes).
+4. Run `just check-root-shape` and `scripts/validate-template.sh` to confirm
+   shape parity with the template.
+
+== Out of scope (mentioned for follow-up)
+
+* Splitting the 62 KB monolithic `Justfile`.
+* Migrating from GitLab CI to GitHub Actions parity (or vice versa).
+* Reworking the `0.1-` / `0.2-` manifest versioning convention.

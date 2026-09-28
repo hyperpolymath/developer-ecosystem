@@ -1,0 +1,63 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Maintainers
+:toc: preamble
+
+This is the single maintainer roster for this repository. It supersedes the
+earlier duplicates at `.github/MAINTAINERS` and `docs/attribution/MAINTAINERS.adoc`.
+
+== Current maintainers
+
+[cols="2,3,2",options="header"]
+|===
+| Name | Role | Contact
+
+| Jonathan D.A. Jewell
+| Lead Maintainer
+| https://github.com/hyperpolymath[@hyperpolymath]
+|===
+
+== Responsibilities
+
+Maintainers are responsible for:
+
+* Reviewing and merging pull requests
+* Triaging issues and feature requests
+* Ensuring code quality and security standards
+* Managing releases and versioning
+* Upholding the project's Code of Conduct
+* Maintaining documentation and examples
+* Responding to security vulnerabilities
+
+== Contribution process
+
+Contributions are welcome via:
+
+. **Issues** — report bugs, request features, ask questions
+. **Pull requests** — submit improvements for review
+. **Discussions** — engage with the wider project
+
+== Decision making
+
+* Routine decisions (bug fixes, minor improvements) may be made by any maintainer.
+* Significant changes require discussion and consensus among maintainers.
+* Breaking changes should be discussed in an issue, with a migration path, before
+  implementation.
+
+== Becoming a maintainer
+
+Contributors who demonstrate consistent, high-quality contributions, an
+understanding of the project's goals and standards, constructive participation,
+and commitment to its long-term health may be invited to become maintainers at
+the discretion of the existing maintainers.
+
+== Contact
+
+For questions about project governance, open an issue in this repository.
+
+== See also
+
+* link:GOVERNANCE.adoc[Governance model]
+* link:../.github/CODE_OF_CONDUCT.md[Code of Conduct]
+* link:../.github/CONTRIBUTING.md[Contributing guide]
+* link:attribution/CODEOWNERS.adoc[Code owners]

@@ -1,0 +1,85 @@
+# Canonical root allowlist for RSR-templated repositories.
+#
+# Lists every entry permitted at the repository root. The check is
+# BIDIRECTIONAL:
+#   * anything at root that is not listed here is drift, and fails;
+#   * anything listed here WITHOUT the '?' marker must exist, and its
+#     absence fails.
+#
+# The second half is the important one. This file previously permitted a
+# large set of root files that the April 2026 root cleanup had already
+# relocated into docs/ (READINESS.adoc, PROOF-*, TOPOLOGY.adoc,
+# llm-warmup-*, ...). Because the check was one-directional, those stale
+# permissions were invisible: the allowlist had quietly become a licence
+# for the very drift it was written to prevent. A one-directional
+# allowlist only ever ratchets open.
+#
+# Used by: scripts/check-root-shape.sh
+#
+# Format
+#   one entry per line; '#' starts a comment; trailing '/' marks a directory
+#   '?' prefix  -> OPTIONAL: permitted, but not required to exist
+#   no prefix   -> REQUIRED: permitted, and its absence is drift
+#
+# Mark an entry '?' when it is legitimately absent in some conforming repo:
+# template-only material removed at mint, or a module gated on a capability
+# the repo does not declare (see standards' template-capability-gates.toml).
+# Do NOT mark something optional merely to silence a failure.
+
+# ─── Baseline: every RSR repo has these ──────────────────────────────────────
+README.adoc
+LICENSE
+LICENSES/                  # REUSE licence texts, dual-licence model (code MPL-2.0 / docs CC-BY-SA-4.0)
+CHANGELOG.adoc             # AsciiDoc is the estate-standard documentation format
+CITATION.cff               # citation metadata; GitHub reads it from the root of the default branch only
+czech-file-knife_chora.deed # the repo deed: universal AI entry point; family-7 allocation manifest + ply tree folded in (standards#837 pilot). Filename carries the repo slug (deed dispatch <stem>_chora.deed), so repo-init renames it at mint
+CLAUDE.md                  # generated arrival pack; the generator, pre-commit and Claude Code all read it from the ROOT (do not hand-edit; edit the a2ml source)
+?GEMINI.md                # pointer to CLAUDE.md for repos without AGENTS.md yet
+Justfile                   # thin; delegates phases to build/just/*.just
+coordination.k9.ncl        # repo-local session binding (template-mandated)
+
+# ─── Conventional dotfiles (tool-required at root) ───────────────────────────
+.editorconfig
+.envrc
+.gitattributes
+.gitignore
+.gitleaksignore            # exact fingerprints for reviewed historical false positives
+.cicd-hygiene-allow        # code-hygiene gate allowlist; template scaffolds are seams, not debt
+.gitmessage             # git commit template; wired by .github/hooks/install.sh (git config commit.template)
+.mailmap                   # git reads .mailmap from the worktree root only
+.tool-versions
+mise.toml                  # pinned toolchains
+.hypatia-ignore            # the Hypatia scanner reads it from the repo root
+.clinerules                # AI editor rules. Cline/Cursor/Windsurf read these from the project
+.cursorrules               # ROOT, so the copies formerly under .machine_readable/ai/ were inert.
+.windsurfrules
+?.claude/                  # Claude Code project state (checkpoints, history) — created by the tool itself
+
+# ─── Directories ─────────────────────────────────────────────────────────────
+.git/
+.github/                 # community health + workflows (GitHub reads this path and no other) + versioned git hooks (.github/hooks/, wired via core.hooksPath)
+www/                       # site-operations bundle; canonical .well-known/ lives at www/.well-known/ (issue #53)
+.machine_readable/          # manifests, contractiles, policies. Renamed back from machine-readable/ 2026-09-17 by owner ruling, for one canonical spelling estate-wide (census at the 2026-08 divergence: 48 dotted vs 9 hyphenated — the majority was already dotted). See docs/governance/TEMPLATE-LINEAGE-AUDIT.adoc
+docs/                      # human documentation
+build/                     # build orchestration: just/ phase modules, container/, docs-seed/, templates/, guix.scm (canon 1.2.1 guix-primary template_ref = "build/")
+ci/                        # .gitlab-ci.yml + .pre-commit-config.yaml; ci/README.adoc records the out-of-band GitLab project setting these require
+scripts/                   # repo helper scripts
+session/                   # dispatch.sh, custom-checks.k9.ncl, local-hooks.sh
+src/
+tests/
+
+# ─── Optional: capability-gated or template-only ─────────────────────────────
+?archetypes/               # template-only variation seam (ADR-0003); `just repo-init` removes it from minted repos
+?.devcontainer/            # VS Code dev container spec; present only where the container capability is declared
+?sonar-project.properties  # only where the repo is analysed by SonarCloud
+?Cargo.toml                # rust capability (template-capability-gates.toml); cargo requires the workspace manifest at root
+?Cargo.lock                # rust capability; lives beside Cargo.toml
+?.clusterfuzzlite/         # ClusterFuzzLite reads its build config from the repo root only
+?benches/                  # Cargo-conventional at package root
+?examples/                 # Cargo-conventional at package root
+?features/                 # optional feature packs
+?verification/             # proofs; only where formal-proofs is declared
+?CONTRIBUTING.md           # accepted at root OR .github/; .github/ is the canonical estate location
+?CONTRIBUTING.adoc          # estate docs gate (standards scripts/check-docs-presence.sh) requires CONTRIBUTING at the ROOT; this is the copy it verifies
+?SECURITY.md               # accepted at root OR .github/; likewise
+?REQUIRES_INITIALISATION.md  # written by the minting process, removed once `just repo-init` runs

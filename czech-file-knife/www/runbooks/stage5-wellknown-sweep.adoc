@@ -1,0 +1,157 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Runbook: Sweep Root `.well-known/` into `www/` Across the Estate
+
+Purpose: propagate the canonical `www/.well-known/` arrangement (#53 stage 5,
+tracked by #119) across the repositories that still carry a root
+`.well-known/`, in batches, without hand-making 270 pull requests and without
+losing a byte of divergent content.
+
+Read this before running anything. The sweep is *unattended but not
+unsupervised*: it will not overwrite content, and it will not stay quiet about
+anything it could not resolve.
+
+== Before you start
+
+. A token with `repo` scope (public-only estates need `public_repo`):
++
+[source,bash]
+----
+export GITHUB_TOKEN=...
+----
++
+. A committer identity, because the sweep commits:
++
+[source,bash]
+----
+git var GIT_COMMITTER_IDENT   # must succeed; the driver refuses to start otherwise
+----
++
+. The repository list. `stage5-repos.txt` in the #119 tracker holds the
+  enumerated denominator (270 repositories as of 2026-09-17).
+
+== Step 1 — classify (read-only, one API call per repository)
+
+[source,bash]
+----
+bash scripts/sweep-wellknown.sh --repos-file stage5-repos.txt --classify-only
+----
+
+This writes `classification.csv` and touches nothing else. Each repository
+lands in one of three classes:
+
+`sweep`:: Identifiably RSR-templated (a root allowlist is present under either
+canonical spelling) and not served from the repository root. Safe to sweep.
++
+`review-pages`:: Pages or a CDN serves the repository root, or the name is a
+Pages site. For these a root `.well-known/` may be a *serving requirement*
+rather than legacy layout, and moving it out of the served root can break live
+discovery. #119 names `hyperpolymath.github.io` explicitly and asks for these
+to be classified before sweeping, so the driver does not sweep them unless you
+pass `--include-review`.
++
+`review-other`:: Carries a root `.well-known/` but shows no RSR marker, so the
+arrangement is not known to be template-derived. Held back for the same reason.
+
+Resolve the `review-*` rows by hand first. That is a decision, not a batch
+operation.
+
+== Step 2 — dry-run a batch
+
+[source,bash]
+----
+bash scripts/sweep-wellknown.sh --repos-file stage5-repos.txt --batch 1 --dry-run
+----
+
+Reports what would change, runs the suite, commits nothing. The per-repository
+reports land in the work directory as `reports/<repo>.tsv`, one row per file,
+with the action taken: `moved`, `deduped`, `quarantined`, `conflict`, `left`.
+
+== Step 3 — sweep the batch for real
+
+[source,bash]
+----
+bash scripts/sweep-wellknown.sh --repos-file stage5-repos.txt --batch 1
+----
+
+Commits locally, on branch `chore/well-known-to-www` by default. It does *not*
+push unless you pass `--push`; until you have reviewed a few batches, leave it
+off and push by hand.
+
+Per repository the driver runs the four steps #119 asks for: classify, migrate,
+run the suite (`www/tests/run-all.sh` where the repository carries the bundle),
+commit.
+
+== How divergence is handled
+
+Content that exists at both the root and under `www/` and *differs* is never
+overwritten. The root copy is moved aside to:
+
+[source,text]
+----
+www/.legacy-well-known-<YYYYMMDD>/
+----
+
+The `www/` copy is left untouched, both hashes are printed, and the file is
+recorded in the repository's report. The batch continues — an unattended sweep
+that halts on the first conflict is not a sweep — but the run *exits non-zero*
+so the conflict cannot pass unnoticed. Suppress that with `--allow-conflicts`
+only when you have already triaged the reports.
+
+Two historical notes worth knowing:
+
+* PR #106's commit message describes the quarantine directory as a *root-level*
+  `.legacy-well-known-YYYYMMDD/`. It is under `www/` instead, deliberately:
+  the root allowlist is checked bidirectionally and matches entries literally
+  with no glob support, so a dated root directory would report as root drift in
+  every repository the sweep touched. It is also not under `www/public/`, so
+  the publication boundary still holds.
+* `--in-place` restores the pre-stage-5 contract (keep both copies where they
+  are, exit 1) for anyone who prefers to resolve divergence before the tree is
+  touched at all.
+
+Repositories WITHOUT a `www/` bundle are migrated but flagged *"no www/tests
+bundle — run the RSR update mechanism first"*. Migration is only half the job
+there: the canonical location has to exist before the suite can prove it.
+
+== Failure handling
+
+One repository failing never abandons the batch. Failures are recorded in
+`sweep-results.csv` with the status `failed` and a path to the relevant log,
+the run continues, and the final exit status reflects that something failed.
+
+The run exits non-zero when any repository failed, or when any content was
+quarantined (unless `--allow-conflicts`). Read the summary table it prints:
+
+[source,text]
+----
+--- results by status ---
+      2 migrated
+      1 quarantined
+      1 failed
+----
+
+== Recovering
+
+* *A repository was swept and is wrong.* Nothing was pushed unless you asked
+  for it; the commit is local to the work directory clone. Delete the clone.
+* *Content was quarantined.* Decide which copy is canonical, reconcile
+  `www/.well-known/<file>`, then delete `www/.legacy-well-known-<date>/`. The
+  file is committed, so nothing is lost before you decide.
+* *The API rate limit is hit mid-run.* Re-run the same `--batch`; already-clean
+  repositories report `clean` and are skipped.
+
+== Verification
+
+The migrated tree must satisfy the bundle's own suite:
+
+[source,bash]
+----
+bash www/tests/run-all.sh        # 6 checks
+bash www/tests/check-migration.sh # 9 scenarios, incl. all four divergence cases
+----
+
+CI drives the migrator in `--dry-run` on every push that touches
+`.well-known/**` (`dot-wellknown-enforcement.yml`), so a repository still
+carrying legacy layout reports the divergence as a warning long before the
+sweep reaches it.

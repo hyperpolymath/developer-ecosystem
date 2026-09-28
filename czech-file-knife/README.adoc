@@ -1,219 +1,130 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+// SPDX-FileCopyrightText: 2024-2026 Jonathan D.A. Jewell (hyperpolymath)
 = Czech File Knife
-image:https://img.shields.io/badge/License-MPL_2.0-blue.svg[MPL-2.0-or-later,link="https://opensource.org/licenses/MPL-2.0"]
+:toc:
+:toc-placement: preamble
 
+// ── Licensing ───────────────────────────────────────────────────────────────
+image:https://img.shields.io/badge/Code-MPL--2.0-blue.svg?logo=mozilla[Code licence: MPL-2.0,link="https://opensource.org/licenses/MPL-2.0"]
+image:https://img.shields.io/badge/Docs-CC--BY--SA--4.0-blue.svg?logo=creativecommons[Docs licence: CC-BY-SA-4.0,link="https://creativecommons.org/licenses/by-sa/4.0/"]
+image:https://img.shields.io/badge/Provenance-Quantum--Safe-blueviolet[Quantum-Safe Provenance,link="docs/legal/EXHIBIT-B-QUANTUM-SAFE.txt"]
 
+// ── Standard & quality gates ────────────────────────────────────────────────
+image:https://img.shields.io/badge/RSR-Rhodium_Standard-9C27B0[Rhodium Standard Repository,link="https://github.com/hyperpolymath/rhodium-standard-repositories"]
+image:https://api.scorecard.dev/projects/github.com/hyperpolymath/czech-file-knife/badge[OpenSSF Scorecard,link="https://scorecard.dev/viewer/?uri=github.com/hyperpolymath/czech-file-knife"]
+image:https://sonarcloud.io/api/project_badges/measure?project=hyperpolymath_czech-file-knife&metric=alert_status[SonarQube Quality Gate,link="https://sonarcloud.io/summary/new_code?id=hyperpolymath_czech-file-knife"]
+image:https://archive.softwareheritage.org/badge/origin/https://github.com/hyperpolymath/czech-file-knife/[Archived in Software Heritage,link="https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/hyperpolymath/czech-file-knife"]
 
+// ── Provenance & ecosystem ──────────────────────────────────────────────────
+image:https://api.thegreenwebfoundation.org/greencheckimage/github.com[Green Web,link="https://www.thegreenwebfoundation.org/green-web-check/?url=github.com"]
 
-image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-license"]
+The Swiss File Knife of the hybrid machine: one reversible, space-aware interface over local, network and cloud storage.
 
-== License & Philosophy
+Czech File Knife (`cfk`) is the Swiss File Knife of the hybrid machine: one
+command-line tool that treats local disks, network shares and cloud storage as
+a single filesystem, and picks the cheapest *correct* way to do each job.
 
-This project must declare **MPL-2.0-or-later** for platform/tooling compatibility.
+Three rules shape it:
 
-Philosophy: **Palimpsest**. The Palimpsest-MPL (PMPL) text is provided in `license/PMPL-1.0.txt`, and the canonical source is the palimpsest-license repository.
+* *Reversible by default.* Every write, delete, move and copy records its own
+  inverse (the JanusKey model: SHA-256 content store + append-only op log), so
+  `cfk undo` works on every backend, even ones with no native versioning.
+* *No pointless round trips.* Cloud-to-cloud work is done provider-side
+  (server-side copy/move/export) where possible, and otherwise streamed
+  through memory, never staged on local disk.
+* *Space-aware.* Transforms such as compression are designed to fit in the
+  free space you actually have (for example compressing a 25 GB file with
+  8 GB free by punching holes in the input as the output grows). See
+  link:docs/architecture/HYBRID-OPERATIONS.adoc[HYBRID-OPERATIONS].
 
-
-*Cloud-native Swiss File Knife - unified interface for 20+ storage backends*
-
-== Overview
-
-Czech File Knife (CFK) is a universal file management tool that treats all storage
-backends (local, cloud, distributed, exotic) as a unified filesystem.
-
-== Current Status (v0.1.0)
+== Status (v0.1.0)
 
 [cols="1,1,3"]
 |===
 | Component | Status | Notes
 
-| *cfk-core* | Stable | Core traits, types, error handling
-| *cfk-cli* | Working | Basic file operations (ls, cp, mv, rm, cat, mkdir, stat)
-| *cfk-providers* | Partial | Local filesystem complete; cloud backends planned
-| *cfk-cache* | Stub | Trait definitions; backend implementations coming
-| *cfk-search* | Stub | Basic filename search; Tantivy integration planned
-| *cfk-vfs* | Stub | FUSE mounting planned for v0.2.0
-| *cfk-integrations* | Working | aria2, agrep, pandoc integrations
+| `cfk-core`         | Stable  | Core traits, types, errors, *reversible journal*
+| `cfk-cli`          | Working | `ls cat cp mv rm mkdir stat backends df history undo`
+| `cfk-providers`    | Partial | Local filesystem complete; network/cloud backends scaffolded
+| `cfk-cache`        | Stub    | Trait definitions
+| `cfk-search`       | Stub    | Filename search; Tantivy planned
+| `cfk-vfs`          | Stub    | FUSE mounting planned
+| `cfk-integrations` | Working | aria2, agrep, pandoc
+| `cfk-ios`          | Scaffold| iOS File Provider bridge (C ABI + Swift)
+| `cfk-tui`          | Scaffold| Ada TUI prototype
 |===
 
-== Installation
+Honest residue: reversibility is engineered, not yet mechanically proven
+(see link:docs/status/PROOF-NEEDS.adoc[PROOF-NEEDS]); metadata (permissions,
+mtimes, xattrs) is not yet restored by `undo`.
 
-=== From Source
+== Quick start
 
 [source,bash]
 ----
-# Clone the repository
 git clone https://github.com/hyperpolymath/czech-file-knife.git
 cd czech-file-knife
-
-# Build
-cargo build --release
-
-# Install (optional)
-cargo install --path cfk-cli
+just build            # cargo build --workspace
+just test             # cargo test --workspace
+just install          # cargo install --locked --path src/cfk-cli
 ----
-
-=== Requirements
-
-- Rust 1.75+ (MSRV)
-- Optional: libfuse3 (for FUSE mounting)
-
-== Quick Start
 
 [source,bash]
 ----
-# List files
-cfk ls /path/to/directory
-cfk ls -l -H .              # Long format with human-readable sizes
-
-# Display file contents
-cfk cat /path/to/file.txt
-
-# Copy files
-cfk cp source.txt dest.txt
-cfk cp -f source.txt dest.txt   # Force overwrite
-
-# Move/rename files
-cfk mv old.txt new.txt
-
-# Remove files
-cfk rm file.txt
-cfk rm -r directory/        # Recursive
-
-# Create directories
-cfk mkdir new_dir
-cfk mkdir -p nested/path/dir    # Create parents
-
-# Show file info
-cfk stat file.txt
-
-# List registered backends
-cfk backends
-
-# Show storage info
+cfk ls -l -H .
+cfk cp -f source.txt dest.txt
+cfk rm -r old-dir/
+cfk history           # what has been done
+cfk undo              # reverse the latest operation
 cfk df local
 ----
 
-== Tech Stack
+=== Reversible journal
 
-=== Languages
 [cols="1,3"]
 |===
-| Language | Purpose
+| Variable | Meaning
 
-| *Rust* | Core engine, providers, cache, CLI
-| *Ada/SPARK* | TUI with formal verification (planned)
-| *Nickel* | Configuration language (planned)
+| `CFK_JOURNAL_DIR`       | Journal location (default `$XDG_STATE_HOME/cfk/journal`, else `~/.local/state/cfk/journal`)
+| `CFK_JOURNAL_MAX_BYTES` | Largest file captured for undo (default 1 GiB). Bigger operations are *refused*, not silently made irreversible
+| `CFK_NO_JOURNAL=1`      | Opt out (operations are then irreversible)
 |===
 
-=== Storage Backends (20+)
+== Repository map
 
-==== Currently Working
-- Local filesystem (all OS)
+The authoritative map is generated, so it cannot drift from the tree:
+link:docs/architecture/REPOSITORY-MAP.adoc[docs/architecture/REPOSITORY-MAP.adoc]
+(regenerate with `just repo-map`; CI fails if it is stale).
 
-==== Planned for Future Releases
-- *Network*: NFS, SMB/CIFS, SFTP, WebDAV, 9P
-- *Cloud*: Dropbox, Google Drive, OneDrive, Box, S3
-- *Distributed*: IPFS, AFS, Syncthing
-- *Exotic*: Gopher, Gemini, NNTP, BitTorrent, Matrix
+The short version:
 
-=== Serialization Formats
-[cols="1,2"]
+[cols="1,3"]
 |===
-| Format | Use
+| Path | What lives there
 
-| *JSON* | API responses, config
-| *MessagePack* | Binary JSON alternative
-| *CBOR* | Compact binary
-| *Protocol Buffers* | gRPC, cross-language
-| *TOML* | Config files
+| `README.adoc`, `CLAUDE.md` | Start here - humans and AI agents respectively.
+| `src/cfk-*/`, `tests/`     | The Cargo workspace crates and their tests (`tests/fuzz/` is cargo-fuzz).
+| `docs/`                    | Human documentation, including the full map above.
+| `.machine_readable/`        | Manifests, contractiles and policies that tools read.
+| `build/`, `Justfile`       | Every task runs through `just`; phases live in `build/just/`.
+| `ci/`, `.github/`          | CI configuration; GitHub reads `.github/` and no other path.
 |===
 
-=== Transport Layers
-- TCP, QUIC (HTTP/3), UDP
-- Unix sockets, Named pipes
+== Where to go next
 
-=== Databases (Cache)
-- sled (pure Rust embedded KV)
-- SurrealDB (multi-model)
-- LMDB (via heed)
-- DragonflyDB (Redis-compatible)
-- redb
+* link:docs/architecture/REPOSITORY-MAP.adoc[The repository map] — generated; what every directory is for.
+* link:docs/EXPLAINME.adoc[EXPLAINME] — the engineering deep-dive: how the pieces actually work.
+* link:docs/AFFIRMATION.adoc[AFFIRMATION] — the dated, signed honesty snapshot of the repo's true state.
+* link:docs/AUDIT.adoc[AUDIT] — the release audit gate.
+* link:docs/architecture/HYBRID-OPERATIONS.adoc[Hybrid operations] — reversible journal, provider-side cloud ops, in-place compression.
+* link:docs/status/ROADMAP.adoc[Roadmap].
 
-=== External Integrations
-- aria2 (high-speed downloads)
-- agrep (fuzzy search)
-- pandoc (document conversion)
-- tesseract (OCR)
-- eza (modern ls)
+== Licence
 
-== Project Structure
-
-[source]
-----
-czech-file-knife/
-├── cfk-core/           # Core traits, types, errors
-├── cfk-providers/      # Storage backends + transports
-├── cfk-cache/          # Caching layer (sled/SurrealDB/LMDB)
-├── cfk-search/         # Full-text search (Tantivy)
-├── cfk-vfs/            # FUSE virtual filesystem
-├── cfk-cli/            # Rust CLI
-├── cfk-tui/            # Ada/SPARK TUI (planned)
-└── cfk-integrations/   # External tools (aria2, pandoc, etc.)
-----
-
-== Development
-
-[source,bash]
-----
-# Run tests
-cargo test --workspace
-
-# Build in release mode
-cargo build --release
-
-# Run CLI directly
-cargo run --bin cfk -- ls .
-
-# Check formatting
-cargo fmt --check
-
-# Run lints
-cargo clippy --workspace
-----
-
-== Platform Support
-
-[cols="1,1,1,1,1"]
-|===
-| Platform | CLI | FUSE | Cloud | Status
-
-| Linux x86_64 | Working | Planned | Planned | Primary
-| Linux ARM64 | Working | Planned | Planned | Supported
-| macOS | Working | Planned | Planned | Supported
-| Windows | Working | Planned | Planned | WinFsp
-| RISC-V | Untested | Untested | Untested | Experimental
-|===
-
-== Roadmap
-
-=== v0.1.0 (Current)
-- Core architecture and traits
-- CLI with basic file operations
-- Local filesystem backend
-- Unit tests
-
-=== v0.2.0 (Planned)
-- S3/S3-compatible backend
-- SFTP backend
-- FUSE mounting
-- Tantivy search integration
-
-=== v0.3.0 (Future)
-- Cloud backends (Dropbox, Google Drive, OneDrive)
-- WebDAV backend
-- TUI implementation
-- Caching layer backends
-
-== License
-
-PMPL-1.0-or-later OR Palimpsest-0.8
+Code, configuration and scripts are link:LICENSE[Mozilla Public License 2.0]
+(`MPL-2.0`); prose documentation is `CC-BY-SA-4.0`. Both texts live in
+`LICENSES/`, and per-file `SPDX-License-Identifier` headers are authoritative.
+The GitHub-detected licence is MPL-2.0 (the root `LICENSE`). Long-term
+attribution uses Quantum-Safe Provenance — see
+link:docs/legal/EXHIBIT-B-QUANTUM-SAFE.txt[the Quantum-Safe Provenance exhibit].

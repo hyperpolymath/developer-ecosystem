@@ -1,0 +1,45 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Runbook: Certificate Rotation (Normal and Emergency)
+
+Keys never touch the repository (see `../tls/POLICY.adoc`). Everything here
+happens on the serving host and in the ACME client's spool.
+
+== Normal rotation (ACME, automated)
+
+. Confirm automation is alive: `certbot certificates` (or Caddy's
+   `caddy list-certs` / data-dir listing) shows the live certificate with
+   > 30 days remaining.
+. Renewal is timer-driven; force a dry run monthly:
+   `certbot renew --dry-run`.
+. After any renewal: reload the server, then verify from outside:
++
+[source,bash]
+----
+openssl s_client -connect site.example.invalid:443 -servername site.example.invalid </dev/null 2>/dev/null | openssl x509 -noout -dates -issuer
+----
+
+== Emergency replacement (compromise or mis-issuance)
+
+. *Stop the bleeding*: if the private key is compromised, treat every
+   session since the last rotation as decryptable.
+. *Issue first, revoke second* (avoid downtime): obtain a replacement via
+   ACME (`certbot certonly --force-renewal -d site.example.invalid ...`),
+   install, reload, verify from outside as above.
+. *Revoke* the compromised certificate with the CA (`certbot revoke
+   --cert-path ...`); note the CRL/OCSP propagation delay.
+. *CT consequence*: both the compromised and replacement certificates are
+   public in CT logs forever — the record cannot be scrubbed, which is why
+   rotation speed matters more than discretion.
+. *Rotate anything derived*: OCSP stapling caches, pinned fingerprints in
+   clients/monitoring, and any TSIG/DNSSEC material touched by the same
+   host compromise (`runbooks/dns-change.adoc`, estate secret-scanner
+   procedure for history purge).
+. *Record*: dated entry in `CHANGELOG.adoc` + incident notes (what was
+   exposed, for how long, what was rotated).
+
+== Expiry monitoring
+
+Alert at 21 days remaining on every served name. An expired certificate is
+a self-inflicted outage and, for `security.txt`-contactable projects, an
+availability incident worth a postmortem.

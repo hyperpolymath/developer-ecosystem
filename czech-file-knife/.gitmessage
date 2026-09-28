@@ -1,0 +1,18 @@
+# <type>(<optional scope>): <subject> (Max 50 chars)
+# |<------------------------------------------------>|
+
+# Explain WHY this change is being made (Max 72 chars per line)
+# |<---------------------------------------------------------------------->|
+
+# Explain HOW this change was implemented (if not obvious)
+
+# [ ] Tests added/updated
+# [ ] Documentation updated
+# [ ] ABI/FFI boundaries verified (if applicable)
+
+# Issue tracking:
+# Resolves: #
+# See also: #
+# 
+# ---
+# Allowed Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert

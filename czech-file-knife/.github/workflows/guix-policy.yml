@@ -1,0 +1,49 @@
+# This workflow is managed by gh actions-lock.
+# SPDX-License-Identifier: MPL-2.0
+name: Guix Package Policy
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+# Estate guardrail: scope push to default branches so a PR fires once (not
+# push+PR), and cancel superseded runs. Safe — read-only PR-triggered check.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Enforce Guix-only package policy
+        run: |
+          # Guix is the sole package manager estate-wide. Nix is BANNED.
+          HAS_GUIX=$(find . -path ./.git -prune -o \( -name "*.scm" -o -name ".guix-channel" -o -name "guix.scm" \) -print 2>/dev/null | head -1)
+          HAS_NIX=$(find . -path ./.git -prune -o -name "*.nix" -print 2>/dev/null | head -1)
+
+          # Hard-fail on any Nix file — Nix is banned, migrate to Guix.
+          if [ -n "$HAS_NIX" ]; then
+            echo "::error::Nix is banned estate-wide (Guix only). Remove flake.nix/*.nix and use guix.scm: $HAS_NIX"
+            exit 1
+          fi
+
+          # Warn on non-reproducible lock files; prefer Guix manifests.
+          NEW_LOCKS=$(git diff --name-only --diff-filter=A HEAD~1 2>/dev/null | grep -E 'package-lock\.json|yarn\.lock|Gemfile\.lock|Pipfile\.lock|poetry\.lock|cargo\.lock' || true)
+          if [ -n "$NEW_LOCKS" ]; then
+            echo "⚠️ Lock files detected. Prefer Guix manifests for reproducibility."
+          fi
+
+          if [ -n "$HAS_GUIX" ]; then
+            echo "✅ Guix package management detected"
+          else
+            echo "ℹ️ Consider adding guix.scm / .guix-channel for reproducible builds"
+          fi
+
+          echo "✅ Guix package policy check passed"

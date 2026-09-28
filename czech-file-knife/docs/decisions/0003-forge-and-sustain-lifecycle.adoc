@@ -1,0 +1,118 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Architecture Decision Record: 0003-forge-and-sustain-lifecycle
+
+== 3. One lifecycle, one contract: Forge (mint → provision → configure → harness) and Sustain (corrective / adaptive / perfective / preventive)
+
+Date: 2026-07-21
+
+=== Status
+
+Accepted (drafted 2026-07-21; ratified by owner ruling 2026-09-19). The normative
+statement lives in `hyperpolymath/standards`
+`0-canon/rsr/SCAFFOLD-LIFECYCLE.adoc` (relocated from `rhodium-standard-repositories/spec/` in the September 2026 reorg); this ADR records
+the decision and its mechanics in the spine.
+
+=== Context
+
+The scaffolding machinery exists but is disconnected, and each disconnection
+has produced a measured incident:
+
+- `just repo-init` renders 34 substitutions and derives identity, but leaves 12
+  tokens `UNASSIGNED`, performs no platform configuration, and — decisive —
+  records **no provenance**. A minted repo does not know which template
+  commit it came from, so template improvements cannot be propagated and
+  drift cannot be detected. The external audit
+  (rsr-template-repo-experiment, 05-ZIGZAG §2.2) named this the single
+  highest-leverage gap: Copier/Cruft solved it with an answer-file +
+  `update` + `check`; the estate hand-simulates it as recurring
+  standardisation-PR campaigns.
+- `rsr-profile.a2ml` — the file that makes hypatia's implemented
+  `rsr-conformance` oracle able to score a repo at all — exists in ~2 of
+  ~300 repos, because nothing mints it.
+- Identity in the probot-managed `settings.yml` renamed this very repo to
+  `-REPO-` on every push (the 2026-07-20 incident). Identity must be set
+  out of band, but no stage of the lifecycle owned that step, and this
+  file's own header previously claimed `just repo-init` did it via `gh` — it
+  never has.
+- ADR-0002's variant contract + drift gate work (reference:
+  rsr-julia-library-template-repo) but apply only to variant *templates*,
+  not to the ~200 minted repos that need the same mechanism.
+
+=== Decision
+
+**One lifecycle.** A repository is *forged* in four ordered stages — exit
+criteria in SCAFFOLD-LIFECYCLE.adoc:
+
+1. **Mint** — tree exists, placeholders rendered, identity derived,
+   archetype overlay applied, `rsr-profile.a2ml` and provenance written,
+   and **no template identity survives in the child**: the spine's own
+   name is a literal rather than a token, so rendering placeholders is not
+   sufficient — a self-name pass must rewrite it everywhere it denotes
+   *this* repo, while leaving every line that names the parent *as* a
+   parent untouched. A minted repo that still declares
+   `sonar.projectKey=…_rsr-template-repo` has not been minted; it has been
+   copied.
+2. **Provision** — the recorded `BUILD_CMD`/`TEST_CMD` actually run
+   (echoed advice is not provisioning).
+3. **Configure** — identity, visibility, branch protection set out of band
+   via `gh`/UI, once per repo; required contexts equal emitted job ids;
+   repo registered in `gv-clade-index`.
+4. **Harness** — CI green or accounted for, drift gate armed against the
+   recorded pin, oracle able to score.
+
+It is then *sustained* in four modes: **corrective** (fleet `fix-*` on
+broken invariants), **adaptive** (parent-pin bumps + fan-out campaigns),
+**perfective** (tier climbing via `mix hypatia.rsr_score`; promotion of
+`diverged-pending-upstream` fixes), **preventive** (canary-tested gates,
+placeholder guard, drift-gate cron).
+
+**One contract.** The ADR-0002 `VARIANT.a2ml` shape is extended in *use*,
+not in format, to minted repos: `just repo-init` writes
+`.machine_readable/descriptiles/VARIANT.a2ml` with `direction =
+"generated-from-core"`, `parent = hyperpolymath/rsr-template-repo`,
+`parent-pin` = the template tip at mint (resolved via `git ls-remote`;
+`UNASSIGNED` when offline — honest, never guessed), and empty path lists
+that grow as the repo legitimately diverges. A variant template, a minted
+repo, and a retrofitted repo are the same object — a child of the spine at
+a pin with declared divergences — so `scripts/check-variant-drift.sh`
+(promoted into the spine by this ADR, verbatim from the Julia variant — it
+was already contract-driven) is the estate's re-templating check for all
+three populations.
+
+**Archetypes are data.** `archetypes/<name>/ARCHETYPE.a2ml` carries a
+capability `preset` (defined in standards `template-capability-gates.toml`)
+plus a `[tokens]` table filling the previously-`UNASSIGNED` init tokens
+that are archetype-determined (`PROJECT_KIND`, `LANG_STACK`, `BUILD_CMD`,
+`TEST_CMD`, …). Tokens that are genuine per-repo judgement
+(`PROJECT_UNIQUE_STRENGTH`, `MUST_INVARIANTS`, …) stay `UNASSIGNED` — an
+archetype must not write fiction. `just repo-init <archetype>` applies the
+overlay; the `archetypes/` directory is template-only and removed from the
+minted tree (like `build/templates/`). First archetype: `julia-library`,
+harvested from the Julia variant's contract. Declared next (content to
+follow, not stubbed empty): `wordpress-plugin`, `zotero-plugin`,
+`userscript` — presets already reserved in the canon.
+
+**Scaffoldia consumes, never redefines.** The composer's pack axis is the
+archetype/variant contract; its profile axis is the capability preset. Its
+GitLab-lineage implementation's registry is harvested as input data; the
+engine stays dormant until the composer ADR (scaffoldia Phase 1) chooses
+its implementation.
+
+=== Consequences
+
+- Every newly minted repo is born sustainable: scorable by the oracle
+  (profile), re-templatable (provenance), and drift-checkable (gate) — the
+  three artefacts whose absence created the manual-campaign treadmill.
+- The 12 `UNASSIGNED` tokens split honestly: archetype-determined ones get
+  real values; judgement ones stay loud.
+- The `settings.yml` header's false claim about `gh` automation is
+  corrected: Configure is an operator stage today, printed as exact
+  commands by `just repo-init`; automating it is future work and must not be
+  described as existing.
+- Retrofit of already-minted repos = writing the provenance contract into
+  them (megasweep can detect which repos lack one; mutation stays
+  owner-gated, audit-first).
+- The dogfood loop closes: the template ships the contract format, the
+  canon defines its lifecycle meaning, the oracle scores its presence, the
+  fleet propagates its updates.

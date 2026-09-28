@@ -1,0 +1,4 @@
+# Coq proof manifest — read by scripts/check-proofs.sh coq
+# Format: <source-root>|<module-relative-to-source-root>|gated|quarantine|<note>
+# Ground-truthed 2026-07-17 with coqc.
+verification/proofs/coq|TypeSafety.v|gated| compiles under `coqc`

@@ -1,0 +1,97 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Encrypted DNS and Privacy Discovery — Guidance, Not Promise
+
+This bundle ships the *authoritative* role only. This document exists so
+nobody confuses the roles, overclaims obliviousness, or promises universal
+support for protocols that require the other side to cooperate.
+
+== The role map
+
+[cols="1,2,2", options="header"]
+|===
+| Role | Job | In this bundle?
+
+| Authoritative server
+| Answers for zones it is primary/secondary for (BIND example in
+  `../bind9/`).
+| *Yes* — the only role shipped.
+
+| Recursive / stub resolver
+| Resolves on behalf of clients; the role that DoT/DoQ/DoH *clients* talk
+  to.
+| No — separate profile, separate threat model.
+
+| DoH/DoT/DoQ server
+| Serves recursive answers over an encrypted transport.
+| No.
+
+| ODoH relay
+| Forwards oblivious HTTP requests; knows client, not query.
+| No.
+
+| ODoH target
+| Answers oblivious HTTP requests; knows query, not client.
+| No.
+|===
+
+== Protocol facts (so the docs can't drift into marketing)
+
+[cols="1,1,2", options="header"]
+|===
+| Protocol | Transport | Notes
+
+| DoT (RFC 7858)
+| TLS over TCP/853
+| Direct: the resolver sees the client. Not oblivious.
+
+| DoQ (RFC 9250)
+| QUIC over UDP/853
+| Direct: same visibility as DoT. Not oblivious.
+
+| DoH (RFC 8484)
+| HTTP(S) over TCP/443
+| Direct: resolver sees client; indistinguishable from ordinary HTTPS to
+  observers. Not oblivious.
+
+| ODoH (RFC 9230)
+| Oblivious HTTP (RFC 9420): relay + target
+| Relay sees client, target sees query; neither sees both. This is the
+  *only* oblivious mode in this list.
+
+| ECH (RFC 9460 discovery via HTTPS RR)
+| TLS extension
+| Hides the SNI/origin name from the network. Requires client + server +
+  HTTPS RR support; document *capability detection*, never assume it.
+|===
+
+*There is no "ODoT" and no "ODoQ".* Obliviousness comes from OHTTP wrapping
+(ODoH); direct DoT and DoQ modes remain **non-oblivious** and must be
+described that way wherever this estate documents them. Where HTTP/3 is
+appropriate, ODoH over OHTTP/HTTP3 is the standard path — do not invent
+oblivious variants of other transports.
+
+== Capability detection (document, don't promise)
+
+Before claiming any encrypted-DNS feature for a host, probe it:
+
+[source,bash]
+----
+# ECH + DoH advertisement via the HTTPS RR (RFC 9460):
+dig +short TYPE65 example.invalid          # or: dig +https
+# DoH reachability of a resolver (RFC 8484 well-known path):
+curl -sS -H 'accept: application/dns-json' \
+     'https://resolver.example.invalid/dns-query?name=example.invalid'
+# DoT reachability (TCP/853 handshake):
+kdig +tls-ca -t example.invalid @resolver.example.invalid   # or openssl s_client -connect host:853
+----
+
+A capability that is not detected is not supported; publish what the probes
+returned, dated, rather than the protocol list you wish were true.
+
+== What minting does
+
+Nothing. No daemon starts, no resolver is configured, no declaration about
+encrypted DNS is published. The `privacy-enhanced` profile
+(`../../profiles/`) selects *this guidance* plus the TLS policy and the ECH
+readiness checklist — and even it enables no service by itself.

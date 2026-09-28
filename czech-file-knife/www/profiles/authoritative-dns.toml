@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: MPL-2.0
+# authoritative-dns — issue #53 initial profile.
+# BIND 9 authoritative configuration, zone/record templates, DNSSEC/CAA
+# guidance and the safety checks. NO open recursion and NO automatically
+# started daemon: bring-up is a manual operator act (dns/bind9/README.adoc).
+# Recursive/stub, ODoH-relay and ODoH-target roles are separate profiles
+# and are not shipped here.
+profile = "authoritative-dns"
+version = "0.1.0"
+status = "stable"
+requires = []
+auto_start_daemon = false
+recursion = "disabled"
+components = ["www/dns/bind9/", "www/dns/records/", "www/tests/check-bind-safety.sh", "www/tests/controls/named.conf.open-recursion.control", "www/runbooks/dns-change.adoc"]

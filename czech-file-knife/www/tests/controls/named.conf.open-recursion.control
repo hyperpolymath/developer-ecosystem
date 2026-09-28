@@ -1,0 +1,20 @@
+// SPDX-License-Identifier: MPL-2.0
+// PLANTED CONTROL — must be REJECTED by check-bind-safety.sh.
+// This is exactly what an open resolver looks like: recursion on, queries
+// and transfers unrestricted, listening everywhere, TSIG secret inline,
+// and a live (non-reserved) zone name.
+options {
+    directory "/var/cache/bind";
+    recursion yes;
+    allow-query { any; };
+    allow-transfer { any; };
+    listen-on port 53 { any; };
+};
+key "leak" {
+    algorithm hmac-sha256;
+    secret "cGxhbnRlZC1jb250cm9sLW5vdC1hLXJlYWwtc2VjcmV0";
+};
+zone "real-domain.example" {
+    type primary;
+    file "zones/real.zone";
+};

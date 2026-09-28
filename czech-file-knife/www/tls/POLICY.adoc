@@ -1,0 +1,60 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= TLS Policy
+
+== Key custody — the only rule that matters
+
+Private keys, issued-certificate secrets, TSIG secrets, CSR material,
+keystores (`.key`, `.pem`, `.p12`, `.pfx`, `.jks`), journals, caches, PID
+files and logs **never** live in this repository or the bundle. ACME state
+lives under the ACME client's own spool (`/var/lib/letsencrypt`,
+Caddy's data dir). The stage scanner
+(`www/tests/check-publication-boundary.sh --stage`) and the DNS safety
+check reject these patterns anywhere they should not be, and the estate
+secret scanner covers history.
+
+== Issuance
+
+. *ACME first.* Caddy obtains and renews automatically; nginx/Apache via
+  certbot (or the estate's chosen ACME tooling). DNS-01 challenges for
+  wildcard or non-public names — which is where the `authoritative-dns`
+  profile's zone discipline pays off.
+. *Manual issuance* is a documented exception with a rotation date in the
+  calendar, not a default.
+
+== Parameters
+
+[cols="1,2", options="header"]
+|===
+| Item | Policy
+
+| Protocols
+| TLS 1.2 and 1.3 only. No SSLv3/TLS 1.0/1.1 anywhere.
+
+| Keys
+| ECDSA P-256 preferred; RSA >= 3072 where a counterpart requires RSA.
+
+| Certificates
+| 90-day ACME lifetime; renewal automated at <= 30 days remaining;
+  monitoring alert at 21 days (a missed renewal is an incident, not a
+  surprise).
+
+| HSTS
+| `max-age=31536000; includeSubDomains` once HTTPS is stable; add `preload`
+  only accepting the multi-month un-preload cycle.
+
+| CT
+| Expect all public certificates to appear in CT logs; monitor the name
+  (e.g. crt.sh-style watch) and treat unexpected certificates as incidents.
+
+| ECH
+| Tracked as *readiness*, not promise: see
+  `www/dns/privacy/ENCRYPTED-DNS.adoc` for detection discipline (HTTPS RR /
+  TYPE65). Publish support only where a dated probe demonstrates it.
+|===
+
+== Rotation
+
+Normal rotation is automatic (ACME). Emergency replacement (compromise,
+mis-issuance) follows `www/runbooks/cert-rotation.adoc`, including
+revocation and the CT consequences of both.

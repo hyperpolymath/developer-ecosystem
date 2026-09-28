@@ -1,7 +1,17 @@
-# SPDX-License-Identifier: MPL-2.0
-# Funding platforms for hyperpolymath projects
-# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+# SPDX-License-Identifier: MPL-2.0 for code
+# SPDX-License-Identifier: CC-BY-SA-4.0 for documentation
+# SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 
+# These are supported funding model platforms
+
+buy_me_a_coffee: jonathan.jewell
+community_bridge: jonathan-jewell
 github: hyperpolymath
+issuehunt: hyperpolymath
 ko_fi: hyperpolymath
+lfx_crowdfunding: hyperpolymath
 liberapay: hyperpolymath
+open_collective: jonathan-jewell
+patreon: cc_studio
+polar: hyperpolymath
+thanks_dev: hyperpolymath

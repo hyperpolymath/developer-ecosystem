@@ -1,0 +1,55 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Arrival Pack — the CLAUDE.md compiler
+
+`CLAUDE.md` is the one file an agent auto-loads on arrival, so it is this repo's
+*boundary document*. It is compiled, not hand-written, so it cannot drift from
+the repo's own machine-readable truth.
+
+== How it works
+
+[source]
+----
+a2ml (descriptiles)            extract.sh            arrival-pack.ncl          CLAUDE.md
+CLADE/ECOSYSTEM/   ──▶  (a2ml → JSON,    ──▶   (Nickel projection  ──▶   region between
+AGENTIC/STATE/ANCHOR     the thin reader)       = the engine)            BEGIN/END markers
+----
+
+Two halves of the generated region:
+
+* *Estate-common* — identical in every repo; the Manifesto doctrine + format-family
+  orientation + canon pointers + language policy. Pinned to a Manifesto SHA once
+  the wording is ratified (today: `DRAFT-unratified`).
+* *Repo-specific* — projected from this repo's a2ml: identity, IS / IS-NOT,
+  position, constraints, golden path, state.
+
+The a2ml files remain the single source of truth. CLAUDE.md is a *view*. Content
+outside the `ARRIVAL-PACK:BEGIN/END` markers is hand-authorable and preserved.
+
+== Files
+
+[cols="1,3"]
+|===
+| `extract.sh`        | a2ml reader → deterministic `claude-md-data.json` (build artifact, git-ignored)
+| `arrival-pack.ncl`  | Nickel projection engine → the region string (`nickel export --format raw`)
+| `generate.sh`       | orchestrator: extract → render → splice (Hunt-tier, writes CLAUDE.md)
+| `verify.sh`         | drift check: regenerate + byte-compare committed region (Yard-tier)
+| `claude-md.k9.ncl`  | k9 contract for the drift check
+|===
+
+== Usage
+
+[source,console]
+----
+just claude-md            # (re)generate CLAUDE.md from a2ml
+just validate-claude-md   # fail if the committed region drifted / was hand-edited
+----
+
+== Status / TODO
+
+* Estate-common doctrine is a *DRAFT* in the agent's words — owner to ratify into
+  his voice, then pin to a `hyperpolymath/manifesto` commit SHA.
+* `ECOSYSTEM.what-this-is-not` is empty here, so IS-NOT renders as "not yet
+  declared". Populating it is the boundary-erosion fix (the `lith` lesson).
+* `ANCHOR.a2ml` currently encodes semantic-authority + golden-path; the
+  recognised-drift / re-anchor-ledger aspect is a pending standards change.

@@ -1,0 +1,125 @@
+# SPDX-License-Identifier: MPL-2.0
+# Mustfile — Physical state contract for czech-file-knife
+# Author: Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+#
+# What MUST be true about this repository. Hard requirements.
+# Run with: must check
+# Fix with: must fix (where a deterministic fix exists)
+
+@abstract:
+Physical-state invariants for czech-file-knife. These are hard requirements — CI and pre-commit
+hooks fail if any check fails.
+@end
+
+## File Presence
+
+### license-present
+- description: LICENSE file must exist
+- run: test -f LICENSE
+- severity: critical
+
+### readme-present
+- description: README.adoc must exist
+- run: test -f README.adoc
+- severity: critical
+
+### security-policy
+- description: SECURITY.md must exist
+- run: test -f SECURITY.md || test -f .github/SECURITY.md
+- severity: critical
+
+### repo-deed
+- description: the repo deed (<reponame>_chora.deed) must exist at root
+- run: ls *_chora.deed >/dev/null 2>&1
+- severity: critical
+
+### governance-docs
+- description: governance model, maintainer roster and CODEOWNERS must exist
+- run: test -f docs/GOVERNANCE.adoc && test -f docs/MAINTAINERS.adoc && test -f .github/CODEOWNERS
+- severity: critical
+
+### machine-readable-dir
+- description: .machine_readable/ directory must exist
+- run: test -d .machine_readable
+- severity: critical
+
+## Directory Structure
+
+### contractiles-complete
+- description: All required contractile directories exist
+- run: test -d .machine_readable/contractiles && test -d .machine_readable/contractiles/bust && test -d .machine_readable/contractiles/dust
+- severity: critical
+
+### contractiles-files-present
+- description: All four primary contractile files exist
+- run: test -f .machine_readable/contractiles/Intentfile.a2ml && test -f .machine_readable/contractiles/Mustfile.a2ml && test -f .machine_readable/contractiles/Trustfile.a2ml && test -f .machine_readable/contractiles/Adjustfile.a2ml
+- severity: critical
+
+### bust-dust-files-present
+- description: Bustfile and Dustfile exist in their directories
+- run: test -f .machine_readable/contractiles/bust/Bustfile.a2ml && test -f .machine_readable/contractiles/dust/Dustfile.a2ml
+- severity: critical
+
+### six-directory-present
+- description: descriptiles directory exists with required files
+- run: test -d .machine_readable/descriptiles && test -f .machine_readable/descriptiles/META.a2ml && test -f .machine_readable/descriptiles/ECOSYSTEM.a2ml && test -f .machine_readable/descriptiles/STATE.a2ml && test -f .machine_readable/descriptiles/PLAYBOOK.a2ml && test -f .machine_readable/descriptiles/AGENTIC.a2ml && test -f .machine_readable/descriptiles/NEUROSYM.a2ml
+- severity: critical
+
+### anchors-directory
+- description: anchors directory exists in descriptiles
+- run: test -d .machine_readable/descriptiles/anchors
+- severity: warning
+
+### self-validating-structure
+- description: self-validating directory has k9-svc and examples
+- run: test -d .machine_readable/self-validating && test -d .machine_readable/self-validating/k9-svc && test -d .machine_readable/self-validating/examples
+- severity: warning
+
+## Template Integrity
+
+### no-placeholder-values
+- description: No placeholder values remain in template files
+- run: test -z "$(grep -r '{{' .machine_readable/contractiles/ 2>/dev/null)"
+- severity: critical
+- notes: All placeholders must be substituted when copying this template
+
+# template-readonly RETIRED 2026-09-19 (standards#837 pilot): it grepped
+# RSR_TEMPLATE_DO_NOT_EDIT in .machine_readable/0.1-AI-MANIFEST.a2ml, but the
+# marker never existed outside this Mustfile and the file is now folded into
+# the repo deed — the check could only ever fail. A gate that cannot pass is
+# the fake-gate class this estate hunts; retiring it, not re-aiming it.
+
+## Git State
+
+### no-untracked-contractiles
+- description: All contractile files are tracked in git
+- run: test -z "$(git ls-files -o --exclude-standard .machine_readable/contractiles/ 2>/dev/null)"
+- severity: critical
+
+### signed-commits
+- description: All commits must be signed
+- run: git verify-commit HEAD
+- severity: critical
+
+## Czech File Knife invariants
+
+### workspace-builds
+- description: The Cargo workspace builds with the committed lockfile
+- run: cargo build --workspace --locked
+- severity: critical
+
+### tests-pass
+- description: Workspace tests (including the reversible-journal tests) pass
+- run: cargo test --workspace --locked
+- severity: critical
+
+### reversible-e2e
+- description: Every destructive CLI operation is undoable end to end
+- run: bash tests/e2e.sh
+- severity: critical
+
+### no-agpl
+- description: No AGPL licence declarations in manifests or packaging (estate policy MPL-2.0)
+- run: "! grep -rq 'AGPL' Cargo.toml src/*/Cargo.toml build/packaging build/container"
+- severity: critical
+

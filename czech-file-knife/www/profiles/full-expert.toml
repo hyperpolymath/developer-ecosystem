@@ -1,0 +1,15 @@
+# SPDX-License-Identifier: MPL-2.0
+# full-expert — issue #53 initial profile. Composes the other four through
+# EXPLICIT selection only: no hidden enablement. Composition adds
+# components; it NEVER escalates flags — enforcement_http_430 stays false
+# and auto_start_daemon stays false here exactly as in the profiles being
+# composed. Disabling any included profile is a first-class operation
+# (delete it from `includes`); nothing else changes.
+profile = "full-expert"
+version = "0.1.0"
+status = "stable-composition"
+includes = ["baseline-site", "consent-aware-web", "authoritative-dns", "privacy-enhanced"]
+hidden_enablement = "forbidden"
+enforcement_http_430 = false
+auto_start_daemon = false
+components = []

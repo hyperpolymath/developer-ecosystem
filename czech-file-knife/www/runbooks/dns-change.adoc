@@ -1,0 +1,65 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Runbook: Authoritative Zone Change
+
+For the `authoritative-dns` profile. Every change follows the same loop:
+validate offline, deploy, verify from outside, keep the rollback artefact.
+
+== Procedure
+
+. *Edit the zone source* under `www/dns/records/` (never the deployed
+  copy), and **bump the serial** (`YYYYMMDDnn`).
+
+. *Validate before anything else*:
++
+[source,bash]
+----
+named-checkzone example.invalid www/dns/records/example.invalid.zone
+bash www/tests/check-bind-safety.sh
+----
+
+. *Commit* the zone change (zone sources are repository content; signed
+  key material and journals are not, ever).
+
+. *Deploy to the authoritative host* and reload:
++
+[source,bash]
+----
+sudo cp www/dns/records/*.zone /var/cache/bind/zones/
+sudo rndc reload example.invalid      # or: rndc retransfer example.invalid
+----
++
+With an inline `dnssec-policy`, named re-signs automatically; watch
+`rndc status` and the signer's key-timeline output rather than touching
+keys by hand.
+
+. *Verify from OUTSIDE the host* (authoritative answer, correct serial,
+  RRSIGs present if signed, CAA as intended):
++
+[source,bash]
+----
+dig @ns1.example.invalid example.invalid SOA +short
+dig @ns1.example.invalid example.invalid CAA +short
+dig @ns1.example.invalid example.invalid DNSKEY +short   # if signed
+----
+
+. *TTL discipline*: wait at least the zone's negative-cache TTL (and, for
+  removals, the old record's TTL) before considering a change complete.
+  For DNSSEC algorithm/key changes, follow the publish/retire safety
+  intervals in the policy — never delete old signatures early.
+
+== Rollback
+
+Restore the previous zone source (`git revert` or checkout of the prior
+commit), bump the serial *again* (never reuse or lower a serial), reload,
+and re-verify from outside. The committed history is the rollback store —
+another reason zone sources live in git and runtime artefacts do not.
+
+== Stop conditions
+
+* `named-checkzone` fails: do not deploy.
+* Serial not bumped: secondaries will not pick the change up — fix before
+  reload.
+* Any key, journal, or TSIG secret found in the repository: treat as an
+  incident (`runbooks/incident.adoc`), rotate, purge history per the
+  secret-scanner procedure.

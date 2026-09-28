@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: MPL-2.0
+# consent-aware-web — issue #53 initial profile. EXPERIMENTAL material:
+# AIBDP 0.2 implements draft-jewell-aibdp-00 (not a Datatracker submission;
+# a mapped alternative representation of AIPREF where they overlap).
+#
+# Declaration/observe-only BY DEFAULT. Selecting this profile publishes the
+# declaration and the human policy page; it enforces nothing. HTTP 430
+# (draft-jewell-http-430-consent-required-00) is NEVER emitted by minting,
+# installing or selecting this profile — enforcement would require a
+# separate, explicit, versioned, provenance-bearing and independently
+# testable profile, which this bundle deliberately does not ship.
+profile = "consent-aware-web"
+version = "0.1.0"
+status = "experimental"
+requires = ["baseline-site"]
+mode = "declaration-only"
+enforcement_http_430 = false
+components = ["www/.well-known/aibdp.json", "www/schemas/aibdp-schema-v0.2.json", "www/policies/ai-use.adoc"]

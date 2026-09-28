@@ -1,0 +1,32 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= `security_headers/` — Header Sources (Not Served)
+
+`csp.conf` is the *source of record* for the site's security headers.
+This directory is operational material: it must never be inside a deployed
+document root (see `www/schemas/publishable-paths.txt` and
+`www/tests/check-publication-boundary.sh`).
+
+== How each server consumes it
+
+Caddy:: Values are transcribed into the `header { … }` block of
+`www/webservers/caddy/Caddyfile.example`.
+nginx:: Convert each `Name: value` line into
+`add_header Name "value" always;` inside the server block (the example
+already carries the set), or generate a snippet and `include` it.
+Apache:: Convert each line into `Header always set Name "value"` with
+`mod_headers` enabled (the example already carries the set).
+
+Whatever the mechanism, the *values* come from `csp.conf`; when you change
+one, change it there and re-sync the server example you deploy.
+
+== Policy notes
+
+* `style-src 'self'` (no `'unsafe-inline'`): the bundle's HTML uses an
+  external stylesheet only. If you add inline styles, you weaken CSP —
+  prefer a stylesheet.
+* HSTS includes `preload`; only deploy that once the host is genuinely
+  HTTPS-everywhere and you accept the multi-month un-preload cycle.
+* `Cross-Origin-Resource-Policy: same-origin` is correct for a project
+  site; relax it deliberately (e.g. `cross-origin` on an assets host)
+  rather than by accident.

@@ -5,9 +5,9 @@
 cd $SRC/czech-file-knife
 
 # Build fuzz targets using cargo-fuzz
-cargo +nightly fuzz build
+cargo +nightly fuzz build --fuzz-dir tests/fuzz
 
 # Copy fuzz targets to $OUT
-for target in $(cargo +nightly fuzz list); do
+for target in $(cargo +nightly fuzz list --fuzz-dir tests/fuzz); do
     cp ./target/x86_64-unknown-linux-gnu/release/$target $OUT/
 done

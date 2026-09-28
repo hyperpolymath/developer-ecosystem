@@ -1,0 +1,7 @@
+# SPDX-License-Identifier: MPL-2.0
+# PLANTED CONTROL — must be REJECTED by check-publication-boundary.sh.
+# It points Caddy at the www/ bundle wholesale and denies nothing.
+site.example.invalid {
+	root * /srv/repo/www
+	file_server
+}

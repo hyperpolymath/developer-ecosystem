@@ -1,0 +1,43 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// Copyright (c) 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= CI configuration
+
+Non-GitHub CI configuration lives here. GitHub Actions workflows stay in
+`.github/workflows/` because GitHub reads that path and no other.
+
+[cols="1,3",options="header"]
+|===
+| File | Consumer
+
+| `.gitlab-ci.yml`
+| GitLab CI. **Not** found automatically at this path — see below.
+
+| `.pre-commit-config.yaml`
+| The `pre-commit` framework, when invoked with `--config`.
+|===
+
+== Required out-of-band setting (GitLab)
+
+GitLab looks for `.gitlab-ci.yml` at the repository root by default. Because the
+file now lives in `ci/`, the project setting must be changed or **GitLab CI
+silently stops running** — no pipeline, no error:
+
+* Project → Settings → CI/CD → General pipelines → *CI/CD configuration file*
+* Set it to `ci/.gitlab-ci.yml`
+
+== Using pre-commit
+
+The config is no longer at the root, so pass it explicitly:
+
+[source,bash]
+----
+pre-commit install --config ci/.pre-commit-config.yaml
+pre-commit run --all-files --config ci/.pre-commit-config.yaml
+----
+
+[NOTE]
+====
+This repository's own push-time gate does not use the `pre-commit` framework.
+It is `.github/hooks/pre-push`, activated by `bash .github/hooks/install.sh`, which sets
+`core.hooksPath` to `.github/hooks`.
+====

@@ -1,0 +1,51 @@
+# SPDX-License-Identifier: MPL-2.0
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+# Authoritative source: docs/practice/AI-CONVENTIONS.adoc
+
+# STARTUP: Read the repo deed (*_chora.deed at the repo root) first, then .machine_readable/descriptiles/STATE.a2ml.
+
+# LICENSE
+# All original code: MPL-2.0.
+# Never AGPL-3.0. MPL-2.0 only as platform-required fallback.
+# SPDX header required on every source file.
+# Copyright: Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+
+# STATE FILES (.machine_readable/ ONLY)
+# Never create in repo root: STATE.deed, META.deed, ECOSYSTEM.deed,
+# AGENTIC.deed, NEUROSYM.deed, PLAYBOOK.deed.
+# The .machine_readable/ directory is the single source of truth.
+
+# BANNED PATTERNS
+# Idris2: believe_me, assert_total, assert_smaller, unsafePerformIO
+# Haskell: unsafeCoerce, unsafePerformIO, undefined, error
+# OCaml: Obj.magic, Obj.repr, Obj.obj
+# Coq: Admitted
+# Lean: sorry
+# Rust: transmute (unless FFI with // SAFETY: comment)
+
+# JS/TS RUNTIMES — ordered preference, reach for the first that can do the job
+# (standards/3-practice/LANGUAGE-POLICY.adoc section 1, ruled 2026-07-29)
+# 1. Bun    default for all new work; runs .ts directly, no build step
+# 2. Deno   existing Deno projects are grandfathered; prefer over pnpm/npm
+# 3. pnpm   only where an upstream toolchain needs a node_modules layout
+# 4. npm    last resort; permitted, never preferred — a noted decision
+# TypeScript IS PERMITTED under Bun. The old "use ReScript instead" rule is
+# RETIRED: ReScript is no longer used in this estate, so that rule named a dead
+# alternative. Do NOT migrate Bun to Deno — that inverts the current ruling.
+
+# BANNED LANGUAGES
+# Go -> Rust
+# Python -> Julia or Rust
+
+# CONTAINERS
+# Runtime: Podman (never Docker).
+# File: Containerfile (never Dockerfile).
+# Base: cgr.dev/chainguard/wolfi-base:latest or cgr.dev/chainguard/static:latest.
+
+# ABI/FFI
+# This repo does not carry the estate Idris2/Zig ABI seam (not declared in
+# .machine_readable/rsr-profile.a2ml). The only FFI is the C ABI in
+# src/cfk-ios (Swift File Provider bridge).
+
+# BUILD: Use just (justfile) for all tasks.
+# STYLE: Descriptive names. Document all files. SPDX headers everywhere.

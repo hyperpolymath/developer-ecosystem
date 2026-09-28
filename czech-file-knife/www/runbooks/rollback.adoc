@@ -1,0 +1,43 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Runbook: Roll Back a Site Deployment
+
+The deploy runbook publishes through a generational symlink
+(`/srv/site.example.invalid -> /srv/staging/site.example.invalid-<ts>`), so
+rollback is re-pointing the symlink at the previous generation. No rebuild,
+no redeploy, no data loss.
+
+== Procedure
+
+. *Identify the previous good generation*:
++
+[source,bash]
+----
+ls -1dt /srv/staging/site.example.invalid-* | sed -n 2p
+----
+
+. *Re-point and reload*:
++
+[source,bash]
+----
+ln -sfn "$PREV" /srv/site.example.invalid
+systemctl reload nginx   # or: caddy reload / systemctl reload apache2
+----
+
+. *Verify*: index, `/.well-known/security.txt`, and the 404 body all serve;
+the failure that prompted the rollback is no longer observable.
+
+. *Preserve evidence*: do not delete the rejected generation until the
+incident is closed — it is the artefact that failed validation or smoke
+checks.
+
+. *Record*: one dated line in the repository `CHANGELOG.adoc` (deployed /
+rolled-back generations and reason).
+
+== When rollback is NOT the answer
+
+* Compromised TLS material: follow `runbooks/cert-rotation.adoc` and the
+  incident runbook — rolling the site back does not rotate keys.
+* Boundary violation discovered in a *live* docroot: take the operational
+  paths offline first (the server configs already deny them), then roll
+  back, then fix the stage pipeline that let them through.

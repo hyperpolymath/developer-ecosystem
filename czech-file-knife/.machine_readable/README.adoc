@@ -1,0 +1,40 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= machine-readable Pillar
+:toc:
+
+This pillar holds the repository's machine-readable metadata: the records
+that let tools and agents read this project's state, boundaries and
+obligations without parsing prose.
+
+[IMPORTANT]
+====
+*Single normative source.* The grammar for the record family in this pillar
+is `1-formats/deed/spec/DEED-GRAMMAR-SPEC.adoc` in
+https://github.com/hyperpolymath/standards[hyperpolymath/standards]. That
+document is the only place the syntax, semantics and typechecking rules are
+defined. Every other mention of the format across the estate — including
+every README in this tree — is a *pointer* to it, never a restatement.
+
+The format formerly called A2ML is now *DEED* (`.deed`). Files here still
+carry `.a2ml` pending a single atomic estate-wide rename; do not
+hand-convert them.
+====
+
+== Contents
+
+`descriptiles/`:: What this repository *is* and what state it is *in* —
+`META`, `STATE`, `ECOSYSTEM`, `PLAYBOOK`, `AGENTIC`, `NEUROSYM`, plus the
+anchors and the facet record. See `descriptiles/README.adoc`.
+
+`contractiles/`:: What this repository *ought* to do — the Must, Trust,
+Adjust, Intend, Bust and Dust verb sets, each with its declaration, its
+Nickel runner and its k9 service-automation component. See
+`contractiles/README.adoc`.
+
+`arrival-pack/`:: The entry pack for agents visiting this repository.
+
+`policies/`:: Maintenance axes and related policy records.
+
+`rsr-profile.a2ml`:: This repository's declared RSR v2.0 capabilities,
+which gate which conformance criteria apply to it.

@@ -1,0 +1,58 @@
+# This workflow is managed by gh actions-lock.
+# SPDX-License-Identifier: MPL-2.0
+name: container build
+on:
+  pull_request:
+    paths:
+      - 'build/container/**'
+      - 'build/just/container.just'
+      - '.github/workflows/container-build.yml'
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+# Scope + cancel superseded runs (estate guardrail).
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  container:
+    # OFF by default — costs nothing in derived repos. A repo opts in by setting
+    # the repository/organisation variable CONTAINER_CI=true. When enabled it
+    # runs on OWNED self-hosted runners (no metered GitHub Actions minutes);
+    # override the labels with the CONTAINER_RUNNER variable (a JSON array).
+    if: vars.CONTAINER_CI == 'true'
+    runs-on: ${{ fromJSON(vars.CONTAINER_RUNNER || '["self-hosted","owned","container"]') }}
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - name: Tooling check
+        run: |
+          command -v just >/dev/null 2>&1 || { echo "::error::just not found on this runner"; exit 1; }
+          # The container recipes auto-detect the engine (podman | nerdctl | docker).
+          for e in podman nerdctl docker; do command -v "$e" >/dev/null 2>&1 && { echo "engine: $e"; break; }; done
+
+      - name: Build image
+        run: just container-build
+
+      - name: Verify compose configuration
+        run: just container-verify
+
+      - name: Scan image (trivy, best-effort)
+        run: |
+          if command -v trivy >/dev/null 2>&1; then
+            trivy image --severity HIGH,CRITICAL --exit-code 0 "${{ github.event.repository.name }}:latest" || true
+          else
+            echo "trivy not installed on this runner — skipping image scan"
+          fi
+
+      - name: Sign & verify .ctp bundle (tags only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: just container-sign   # cerro-torre: build + pack + Ed25519 sign + verify

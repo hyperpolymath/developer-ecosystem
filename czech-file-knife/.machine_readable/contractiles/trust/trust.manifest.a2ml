@@ -1,0 +1,72 @@
+# SPDX-License-Identifier: MPL-2.0
+# trust.manifest.a2ml — Trident coherence manifest for the trust verb.
+# Author: Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+#
+# Asserts: exactly three files constitute the trust trident; their
+# content-hashes are pinned here; cross-references round-trip; no
+# partial publication is permitted.
+#
+# The contractile CLI's `verify trust` subcommand MUST:
+#   1. Confirm all three listed files exist at the declared paths.
+#   2. Compute each file's sha256 and match against the pinned value.
+#   3. Follow each cross-reference and confirm the target file's
+#      reciprocal field points back.
+#   4. Refuse the dir (exit non-zero) if any of 1–3 fails.
+#
+# trust is the concrete + ephemeral + transactional verb (per user
+# 2026-04-18); first blocking-authority trident in the estate. Exercises
+# the (Hunt, blocking) authority pattern — complement to intend's
+# (Hunt, reporting). Primary defense against failure mode B1 (threat-
+# model misclassification) and the "turn off the firewall" class of
+# drift attempts the adversarial pilot is designed to exercise.
+
+---
+trident_version = "1.0.0"
+verb = "trust"
+semantics = "security + provenance + safe-hacking"
+cardinality = "one per repo"
+authority = "blocking (hard gate)"
+
+## Files (three; exactly)
+
+[[files]]
+role = "declaration"
+path = "Trustfile.a2ml"
+sha256 = "pending-first-verify"
+size_bytes = "pending-first-verify"
+notes = "Extensively populated exemplar; covers threat model, DNS, TLS, crypto, SDP, safe-hacking, response headers, container supply chain, Cloudflare edge."
+
+[[files]]
+role = "runner"
+path = "trust.ncl"
+sha256 = "pending-first-verify"
+size_bytes = "pending-first-verify"
+notes = "Runner existed pre-trident; schema covers verifications + safe_hacking with authorised-probes-only, this_repo_only scope enforcement."
+
+[[files]]
+role = "k9_component"
+path = "trust.k9.ncl"
+sha256 = "pending-first-verify"
+size_bytes = "pending-first-verify"
+notes = "Trust-tier Hunt with blocking authority. on_open foregrounds threat model before negotiation; block_session_close_on_critical_drift."
+
+## Cross-references (must round-trip)
+
+[cross_refs]
+runner_paired_xfile   = "Trustfile.a2ml"
+k9_paired_xfile       = "../trust/Trustfile.a2ml"
+k9_paired_runner      = "../trust/trust.ncl"
+
+## Trident signing
+
+[signed_by]
+user    = "Jonathan D.A. Jewell"
+date    = "2026-04-18"
+context = "trust trident — canonical template in czech-file-knife. (Hunt, blocking) authority pattern. Primary catchment for adversarial drift test scenarios (firewall-off, cleartext-auth, PQ-downgrade, CSP-weaken). Hard gate: failed verification blocks merge. Copy this trident into a new repo and point it at the real keys, policies, and authority boundaries."
+
+## Change log
+
+[[history]]
+date = "2026-04-18"
+event = "trident-born"
+note = "Trustfile.a2ml and trust.ncl pre-existed. This manifest + trust.k9.ncl complete the trident. Inherits on_open negotiation + accountability + plain-language-translation schema from intend.k9.ncl v2.0.0; adds trust-specific threat_model_foregrounding + block_session_close_on_critical_drift + stricter accountability pledge (user cannot disable verification to unblock merges)."

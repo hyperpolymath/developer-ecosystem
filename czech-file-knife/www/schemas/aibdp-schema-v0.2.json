@@ -1,0 +1,377 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://consent-aware-web.org/schemas/aibdp-v0.2.json",
+  "$comment": "Vendored unmodified from metadatastician/consent-aware-web schemas/aibdp-schema-v0.2.json (MPL-2.0) on 2026-09-17 \u2014 see the .license sidecar. AIBDP 0.2 implements draft-jewell-aibdp-00 (EXPERIMENTAL; not a Datatracker submission) and is a mapped alternative representation of AIPREF where they overlap.",
+  "title": "AI Boundary Declaration Protocol (AIBDP) Manifest Schema",
+  "description": "JSON Schema for validating AIBDP manifests hosted at /.well-known/aibdp.json",
+  "type": "object",
+  "required": [
+    "aibdp_version",
+    "contact",
+    "policies"
+  ],
+  "properties": {
+    "aibdp_version": {
+      "type": "string",
+      "description": "Protocol version number",
+      "pattern": "^\\d+\\.\\d+$",
+      "examples": [
+        "0.1",
+        "0.2",
+        "1.0"
+      ]
+    },
+    "canonical_uri": {
+      "type": "string",
+      "format": "uri",
+      "description": "Authoritative location of this manifest for cross-domain policies"
+    },
+    "contact": {
+      "type": "string",
+      "description": "Contact URI for policy inquiries (mailto:, https:, etc.)",
+      "pattern": "^(mailto:|https?:).+",
+      "examples": [
+        "mailto:policy@example.org",
+        "https://example.org/contact"
+      ]
+    },
+    "expires": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when manifest should be re-fetched"
+    },
+    "policy_uri": {
+      "type": "string",
+      "format": "uri",
+      "description": "Link to human-readable policy document"
+    },
+    "policies": {
+      "type": "object",
+      "description": "AI usage policy declarations",
+      "properties": {
+        "training": {
+          "$ref": "#/$defs/policy"
+        },
+        "indexing": {
+          "$ref": "#/$defs/policy"
+        },
+        "summarization": {
+          "$ref": "#/$defs/policy"
+        },
+        "question_answering": {
+          "$ref": "#/$defs/policy"
+        },
+        "generation": {
+          "$ref": "#/$defs/policy"
+        },
+        "fine_tuning": {
+          "$ref": "#/$defs/policy"
+        },
+        "embedding": {
+          "$ref": "#/$defs/policy"
+        },
+        "commercial_training": {
+          "$ref": "#/$defs/policy"
+        }
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/policy"
+      },
+      "minProperties": 1
+    },
+    "scope": {
+      "type": "object",
+      "description": "Describes what AI systems this manifest addresses",
+      "properties": {
+        "applies_to": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Types of AI systems this policy covers"
+        }
+      }
+    },
+    "special_provisions": {
+      "type": "object",
+      "description": "Special provisions for specific use cases",
+      "properties": {
+        "academic_research": {
+          "$ref": "#/$defs/special_provision"
+        },
+        "educational_use": {
+          "$ref": "#/$defs/special_provision"
+        },
+        "standards_development": {
+          "$ref": "#/$defs/special_provision"
+        }
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/special_provision"
+      }
+    },
+    "enforcement": {
+      "type": "object",
+      "description": "Enforcement mechanism information",
+      "properties": {
+        "mechanism": {
+          "type": "string",
+          "enum": [
+            "http_430",
+            "legal",
+            "reputational",
+            "technical",
+            "none"
+          ],
+          "description": "Primary enforcement mechanism"
+        },
+        "note": {
+          "type": "string"
+        },
+        "contact_before_litigation": {
+          "type": "boolean",
+          "description": "Whether to contact before legal action"
+        },
+        "preferred_resolution": {
+          "type": "string",
+          "description": "Preferred approach to resolving violations"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Manifest metadata",
+      "properties": {
+        "created": {
+          "type": "string",
+          "format": "date",
+          "description": "Creation date (YYYY-MM-DD)"
+        },
+        "last_modified": {
+          "type": "string",
+          "format": "date",
+          "description": "Last modification date"
+        },
+        "author": {
+          "type": "string"
+        },
+        "organization": {
+          "type": "string"
+        },
+        "project": {
+          "type": "string"
+        },
+        "repository": {
+          "type": "string",
+          "format": "uri"
+        },
+        "related_standards": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "philosophy": {
+      "type": "object",
+      "description": "Philosophical framing and values",
+      "properties": {
+        "core_principle": {
+          "type": "string"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "quote": {
+          "type": "string"
+        }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "description": "COSE cryptographic signature for manifest verification",
+      "required": [
+        "algorithm",
+        "value"
+      ],
+      "properties": {
+        "algorithm": {
+          "type": "string",
+          "enum": [
+            "ES256",
+            "ES384",
+            "ES512",
+            "RS256",
+            "RS384",
+            "RS512",
+            "EdDSA"
+          ],
+          "description": "Signature algorithm (COSE)"
+        },
+        "public_key_uri": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI to public key (JWK format)"
+        },
+        "value": {
+          "type": "string",
+          "description": "Base64-encoded COSE signature"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "policy": {
+      "type": "object",
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "allowed",
+            "refused",
+            "conditional",
+            "encouraged"
+          ],
+          "description": "Permission status for this AI usage mode"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Requirements that must be met when status is 'conditional'"
+        },
+        "scope": {
+          "oneOf": [
+            {
+              "type": "string",
+              "const": "all"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Path patterns this policy applies to"
+            }
+          ]
+        },
+        "exceptions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "path",
+              "status"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "Path pattern for exception"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "allowed",
+                  "refused",
+                  "conditional",
+                  "encouraged"
+                ]
+              },
+              "note": {
+                "type": "string"
+              },
+              "conditions": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "rationale": {
+          "type": "string",
+          "description": "Human-readable explanation of policy"
+        },
+        "alternatives": {
+          "type": "string",
+          "description": "Suggested alternative approaches"
+        },
+        "purpose": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Specific purposes this policy encourages (when status is 'encouraged')"
+        },
+        "note": {
+          "type": "string",
+          "description": "Additional context or clarification"
+        }
+      },
+      "additionalProperties": false
+    },
+    "special_provision": {
+      "type": "object",
+      "required": [
+        "status"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "unrestricted",
+            "encouraged",
+            "allowed",
+            "conditional",
+            "refused"
+          ]
+        },
+        "note": {
+          "type": "string"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "aibdp_version": "0.2",
+      "contact": "mailto:policy@example.org",
+      "policies": {
+        "training": {
+          "status": "conditional",
+          "conditions": [
+            "Attribution required",
+            "Non-commercial use only"
+          ]
+        },
+        "indexing": {
+          "status": "allowed",
+          "scope": "all"
+        },
+        "generation": {
+          "status": "refused",
+          "rationale": "Content should not be synthetically replicated"
+        }
+      }
+    }
+  ]
+}

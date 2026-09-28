@@ -1,0 +1,56 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= `dns/bind9/` — Authoritative-Only Starting Hand
+
+A safe starting hand for the *authoritative* DNS role only. The posture, in
+one line: **answers for its zones, does nothing else.**
+
+== What the example guarantees
+
+* `recursion no` + `allow-recursion { none; }` — not a resolver, so not an
+  open resolver: no amplification via queries, no cache-poisoning surface
+  for clients.
+* `allow-query { none; }` globally; each zone opens itself explicitly —
+  deny by default.
+* `allow-transfer { none; }` — no zone walks; name secondaries explicitly
+  per zone when you have them.
+* `listen-on` bound to explicit addresses — never `any`.
+* `version "none"` — no banner disclosure.
+* `rate-limit` — response rate limiting against floods.
+* Reserved example zones only (`.invalid`, documentation IP ranges).
+* No keys, no TSIG secrets, no journals, no caches, no PID files — runtime
+  state lives outside the repository, always.
+
+== Bring-up is MANUAL, by an operator
+
+The bundle never starts a daemon, and minting a repository never starts
+one. To exercise this configuration deliberately:
+
+[source,bash]
+----
+# syntax + zone validation first — both must pass:
+named-checkconf dns/bind9/named.conf.example
+named-checkzone example.invalid dns/records/example.invalid.zone
+
+# foreground bring-up on a test host, with paths adjusted to that host:
+sudo named -c /etc/bind/named.conf -g -u bind
+----
+
+Productionisation (systemd unit, working-directory ownership, AppArmor
+profile, log rotation) is an ops decision recorded in your deployment docs —
+not something a repository template should silently provide.
+
+== Roles are separated on purpose
+
+Authoritative, recursive/stub, ODoH-relay and ODoH-target are different
+jobs with different threat models; mixing them in one daemon is how open
+resolvers happen. See `../privacy/ENCRYPTED-DNS.adoc` for the role map and
+why this bundle ships exactly one of them.
+
+== Safety check
+
+`www/tests/check-bind-safety.sh` asserts the posture above on every
+`named.conf*` in this directory, rejects key/secret/journal material
+anywhere under `www/dns/`, runs `named-checkconf`/`named-checkzone` when
+the binaries are available, and proves itself against the planted
+open-recursion control (`www/tests/controls/named.conf.open-recursion.control`).

@@ -1,0 +1,20 @@
+# This workflow is managed by gh actions-lock.
+# SPDX-License-Identifier: MPL-2.0
+# This workflow is managed by gh actions-lock.
+name: Central Estate CI/CD Audit
+
+# The called reusable declares `permissions: contents: read`; a caller must grant
+# at least what the reusable declares, and this grants exactly that — no more.
+permissions:
+  contents: read
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_call:
+
+jobs:
+  call-estate-audit:
+    uses: hyperpolymath/cicd-suite/.github/workflows/main-estate-audit.yml@55556cf5ba71ba744695861503c13148d3915a5d  # cicd-suite MAIN (branch-reachable): remote-form callee — 27 full-SHA refs, de-onboarded; witnessed cross-repo in rsr runs 35282081912 + 35283168495 (jobs spawn; gates audit THIS repo). Prior f9e173a pin (via #137) = deleted PR head: pull-ref-only reachability -> 0-job creation rejection; its onboarded @main/tag form was separately proven startup_failure cross-repo (35280642055). Repin on callee updates; never to PR-head commits.

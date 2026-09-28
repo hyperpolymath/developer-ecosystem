@@ -1,0 +1,74 @@
+# SPDX-License-Identifier: MPL-2.0
+#
+# nginx example for the www/ site-operations bundle (issue #53).
+# Place in /etc/nginx/sites-available/ and symlink to sites-enabled/.
+# The root is the STAGED directory produced by www/runbooks/deploy.adoc —
+# NEVER the www/ bundle itself. TLS material lives outside the repository
+# (see www/tls/POLICY.adoc).
+#
+# Requirements: nginx >= 1.25.1 (for 'http2 on;'). Before `nginx -t` can
+# pass, the two ssl_certificate lines MUST be uncommented and pointed at
+# real material — 'listen ... ssl' without a certificate is a hard error.
+# Verified with nginx 1.26.3 (`nginx -t`: syntax ok) against a throwaway
+# self-signed certificate; this file intentionally ships the cert paths
+# commented so no environment-specific paths are baked into the template.
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    http2 on;
+    server_name site.example.invalid;
+
+    root /srv/site.example.invalid;
+    index index.html;
+
+    # Certificate/key paths — provisioned by ACME or ops tooling, never git.
+    # ssl_certificate     /etc/letsencrypt/live/site.example.invalid/fullchain.pem;
+    # ssl_certificate_key /etc/letsencrypt/live/site.example.invalid/privkey.pem;
+    # ssl_protocols TLSv1.2 TLSv1.3;
+
+    # Canonical header set — keep in sync with www/security_headers/csp.conf.
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'self'; upgrade-insecure-requests" always;
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "DENY" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header Permissions-Policy "geolocation=(), camera=(), microphone=(), browsing-topics=()" always;
+    add_header Cross-Origin-Opener-Policy "same-origin" always;
+    add_header Cross-Origin-Resource-Policy "same-origin" always;
+
+    # Defence in depth: refuse operational categories (never staged, but a
+    # bad stage must not publish them).
+    location ~ ^/(dns|tls|security_headers|webservers|profiles|schemas|tests|runbooks)(/|$) {
+        return 404;
+    }
+
+    # Explicit publication of .well-known (prefix match wins over the
+    # dotfile deny below via ^~).
+    location ^~ /.well-known/ {
+        try_files $uri =404;
+    }
+
+    # Deny any other dotfile/dotdir that might slip into a stage.
+    location ~ /\. {
+        deny all;
+    }
+
+    # Staged error bodies.
+    error_page 403 /errors/403.html;
+    error_page 404 /errors/404.html;
+    error_page 429 /errors/429.html;
+    error_page 500 /errors/500.html;
+    error_page 502 /errors/502.html;
+    error_page 503 /errors/503.html;
+    location /errors/ {
+        internal;
+    }
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name site.example.invalid;
+    return 301 https://$host$request_uri;
+}

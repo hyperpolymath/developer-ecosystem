@@ -1,0 +1,8 @@
+{
+  "_comment": "PLANTED CONTROL — must be REJECTED by check-aibdp.sh: it claims http_430 enforcement, which no declaration in this bundle may make.",
+  "aibdp_version": "0.2",
+  "status": "experimental — declaration-only",
+  "contact": "mailto:sec@example.invalid",
+  "policies": { "training": { "status": "disallowed", "rationale": "planted control" } },
+  "enforcement": { "mechanism": "http_430" }
+}

@@ -1,0 +1,40 @@
+# SPDX-License-Identifier: MPL-2.0
+#
+# Caddy 2 example for the www/ site-operations bundle (issue #53).
+# The document root is the STAGED directory produced by www/runbooks/deploy.adoc
+# (public/ content + .well-known/ + errors/ + rendered policies) — NEVER the
+# www/ bundle itself. Hostname is RFC 2606 reserved; TLS is automatic once the
+# name is real (see www/tls/POLICY.adoc).
+
+site.example.invalid {
+	root * /srv/site.example.invalid
+	encode zstd gzip
+
+	# Canonical header set — keep in sync with www/security_headers/csp.conf.
+	header {
+		Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'self'; upgrade-insecure-requests"
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "geolocation=(), camera=(), microphone=(), browsing-topics=()"
+		Cross-Origin-Opener-Policy "same-origin"
+		Cross-Origin-Resource-Policy "same-origin"
+		-Server
+	}
+
+	# Defence in depth: operational categories are never staged, but if a bad
+	# stage ever slips through, refuse them explicitly.
+	@operational path /dns/* /tls/* /security_headers/* /webservers/* /profiles/* /schemas/* /tests/* /runbooks/*
+	respond @operational 404
+
+	# .well-known is ordinary staged content (dotfiles included by file_server);
+	# no special-casing needed beyond keeping it out of any dotfile blocking.
+
+	handle_errors {
+		rewrite * /errors/{err.status_code}.html
+		file_server
+	}
+
+	file_server
+}

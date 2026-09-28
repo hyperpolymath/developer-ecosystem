@@ -1,28 +1,26 @@
+# This workflow is managed by gh actions-lock.
 # SPDX-License-Identifier: MPL-2.0
 name: OSSF Scorecard
+
 on:
-  push:
-    branches: [main, master]
   schedule:
     - cron: '0 4 * * *'
   workflow_dispatch:
-permissions: read-all
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  actions: read      # required by the reusable workflow (staleness check reads workflow runs)
+  contents: read
+
 jobs:
-  analysis:
-    runs-on: ubuntu-latest
+  scorecard:
+    uses: hyperpolymath/standards/.github/workflows/scorecard-reusable.yml@da2c748aad55c1a1dcba00b60fe4a35017bc6540
+    # Reusable called-workflow permissions are CAPPED by the caller's grants;
+    # without security-events: write here the scorecard SARIF upload fails with
+    # startup_failure (hypatia WF018). id-token: write enables OIDC publish.
     permissions:
+      contents: read
       security-events: write
       id-token: write
-    steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
-        with:
-          persist-credentials: false
-      - name: Run Scorecard
-        uses: ossf/scorecard-action@4eaacf0543bb3f2c246792bd56e8cdeffafb205a # v2.3.1
-        with:
-          results_file: results.sarif
-          results_format: sarif
-      - name: Upload results
-        uses: github/codeql-action/upload-sarif@cdefb33c0f6224e58673d9004f47f7cb3e328b89 # v3.31.8
-        with:
-          sarif_file: results.sarif

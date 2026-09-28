@@ -1,0 +1,55 @@
+# SPDX-License-Identifier: MPL-2.0
+#
+# .hypatia-ignore — scoped, documented exemptions for the Hypatia scanner.
+#
+# Format (one entry per line):
+#     <rule_module>/<rule_type>:<path-fragment>
+#     <rule_module>/*:<path-fragment>          (any type in module)
+#     <path-fragment>                           (any rule, any module)
+#
+# Lines starting with `#` are comments. A path-fragment is a substring match
+# against the repo-relative file path. Built-in defaults live in Hypatia's
+# lib/hypatia/scanner_suppression.ex — do not duplicate them here. Each entry
+# below carries a stated reason. Prefer fix-the-code or an inline directive
+# over an entry here; this file is for whole-file/directory exemptions.
+
+# ─── build/docs-seed/ describes DOWNSTREAM repos, not this one ─────────────
+#
+# `build/docs-seed/` is the canonical template of documentation that gets
+# copied into scaffolded repos. Its example paths (e.g. `src/middleware/…`,
+# `src/main.rs`) describe a hypothetical generated project, so they
+# legitimately do not resolve against this template's own tree. SD022
+# (stale `src/<dir>/` reference) is therefore a structural false positive
+# for everything under this directory — mirrors the built-in CHANGELOG.md
+# and third_party/ carve-outs. Scaffolded repos inherit this file, so the
+# exemption travels with the template.
+structural_drift/SD022:build/docs-seed/
+
+# ─── Research-extension workflow findings ───────────────────────────────────────
+#
+# RE001 is an advisory recommendation to add harden-runner whenever a workflow
+# references a secret. These workflows deliberately use repository-locked
+# actions and least-privilege permissions while retaining the outbound access
+# needed for GitHub, SMTP, BoJ and SonarQube. Keep the exemptions file-scoped so
+# the advisory still applies to every new workflow.
+research_extensions/RE001:.github/workflows/push-email-notify.yml
+research_extensions/RE001:.github/workflows/release.yml
+research_extensions/RE001:.github/workflows/build-notification.yml
+research_extensions/RE001:.github/workflows/dependabot-automerge.yml
+research_extensions/RE001:.github/workflows/label-triage.yml
+research_extensions/RE001:.github/workflows/labels.yml
+research_extensions/RE001:.github/workflows/sonarqube.yml
+
+# RE005's matches are non-masking uses: empty grep/find results and annotation
+# rendering are allowed to be non-fatal, while each workflow retains a separate
+# explicit failure path for the condition it gates. Scope each exemption to the
+# reviewed workflow rather than disabling RE005 repository-wide.
+research_extensions/RE005:.github/workflows/security-policy.yml
+research_extensions/RE005:.github/workflows/quality.yml
+research_extensions/RE005:.github/workflows/dot-wellknown-enforcement.yml
+research_extensions/RE005:.github/workflows/static-analysis-gate.yml
+
+# RE008 assumes the actor-name comparison is used with pull_request_target. The
+# Dependabot workflow uses the unprivileged pull_request event and also verifies
+# github.event.pull_request.user.login, so that threat model does not apply.
+research_extensions/RE008:.github/workflows/dependabot-automerge.yml

@@ -1,0 +1,147 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+// Owner: Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Coaptation — the typed descriptile↔contractile face-off
+:toc: macro
+:toclevels: 3
+
+*Coaptation* keeps a repository's *descriptiles* (the descriptive "what-is":
+CLADE / STATE / ECOSYSTEM / AGENTIC / ANCHOR) in homeostasis with its
+*contractiles* (the normative set-point: Intend / Must / Trust / Adjust + Dust /
+Bust). The runner `coapt` is the controller of the cybernetic loop.
+
+The name is clinical: _coaptation_ is the bringing of two surfaces into correct
+matching contact — a healing fracture, a heart valve's leaflets sealing under
+pressure. That is exactly the face-off: do the descriptive facts seal against the
+normative obligations? The deeper "why" — *stability through change*, re-anchoring
+rather than holding a fixed set-point — is *allostasis*; see `ALLOSTASIS` notes
+when that doc lands. This pack is the _Coaptation_ mechanism; _allostasis_ is its
+philosophy.
+
+toc::[]
+
+== The idea: a typed relation, not a text diff
+
+Contractiles emit *obligations* (clauses); descriptiles emit *evidence* (facts).
+The correspondence is a *typed relation that only inhabits when evidence witnesses
+obligation* — not a string comparison. In the Idris2 sound core (a2ml is
+Idris2-through-and-through):
+
+[source,idris]
+----
+Clause     : Verb   -> Type
+Fact       : Family -> Type
+Witnesses  : Clause -> Fact -> Type     -- inhabited iff the fact attests the clause
+----
+
+The dependent-array spine makes coverage *total by construction*: the obligation
+vector indexes the evidence vector, so an unwitnessed `Must` clause is a
+compile-time error, not a forgotten check. This is now *proven*, not just declared:
+in `core/Coaptation.idr` the `MayGap` type has no constructor for `Must`/`Trust`, so
+`TotalCoverage` forces a witness on every hard obligation — and a `failing` block
+makes `idris2 --check` itself the proof (it asserts that gapping a `Must` does not
+typecheck). What is still pending (build-path step 6's remaining sub-step) is
+*wiring* that core to consume the runner's atomised JSON; until then the
+*authoritative* reading is the Nickel comparator, `coapt.ncl`, and the core proves
+the property on hand-built examples.
+
+== The cybernetic loop is the k9 ladder
+
+[cols="1,1,4"]
+|===
+| Tier | Role | Here
+
+| *Kennel* (pure data)
+| SENSOR
+| `extract-clauses.sh` + `extract-facts.sh` parse the contractiles and
+  descriptiles into deterministic JSON atoms with stable IDs.
+
+| *Yard* (pure eval)
+| COMPARATOR
+| `coapt.ncl` runs Coverage/Witnesses over the atoms, grades per verb, and emits
+  the graded *coaptation receipt* (a2ml). The face-off lives here; pure, no side
+  effects. `verify.sh` + `coapt.k9.ncl` are the Yard drift gate.
+
+| *Hunt* (guarded exec)
+| ACTUATOR
+| `coapt.sh` writes the receipt and — only when red — assembles a re-anchor
+  *basis*. The only tier allowed to act; leashed. It never drops an anchor.
+|===
+
+== Grades are per-verb, not one Boolean
+
+[cols="1,4"]
+|===
+| *Must*   | Boolean gate — every witnessed obligation must hold; a refuted or unmeasured Must is a hard fail.
+| *Trust*  | Boolean gate + *provenance* — the witness carries the content hash of the descriptile source.
+| *Adjust* | Graded posture in [0,1] — *advisory*, never a hard gate (accessibility / inclusive design).
+| *Intend* | Tropical (min-plus) *distance-to-north-star* — count of committed intents not yet `done`. Wishes (horizon aspirations) are not drift.
+| *Bust*   | Alarm — a recognised break; alarms only when its witness shows the failure is _active_, distinguishing it from a merely declared mode.
+| *Dust*   | Expected — planned exnovation; reported, never alarms.
+|===
+
+The aggregate, judged against the Intend/Must/Trust tolerances in `grades.ncl`, is
+the "how far is too far" that proposes a re-anchor: `green` (nothing) /
+`amber` (advisory) / `red` (assemble re-anchor basis).
+
+== Files
+
+[cols="1,3"]
+|===
+| `extract-clauses.sh` | Normative-side atomiser. Lifts the `###`/`####` anchors from the six Xfiles into `clauses.json` (stable id `verb.slug`). Reader only.
+| `extract-facts.sh`   | Descriptive-side atomiser. Projects descriptile facts into `facts.json` (stable id `family.key`). Reuses the arrival-pack scalar/arr helpers.
+| `witness-map.ncl`    | The hand-authored *knowledge* layer: which fact witnesses which clause, under what predicate. The one file to review for honesty.
+| `grades.ncl`         | Grade type per verb + aggregation tolerances.
+| `coapt.ncl`          | The Yard comparator. Imports the atoms + map + grades; emits the receipt (`nickel export --format raw`).
+| `coapt.sh`           | The runner/controller. `--report` (SITREP) / `--reanchor` (assemble basis).
+| `verify.sh`          | Yard drift gate. Regenerates the receipt and byte-compares the committed one.
+| `coapt.k9.ncl`       | k9 contract (Yard) documenting + validating the drift check. Sibling of `arrival-pack/claude-md.k9.ncl`.
+| `receipts/latest.a2ml` | The committed coaptation receipt — the drift baseline.
+| `core/Coaptation.idr`  | Dependent-typed sound core. Proves the totality property (unwitnessed Must = compile-time error) via a `failing` block; not yet wired to the runner JSON (build-path step 6).
+|===
+
+== Usage
+
+[source,sh]
+----
+just coapt              # --report: emit the coaptation receipt (decides nothing)
+just coapt-reanchor     # --reanchor: assemble a re-anchor basis IF the band is red
+just validate-coapt     # Yard drift gate: fail if the committed receipt is stale
+----
+
+== Honest gaps (do not paper over these)
+
+* *The Yard reading is partial — and on this repo, mostly deferred.* It judges only
+  what the descriptiles attest. Of 50 clauses, only a handful are directly
+  descriptile-witnessed (the receipt's `descriptile-witnessed` count); the Must and
+  Trust obligations are overwhelmingly filesystem/git probes reported
+  `probe-deferred`. *Trust in particular has ZERO descriptile witnesses* — the
+  descriptive self-model carries no security/provenance evidence — so the whole
+  Trust gate defers to Hunt. A Hunt-tier run is required for a full hard-gate.
+* *The Nickel prototype does NOT make an unwitnessed Must a hard error.* In the
+  authoritative Nickel reading today, a Must with a probe but no descriptile witness
+  is soft `probe-deferred`, not red; only a Must with neither witness nor probe
+  (`unmeasured`) trips red. The hard totality guarantee ("an unwitnessed Must is a
+  compile-time error") is *proven in the Idris2 sound core* (`core/Coaptation.idr`,
+  machine-checked by a `failing` block), but on hand-built examples — it does not
+  govern the Nickel reading until the core is *wired* to consume the runner's JSON
+  (build-path step 6's remaining sub-step).
+* *ANCHOR has no drift/ledger schema yet.* `ANCHOR.a2ml` (`hyperpolymath.anchor/1`)
+  encodes semantic-authority + golden-path, not a recognised-drift / re-anchor
+  ledger. So `--reanchor` assembles a basis but cannot record the drop; wiring the
+  ledger is the prerequisite for a real re-anchor branch.
+* *The contractile runner toolset is known-broken* estate-wide; Coaptation does not
+  depend on it — it reads the Xfiles directly — but it does not fix it either.
+* *The witness map is declarative.* Soundness-critical Must/Trust witnesses should
+  graduate to Idris2 `Witnesses` proofs (build-path step 6); today they are
+  predicate assertions a human must keep honest.
+
+== Build path (this pack delivers steps 1–5; 6–7 pending)
+
+. *Atomise both sides* — `extract-clauses.sh` + `extract-facts.sh`. ✅
+. *Witness map* — declarative; graduate soundness-critical entries to Idris2. ✅ (declarative)
+. *Grade types per verb* + aggregation — `grades.ncl`. ✅
+. *Comparator in the Yard tier* — `coapt.ncl` (Nickel prototype). ✅
+. *Actuation in Hunt* with bands — `coapt.sh` (green=nil / amber=advisory / red=basis). ✅ (basis; ledger pending)
+. *Dependent-type coverage totality* in the Idris2 core. 🔶 property PROVEN (`failing`-block, `idris2 --check`); JSON wiring to the runner pending.
+. *Promote the runner to `standards`* as canon after dogfooding here. ⏳

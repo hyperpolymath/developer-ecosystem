@@ -1,0 +1,53 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Documentation
+
+For the full directory map — every directory, what it is, and who reads it —
+see link:architecture/REPOSITORY-MAP.adoc[REPOSITORY-MAP.adoc]. It is generated
+and CI fails if it goes stale, so prefer it over any hand-written listing.
+
+== Start here
+
+* link:onboarding/QUICKSTART-USER.adoc[QUICKSTART-USER] — using a repo built from this template.
+* link:onboarding/QUICKSTART-DEV.adoc[QUICKSTART-DEV] — developing in one.
+* link:onboarding/QUICKSTART-MAINTAINER.adoc[QUICKSTART-MAINTAINER] — maintaining one.
+* link:AI_INSTALLATION_GUIDE.adoc[AI_INSTALLATION_GUIDE] — for an AI agent instantiating the template.
+* link:EXPLAINME.adoc[EXPLAINME] — how the pieces actually work.
+
+== The tracks
+
+[cols="1,3",options="header"]
+|===
+| Directory | Holds
+
+| `architecture/`  | Topology, threat model, and the generated repository map.
+| `attribution/`   | CODEOWNERS rationale and credit.
+| `decisions/`     | ADRs. `0000-template.adoc` is the template; number upwards from there.
+| `developer/`     | Developer-facing deep dives (ABI/FFI, tooling integrations).
+| `governance/`    | Governance model, maintenance checklist, development approach, audits, planning.
+| `legal/`         | Licence exhibits.
+| `onboarding/`    | Quickstarts and the LLM warm-up documents.
+| `practice/`      | Operational and implementation material, incl. AI conventions.
+| `proposals/`     | Proposals and RFCs, including the root-cleanup proposal this layout came from.
+| `reports/`       | Generated and periodic reports (audit, compliance, security, ...).
+| `standards/`     | Pointers to the estate canon in the `standards` repo.
+| `status/`        | READINESS, ROADMAP, TEST-NEEDS, PROOF-NEEDS, PROOF-STATUS.
+| `theory/`        | Formal and conceptual material.
+| `whitepapers/`   | Academic, industry and outreach whitepapers.
+| `wikis/`         | Long-form wiki material.
+|===
+
+== Core documents
+
+* link:governance/MAINTENANCE-CHECKLIST.adoc[governance/MAINTENANCE-CHECKLIST.adoc]
+* link:governance/SOFTWARE-DEVELOPMENT-APPROACH.adoc[governance/SOFTWARE-DEVELOPMENT-APPROACH.adoc]
+* link:MAINTAINERS.adoc[MAINTAINERS.adoc] — the single maintainer roster.
+* link:GOVERNANCE.adoc[GOVERNANCE.adoc] — the governance model.
+
+[NOTE]
+====
+`.md` files are not permitted under `docs/`; AsciiDoc is the estate standard and
+`scripts/check-no-md-in-docs.sh` enforces it. The previous version of this file
+pointed at `maintenance/MAINTENANCE-CHECKLIST.md` — a directory that does not
+exist, holding a file with an extension this tree forbids.
+====

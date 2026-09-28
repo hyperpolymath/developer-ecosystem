@@ -1,0 +1,99 @@
+# SPDX-License-Identifier: MPL-2.0
+#
+# Czech File Knife — portable compose stack (Tier B)
+#
+# This is the runtime-agnostic, OCI compose-spec file. It works unchanged with:
+#   podman compose  -f build/container/compose.yaml up -d
+#   nerdctl compose -f build/container/compose.yaml up -d
+#   docker  compose -f build/container/compose.yaml up -d
+#
+# It has NO dependency on the stapeln tier. For the sovereign path
+# (selur zero-copy IPC, signed .ctp bundles, svalinn trust policy) use
+# build/container/stapeln/compose.toml with `selur-compose` instead.
+#
+# The Justfile picks the right one automatically:
+#   just container-up        # selur-compose if installed, else this file
+#
+# See https://compose-spec.io for the full specification.
+
+services:
+  # ──────────────────────────────────────────────────────────────────────
+  # Primary application service
+  # ──────────────────────────────────────────────────────────────────────
+  "czech-file-knife":
+    build:
+      context: ..
+      dockerfile: build/container/Containerfile
+    image: "ghcr.io/hyperpolymath/czech-file-knife:latest"
+    ports:
+      - "8080:8080"
+    environment:
+      APP_HOST: "[::]"
+      APP_PORT: "8080"
+      APP_LOG_FORMAT: "json"
+      APP_DATA_DIR: "/data"
+    volumes:
+      - "czech-file-knife-data:/data"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # ──────────────────────────────────────────────────────────────────────
+  # rokur — secrets-management gate (stapeln). Fronts the app and refuses
+  # to start the stack unless required secrets are present.  on Wolfi.
+  # Remove this service if you do not use secret gating.
+  # ──────────────────────────────────────────────────────────────────────
+  rokur:
+    image: ghcr.io/hyperpolymath/rokur:latest
+    environment:
+      ROKUR_BACKEND: "http://czech-file-knife:8080"
+      ROKUR_LISTEN: "[::]:8081"
+      ROKUR_REQUIRED_SECRETS: ""        # comma-separated env names that MUST be set
+      ROKUR_AUDIT_LOG: "/var/log/rokur/audit.jsonl"
+      ROKUR_LOG_FORMAT: "json"
+    ports:
+      - "8081:8081"
+    volumes:
+      - rokur-audit:/var/log/rokur
+    depends_on:
+      "czech-file-knife":
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:8081/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ──────────────────────────────────────────────────────────────────────
+  # svalinn — edge gateway (stapeln). TLS termination, auth, rate limiting.
+  # Reads the gatekeeper policy from build/container/stapeln/.gatekeeper.yaml.
+  # Remove this service for a bare app with no gateway.
+  # ──────────────────────────────────────────────────────────────────────
+  svalinn:
+    image: ghcr.io/hyperpolymath/svalinn:latest
+    ports:
+      - "443:443"
+      - "80:80"
+    environment:
+      SVALINN_BACKEND: "http://rokur:8081"
+      SVALINN_POLICY_FILE: "/etc/svalinn/gatekeeper.yaml"
+      SVALINN_TLS_AUTO: "true"
+    volumes:
+      - ./stapeln/.gatekeeper.yaml:/etc/svalinn/gatekeeper.yaml:ro
+    depends_on:
+      - rokur
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  "czech-file-knife-data":
+  rokur-audit:

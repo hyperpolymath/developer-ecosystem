@@ -1,0 +1,118 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// Copyright (c) 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= RSR Philosophy — How Work Is Done Here
+:toc:
+:icons: font
+
+[.lead]
+The RSR standard is not only a set of files to scaffold; it is a way of working.
+This document states the operating principles an agent or maintainer is expected
+to hold while doing work in any hyperpolymath repository. They are deliberately
+few, deliberately blunt, and meant to be applied — not admired.
+
+These principles are the human-readable home of the *Doctrine* that the estate
+arrival-pack projects into every repository's `CLAUDE.md`. The Doctrine list is
+the terse machine-facing summary; this file is the reasoning behind it. Where the
+two differ, the canon (`hyperpolymath/standards`) and the owner's `manifesto`
+prevail.
+
+== The load-bearing four
+
+These four are named together because they describe the *order*, *manner*, *locus*
+and *standard* of the work undertaken, and because each is a standing trap that
+fluent, plausible work falls into.
+
+=== Holes before goals
+
+Fix soundness holes before you build features, optimise, or polish documentation.
+A hole is anywhere the system can be wrong without saying so: an unproven seam, an
+unchecked input, a `TODO` that load-bearing code depends on, a claim no tool
+establishes. Goals are everything you would rather be doing. The discipline is to
+let the holes set the agenda, not the goals — because a goal reached on top of a
+hole is not reached.
+
+=== Always fail loudly
+
+No silent green. A check that cannot fail is not a check; a fallback that hides a
+broken precondition is a forged result. When something is wrong, the system must
+say so — visibly, early, and in a way that stops the line — rather than degrade
+quietly into a plausible-looking success. Seams (ABI / FFI boundaries) are sealed
+and proven, not assumed. Prefer a build that breaks to a build that lies.
+
+=== Solutions at source
+
+Fix the canonical, upstream origin of a problem — never patch the downstream
+symptom. When a defect, a drift, or a wrong setting appears in many places, it is
+almost never many problems; it is one problem at a source, expressed many times.
+Remediating the copies without fixing the source guarantees the problem returns.
+
+Two obligations follow from this, and they are not optional:
+
+* *Find the source.* Before acting, trace the thing back to where it is actually
+  defined — the template, the generator, the canon, the single point that
+  everything else inherits from. The estate's structure is
+  `standards → czech-file-knife → (every repo)`; a fix that belongs at the
+  template does not belong in 380 leaves.
+* *Be mindful of every up- and down-stream.* A change at a source propagates.
+  Before you make it, know what feeds into the thing you are changing (upstream)
+  and what depends on it (downstream), and make sure the change is safe across
+  all of them. A correct fix that breaks a downstream consumer is not yet a fix.
+
+When the source genuinely cannot be reached in this pass — an upstream you do not
+own, a fix gated on owner ratification — remediate the downstream *and* record the
+source fix as the real work still owed. Patching the symptom silently, as if it
+were the cure, is itself a hole (see _always fail loudly_).
+
+=== Elegance by default
+
+Treat the most elegant and correct long-term solution as the default choice — and
+say which option that is, every time you put a choice to the owner. This is not a
+preference for tidiness; it is a refusal to let the judgment be made silently.
+
+A set of options offered as merely _different_ is not neutral. Whichever one is
+listed first, or described most fluently, becomes the recommendation whether you
+intended it or not — and the option that reads most fluently is usually the one you
+found quickest to write. So an unlabelled list quietly substitutes your convenience
+for the standard this estate is held to, which is the same error as patching a
+symptom in place of a source: a choice backed by authority rather than justified by
+the construction that produced it.
+
+Three obligations follow, and they are not optional:
+
+* *Label it.* Exactly one option is marked as the most elegant and correct in the
+  long run. Judge that on long-run grounds alone — correctness, no deferred
+  breakage, no special cases, a fix at the generator rather than at the instance —
+  and never on effort, speed, or convenience. If two options genuinely tie, say so;
+  silence is not a tie.
+* *Justify any departure.* If your recommendation is not the elegant arm, name both
+  arms and state, in the offer itself, why you are departing on this occasion — an
+  irreversible step already taken, a live outage, a precondition still gated. An
+  unexplained departure is a defect in the question, not a matter of style. Never
+  merge the two labels to avoid having to write the explanation.
+* *It binds unasked decisions too.* This is a methodology, not a formatting rule
+  for questions. Where you take the non-elegant arm without asking, report it
+  rather than absorb it.
+
+The default is a *starting point, not a prediction*. The owner may take the other
+arm with full information, and often will; what may not happen is an expedient
+choice made in ignorance that it was the expedient one.
+
+== The full Doctrine
+
+The four above are the principles most often abused, but they sit inside the
+estate's full operating Doctrine. The canonical, always-current list is projected
+into the top of every repository's `CLAUDE.md` from
+`.machine_readable/arrival-pack/`. In summary it also holds: ground-truth by
+running the tool, not trusting status docs; distrust the neural for exactness
+(licences / invariants / equivalence belong to PLASMA, not an LLM); squabble,
+don't bypass (reach green by satisfying the gate, never by admin-override); no
+automated licence edits; no deletion by access-recency; wire first; always sign;
+report faithfully (no overclaim); stop-first on costly or outward-facing actions;
+boundaries are real; and equivalence as identity.
+
+== Status
+
+* *Licence:* CC-BY-SA-4.0 (documentation).
+* *Canon:* `hyperpolymath/standards` is the source of truth for these principles;
+  `hyperpolymath/manifesto` states the doctrine in the owner's voice. This file
+  operationalises them for the RSR template and its descendants.

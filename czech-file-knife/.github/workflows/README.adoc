@@ -1,0 +1,63 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+= GitHub Workflows — what runs, and why some look duplicated
+
+This directory holds the repo's CI/CD. A few workflows *look* like they overlap
+but are deliberately distinct — documented here so the apparent duplication is
+not "tidied away" into a real coverage gap.
+
+== Hypatia runs in two places (on purpose)
+
+* `hypatia-scan.yml` — the **standalone security scan** (push / PR / weekly).
+  Independent; this is the repo's own Hypatia coverage.
+* `static-analysis-gate.yml` -> `hypatia-scan` job — runs Hypatia as part of the
+  **gate**, then the `deposit-findings` job hands the results to the
+  **gitbot-fleet learning** pipeline. This job is also a *required status check*.
+
+Same tool, two different consumers (security scan vs fleet learning). Removing
+either loses real function — keep both.
+
+== Secret scanning is single-sourced *in CI* — and two-tier overall
+
+`secret-scanner.yml` calls the standards reusable (gitleaks + a Rust-secrets
+check). An inline TruffleHog job was removed: the reusable deliberately retired
+TruffleHog as redundant with gitleaks, so re-adding it was duplicated work, not
+extra coverage.
+
+**That retirement is scoped to CI.** The estate runs a deliberate *two-tier*
+secret defence, and the second tier is not in this directory:
+
+[cols="1,2,3"]
+|===
+| Tier | Engine | Where
+
+| CI
+| gitleaks (+ rust-secrets, shell-secrets)
+| `secret-scanner.yml` -> standards reusable. Runs on pull_request and on push
+  to main — i.e. on what has *already reached* the remote.
+
+| Local
+| TruffleHog
+| `.github/hooks/scan-secrets.sh`, called by `.github/hooks/pre-push`. Runs *before* the
+  push leaves the machine, on exactly the commits being pushed.
+|===
+
+Different engines at different checkpoints — the local tier is the only one that
+can stop a key before it exists on a server, where revocation, not deletion, is
+the only real remedy. Ratified by the owner, 2026-09-14: *"we [run] gitleaks on
+github regularly but [run] trufflehog prior to pushes using the hooks system."*
+
+*Do not delete `.github/hooks/scan-secrets.sh` as duplication of `secret-scanner.yml`.*
+It is the other half of this design, not a second copy of this half. The two
+tiers also cover for each other's blind spots: the hook excludes TruffleHog's
+SonarCloud detector (it matches any 40-hex string, so every SHA-pinned action
+reads as a secret — measured, 24 findings on a clean clone, all of them action
+pins), and gitleaks in CI catches a genuine SonarCloud token as `generic-api-key`.
+
+== SAST tools are complementary, not redundant
+
+* `codeql.yml` — CodeQL (matrix defaults to `actions`; every repo has workflows).
+* `sonarqube.yml` — SonarCloud (shell / JS surface; see `sonar-project.properties`).
+* `static-analysis-gate.yml` — panic-attack + Hypatia gate (see above).
+
+Each targets a different language/surface; together they cover what no single
+analyser does.

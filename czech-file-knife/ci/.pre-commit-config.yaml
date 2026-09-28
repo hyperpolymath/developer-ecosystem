@@ -1,0 +1,73 @@
+# SPDX-License-Identifier: MPL-2.0
+# Pre-commit hooks for hyperpolymath RSR repos.
+# Install: pip install pre-commit && pre-commit install
+# Run manually: pre-commit run --all-files
+
+repos:
+  # --- Standard hooks ---
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: check-added-large-files
+        args: ['--maxkb=1024']
+
+  # --- Manifest validation (DEED grammar) ---
+  # The former provider repo (hyperpolymath/a2ml-pre-commit) was DELETED
+  # upstream in the A2ML retirement (standards #836 owner ruling; R-H3),
+  # leaving this pin as broken plumbing — pre-commit could not clone it.
+  # Replaced with a local hook calling .github/hooks/validate-deed.sh,
+  # verified exit-0 against all 123 manifests in this repo. Dual-accept:
+  # scans both .a2ml (legacy extension; migration = standards #837, the
+  # DEED conversion campaign) and .deed. When the grammar-faithful .deed
+  # validator is wired per owner ruling R-H2, this hook is its natural home.
+  - repo: local
+    hooks:
+      - id: validate-deed
+        name: Validate DEED manifests (dual-accept .a2ml/.deed)
+        entry: .github/hooks/validate-deed.sh
+        language: system
+        files: '\.(a2ml|deed)$'
+        pass_filenames: false
+
+  # --- K9 contract validation ---
+  - repo: https://github.com/hyperpolymath/k9-pre-commit
+    rev: 9b82e1f7a6b6c0f99df72c145d7dee8851803c30  # k9-pre-commit @ main 2026-06-23
+    hooks:
+      - id: validate-k9
+        name: Validate K9 contracts
+
+  # --- Shell linting ---
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.10.0.1
+    hooks:
+      - id: shellcheck
+
+  # --- EditorConfig ---
+  - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
+    rev: 3.2.1
+    hooks:
+      - id: editorconfig-checker
+        exclude: '(\.git|node_modules|target|_build|deps|\.|external_corpora|\.lake)/'
+
+  # --- Secret detection ---
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.24.3
+    hooks:
+      - id: gitleaks
+
+  # --- Arrival pack drift: CLAUDE.md must stay in sync with a2ml ---
+  - repo: local
+    hooks:
+      - id: validate-claude-md
+        name: CLAUDE.md arrival pack in sync with a2ml
+        entry: bash .machine_readable/arrival-pack/verify.sh
+        language: system
+        pass_filenames: false
+        files: '^(\.machine_readable/descriptiles/.*|CLAUDE\.md)$'

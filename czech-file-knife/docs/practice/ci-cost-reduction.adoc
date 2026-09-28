@@ -1,0 +1,278 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= CI Cost Reduction — RSR Estate Spec
+:toc: left
+:toclevels: 3
+
+Estate-wide playbook for reducing GitHub Actions minutes consumption
+without sacrificing CI coverage. Born out of an incident where the
+`hyperpolymath` Actions billing tripped and every runner-based workflow
+in the estate went dark. The blocker was external, but the exposure —
+how much we spend — was self-inflicted. This document captures the
+knobs that exist, which ones are worth pulling, and in what order.
+
+Priority sort applied: *dependability > security > interop > usability
+> performance > versatility > functional extension*. Cost reduction is
+a dependability/performance concern; nothing here trades security for
+savings.
+
+== Why this is worth doing
+
+A representative RSR repo (007) runs ~26 active workflows. On a single
+push:
+
+* ~10-15 workflows fire in parallel.
+* Several (scorecard, codeql, hypatia-scan) also fire on a schedule.
+* `oracle-fuzz.yml` runs a 10-minute differential job every hour.
+* Multiple workflows do `fetch-depth: 0` full-history clones.
+* There are meaningful overlaps (trufflehog + gitleaks, multiple
+  security-gate jobs, codeql + hypatia-scan).
+
+Conservative saving potential from the five highest-leverage patterns
+below: *60–80%* of current Actions-minutes, with no coverage loss.
+
+== Priority-ordered patterns
+
+=== 1. Concurrency kills (one-line, estate-wide)
+
+Every push-triggered workflow should cancel its superseded runs when
+a rapid-fire commit lands:
+
+[source,yaml]
+----
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+----
+
+Add this at the workflow top level. Exceptions: release workflows,
+deploy workflows, scheduled workflows — those need to finish.
+
+*Impact:* cancels obsolete runs immediately. On active branches with
+many commits, easily 20–40% of current minutes.
+
+=== 2. Path filters on heavy workflows
+
+Rust CI, CodeQL, E2E, and language-specific test suites should not run
+on docs-only or comment-only changes.
+
+[source,yaml]
+----
+on:
+  push:
+    paths:
+      - 'src/**'
+      - 'crates/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - '.github/workflows/rust-ci.yml'
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'crates/**'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+----
+
+For workflows whose scope is "the whole repo" (scorecard, codeql,
+hypatia-scan): leave unfiltered. For language-specific jobs: filter.
+
+*Impact:* single largest saving on repos that get a lot of README or
+issue-template churn.
+
+=== 3. Reduce schedule frequency
+
+Scheduled workflows should run as often as the decision they inform
+actually changes — not more.
+
+[cols="2,1,1,2",options="header"]
+|===
+| Workflow | Current | Recommended | Rationale
+
+| `oracle-fuzz.yml` (differential fuzz)
+| Every 10 min
+| Every 6h or nightly
+| TRG §5.7.4 90-day differential-fuzzing clock measures *total time*,
+  not *frequency*. A nightly 10-min slice gives the same statistical
+  coverage at 1/144 the cost.
+
+| `scorecard.yml`
+| Daily
+| Weekly
+| OSSF's own recommendation is weekly for stable repos.
+
+| `codeql.yml` (schedule branch)
+| Daily
+| Weekly, or remove schedule (relies on push trigger)
+| CodeQL on every push already covers PR and main commits. A weekly
+  sweep catches newly-disclosed CVEs that affect existing code.
+
+| `hypatia-scan.yml`
+| Weekly
+| Keep weekly
+| Correct cadence. Don't change.
+
+| `parser-fuzz.yml` (if present)
+| Nightly, 5 min per target × 3 targets
+| Keep
+| Already minimal.
+|===
+
+=== 4. Overlap consolidation
+
+Several workflows cover overlapping ground. Consolidate where the
+substitution is near-free:
+
+[cols="2,2,2",options="header"]
+|===
+| Overlap | Resolution | Notes
+
+| `trufflehog` + `gitleaks` in `secret-scanner.yml`
+| Keep one (gitleaks preferred for CVE coverage; trufflehog for
+  verified-only mode)
+| Running both is belt-and-braces with ~90% coverage overlap. One is
+  enough for prevention; both only for quarterly history-sweeps.
+
+| `rsr-antipattern.yml` + `scorecard-enforcer.yml` +
+  `static-analysis-gate.yml`
+| Merge into a single composite `rsr-gate.yml` with three steps
+| They already run in the same CI slot; merging deduplicates
+  setup/checkout/clone.
+
+| `codeql.yml` + `hypatia-scan.yml`
+| Keep both, but drop Hypatia from on-push; let it run only on
+  schedule
+| Hypatia is the slower of the two, and its neurosymbolic analysis
+  doesn't need sub-minute latency on every commit.
+
+| `codeql.yml` (on-push) + `codeql.yml` (scheduled)
+| Keep on-push, drop scheduled
+| Redundant unless the repo rarely gets commits.
+|===
+
+=== 5. Shallow clones where full-history isn't needed
+
+Full-history clones (`fetch-depth: 0`) are expensive on large repos.
+Required for:
+
+* Scorecard (history-based metrics).
+* Gitleaks history-sweep mode.
+* TruffleHog history-sweep mode.
+
+Not required for:
+
+* PR-event secret scanning (limit to the PR delta).
+* Rust CI, language-specific tests.
+* CodeQL (shallow is fine).
+* Hypatia-scan (shallow is fine for pattern detection).
+
+Pattern for secret-scanner:
+
+[source,yaml]
+----
+on:
+  pull_request:      # shallow clone, just the diff
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 4 * * 1'  # weekly history sweep
+
+jobs:
+  pr-scan:
+    if: github.event_name == 'pull_request'
+    # shallow — don't need history for delta scanning
+    steps:
+      - uses: actions/checkout@...
+  full-scan:
+    if: github.event_name != 'pull_request'
+    steps:
+      - uses: actions/checkout@...
+        with:
+          fetch-depth: 0  # only for push-to-main + scheduled
+----
+
+=== 6. Job-level timeouts
+
+Cap every job so a hung runner doesn't burn the budget:
+
+[source,yaml]
+----
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20   # fail-fast instead of 360 default
+----
+
+Recommendations:
+
+* Setup / lint / format jobs: 5 min.
+* Build jobs: 15–20 min.
+* Test jobs: 20–30 min.
+* E2E / integration: 45 min max.
+* Fuzz: exact target time + 2 min tolerance.
+
+=== 7. Reusable workflow (longer-term)
+
+Ship the above patterns in a single reusable workflow under
+`czech-file-knife/.github/workflows/rsr-ci-defaults.yml`, and adopt
+it estate-wide via `uses: hyperpolymath/czech-file-knife/.github/workflows/rsr-ci-defaults.yml@main`
+in downstream repos. Single PR propagates improvements.
+
+=== 8. Self-hosted runner for heavy work (long-term)
+
+Oracle-fuzz, E2E+Conformance+Bench, Hypatia-scan: these are the
+expensive jobs. Moving them to a self-hosted runner on the Eclipse
+host gets the cost to zero ongoing. Setup: ~1 day. Security: run in
+a rootless Podman container with the `ubuntu-22.04` runner image.
+Not urgent; track as future work.
+
+=== 9. Dependabot noise
+
+`.github/dependabot.yml` in this template uses
+`open-pull-requests-limit: 0` on cargo to suppress routine patch PRs
+while keeping security PRs flowing. That's the correct pattern — do
+NOT revert to the previous `ignore: "*" patch` rule, which also
+silences security PRs (see
+007-lang/audits/audit-dependabot-automation-gap-2026-04-17.md).
+
+Paired with `.github/workflows/dependabot-automerge.yml`, security
+PRs for low/moderate patches+minors auto-merge after CI, leaving
+humans to review only HIGH+CRITICAL security updates and all
+non-security bumps.
+
+== Rollout plan
+
+. *Week 1:* Apply patterns 1–2 (concurrency + path filters) to every
+  active RSR repo. Reusable template update; downstream propagation
+  is a find-and-replace pass.
+. *Week 2:* Apply patterns 3–4 (schedule frequency + overlap
+  consolidation). Audit one repo at a time; check ~30 days of runs
+  before concluding an overlap is safe to drop.
+. *Week 3:* Apply patterns 5–6 (shallow clone + timeouts). Low-risk.
+. *Week 4+:* Pattern 7 (reusable workflow) — single PR, big payoff.
+. *When scope allows:* Pattern 8 (self-hosted runner).
+
+== Measurement
+
+Before/after: `gh api /users/<owner>/settings/billing/actions` shows
+current minutes usage. Diff after each rollout wave. Target a 60%
+reduction by end of week 4 on the three highest-consumption repos
+(boj-server, hypatia, 007 — based on workflow count × schedule
+frequency × job count).
+
+== Out of scope
+
+* Reducing CI coverage (not on the table).
+* Disabling security workflows to save minutes.
+* Skipping CI on "trivial" commits via commit-message tags
+  (gameable, easy to abuse).
+* Switching to a paid Actions tier before exhausting these patterns.
+
+== Cross-references
+
+* `007-lang/audits/audit-rsr-workflows-2026-04-17.md` — billing
+  incident that motivated this spec.
+* `007-lang/audits/audit-dependabot-automation-gap-2026-04-17.md` —
+  separate defect stack also addressed in the same session.
+* `czech-file-knife/.github/workflows/dependabot-automerge.yml` —
+  canonical pattern for auto-merge pattern referenced above.

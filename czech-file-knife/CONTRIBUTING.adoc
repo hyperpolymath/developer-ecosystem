@@ -1,108 +1,122 @@
-== Clone the repository
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+= Contributing — czech-file-knife
+:toc: left
 
-git clone https://\{\{FORGE}}/\{\{OWNER}}/\{\{REPO}}.git cd \{\{REPO}}
+Contributors work on the *spine*: the template every RSR repo is minted
+from. Changes here propagate to the whole estate at mint time, so the bar
+is the estate's bar.
 
-== Using Nix (recommended for reproducibility)
+== Local-dev setup
 
-nix develop
+[source,bash]
+----
+# Clone the repository
+git clone https://github.com/hyperpolymath/czech-file-knife.git
+cd czech-file-knife
 
-== Or using toolbox/distrobox
+# Using Guix (recommended for reproducibility)
+guix shell -D -f build/guix.scm
 
-toolbox create \{\{REPO}}-dev toolbox enter \{\{REPO}}-dev # Install
-dependencies manually
+# Or using toolbox/distrobox
+toolbox create czech-file-knife-dev
+toolbox enter czech-file-knife-dev
+# Install dependencies manually
 
-== Verify setup
+# Verify setup
+just check   # or: cargo check / mix compile / etc.
+just test    # Run test suite
+----
 
-just check # or: cargo check / mix compile / etc. just test # Run test
-suite
+== Repository structure
 
-....
+The authoritative map is *generated* from the tree and checked in CI, so
+it cannot drift:
+link:docs/architecture/REPOSITORY-MAP.adoc[docs/architecture/REPOSITORY-MAP.adoc].
+Regenerate it with `just repo-map`.
 
-### Repository Structure
-....
+A hand-written tree used to live here. It described `lib/`, `extensions/`,
+`plugins/` and `spec/` directories that this repository has never
+contained, which is precisely why the map is now generated rather than
+typed.
 
-\{\{REPO}}/ ├── src/ # Source code (Perimeter 1-2) ├── lib/ # Library
-code (Perimeter 1-2) ├── extensions/ # Extensions (Perimeter 2) ├──
-plugins/ # Plugins (Perimeter 2) ├── tools/ # Tooling (Perimeter 2) ├──
-docs/ # Documentation (Perimeter 3) │ ├── architecture/ # ADRs, specs
-(Perimeter 2) │ └── proposals/ # RFCs (Perimeter 3) ├── examples/ #
-Examples (Perimeter 3) ├── spec/ # Spec tests (Perimeter 3) ├── tests/ #
-Test suite (Perimeter 2-3) ├── .well-known/ # Protocol files (Perimeter
-1-3) ├── .github/ # GitHub config (Perimeter 1) │ ├── ISSUE_TEMPLATE/ │
-└── workflows/ ├── CHANGELOG.md ├── CODE_OF_CONDUCT.md ├──
-CONTRIBUTING.md # This file ├── GOVERNANCE.md ├── LICENSE ├──
-MAINTAINERS.md ├── README.adoc ├── SECURITY.md ├── flake.nix # Nix flake
-(Perimeter 1) └── Justfile # Task runner (Perimeter 1)
+== How to contribute
 
-....
+=== Reporting bugs
 
----
+*Before reporting:*
 
-## How to Contribute
+. Search existing issues.
+. Check if it is already fixed in `main`.
+. Determine which perimeter the bug affects.
 
-### Reporting Bugs
+*When reporting*, use the
+link:.github/ISSUE_TEMPLATE/bug_report.md[bug report template] and include:
 
-**Before reporting**:
-1. Search existing issues
-2. Check if it's already fixed in `{{MAIN_BRANCH}}`
-3. Determine which perimeter the bug affects
+* Clear, descriptive title
+* Environment details (OS, versions, toolchain)
+* Steps to reproduce
+* Expected vs actual behaviour
+* Logs, screenshots, or minimal reproduction
 
-**When reporting**:
+=== Suggesting features
 
-Use the [bug report template](.github/ISSUE_TEMPLATE/bug_report.md) and include:
+*Before suggesting:*
 
-- Clear, descriptive title
-- Environment details (OS, versions, toolchain)
-- Steps to reproduce
-- Expected vs actual behaviour
-- Logs, screenshots, or minimal reproduction
+. Check the link:docs/status/ROADMAP.adoc[roadmap] if available.
+. Search existing issues and discussions.
+. Consider which perimeter the feature belongs to.
 
-### Suggesting Features
+*When suggesting*, use the
+link:.github/ISSUE_TEMPLATE/feature_request.md[feature request template]
+and include:
 
-**Before suggesting**:
-1. Check the [roadmap](ROADMAP.md) if available
-2. Search existing issues and discussions
-3. Consider which perimeter the feature belongs to
+* Problem statement (what pain point does this solve?)
+* Proposed solution
+* Alternatives considered
+* Which perimeter this affects
 
-**When suggesting**:
-
-Use the [feature request template](.github/ISSUE_TEMPLATE/feature_request.md) and include:
-
-- Problem statement (what pain point does this solve?)
-- Proposed solution
-- Alternatives considered
-- Which perimeter this affects
-
-### Your First Contribution
+=== Your first contribution
 
 Look for issues labelled:
 
-- [`good first issue`](https://{{FORGE}}/{{OWNER}}/{{REPO}}/labels/good%20first%20issue) — Simple Perimeter 3 tasks
-- [`help wanted`](https://{{FORGE}}/{{OWNER}}/{{REPO}}/labels/help%20wanted) — Community help needed
-- [`documentation`](https://{{FORGE}}/{{OWNER}}/{{REPO}}/labels/documentation) — Docs improvements
-- [`perimeter-3`](https://{{FORGE}}/{{OWNER}}/{{REPO}}/labels/perimeter-3) — Community sandbox scope
+* https://github.com/hyperpolymath/czech-file-knife/labels/good%20first%20issue[`good first issue`] — Simple Perimeter 3 tasks
+* https://github.com/hyperpolymath/czech-file-knife/labels/help%20wanted[`help wanted`] — Community help needed
+* https://github.com/hyperpolymath/czech-file-knife/labels/documentation[`documentation`] — Docs improvements
+* https://github.com/hyperpolymath/czech-file-knife/labels/perimeter-3[`perimeter-3`] — Community sandbox scope
 
----
+== Development workflow
 
-## Development Workflow
+=== Branch naming
 
-### Branch Naming
-....
+[source,text]
+----
+docs/short-description       # Documentation (P3)
+test/what-added              # Test additions (P3)
+feat/short-description       # New features (P2)
+fix/issue-number-description # Bug fixes (P2)
+refactor/what-changed        # Code improvements (P2)
+security/what-fixed          # Security fixes (P1-2)
+----
 
-docs/short-description # Documentation (P3) test/what-added # Test
-additions (P3) feat/short-description # New features (P2)
-fix/issue-number-description # Bug fixes (P2) refactor/what-changed #
-Code improvements (P2) security/what-fixed # Security fixes (P1-2)
+=== Commit messages
 
-....
+We follow https://www.conventionalcommits.org/[Conventional Commits]:
 
-### Commit Messages
+[source,text]
+----
+<type>(<scope>): <description>
 
-We follow [Conventional Commits](https://www.conventionalcommits.org/):
-....
+[optional body]
 
-():
+[optional footer]
+----
 
-{empty}[optional body]
+== Cross-references
 
-{empty}[optional footer]
+This root document exists because the estate docs gate
+(`hyperpolymath/standards` `scripts/check-docs-presence.sh`) requires
+`CONTRIBUTING.md`, `CONTRIBUTING.adoc`, or `3-practice/CONTRIBUTING.adoc`
+at the repository root. The legacy copy at
+link:.github/CONTRIBUTING.md[.github/CONTRIBUTING.md] predates that gate;
+this document supersedes it.

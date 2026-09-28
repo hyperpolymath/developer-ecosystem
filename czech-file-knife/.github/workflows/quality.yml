@@ -1,0 +1,79 @@
+# This workflow is managed by gh actions-lock.
+# SPDX-License-Identifier: MPL-2.0
+name: Code Quality
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+# Estate guardrail: scope push to default branches so a PR fires once (not
+# push+PR), and cancel superseded runs. Safe — read-only PR-triggered check.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+
+permissions:
+  contents: read
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Check file permissions
+        run: |
+          find . -type f -perm /111 -name "*.sh" | head -10 || true
+      - name: ShellCheck (error severity)
+        run: |
+          # Error severity only: parse failures, unterminated find -exec, shebang
+          # not on line 1. Warnings are deliberately not gated — a gate that fires
+          # on style gets switched off, and these are the findings that break
+          # scripts at runtime.
+          #
+          # Vendored/upstream trees are excluded: patching a third party's test
+          # fixtures creates permanent divergence and conflicts on every sync.
+          fail=0
+          while IFS= read -r f; do
+            case "/$f" in
+              */node_modules/*|*/vendor/*|*/third_party/*|*/rescript-ecosystem/*) continue ;;
+            esac
+            shellcheck -S error "$f" || fail=1
+          done < <(git ls-files '*.sh' '*.bash')
+          if [ "$fail" -ne 0 ]; then
+            echo "::error::shellcheck reported error-severity findings (see above)"
+            exit 1
+          fi
+          echo "✅ shellcheck: no error-severity findings"
+
+      - name: Check TODO/FIXME
+        run: |
+          echo "=== TODOs ==="
+          grep -rn "TODO\|FIXME\|HACK\|XXX" --include="*.rs" --include="*.res" --include="*.py" --include="*.ex" . | head -20 || echo "None found"
+      - name: Check for large files
+        run: |
+          find . -type f -size +1M -not -path "./.git/*" | head -10 || echo "No large files"
+      - name: EditorConfig check
+        uses: editorconfig-checker/action-editorconfig-checker@v3.0.0
+        continue-on-error: true
+  docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Check documentation
+        run: |
+          MISSING=""
+          [ ! -f "README.md" ] && [ ! -f "README.adoc" ] && MISSING="$MISSING README"
+          [ ! -f "LICENSE" ] && [ ! -f "LICENSE.txt" ] && [ ! -f "LICENSE.md" ] && MISSING="$MISSING LICENSE"
+          [ ! -f "CONTRIBUTING.md" ] && [ ! -f "CONTRIBUTING.adoc" ] && [ ! -f ".github/CONTRIBUTING.md" ] && [ ! -f ".github/CONTRIBUTING.adoc" ] && MISSING="$MISSING CONTRIBUTING"
+
+          if [ -n "$MISSING" ]; then
+            echo "::warning::Missing docs:$MISSING"
+          else
+            echo "✅ Core documentation present"
+          fi

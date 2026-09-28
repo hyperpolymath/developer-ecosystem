@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: MPL-2.0
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# pre-push — local Dogfood Gate.
+#
+# Runs the SAME DEED + K9 validators the CI Dogfood Gate runs, but here on
+# your machine before the push leaves, so format drift is caught in seconds
+# instead of surfacing as red CI minutes later. The vendored validators in
+# this directory are byte-identical to the pinned CI action scripts and are
+# refreshed by the estate `refresh-githooks` sweep.
+#
+# Enable once per clone:
+#     git config core.hooksPath .github/hooks
+#   (or run: .github/hooks/install.sh)
+#
+# Override for an emergency push:  git push --no-verify
+#
+# The DEED/K9 validators are skipped gracefully if their tooling is absent.
+# The SECRET gate is not: see .github/hooks/scan-secrets.sh for why it fails closed.
+
+set -euo pipefail
+
+HOOK_DIR="$(cd "$(dirname "$0")" && pwd)"
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+status=0
+
+# git feeds pre-push one "<local ref> <local sha> <remote ref> <remote sha>"
+# line per ref on stdin. Capture it HERE, before any validator runs, and hand it
+# to the scanners in K9_PUSH_RANGES so they can scan exactly the commits being
+# pushed rather than the whole history. Guarded on `! -t 0`: when the hook is
+# run by hand from a terminal there are no ref lines, and an unguarded `cat`
+# would block forever on the tty.
+K9_PUSH_RANGES=""
+if [ ! -t 0 ]; then K9_PUSH_RANGES="$(cat)"; fi
+export K9_PUSH_RANGES
+
+run() {
+  local label="$1" script="$2"
+  if [ ! -f "$HOOK_DIR/$script" ]; then
+    echo "[pre-push] ($label) validator missing: $script — skipping" >&2
+    return 0
+  fi
+  echo "[pre-push] $label…"
+  if ! INPUT_PATH="$REPO_ROOT" INPUT_STRICT=false bash "$HOOK_DIR/$script"; then
+    status=1
+  fi
+}
+
+# Same as run(), but a MISSING script is a failure rather than a skip. Used for
+# the secret gate only: "validator absent" and "no secrets found" produce the
+# same silence, so a skip here is a gate that reports success having examined
+# nothing. The DEED/K9 validators keep the lenient behaviour — a missing
+# formatter costs a red CI run, a missing secret scanner costs a leaked key.
+run_required() {
+  local label="$1" script="$2"
+  if [ ! -f "$HOOK_DIR/$script" ]; then
+    echo "[pre-push] ($label) BLOCKED: required validator missing: $script" >&2
+    echo "[pre-push] Restore it from the template, or override: git push --no-verify" >&2
+    status=1
+    return 0
+  fi
+  echo "[pre-push] $label…"
+  if ! INPUT_PATH="$REPO_ROOT" INPUT_STRICT=false bash "$HOOK_DIR/$script"; then
+    status=1
+  fi
+}
+
+run "DEED manifests" "validate-deed.sh"
+run "K9 contracts"    "validate-k9.sh"
+run_required "Secrets" "scan-secrets.sh"
+
+if [ "$status" -ne 0 ]; then
+  echo "" >&2
+  echo "[pre-push] BLOCKED: validation failed (see errors above)." >&2
+  echo "[pre-push] Fix the files, or override with:  git push --no-verify" >&2
+  exit 1
+fi
+
+echo "[pre-push] Dogfood Gate passed."
+exit 0

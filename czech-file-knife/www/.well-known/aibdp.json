@@ -1,0 +1,79 @@
+{
+  "aibdp_version": "0.2",
+  "status": "experimental \u2014 declaration-only; observing, never enforcing (see www/policies/ai-use.adoc)",
+  "canonical_uri": "https://github.com/hyperpolymath/czech-file-knife/blob/main/www/.well-known/aibdp.json",
+  "contact": "mailto:j.d.a.jewell@open.ac.uk",
+  "policy_uri": "https://github.com/hyperpolymath/czech-file-knife/blob/main/www/policies/ai-use.adoc",
+  "policies": {
+    "indexing": {
+      "status": "allowed",
+      "scope": "all",
+      "rationale": "The site is published to be found; indexing public material crosses no boundary."
+    },
+    "summarization": {
+      "status": "allowed",
+      "scope": "all",
+      "rationale": "Mirrors ai.txt Disallow-Summarization: no \u2014 describing published material serves readers."
+    },
+    "question_answering": {
+      "status": "allowed",
+      "scope": "all",
+      "rationale": "Mirrors ai.txt: agents may read and analyse to assist contributors."
+    },
+    "embedding": {
+      "status": "conditional",
+      "scope": "all",
+      "conditions": [
+        "Embeddings may serve retrieval over the public material with attribution preserved.",
+        "Embedding corpora must not be redistributed or used as training input without explicit consent."
+      ],
+      "rationale": "Retrieval aids discovery; corpus redistribution carries the licences (MPL-2.0 code, CC-BY-SA-4.0 docs)."
+    },
+    "training": {
+      "status": "disallowed",
+      "scope": "all",
+      "rationale": "Mirrors ai.txt Disallow-Training: yes \u2014 model training on this corpus requires explicit consent, which this declaration does not give."
+    },
+    "fine_tuning": {
+      "status": "disallowed",
+      "scope": "all",
+      "rationale": "Fine-tuning is training with a narrower objective; the ai.txt stance applies unchanged."
+    },
+    "commercial_training": {
+      "status": "disallowed",
+      "scope": "all",
+      "rationale": "As training, and additionally: contact the maintainer before any commercial incorporation \u2014 consent is explicit or it is absent.",
+      "alternatives": "Cite the repository and its documentation instead of training on it."
+    },
+    "generation": {
+      "status": "disallowed",
+      "scope": "all",
+      "rationale": "Mirrors ai.txt Disallow-Generation: yes \u2014 generated text must not be presented as this project's own statements."
+    }
+  },
+  "enforcement": {
+    "mechanism": "none",
+    "note": "Declaration-only. HTTP 430 (draft-jewell-http-430-consent-required-00, EXPERIMENTAL) is the mechanism the draft defines for origins that can emit it; this template deliberately does not: minting or installing never enables 430. Enforcement would require a separate, explicit, versioned, provenance-bearing and independently testable profile choice, which this bundle does not ship.",
+    "contact_before_litigation": true,
+    "preferred_resolution": "Correspondence and correction via the contact above."
+  },
+  "metadata": {
+    "created": "2026-09-28",
+    "last_modified": "2026-09-28",
+    "author": "Jonathan D.A. Jewell",
+    "project": "Czech File Knife",
+    "repository": "https://github.com/hyperpolymath/czech-file-knife",
+    "related_standards": [
+      "draft-jewell-aibdp-00 (experimental, not a Datatracker submission)",
+      "draft-jewell-http-430-consent-required-00 (experimental, not a Datatracker submission)",
+      "AIPREF (mapped alternative representation where they overlap)",
+      "RFC 8615",
+      "RFC 9110",
+      "RFC 9309"
+    ]
+  },
+  "philosophy": {
+    "statement": "Without refusal, permission is meaningless.",
+    "note": "Purpose headers are unverified assertions; User-Agent inference is heuristic; unknown purpose remains unknown."
+  }
+}

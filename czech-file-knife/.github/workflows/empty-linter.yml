@@ -1,0 +1,89 @@
+# This workflow is managed by gh actions-lock.
+# SPDX-License-Identifier: MPL-2.0
+name: "🔴 GATE: Invisible Character Detection"
+
+on:
+  pull_request:
+    branches: ['**']
+  push:
+    branches: [main, master]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  empty-lint:
+    name: "🔴 GATE: Empty-linter (invisible characters)"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Scan for invisible characters
+        id: lint
+        run: |
+          RESULTS_FILE="$RUNNER_TEMP/empty-lint-results.bin"
+          BLOCKING_FILE="$RUNNER_TEMP/empty-lint-blocking-results.bin"
+          if ! scripts/check-invisible-characters.sh \
+              "$GITHUB_WORKSPACE" "$RESULTS_FILE" "$BLOCKING_FILE"; then
+            echo "::error::Invisible-character scanner failed; refusing a partial pass"
+            exit 2
+          fi
+
+          FINDINGS=0
+          while IFS= read -r -d '' filepath; do
+            FINDINGS=$((FINDINGS + 1))
+            REL_PATH="${filepath#"$GITHUB_WORKSPACE"/}"
+            SAFE_PATH="${REL_PATH//'%'/'%25'}"
+            SAFE_PATH="${SAFE_PATH//$'\r'/'%0D'}"
+            SAFE_PATH="${SAFE_PATH//$'\n'/'%0A'}"
+            SAFE_PATH="${SAFE_PATH//':'/'%3A'}"
+            SAFE_PATH="${SAFE_PATH//','/'%2C'}"
+            echo "::warning file=${SAFE_PATH}::Invisible Unicode or C0 characters detected"
+          done < "$RESULTS_FILE"
+
+          BLOCKING=0
+          while IFS= read -r -d '' filepath; do
+            BLOCKING=$((BLOCKING + 1))
+            REL_PATH="${filepath#"$GITHUB_WORKSPACE"/}"
+            SAFE_PATH="${REL_PATH//'%'/'%25'}"
+            SAFE_PATH="${SAFE_PATH//$'\r'/'%0D'}"
+            SAFE_PATH="${SAFE_PATH//$'\n'/'%0A'}"
+            SAFE_PATH="${SAFE_PATH//':'/'%3A'}"
+            SAFE_PATH="${SAFE_PATH//','/'%2C'}"
+            echo "::error file=${SAFE_PATH}::C0 control character or NUL byte detected"
+          done < "$BLOCKING_FILE"
+
+          echo "findings=$FINDINGS" >> "$GITHUB_OUTPUT"
+          echo "blocking=$BLOCKING" >> "$GITHUB_OUTPUT"
+          echo "ready=true" >> "$GITHUB_OUTPUT"
+
+          if [ "$BLOCKING" -gt 0 ]; then
+            echo "## Empty-linter: BLOCKED — $BLOCKING file(s) contain C0/NUL corruption" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+      - name: "Write summary"
+        run: |
+          if [ "${{ steps.lint.outputs.ready }}" = "true" ]; then
+            FINDINGS="${{ steps.lint.outputs.findings }}"
+            if [ "$FINDINGS" -gt 0 ] 2>/dev/null; then
+              echo "## Empty-Linter Results" >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              echo "Found **${FINDINGS}** invisible character issue(s). See annotations above." >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "## Empty-Linter Results" >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              echo ":white_check_mark: No invisible character issues found." >> "$GITHUB_STEP_SUMMARY"
+            fi
+          else
+            echo "## Empty-Linter" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "Skipped: empty-linter not available." >> "$GITHUB_STEP_SUMMARY"
+          fi

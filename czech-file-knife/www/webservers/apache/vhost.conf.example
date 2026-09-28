@@ -1,0 +1,61 @@
+# SPDX-License-Identifier: MPL-2.0
+#
+# Apache httpd 2.4 example for the www/ site-operations bundle (issue #53).
+# Requires: mod_headers, mod_ssl (cert paths are placeholders — see
+# www/tls/POLICY.adoc; keys never live in the repository).
+# DocumentRoot is the STAGED directory produced by www/runbooks/deploy.adoc —
+# NEVER the www/ bundle itself.
+
+<VirtualHost *:443>
+    ServerName site.example.invalid
+
+    DocumentRoot /srv/site.example.invalid
+
+    # SSLEngine on
+    # SSLCertificateFile      /etc/letsencrypt/live/site.example.invalid/fullchain.pem
+    # SSLCertificateKeyFile   /etc/letsencrypt/live/site.example.invalid/privkey.pem
+    # SSLProtocol             -all +TLSv1.2 +TLSv1.3
+
+    <Directory /srv/site.example.invalid>
+        Require all granted
+        Options -Indexes
+        AllowOverride None
+    </Directory>
+
+    # Explicit publication of .well-known.
+    Alias /.well-known/ /srv/site.example.invalid/.well-known/
+    <Location /.well-known>
+        Require all granted
+    </Location>
+
+    # Defence in depth: refuse operational categories (never staged, but a
+    # bad stage must not publish them).
+    <LocationMatch "^/(dns|tls|security_headers|webservers|profiles|schemas|tests|runbooks)(/|$)">
+        Require all denied
+    </LocationMatch>
+
+    # Canonical header set — keep in sync with www/security_headers/csp.conf.
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'self'; upgrade-insecure-requests"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "geolocation=(), camera=(), microphone=(), browsing-topics=()"
+    Header always set Cross-Origin-Opener-Policy "same-origin"
+    Header always set Cross-Origin-Resource-Policy "same-origin"
+    Header unset Server
+    Header unset X-Powered-By
+
+    # Staged error bodies.
+    ErrorDocument 403 /errors/403.html
+    ErrorDocument 404 /errors/404.html
+    ErrorDocument 429 /errors/429.html
+    ErrorDocument 500 /errors/500.html
+    ErrorDocument 502 /errors/502.html
+    ErrorDocument 503 /errors/503.html
+</VirtualHost>
+
+<VirtualHost *:80>
+    ServerName site.example.invalid
+    Redirect permanent / https://site.example.invalid/
+</VirtualHost>

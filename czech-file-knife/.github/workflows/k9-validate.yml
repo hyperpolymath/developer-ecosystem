@@ -1,0 +1,64 @@
+# This workflow is managed by gh actions-lock.
+# SPDX-License-Identifier: MPL-2.0
+name: "🟡 CHECK: K9 Contract Validation"
+
+on:
+  pull_request:
+    branches: ['**']
+  push:
+    branches: [main, master]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  k9-validate:
+    name: "🟡 CHECK: Validate K9 contracts"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Check for K9 files
+        id: detect
+        run: |
+          COUNT=$(find . \( -name '*.k9' -o -name '*.k9.ncl' \) -not -path './.git/*' | wc -l)
+          CONFIG_COUNT=$(find . \( -name '*.toml' -o -name '*.yaml' -o -name '*.yml' -o -name '*.json' \) \
+            -not -path './.git/*' -not -path './node_modules/*' -not -path './.deno/*' \
+            -not -name 'package-lock.json' -not -name 'Cargo.lock' -not -name 'deno.lock' | wc -l)
+          echo "k9_count=$COUNT" >> "$GITHUB_OUTPUT"
+          echo "config_count=$CONFIG_COUNT" >> "$GITHUB_OUTPUT"
+          if [ "$COUNT" -eq 0 ] && [ "$CONFIG_COUNT" -gt 0 ]; then
+            echo "::warning::Found $CONFIG_COUNT config files but no K9 contracts. Run k9iser to generate contracts."
+          fi
+
+      - name: "🟡 CHECK: Validate K9 contracts"
+        if: steps.detect.outputs.k9_count > 0
+        uses: hyperpolymath/k9-ecosystem/validate-action@main
+        with:
+          path: '.'
+          strict: 'false'
+
+      - name: Write summary
+        run: |
+          K9_COUNT="${{ steps.detect.outputs.k9_count }}"
+          CFG_COUNT="${{ steps.detect.outputs.config_count }}"
+          if [ "$K9_COUNT" -eq 0 ]; then
+            cat <<'EOF' >> "$GITHUB_STEP_SUMMARY"
+          ## K9 Contract Validation
+
+          :warning: **No K9 contract files found.** Repos with configuration files should have K9 contracts.
+
+          Generate contracts with: `k9iser generate .`
+          EOF
+          else
+            echo "## K9 Contract Validation" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "Validated **${K9_COUNT}** K9 contract(s) against **${CFG_COUNT}** config file(s)." >> "$GITHUB_STEP_SUMMARY"
+          fi

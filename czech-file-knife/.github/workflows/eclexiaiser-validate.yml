@@ -1,0 +1,64 @@
+# This workflow is managed by gh actions-lock.
+# SPDX-License-Identifier: MPL-2.0
+name: "🟡 CHECK: Eclexiaiser Manifest Validation"
+
+on:
+  pull_request:
+    branches: ['**']
+  push:
+    branches: [main, master]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  eclexiaiser-validate:
+    name: "🟡 CHECK: Validate eclexiaiser manifest"
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Check and validate eclexiaiser manifest
+        id: eclex
+        run: |
+          if [ ! -f "eclexiaiser.toml" ]; then
+            # Check if repo has a Containerfile — if so, recommend eclexiaiser
+            if [ -f "Containerfile" ]; then
+              echo "::warning::Containerfile present but no eclexiaiser.toml. Run \`eclexiaiser init\` to scaffold energy/carbon budgets."
+            fi
+            echo "has_manifest=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "has_manifest=true" >> "$GITHUB_OUTPUT"
+
+          # Validate eclexiaiser.toml structure (bash + grep; NO Python per estate policy).
+          # Structural presence checks only — deep schema validation is eclexiaiser's own job.
+          err=0
+          grep -qE '^[[:space:]]*\[project\]'        eclexiaiser.toml || { echo "::error file=eclexiaiser.toml::[project] section is required"; err=1; }
+          grep -qE '^[[:space:]]*name[[:space:]]*=[[:space:]]*"[^"]+"' eclexiaiser.toml || { echo "::error file=eclexiaiser.toml::a non-empty name is required"; err=1; }
+          grep -qE '^[[:space:]]*\[\[(functions)\]\]'  eclexiaiser.toml || { echo "::error file=eclexiaiser.toml::at least one [[functions]] entry is required"; err=1; }
+          if [ "$err" -ne 0 ]; then
+            exit 1
+          fi
+          fns=$(grep -cE '^[[:space:]]*\[\[(functions)\]\]' eclexiaiser.toml)
+          echo "Valid: eclexiaiser.toml structure present (${fns} function block(s))"
+
+      - name: "Write summary"
+        run: |
+          if [ "${{ steps.eclex.outputs.has_manifest }}" = "true" ]; then
+            echo "## Eclexiaiser Manifest" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo ":white_check_mark: **eclexiaiser.toml** present and valid." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "## Eclexiaiser Manifest" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo ":ballot_box_with_check: No eclexiaiser.toml. Add one with \`eclexiaiser init\` for energy/carbon tracking." >> "$GITHUB_STEP_SUMMARY"
+          fi

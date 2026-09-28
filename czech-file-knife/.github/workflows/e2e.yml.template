@@ -1,0 +1,224 @@
+# ⚠ THIS FILE IS A SCAFFOLD, NOT A WORKFLOW.
+#
+# It is named .yml.template deliberately: GitHub Actions reads only *.yml and
+# *.yaml under .github/workflows/, so this file is ignored until someone
+# instantiates it.
+#
+# It used to be called e2e.yml, and because every job block below is commented
+# out, `jobs:` parsed as null — an invalid workflow. It therefore FAILED on
+# every run, in every repository minted from this template, without ever
+# executing a single check. 29 repos inherited that.
+#
+# A scaffold that is invalid until edited WILL be merged unedited. Naming it
+# so the platform ignores it removes the failure without removing the guidance.
+#
+# TO USE: copy to .github/workflows/e2e.yml, uncomment the block matching your
+# stack, delete the rest, and confirm it can FAIL before treating it as a gate
+# (standards docs/language-testing-standards.md R10).
+#
+# SPDX-License-Identifier: MPL-2.0
+# This workflow is managed by gh actions-lock.
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# RSR Standard E2E + Aspect + Benchmark Workflow Template
+#
+# Covers ALL merge requirement test categories:
+#   - E2E (end-to-end pipeline tests)
+#   - Aspect (cross-cutting concern validation)
+#   - Benchmarks (performance regression detection)
+#   - Readiness (Component Readiness Grade: D/C/B)
+#
+# INSTRUCTIONS: Uncomment and customise the section matching your stack.
+# Delete sections that don't apply. See examples in each job.
+
+name: E2E + Aspect + Bench
+on:
+  push:
+    branches: [main, master, develop]
+    paths:
+      - 'src/**'
+      - 'src/interface/ffi/**'
+      - 'tests/**'
+      - '.github/workflows/e2e.yml'
+  pull_request:
+    branches: [main, master]
+    paths:
+      - 'src/**'
+      - 'src/interface/ffi/**'
+      - 'tests/**'
+  workflow_dispatch:
+permissions: read-all
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  # ─── Default: template smoke (always runs — not a silent no-op) ─────
+  # Runs the template's own E2E harness (tests/e2e.sh). On the bare template
+  # this is a clean pass (no stack-specific checks enabled yet); downstream
+  # repos either extend tests/e2e.sh or uncomment a stack block below.
+  e2e:
+    name: E2E — template smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+      - name: Run E2E harness
+        run: |
+          if [ -f tests/e2e.sh ]; then
+            bash tests/e2e.sh
+          else
+            echo "::notice::no tests/e2e.sh present — nothing to run"
+          fi
+
+# ─── End-to-End Tests (downstream stack-specific examples) ─────────
+# Uncomment ONE of the following e2e job blocks matching your stack.
+
+## === RUST E2E ===
+# e2e:
+#   name: E2E — Full Pipeline
+#   runs-on: ubuntu-latest
+#   timeout-minutes: 15
+#   steps:
+#     - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+#     - uses: dtolnay/rust-toolchain@4be9e76fd7c4901c61fb841f559994984270fce7  # stable
+#     - uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5  # v2
+#     - run: cargo build --release
+#     - run: bash tests/e2e.sh
+#       # OR: cargo test --test end_to_end -- --nocapture
+
+## === ZIG FFI E2E ===
+# e2e:
+#   name: E2E — FFI Pipeline
+#   runs-on: ubuntu-latest
+#   timeout-minutes: 15
+#   steps:
+#     - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+#     - uses: goto-bus-stop/setup-zig@abea47f85e598557f500fa1fd2ab7464fcb39406  # v2.2.1
+#       with:
+#         version: 0.15.1
+#     - run: cd ffi/zig && zig build test
+#     - run: bash tests/e2e.sh
+
+## === ELIXIR E2E ===
+# e2e:
+#   name: E2E — Full Pipeline
+#   runs-on: ubuntu-latest
+#   timeout-minutes: 15
+#   steps:
+#     - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+#     - uses: erlef/setup-beam@fc68ffb90438ef2936bbb3251622353b3dcb2f93  # v1.24.0
+#       with:
+#         otp-version: '27.0'
+#         elixir-version: '1.17'
+#     - run: mix deps.get && mix compile --warnings-as-errors
+#     - run: mix test test/integration/e2e_test.exs --trace
+
+## === DENO/ E2E ===
+# e2e:
+#   name: E2E — Full Pipeline
+#   runs-on: ubuntu-latest
+#   timeout-minutes: 15
+#   steps:
+#     - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+#     - uses: denoland/setup-deno@667a34cdef165d8d2b2e98dde39547c9daac7282  # v2.0.4
+#       with:
+#         deno-version: v2.x
+#     - run: deno install --node-modules-dir=auto
+#     - run: deno task res:build  # ReScript compile
+#     - run: deno test tests/e2e/
+
+## === PLAYWRIGHT (Browser E2E) ===
+# e2e-playwright:
+#   name: Playwright — ${{ matrix.project }}
+#   runs-on: ubuntu-latest
+#   timeout-minutes: 20
+#   strategy:
+#     fail-fast: false
+#     matrix:
+#       project: [chromium-1080p, firefox-1080p, webkit-1080p]
+#   steps:
+#     - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+#     - uses: denoland/setup-deno@667a34cdef165d8d2b2e98dde39547c9daac7282  # v2.0.4
+#       with:
+#         deno-version: v2.x
+#     - run: deno install --node-modules-dir=auto
+#     - run: npx playwright install --with-deps
+#     - run: npx playwright test --project=${{ matrix.project }}
+#     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4
+#       if: failure()
+#       with:
+#         name: playwright-traces-${{ matrix.project }}
+#         path: test-results/**/trace.zip
+#         retention-days: 7
+
+## === HASKELL E2E ===
+# e2e:
+#   name: E2E — Full Pipeline
+#   runs-on: ubuntu-latest
+#   timeout-minutes: 15
+#   steps:
+#     - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+#     - uses: haskell-actions/setup@cd0d9bdd65b20557f41bea4dbe43d0b5fbbfe553  # v2.11.0
+#       with:
+#         ghc-version: '9.6'
+#         cabal-version: '3.10'
+#     - run: cabal build all
+#     - run: bash tests/integration-test.sh
+
+# ─── Aspect Tests ──────────────────────────────────────────────────
+# Cross-cutting concerns: thread safety, ABI contracts, SPDX, dangerous patterns
+# Uncomment and customise:
+
+# aspect-tests:
+#   name: Aspect — Architectural Invariants
+#   runs-on: ubuntu-latest
+#   timeout-minutes: 10
+#   steps:
+#     - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+#     - run: bash tests/aspect_tests.sh
+
+# ─── Benchmarks ────────────────────────────────────────────────────
+# Performance regression detection. Uncomment matching stack:
+
+## === RUST BENCH ===
+# benchmarks:
+#   name: Bench — Performance Regression
+#   runs-on: ubuntu-latest
+#   timeout-minutes: 15
+#   steps:
+#     - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+#     - uses: dtolnay/rust-toolchain@4be9e76fd7c4901c61fb841f559994984270fce7  # stable
+#     - uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5  # v2
+#     - run: cargo bench 2>&1 | tee /tmp/bench-results.txt
+#     - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02  # v4
+#       if: always()
+#       with:
+#         name: benchmark-results
+#         path: /tmp/bench-results.txt
+#         retention-days: 30
+
+## === ZIG BENCH ===
+# benchmarks:
+#   name: Bench — Performance Regression
+#   runs-on: ubuntu-latest
+#   timeout-minutes: 15
+#   steps:
+#     - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+#     - uses: goto-bus-stop/setup-zig@abea47f85e598557f500fa1fd2ab7464fcb39406  # v2.2.1
+#       with:
+#         version: 0.15.1
+#     - run: cd ffi/zig && zig build bench
+
+# ─── Readiness (CRG) ──────────────────────────────────────────────
+# Component Readiness Grade: D (runs) → C (correct) → B (edge cases)
+
+# readiness:
+#   name: Readiness — Grade D/C/B
+#   runs-on: ubuntu-latest
+#   timeout-minutes: 10
+#   steps:
+#     - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4
+#     - uses: dtolnay/rust-toolchain@4be9e76fd7c4901c61fb841f559994984270fce7  # stable
+#     - uses: Swatinem/rust-cache@779680da715d629ac1d338a641029a2f4372abb5  # v2
+#     - run: cargo test --test readiness -- --nocapture

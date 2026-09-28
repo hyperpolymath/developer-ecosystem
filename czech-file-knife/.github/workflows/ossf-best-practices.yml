@@ -1,0 +1,97 @@
+# This workflow is managed by gh actions-lock.
+# SPDX-License-Identifier: MPL-2.0
+# OpenSSF Best Practices compliance gate — blocks PRs and pushes that lack
+# required files or still contain unfilled placeholder tokens.
+name: OpenSSF Compliance
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  openssf-compliance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check SECURITY.md exists and has substance
+        run: |
+          SECFILE=""
+          [ -f "SECURITY.md" ] && SECFILE="SECURITY.md"
+          [ -f "SECURITY.adoc" ] && SECFILE="SECURITY.adoc"
+          [ -f ".github/SECURITY.md" ] && SECFILE=".github/SECURITY.md"
+
+          if [ -z "$SECFILE" ]; then
+            echo "::error::SECURITY.md (or SECURITY.adoc) is required for OpenSSF Best Practices"
+            exit 1
+          fi
+
+          LINES=$(wc -l < "$SECFILE")
+          if [ "$LINES" -lt 10 ]; then
+            echo "::error::$SECFILE has only $LINES lines — must have >10 lines of substantive content"
+            exit 1
+          fi
+          echo "SECURITY file: OK ($SECFILE, $LINES lines)"
+      - name: Check LICENSE exists
+        run: |
+          if [ ! -f "LICENSE" ] && [ ! -f "LICENSE.txt" ] && [ ! -f "LICENSE.md" ]; then
+            echo "::error::LICENSE file is required for OpenSSF Best Practices"
+            exit 1
+          fi
+          echo "LICENSE: OK"
+      - name: Check CONTRIBUTING exists
+        run: |
+          if [ ! -f "CONTRIBUTING.md" ] && [ ! -f "CONTRIBUTING.adoc" ] \
+             && [ ! -f ".github/CONTRIBUTING.md" ] && [ ! -f ".github/CONTRIBUTING.adoc" ]; then
+            echo "::error::CONTRIBUTING file is required for OpenSSF Best Practices"
+            exit 1
+          fi
+          echo "CONTRIBUTING: OK"
+      - name: Check README exists
+        run: |
+          if [ ! -f "README.md" ] && [ ! -f "README.adoc" ] && [ ! -f "README.rst" ] && [ ! -f "README.txt" ] && [ ! -f "README" ]; then
+            echo "::error::README file is required for OpenSSF Best Practices"
+            exit 1
+          fi
+          echo "README: OK"
+      - name: Check .machine_readable directory and STATE.a2ml
+        run: |
+          if [ ! -d ".machine_readable" ]; then
+            echo "::error::.machine_readable/ directory is required"
+            exit 1
+          fi
+
+          if [ ! -f ".machine_readable/descriptiles/STATE.a2ml" ]; then
+            echo "::error::.machine_readable/descriptiles/STATE.a2ml is required"
+            exit 1
+          fi
+          echo ".machine_readable/descriptiles/STATE.a2ml: OK"
+      - name: Check CHANGELOG exists
+        run: |
+          if [ ! -f "CHANGELOG.md" ] && [ ! -f "CHANGELOG.adoc" ] && [ ! -f "CHANGES.md" ]; then
+            echo "::error::CHANGELOG.md is required for OpenSSF Best Practices"
+            exit 1
+          fi
+          echo "CHANGELOG: OK"
+      - name: Check no unfilled placeholder tokens
+        # Delegates to the same script tests/e2e/template_instantiation_test.sh
+        # runs, so the gate and the test can never disagree about the rule.
+        # This step used to check a hand-maintained list of required files that
+        # omitted .github/settings.yml and ANCHOR.a2ml — the two places the
+        # leaks actually were. The script scans everything and allow-lists the
+        # legitimate carriers instead.
+        run: bash scripts/check-no-placeholders.sh .
+      - name: Summary
+        run: |
+          echo "=== OpenSSF Best Practices Compliance: PASS ==="
+          echo "All required files present and placeholder-free."

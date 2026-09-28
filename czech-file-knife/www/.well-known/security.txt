@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: MPL-2.0
+# RFC 9116 - security.txt
+# https://securitytxt.org/
+
+# No Encryption: field. RFC 9116 §2.5.4 requires it to point at an actual key;
+# the estate signs with SSH (gpg.format=ssh) and publishes no PGP key, so the
+# field had nothing to reference and shipped the literal token instead — which
+# also made this file unparseable. Report via the Policy: URL below.
+
+Contact: mailto:j.d.a.jewell@open.ac.uk
+Expires: 2026-12-31T23:59:59.000Z
+Preferred-Languages: en
+Canonical: https://github.com/hyperpolymath/czech-file-knife/.well-known/security.txt
+Policy: https://github.com/hyperpolymath/czech-file-knife/blob/main/.github/SECURITY.md

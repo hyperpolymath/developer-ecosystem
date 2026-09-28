@@ -1,0 +1,66 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Descriptiles
+:toc:
+
+The *descriptiles* are this repository's descriptive machine-readable
+metadata: they record what the repository *is* and what state it is *in*.
+They pair with the contractiles in `../contractiles/`, which record what it
+*ought* to do.
+
+[IMPORTANT]
+====
+*The normative grammar for this family is the DEED grammar specification,*
+`1-formats/deed/spec/DEED-GRAMMAR-SPEC.adoc` in
+https://github.com/hyperpolymath/standards[hyperpolymath/standards].
+
+The format formerly called A2ML has been renamed *DEED*, with the file
+extension `.deed`. The files in this directory still carry the `.a2ml`
+extension: the estate-wide rename is a single atomic change tracked
+separately, because ~40% of these basenames appear as literals in source
+and in Nickel runners. Do not hand-convert individual files.
+
+DEED is an *s-expression* format. If you have seen these files described
+anywhere as a "TOML-like key-value" format, that description is wrong and
+is the documented cause of a family-wide divergence; the grammar has no
+`key = value` form. Always resolve the surface question against the DEED
+grammar specification, never against a neighbouring file.
+====
+
+== The six descriptiles
+
+`AGENTIC.a2ml`:: AI agent operational gating and safety controls.
+`ECOSYSTEM.a2ml`:: Ecosystem position, relationships, explicit boundaries.
+`META.a2ml`:: Architecture decisions (ADRs), development practices, design rationale.
+`NEUROSYM.a2ml`:: Symbolic semantics, composition algebra.
+`PLAYBOOK.a2ml`:: Executable plans, operational runbooks.
+`STATE.a2ml`:: Project state, phase, milestones, session history.
+
+== Other files in this directory
+
+This directory also carries files whose classification is settled elsewhere
+and is deliberately not restated here:
+
+`anchors/`:: `ANCHOR` records. An anchor is *both* descriptile and
+contractile — it states an observed drift (descriptive) and issues a
+mandated realignment (normative). It is the join between the two families
+and has its own specification.
+
+`CLADE.a2ml`:: The facet classification record. "Clade" is retained only as
+the current filename; the scheme it names is being replaced, since facets
+do not share common descent.
+
+`*_chora.deed` (repo deed, at the repo root):: The universal AI entry point —
+a DEED-grammar file. The family-7 allocation manifest (0-AI-MANIFEST.a2ml) and
+the ply directory tree folded into it in the standards#837 pilot.
+
+== Generation
+
+These files may be generated from `.scm` sources by transpilation. Source
+`.scm` files should be removed after a successful transpilation.
+
+== See also
+
+* https://github.com/hyperpolymath/standards/blob/main/A2ML-REPO-TEMPLATE.adoc[Historical A2ML repository template (non-normative)]
+* https://github.com/hyperpolymath/standards#a2ml-format-family-7-formats[Historical A2ML format family overview (non-normative)]
+* `../contractiles/README.adoc` — the normative counterpart family

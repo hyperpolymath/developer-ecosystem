@@ -1,0 +1,62 @@
+# SPDX-License-Identifier: MPL-2.0
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+#
+# STATE.a2ml — Project state checkpoint for czech-file-knife
+
+[metadata]
+project = "czech-file-knife"
+version = "0.1.0"
+last-updated = "2026-09-28"
+# status: active | paused | archived | planned
+# AUTHORITY: when this and CLADE [status] phase disagree, CLADE phase is the
+# authoritative SCM checkpoint (standards#726).
+status = "active"
+
+[project-context]
+name = "czech-file-knife"
+purpose = "The Swiss File Knife of the hybrid machine: one reversible, space-aware interface over local, network and cloud storage."
+completion-percentage = 20
+
+[position]
+phase = "implementation"   # design | implementation | testing | maintenance | archived
+maturity = "alpha"         # experimental | alpha | beta | production | lts
+
+[route-to-mvp]
+milestones = [
+  { name = "M0: Core traits, local backend, basic CLI (ls cat cp mv rm mkdir stat df)", completion = 100 },
+  { name = "M1: Reversible journal (ReversibleBackend, cfk history/undo, CAS-backed versions)", completion = 80 },
+  { name = "M2: Extracted from developer-ecosystem as a standalone RSR repo", completion = 90 },
+  { name = "M3: cfk squeeze — in-place, space-bounded compression (hole punching / tail truncation)", completion = 0 },
+  { name = "M4: Provider-side cloud ops (server_side_copy; Drive, S3, Dropbox, OneDrive)", completion = 0 },
+  { name = "M5: Cloud backends beyond local (S3, Google Drive first)", completion = 5 },
+  { name = "M6: Cache (cfk-cache on the shared CAS) and search (Tantivy)", completion = 5 },
+  { name = "M7: FUSE mounting (cfk-vfs)", completion = 0 },
+]
+
+[blockers-and-issues]
+# 1. Reversible journal + extraction were authored without a Rust toolchain
+#    in the authoring sandbox: first `just build && just test && just e2e` on
+#    real CI is the acceptance gate for M1/M2.
+# 2. undo does not yet restore metadata (permissions, mtimes, xattrs).
+# 3. verification/ is template scaffold until the PROOF-NEEDS targets land.
+
+[critical-next-actions]
+actions = [
+  "Run just build / just test / just e2e on CI and fix whatever the first real compile finds",
+  "Implement cfk squeeze (Linux hole punching first, tail-truncation fallback)",
+  "Add StorageBackend::server_side_copy and wire the Google Drive provider",
+  "Restore metadata on undo; selective (non-latest) undo with conflict detection",
+  "Replace verification/ scaffold with the reversibility and frame-then-punch invariants",
+]
+
+[maintenance-status]
+last-run-utc = "never"
+last-report = "docs/reports/maintenance/latest.json"
+last-result = "unknown"  # unknown | pass | warn | fail
+open-warnings = 0
+open-failures = 0
+
+[ecosystem]
+part-of = ["hyperpolymath estate", "RSR Framework"]
+depends-on = []
+related = ["januskey (reversible-operation model)", "absolute-zero (certified null operations: dry-run / no-op proofs)", "echo-types (conversion-loss typing)", "tropical-types (cost bounds for transfer planning)"]

@@ -1,0 +1,60 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Runbook: Deploy the Site from `www/`
+
+Purpose: turn the source bundle into a *staged* document root that satisfies
+the publication boundary, validate it, then publish atomically. Never point
+a web server at `www/` itself.
+
+== Procedure
+
+. *Stage* (on the deploy host, from a checkout of the repository):
++
+[source,bash]
+----
+STAGE=/srv/staging/site.example.invalid-$(date +%Y%m%d%H%M%S)
+mkdir -p "$STAGE/.well-known" "$STAGE/errors" "$STAGE/policies"
+cp -r www/public/.        "$STAGE/"
+cp -r www/.well-known/.   "$STAGE/.well-known/"
+cp -r www/errors/.        "$STAGE/errors/"
+for f in www/policies/*.adoc; do
+    asciidoctor -o "$STAGE/policies/$(basename "$f" .adoc).html" "$f"
+done
+----
++
+Minted repositories already have their `{{TOKEN}}` placeholders substituted;
+if deploying from an unminted template, substitute them first
+(`.machine_readable/ai/PLACEHOLDERS.adoc`).
+
+. *Validate the boundary* (must exit 0):
++
+[source,bash]
+----
+bash www/tests/check-publication-boundary.sh --stage "$STAGE"
+----
+
+. *Publish atomically* (generational swap keeps rollback trivial):
++
+[source,bash]
+----
+ln -sfn "$STAGE" /srv/site.example.invalid   # servers point at the symlink
+# then reload: systemctl reload nginx | caddy reload | systemctl reload apache2
+----
+
+. *Smoke-check*: `curl -sS https://site.example.invalid/` returns the index;
+`/.well-known/security.txt` resolves; `/dns/`, `/tls/`, `/tests/` return 404.
+
+== Stop conditions
+
+* Step 2 non-zero: **do not publish.** The stage contains operational
+  material; find it (the validator names every violation) and rebuild the
+  stage.
+* `asciidoctor` missing or failing: publish without `policies/` rather than
+  publishing the `.adoc` sources — they are source material, not content.
+
+== What never enters a stage
+
+`dns/`, `tls/`, `security_headers/`, `webservers/`, `profiles/`, `schemas/`,
+`tests/`, `runbooks/`, the `policies/` *sources*, any `*.key`, `*.pem`,
+`*.zone`, `named.conf*`, TSIG material, journals, caches, PID files, logs,
+`*.control` planted-control files. The validator enforces exactly this list.

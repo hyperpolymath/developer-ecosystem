@@ -1,0 +1,55 @@
+; SPDX-License-Identifier: MPL-2.0
+(a2ml-document
+  (version "1.0")
+  (dialect "scm")
+  (metadata
+    (author "Hyperpolymath")
+    (description "Directives for Robot Repo Automaton (RRA) enforcing the Platonic Ideal root."))
+
+  (bot-directive
+    (target "robot-repo-automaton")
+    
+    (module "root-cleaner"
+      ;; mode can be 'enforce' (auto-commit) or 'putative' (write to /.auto-rr/ for human review)
+      (policy
+        (mode "putative")
+        (strictness "high"))
+      
+      ;; Files that are strictly allowed to exist at the root
+      (allow-list
+        (file "README.adoc")
+        (file "CHANGELOG.adoc")
+        (file "Justfile")
+        (file "LICENSE")
+        (file "czech-file-knife_chora.deed")
+        (file "CITATION.cff")
+        (file "CLAUDE.md")   ;; generated arrival pack; git/Claude/pre-commit all read it from the ROOT
+        (pattern ".*")) ;; Allows hidden dotfiles implicitly, RRA will check specific dotfile rules below
+
+      ;; Relocation rules: Move heavy prose out of the root
+      (relocations
+        (move (pattern "*.adoc") (dest "docs/") (except "README.adoc" "CHANGELOG.adoc"))
+        (move (pattern "GOVERNANCE.*") (dest "docs/"))
+        (move (pattern "ARCHITECTURE.*") (dest "docs/"))
+        (move (file "MAINTAINERS.adoc") (dest "docs/")))
+      
+      ;; Consolidation rules: Reduce the dotfile "wall of noise"
+      (consolidations
+        ;; Merge legacy environment trackers into mise
+        (merge 
+          (sources ".envrc" ".tool-versions")
+          (engine "mise-translator")
+          (dest ".config/mise.toml"))
+        
+        ;; Ensure standard git attributes are consolidated
+        (merge
+          (sources ".gitattributes-legacy" ".gitattributes-os")
+          (dest ".gitattributes")))
+      
+      ;; Explicitly ignore certain paths from being cleaned
+      (ignores
+        (dir "src/")
+        (dir "tests/")
+        (dir ".git/")
+        (dir "docs/")
+        (dir ".machine_readable/")))))

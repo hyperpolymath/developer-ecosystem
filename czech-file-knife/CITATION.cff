@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Jewell"
+    given-names: "Jonathan D.A."
+    orcid: "https://orcid.org/0000-0000-0000-0000" # Placeholder
+title: "Czech File Knife"
+version: 0.1.0
+date-released: "2026-09-28"
+url: "https://github.com/hyperpolymath/czech-file-knife"
+repository-code: "https://github.com/hyperpolymath/czech-file-knife"
+license: MPL-2.0
+keywords:
+  - "rsr"
+  - "formal-verification"
+  - "neurosymbolic"
+  - "provenance"
