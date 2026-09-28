@@ -9,9 +9,11 @@ pub mod metadata;
 pub mod operations;
 pub mod path;
 pub mod platform;
+pub mod reversible;
 
 pub use backend::{StorageBackend, StorageCapabilities};
 pub use entry::{Entry, EntryKind};
 pub use error::{CfkError, CfkResult};
 pub use metadata::Metadata;
 pub use path::VirtualPath;
+pub use reversible::{ContentStore, OpLog, Operation, ReversibleBackend, ReversibleConfig};

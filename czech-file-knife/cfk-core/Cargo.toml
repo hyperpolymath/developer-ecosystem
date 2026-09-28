@@ -13,3 +13,9 @@ futures.workspace = true
 serde.workspace = true
 thiserror.workspace = true
 tokio = { workspace = true, features = ["sync"] }
+serde_json.workspace = true
+hex.workspace = true
+sha2 = "0.10"
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["macros", "rt-multi-thread"] }

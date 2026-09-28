@@ -1,0 +1,106 @@
+// SPDX-License-Identifier: MPL-2.0
+= Hybrid-machine operations: design notes
+:toc:
+
+CFK's goal is to be the "Swiss File Knife" of the hybrid machine: one tool
+that works on local disks and cloud storage alike and picks the cheapest
+correct way to do each job. This page covers two example jobs and how they
+rely on the reversible journal (`cfk-core::reversible`).
+
+== 1. Reversible journal (implemented)
+
+`ReversibleBackend<B>` wraps any backend. Before each write, delete, move
+or copy it saves the prior content in a SHA-256 content store and appends
+the inverse operation to an append-only `oplog.jsonl` (the JanusKey model).
+
+* `cfk history` shows the log, `cfk undo [id]` rolls back the latest operation.
+* State lives in `$CFK_JOURNAL_DIR`, or `$XDG_STATE_HOME/cfk/journal`, or `~/.local/state/cfk/journal`.
+* The capture limit defaults to 1 GiB (`CFK_JOURNAL_MAX_BYTES`). Bigger
+  operations are *refused*, not silently made irreversible.
+  `CFK_NO_JOURNAL=1` opts out.
+* Captured priors also back `get_versions`, so every backend gets version
+  history.
+
+== 2. Cloud-side operations without a local round trip
+
+Rule: *never route bytes through the local machine when the provider can
+do the job itself.* When the provider can't, stream the bytes through
+memory and never stage them on disk.
+
+[cols="1,2"]
+|===
+| Situation | Strategy
+
+| Same provider (Drive→Drive, S3→S3 in the same region)
+| Server-side calls: Drive `files.copy` / `files.update(addParents)`, S3
+  `CopyObject` / `UploadPartCopy`, Dropbox `copy_v2`, OneDrive `copy`.
+  No bytes cross the local link.
+
+| Converting formats inside a provider
+| Drive `files.export` / `files.copy` with a target mimeType (e.g. Doc→PDF)
+  keeps the work on Google's side.
+
+| Different providers (Drive→S3)
+| Pipe a streamed download into a resumable or multipart upload through a
+  bounded memory buffer. Local disk use is zero. Bandwidth still flows
+  through this machine unless a relay (such as a cloud VM running `cfk`)
+  is configured.
+|===
+
+Proposed trait extension: `async fn server_side_copy(&self, src, dest) ->
+CfkResult<Option<Entry>>`, where `None` means "can't do it, fall back to
+streaming". The planner tries it first.
+
+== 3. Compressing a file in place when disk space is short
+
+Example: a 25 GB file, 8 GB free, 4 GB target output, with no extra local
+or cloud storage allowed.
+
+The naive approach (write the compressed file, then delete the original)
+needs roughly 25 GB + 4 GB. You can't delete first either, so a normal
+compressor can never produce the output.
+
+=== Algorithm: forward compress plus hole punching
+
+. Read chunk *i* (for example 256 MiB) of the input.
+. Compress it into its own zstd frame and append the frame to `out.zst`.
+  Concatenated zstd frames form a valid zstd stream, so the result is a
+  normal `.zst` file.
+. `fsync` the output, then record `{chunk: i, in_off, out_off}` in the
+  journal and `fsync` the journal.
+. Only then call `fallocate(FALLOC_FL_PUNCH_HOLE | FALLOC_FL_KEEP_SIZE)` on
+  the input range just consumed. The filesystem frees those blocks.
+. Repeat. At the end, unlink the (now sparse, empty) input.
+
+Peak extra space is about one compressed chunk plus the journal, not the
+full output. Each chunk frees about 256 MiB and consumes about 40 MiB, so
+free space *grows* as the job runs.
+
+=== Crash safety
+
+A range is punched only after the frame that replaces it is durable and
+journaled. On restart, the job truncates `out.zst` to the last journaled
+`out_off` and resumes from `in_off`. No data exists in zero copies at any
+point.
+
+The job is also reversible: decompressing frames `0..k` and writing them
+back into the punched ranges restores the original, using the same
+hole-filling logic in reverse.
+
+=== Portability and fallbacks
+
+* Hole punching works on Linux ext4, XFS, btrfs and tmpfs, and on macOS APFS
+  via `fcntl(F_PUNCHHOLE)`. Windows NTFS supports it with
+  `FSCTL_SET_ZERO_DATA` on sparse files.
+* Without hole punching, process the file *from the end*: compress the last
+  chunk into a frame, then `ftruncate` the input to free it. The frames come
+  out in reverse order, so the output is a small indexed container (or a
+  seekable zstd file with a frame table) rather than a plain stream.
+  Reordering it in place is a later step.
+* A CoW filesystem with active snapshots won't free blocks. Detect this with
+  a `statvfs` check after the first chunk and abort cleanly.
+* Proof target: frame-then-punch ordering keeps "every input byte is either
+  still present or in a durable frame" as an invariant. This is a natural
+  obligation for the absolute-zero and januskey proofs.
+
+Proposed CLI: `cfk squeeze <file> [--codec zstd] [--level 19] [--chunk 256M] [--resume]`.

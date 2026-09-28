@@ -4,7 +4,7 @@
 use cfk_core::{
     entry::EntryKind,
     operations::{CopyOptions, DeleteOptions, ListOptions, MoveOptions, ReadOptions, WriteOptions},
-    CfkError, CfkResult, VirtualPath,
+    CfkError, CfkResult, ReversibleBackend, ReversibleConfig, VirtualPath,
 };
 use cfk_providers::{BackendRegistry, LocalBackend};
 use chrono::{DateTime, Utc};
@@ -18,12 +18,93 @@ use tabled::{Table, Tabled};
 fn init_registry() -> BackendRegistry {
     let mut registry = BackendRegistry::new();
 
-    // Register local filesystem with root as base
-    registry.register(Arc::new(LocalBackend::new("local", "/")));
+    // Register local filesystem with root as base. Unless disabled, every
+    // mutation goes through the reversible journal so `cfk undo` works.
+    let local = Arc::new(LocalBackend::new("local", "/"));
+    match journal() {
+        Some(Ok(rev)) => registry.register(rev),
+        Some(Err(e)) => {
+            eprintln!("warning: undo journal unavailable ({e}); operations are NOT reversible");
+            registry.register(local);
+        }
+        None => registry.register(local),
+    }
 
     // Future: register cloud backends based on config
 
     registry
+}
+
+/// Journal directory: $CFK_JOURNAL_DIR, else $XDG_STATE_HOME/cfk/journal,
+/// else ~/.local/state/cfk/journal.
+fn journal_dir() -> Option<PathBuf> {
+    if let Some(d) = std::env::var_os("CFK_JOURNAL_DIR") {
+        return Some(PathBuf::from(d));
+    }
+    let base = std::env::var_os("XDG_STATE_HOME")
+        .map(PathBuf::from)
+        .or_else(|| std::env::var_os("HOME").map(|h| PathBuf::from(h).join(".local/state")))?;
+    Some(base.join("cfk").join("journal"))
+}
+
+/// Reversible wrapper around the local backend. `None` if disabled via
+/// CFK_NO_JOURNAL=1 (e.g. to delete a file bigger than the capture limit).
+fn journal() -> Option<CfkResult<Arc<ReversibleBackend<LocalBackend>>>> {
+    if std::env::var_os("CFK_NO_JOURNAL").map(|v| v == "1").unwrap_or(false) {
+        return None;
+    }
+    let dir = journal_dir()?;
+    let mut config = ReversibleConfig::default();
+    if let Some(n) = std::env::var("CFK_JOURNAL_MAX_BYTES").ok().and_then(|v| v.parse().ok()) {
+        config.max_capture_bytes = n;
+    }
+    Some(
+        ReversibleBackend::new(Arc::new(LocalBackend::new("local", "/")), dir, config).map(Arc::new),
+    )
+}
+
+fn journal_or_err() -> CfkResult<Arc<ReversibleBackend<LocalBackend>>> {
+    journal().unwrap_or_else(|| Err(CfkError::Unsupported("journal disabled (CFK_NO_JOURNAL=1)".into())))
+}
+
+/// Show the operation journal
+pub async fn history(limit: usize, _verbose: bool) -> CfkResult<()> {
+    let rev = journal_or_err()?;
+    let records = rev.history()?;
+    if records.is_empty() {
+        println!("(no recorded operations)");
+        return Ok(());
+    }
+    let undone: std::collections::HashSet<u64> = records
+        .iter()
+        .filter_map(|r| match r.op {
+            cfk_core::Operation::Undo { target } => Some(target),
+            _ => None,
+        })
+        .collect();
+    let skip = records.len().saturating_sub(limit);
+    for r in records.iter().skip(skip) {
+        let mark = if undone.contains(&r.id) { style(" (undone)").dim().to_string() } else { String::new() };
+        println!(
+            "#{:<5} {}  {}{}",
+            r.id,
+            r.timestamp.with_timezone(&chrono::Local).format("%Y-%m-%d %H:%M:%S"),
+            r.op.summary(),
+            mark
+        );
+    }
+    Ok(())
+}
+
+/// Undo the latest (or given) operation
+pub async fn undo(id: Option<u64>, _verbose: bool) -> CfkResult<()> {
+    let rev = journal_or_err()?;
+    let rec = match id {
+        Some(id) => rev.undo(id).await?,
+        None => rev.undo_last().await?,
+    };
+    println!("{} #{} {}", style("undone").green(), rec.id, rec.op.summary());
+    Ok(())
 }
 
 /// Parse a path string into a VirtualPath

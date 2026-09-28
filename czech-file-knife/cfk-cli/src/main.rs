@@ -110,6 +110,19 @@ enum Commands {
         path: String,
     },
 
+    /// Show the reversible-operation journal (JanusKey model)
+    History {
+        /// Show at most N most-recent records
+        #[arg(short = 'n', long, default_value_t = 20)]
+        limit: usize,
+    },
+
+    /// Undo the most recent operation (or a specific id, which must be the latest)
+    Undo {
+        /// Operation id from `cfk history`
+        id: Option<u64>,
+    },
+
     /// List registered backends
     Backends,
 
@@ -146,6 +159,12 @@ async fn main() -> ExitCode {
         }
         Commands::Stat { path } => {
             commands::stat(&path, cli.verbose).await
+        }
+        Commands::History { limit } => {
+            commands::history(limit, cli.verbose).await
+        }
+        Commands::Undo { id } => {
+            commands::undo(id, cli.verbose).await
         }
         Commands::Backends => {
             commands::backends(cli.verbose).await
