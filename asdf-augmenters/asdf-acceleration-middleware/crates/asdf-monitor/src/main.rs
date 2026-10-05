@@ -147,10 +147,15 @@ fn dashboard() -> Result<()> {
     Ok(())
 }
 
+/// Run the interactive dashboard loop: refresh metrics, redraw, and handle
+/// key input until the user quits.
 fn run_dashboard<B: ratatui::backend::Backend>(
     terminal: &mut Terminal<B>,
     app: &mut App,
-) -> Result<()> {
+) -> Result<()>
+where
+    B::Error: Send + Sync + 'static,
+{
     loop {
         // Refresh data periodically
         app.refresh();

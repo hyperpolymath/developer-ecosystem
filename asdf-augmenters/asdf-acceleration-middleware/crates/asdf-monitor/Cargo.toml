@@ -20,7 +20,7 @@ clap = { workspace = true }
 colored = { workspace = true }
 asdf-core = { path = "../asdf-core" }
 asdf-metrics = { path = "../asdf-metrics" }
-ratatui = "0.28"
-crossterm = "0.28"
+ratatui = "0.30"
+crossterm = "0.29"
 
 [dev-dependencies]
