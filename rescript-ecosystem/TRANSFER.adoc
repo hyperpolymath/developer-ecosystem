@@ -4,6 +4,17 @@ Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 :toc:
 :toc-placement: preamble
 
+[IMPORTANT]
+====
+Availability review (2026-11-06): The public source currently verified for this
+bundle is the in-tree `rescript-ecosystem/` directory of
+`hyperpolymath/developer-ecosystem`. Standalone repository URLs in this document
+are historical references and must be checked before being offered to a new
+maintainer. Earlier transfer-readiness and working-status statements are not
+current build, test, dependency, or licence verification. See `MIGRATION.adoc`
+for known consolidation gaps; confirm each package independently before handover.
+====
+
 This document describes the hyperpolymath ReScript work consolidated in
 `developer-ecosystem/rescript-ecosystem/` and its transfer position,
 following the estate language-consolidation decision (RS/TS/JS →

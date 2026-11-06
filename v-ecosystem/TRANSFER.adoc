@@ -4,6 +4,17 @@ Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 :toc:
 :toc-placement: preamble
 
+[IMPORTANT]
+====
+Availability review (2026-11-06): The public source currently verified for this
+bundle is the in-tree `v-ecosystem/` directory of
+`hyperpolymath/developer-ecosystem`. Listed standalone repository URLs and
+earlier working-status or transfer-readiness claims are historical; check each
+repository, build, test suite, dependency, and licence before offering a
+component to maintainers. See `MIGRATION.adoc` for the connector deprecation
+and Zig FFI succession decision.
+====
+
 This document describes all V-lang work in the hyperpolymath estate that is
 offered to the V community, following the ecosystem consolidation decision of
 2026-04-10.
