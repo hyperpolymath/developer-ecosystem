@@ -49,5 +49,4 @@
 *.resi linguist-language=ReScript
 justfile linguist-language=Just
 Mustfile linguist-language=Just
-*.lgt linguist-language=Logtalk
 *.scm linguist-language=Scheme

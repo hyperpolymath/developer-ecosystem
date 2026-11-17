@@ -57,6 +57,18 @@
      "Composite action uses unpinned internal dependencies (cannot fix externally)"
      #f)
 
+    (ERR-WF-008 workflow high
+     "Bad editorconfig-checker SHA (8c9b118d is invalid, use 4b6cd619)"
+     #t)
+
+    (ERR-WF-009 workflow high
+     "Invalid CodeQL actions language - use javascript-typescript instead"
+     #t)
+
+    (ERR-WF-010 workflow medium
+     "GitHub Pages not enabled on SSG repos"
+     #f)
+
     ;; Security errors
     (ERR-SEC-001 security high
      "Unpinned GitHub Actions - using version tags (@v4) instead of SHA pins"
@@ -197,4 +209,16 @@
     (ERR-LIC-001
      pattern: "(first line of file)"
      replacement: "# SPDX-License-Identifier: MPL-2.0"
-     position: "line 1")))
+     position: "line 1")
+
+    (ERR-WF-008
+     pattern: "8c9b118d446fce7e6410b6c0a3ce2f83bd04e97a"
+     replacement: "4b6cd6190d435e7e084fb35e36a096e98506f7b9")
+
+    (ERR-WF-009
+     pattern: "language: actions"
+     replacement: "language: javascript-typescript")
+
+    (ERR-WF-010
+     pattern: "(API call)"
+     replacement: "gh api --method POST repos/OWNER/REPO/pages -f build_type=workflow")))

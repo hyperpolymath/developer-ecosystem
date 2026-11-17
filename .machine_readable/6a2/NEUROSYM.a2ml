@@ -11,4 +11,3 @@ last-updated = "2026-03-16"
 [hypatia-config]
 scan-enabled = true
 scan-depth = "standard"
-report-format = "logtalk"
