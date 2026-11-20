@@ -5,6 +5,8 @@
 -- Replace with your project's domain-specific proofs.
 -- All proofs must be total (no postulate, no {-# TERMINATING #-}).
 
+{-# OPTIONS --safe --without-K --cubical-compatible #-}
+
 module Properties where
 
 open import Data.Nat using (ℕ; zero; suc; _+_; _≤_; z≤n; s≤s; _<_)

@@ -1403,7 +1403,7 @@ proof-check-agda:
     ERRORS=0
     for f in "$(find verification/proofs/agda -name '*.agda' 2>/dev/null)"; do
         echo -n "  Checking "$f" ... "
-        if agda --safe "$f" 2>/dev/null; then
+        if agda --safe --without-K --cubical-compatible "$f" 2>/dev/null; then
             echo "OK"
         else
             echo "FAIL"
