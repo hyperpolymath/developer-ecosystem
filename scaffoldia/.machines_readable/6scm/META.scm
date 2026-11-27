@@ -16,7 +16,7 @@
   (development-practices
     (code-style
       "Follow hyperpolymath language policy: "
-      "Prefer ReScript, Rust, Gleam, Elixir. "
+      "Prefer AffineScript, Rust, Gleam, Elixir. "
       "Avoid TypeScript, Go, Python per RSR.")
     (security
       "All commits signed. "

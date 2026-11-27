@@ -198,7 +198,7 @@ The RSR antipattern workflow automatically blocks:
 |Blocked Pattern |Enforcement
 
 |`*.ts`, `*.tsx`
-|TypeScript → use ReScript
+|TypeScript → use AffineScript
 
 |`package.json` with deps
 |npm → use Deno
@@ -207,7 +207,7 @@ The RSR antipattern workflow automatically blocks:
 |Go → use Rust
 
 |`*.py` (non-SaltStack)
-|Python → use ReScript/Rust
+|Python → use AffineScript/Rust
 
 |`*.kt`, `*.swift`
 |Kotlin/Swift → use Tauri/Dioxus

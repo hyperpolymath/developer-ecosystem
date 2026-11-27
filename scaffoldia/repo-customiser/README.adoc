@@ -208,10 +208,10 @@ build target:     # Cross-platform build (ASIC to PC)
 |===
 |Banned |Replacement
 
-|TypeScript |ReScript
+|TypeScript |AffineScript
 |Node.js/npm/pnpm/yarn/bun |Deno
 |Go |Rust
-|Python (general) |ReScript/Rust
+|Python (general) |AffineScript/Rust
 |Kotlin/Swift |Tauri/Dioxus
 |===
 
