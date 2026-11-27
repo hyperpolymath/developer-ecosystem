@@ -19,7 +19,7 @@ The following files in `.machine_readable/` contain structured project metadata:
 
 | Language/Tool | Use Case | Notes |
 |---------------|----------|-------|
-| **ReScript** | Primary application code | Compiles to JS, type-safe |
+| **AffineScript** | Primary application code | Affine-typed, compiles to typed-wasm or ESM |
 | **Bun** | JS runtime & package management (tier 1) | Default for all new work. Runs compiled ESM/JS directly — no bundler step. Uses an npm-compatible `package.json` plus `bun.lock` — both are expected, not anti-patterns. |
 | **Rust** | Performance-critical, systems, WASM | Preferred for CLI tools |
 | **Tauri 2.0+** | Mobile apps (iOS/Android) | Rust backend + web UI |
@@ -37,7 +37,7 @@ The following files in `.machine_readable/` contain structured project metadata:
 
 | Banned | Replacement |
 |--------|-------------|
-| TypeScript | ReScript |
+| TypeScript | AffineScript |
 | Deno | Bun |
 | Node.js | Bun |
 | npm | Bun |
@@ -53,7 +53,7 @@ The following files in `.machine_readable/` contain structured project metadata:
 
 **No exceptions for Kotlin/Swift** - use Rust-first approach:
 
-1. **Tauri 2.0+** - Web UI (ReScript) + Rust backend, MIT/Apache-2.0
+1. **Tauri 2.0+** - Web UI (AffineScript) + Rust backend, MIT/Apache-2.0
 2. **Dioxus** - Pure Rust native UI, MIT/Apache-2.0
 
 Both are FOSS with independent governance (no Big Tech).
@@ -64,7 +64,7 @@ Both are FOSS with independent governance (no Big Tech).
 2. **Use `package.json` + `bun.lock` for JS runtime deps** - Bun is npm-compatible; a manifest is REQUIRED
 3. **`bun install --production` for production deps** - resolved from `package.json`, pinned via `bun.lock`
 4. **No Go code** - Use Rust instead
-5. **No Python anywhere** - Use Julia for data/batch, Rust for systems, ReScript for apps
+5. **No Python anywhere** - Use Julia for data/batch, Rust for systems, AffineScript for apps
 6. **No Kotlin/Swift for mobile** - Use Tauri 2.0+ or Dioxus
 
 ### Package Management

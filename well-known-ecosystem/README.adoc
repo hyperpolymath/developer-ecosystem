@@ -157,10 +157,10 @@ This project follows the *Hyperpolymath RSR* (Rhodium Standard Rules) language p
 ====
 The following are *not permitted* in this project:
 
-* TypeScript → Use ReScript
+* TypeScript → Use AffineScript
 * Node.js / npm / Bun / pnpm / yarn → Use Deno
 * Go → Use Rust
-* Python (except SaltStack) → Use ReScript/Rust
+* Python (except SaltStack) → Use AffineScript/Rust
 ====
 
 == Repository Structure

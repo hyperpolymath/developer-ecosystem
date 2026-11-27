@@ -54,7 +54,7 @@ ANCHOR.a2ml in the repository root.
 [cols=",",options="header",]
 |===
 |Banned |Use Instead
-|TypeScript |ReScript
+|TypeScript |AffineScript
 |Node.js / npm / bun |Deno
 |Go |Rust
 |Python |Julia / Rust

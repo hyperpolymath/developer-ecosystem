@@ -53,7 +53,7 @@ This guide documents the architecture for creating production-ready asdf plugins
 |Type-safe, composable, aspect-oriented
 
 |Plugin Logic
-|ReScript + Bun
+|AffineScript + Bun
 |Type-safe, fast startup, portable
 
 |UI (asdf-ui-plugin only)
@@ -434,7 +434,7 @@ scaffoldia init \
 1. **No asdf commands in plugin scripts** - Use env vars (`$ASDF_INSTALL_PATH`, etc.)
 2. **Minimize dependencies** - Assume only POSIX shell, git, curl
 3. **No non-portable tools** - Avoid GNU-specific flags
-4. **Type-safe logic** - Use ReScript, not shell, for complex logic
+4. **Type-safe logic** - Use AffineScript, not shell, for complex logic
 5. **Fast startup** - Use Bun, not Node
 6. **Document everything** - Use `help.*` scripts
 7. **Test thoroughly** - Use `asdf plugin test`
